@@ -1,0 +1,61 @@
+=== vimclojure.vim ===
+
+
+=== surround.vim ===
+
+1. Download surround.zip. It will actually be a zip file containing the surround.vim script and documentation.
+2. Extract surround.zip to ~/.vim (on Unix/Linux), or ~\vimfiles (Windows).
+3. Restart Vim (or just source surround.vim script with “:so ~/.vim/plugin/surround.vim” on Unix or “:so ~/vimfiles/plugin/surround.vim” on Windows).
+4. Regenerate helptags with “:helptags ~/.vim/doc” on Unix or “:helptags ~/vimfiles/doc” on Windoze.
+
+For a complete reference, here are all the commands/mappings surround.vim provides:
+Normal mode
+-----------
+ds  - delete a surrounding
+cs  - change a surrounding
+ys  - add a surrounding
+yS  - add a surrounding and place the surrounded text on a new line + indent it
+yss - add a surrounding to the whole line
+ySs - add a surrounding to the whole line, place it on a new line + indent it
+ySS - same as ySs
+
+Visual mode
+-----------
+s   - in visual mode, add a surrounding
+S   - in visual mode, add a surrounding but place text on new line + indent it
+
+Insert mode
+-----------
+<CTRL-s> - in insert mode, add a surrounding
+<CTRL-s><CTRL-s> - in insert mode, add a new line + surrounding + indent
+<CTRL-g>s - same as <CTRL-s>
+<CTRL-g>S - same as <CTRL-s><CTRL-s>
+
+=== repeat.vim ===
+How to install repeat.vim?
+1. Download repeat.vim to ~/.vim/plugin (on Unix/Linux), or ~\vimfiles\plugin (Windows).
+2. Restart Vim or source repeat.vim with “:so ~/.vim/plugin/repeat.vim” on Unix or “:so ~/vimfiles/plugin/repeat.vim” on Windows).
+
+
+=== matchit.vim ===
+1. Download matchit.zip.
+2. Extract matchit.zip to ~/.vim (on Unix/Linux) or ~\vimfiles (on Windows).
+3. Run :helptags ~/.vim/doc (on Unix/Linux) or :helptags ~/vimfiles/doc (on Windows) to rebuild the tags file (so that you can read :help %, :help g%, etc.)
+    4. Restart Vim or source matchit.vim with “:so ~/.vim/plugin/matchit.vim” on Unix or “:so ~/vimfiles/plugin/matchit.vim” on Windows).
+    5. Use ‘%’ to find corresponding 
+
+    For Python programmers: Turns out the original matchit.vim plugin does not match if / elif / else. Benji extended matchit.vim itself and created “python_matchit.vim“. This extension allows us to use the “%” key to cycle through if/elif/else, try/except/catch, for/continue/break, and while/continue/break structures. The script also defines g% to cycle in the opposite direction, and it defines two other motions, [% and ]%, go to the start and end of the current block, respectively.
+    How to install python_matchit.vim?
+
+    Python_matchit.vim is a filetype plugin. It has to be installed in “ftplugin” directory. Follow these steps to get it installed:
+    1. Download python_matchit.vim.
+    2. Put it in ~/.vim/ftplugin (on Unix/Linux) or ~\vimfiles\ftplugin (on Windows).
+    3. Restart Vim or source matchit.vim with “:so ~/.vim/ftplugin/python_matchit.vim” on Unix or “:so ~/vimfiles/ftplugin/python_matchit.vim” on Windows).
+
+    The same steps can be taken to install matchit for Ruby.
+
+=== snipmate.vim ===
+1. Download snipmate.zip.
+2. Extract snipmate.zip to ~/.vim (on Unix/Linux) or ~\vimfiles (on Windows).
+3. Run :helptags ~/.vim/doc (on Unix/Linux) or :helptags ~/vimfiles/doc (on Windows) to rebuild the tags file (so that you can read :help snipmate.)
+4. Restart Vim.
