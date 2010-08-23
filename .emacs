@@ -1,19 +1,18 @@
 (add-to-list 'load-path "~/.emacs.d")
-(load-file "~/.emacs.d/findr.el")
-(load-file "~/.emacs.d/linum.el")
-(load-file "~/.emacs.d/yaml-mode/yaml-mode.el")
 (load-file "~/.emacs.d/actionscript.el")
-(load-file "~/.emacs.d/matlab.el")
 (load-file "~/.emacs.d/revive.el")
-(load-file "~/.emacs.d/php-mode.el")
-(load "~/.emacs.d/nxhtml/autostart.el")
+
+;(load "~/.emacs.d/nxhtml/autostart.el")
 
 ; windows only
 ; (load-file "~/.emacs.d/martin-w32-fullscreen.el")
 
 ; (global-linum-mode 1)
 
+(load-file "~/.emacs.d/matlab.el")
 (setq matlab-auto-fill nil)
+(setq auto-mode-alist (cons '("\\.m\\'" . matlab-mode) auto-mode-alist))
+
 (setq inhibit-splash-screen t)
 (line-number-mode 1)
 (column-number-mode 1)
@@ -23,6 +22,7 @@
 (setq-default indent-tabs-mode nil)
 (desktop-save-mode 1)
 (global-hl-line-mode 1)
+(iswitchb-mode 1)
 
 (setq backup-directory-alist '(("" . "~/.emacs.d/emacs-backup")))
 
@@ -41,109 +41,28 @@
 (setq-default tab-width 2)
 (setq-default indent-tabs-mode nil)
  
-(tool-bar-mode 0)
-(menu-bar-mode 0)
+;(tool-bar-mode 0)
+;(menu-bar-mode 0)
  
-(set-face-background 'hl-line "controlHighlightColor")
+;(set-face-background 'hl-line "controlHighlightColor")
 ;(set-face-background 'hl-line "blue")
  
  
  
+
+
  
-; Syntax highlighting
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(cperl-array-face ((t (:foreground "orangered" :bold t))))
- '(cperl-hash-face ((t (:foreground "Red" :bold t))))
- '(cperl-nonoverridable-face ((t (:foreground "orange" :bold t))))
- '(custom-button-face ((t (:bold t :foreground "#3fdfcf"))) t)
- '(custom-group-tag-face ((t (:underline t :foreground "blue"))) t)
- '(custom-saved-face ((t (:underline t :foreground "orange"))) t)
- '(custom-state-face ((t (:foreground "green3"))) t)
- '(custom-variable-button-face ((t (:bold t :underline t :foreground "pink"))) t)
- '(dired-face-permissions ((t (:foreground "green"))))
- '(font-latex-bold-face ((((class color) (background light)) (:bold t))))
- '(font-latex-italic-face ((((class color) (background light)) (:italic t))))
- '(font-latex-math-face ((((class color) (background light)) (:foreground "green3"))))
- '(font-latex-sedate-face ((((class color) (background light)) (:foreground "gold"))))
- '(font-lock-comment-face ((t (:foreground "pink2"))))
- '(font-lock-doc-string-face ((t (:foreground "Wheat3"))))
- '(font-lock-function-name-face ((t (:foreground "blue" :bold t))))
- '(font-lock-keyword-face ((t (:foreground "purple"))))
- '(font-lock-preprocessor-face ((t (:foreground "red" :bold t))))
- '(font-lock-reference-face ((t (:foreground "orangered"))))
- '(font-lock-string-face ((t (:foreground "dark grey"))))
- '(font-lock-type-face ((t (:foreground "#886fff" :bold t))))
- '(font-lock-variable-name-face ((t (:foreground "chocolate" :bold t))))
- '(font-lock-warning-face ((t (:foreground "Violetred" :bold t))))
- '(list-mode-item-selected ((t (:foreground "green"))) t)
- '(message-cited-text ((t (:bold t :italic nil))))
- '(zmacs-region ((t (:background "RoyalBlue"))) t))
- 
- 
- 
- 
-;;;;;;;;;;;;;;;;;;;;;;;
-;; <auto completion> ;;
-;;;;;;;;;;;;;;;;;;;;;;;
+
 (require 'dabbrev)
 (setq dabbrev-always-check-other-buffers t)
 (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
- 
-(global-set-key "\C-i" 'my-tab)
+
+
 (global-set-key [M-left] 'windmove-left)
 (global-set-key [M-right] 'windmove-right)
 (global-set-key [M-up] 'windmove-up)
 (global-set-key [M-down] 'windmove-down)
- 
-(defun my-tab (&optional pre-arg)
-  "If preceeding character is part of a word then dabbrev-expand,
-else if right of non whitespace on line then tab-to-tab-stop or
-indent-relative, else if last command was a tab or return then dedent
-one step, else indent 'correctly'"
-  (interactive "*P")
-  (cond ((= (char-syntax (preceding-char)) ?w)
-         (let ((case-fold-search t)) (dabbrev-expand pre-arg)))
-        ((> (current-column) (current-indentation))
-         (indent-relative))
-        (t (indent-according-to-mode)))
-  (setq this-command 'my-tab))
- 
-(add-hook 'html-mode-hook
-          '(lambda ()
-             (local-set-key "\C-i" 'my-tab)))
-(add-hook 'sgml-mode-hook
-          '(lambda ()
-             (local-set-key "\C-i" 'my-tab)))
-(add-hook 'perl-mode-hook
-          '(lambda ()
-             (local-set-key "\C-i" 'my-tab)))
-(add-hook 'text-mode-hook
-          '(lambda ()
-             (local-set-key "\C-i" 'my-tab)))
-(add-hook 'php-mode-hook
-          '(lambda ()
-             (local-set-key "\C-i" 'my-tab)))
-(add-hook 'ruby-mode-hook
-          '(lambda ()
-             (local-set-key "\C-i" 'my-tab)))
-(add-hook 'java-mode-hook
-          '(lambda ()
-             (local-set-key "\C-i" 'my-tab)))
-(add-hook 'actionscript-mode-hook
-          '(lambda ()
-             (local-set-key "\C-i" 'my-tab)))
-(add-hook 'lisp-mode-hook
-          '(lambda ()
-             (local-set-key "\C-i"     'my-tab)))
-;;;;;;;;;;;;;;;;;;;;;;;
-;; </auto completion> ;;
-;;;;;;;;;;;;;;;;;;;;;;;
-
-
+(global-set-key "\C-x\C-b" 'bs-show)
 
 ; add more hooks here
 (custom-set-variables
@@ -159,12 +78,14 @@ one step, else indent 'correctly'"
  '(transient-mark-mode t))
 
 
+
+
 ;;; ;;;;;;;;;;;;;;;
 ;;; ;; <clojure> ;;
 ;;; ;;;;;;;;;;;;;;;
-;;; (setq clojure-src-root $CLOJURE_PATH)
+;;; (setq clojure-src-root "~/dev/clojure")
 ;;; (eval-after-load 'clojure-mode '(clojure-slime-config))
-;;; (setq swank-clojure-jar-path (concat clojure-src-root "/clojure/clojure.jar")
+;;; (setq swank-clojure-jar-path (concat clojure-src-root "/clojure.jar")
 ;;;       swank-clojure-extra-classpaths
 ;;;       (list (concat clojure-src-root "/clojure-contrib/src/")))
 ;;; ;;;;;;;;;;;;;;;
@@ -183,6 +104,16 @@ one step, else indent 'correctly'"
 
 
 (setq TeX-command-master "latex")
+
+(load "/usr/share/emacs/site-lisp/auctex.el" nil t t)
+(load "/usr/share/emacs/site-lisp/preview-latex.el" nil t t)
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq TeX-save-query t)
+
+
+
+
 
 ; javascript-mode override
 ; 2009-06-13 18:45:02
@@ -234,7 +165,7 @@ one step, else indent 'correctly'"
 ;;; (gnuserv-start)
 ;;; 
 ;;; 
-;;; (setq air-adl-path $ADL_PATH)
+;;; (setq air-adl-path "C:\\Users\\natto\\Desktop\\VM\\AdobeAIRSDK\\bin\\adl.exe")
 ;;; (defun air-run ()
 ;;;   (interactive)
 ;;;   (shell-command
@@ -258,6 +189,8 @@ one step, else indent 'correctly'"
     (load
      (expand-file-name "~/.emacs.d/elpa/package.el"))
   (package-initialize))
+
+(require 'muse-wiki)
 
 
 
@@ -298,25 +231,33 @@ one step, else indent 'correctly'"
                               "~/org/vocab.org"
                               "~/org/xkm.org"
                               "~/org/的.org")))
+
+(require 'iimage)
+;(setq iimage-mode-image-search-path (expand-file-name "~/"))
+;;Match org file: links
+(add-to-list 'iimage-mode-image-regex-alist
+             (cons (concat "\\[\\[file:\\(~?" iimage-mode-image-filename-regex
+                           "\\)\\]")  1))
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; </org mode config> ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 
-(require 'ess-site)
+;; (require 'ess-site)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; <custom command> ;;
 ;;;;;;;;;;;;;;;;;;;;;;
-;;; http://emacs-fu.blogspot.com/2009/04/dot-emacs-trickery.html
 ;;; Don't quit unless you mean it!
 (defun maybe-save-buffers-kill-emacs (really) 
   "If REALLY is 'yes', call save-buffers-kill-emacs."
   (interactive "sAre you sure about this? ")
   (if (equal really "yes") 
-      (save-buffers-kill-emacs)))
+      (progn
+        (win-save-all-configurations)
+        (save-buffers-kill-emacs))))
 (global-set-key [(control x)(control c)] 'maybe-save-buffers-kill-emacs)
 
 (defun wsm () (interactive) (win-switch-menu))
@@ -370,35 +311,37 @@ one step, else indent 'correctly'"
 
 
 
-; <CSS color values colored by themselves>
-; http://xahlee.org/emacs/emacs_html.html
-(defun hexcolour-add-to-font-lock ()
-  (font-lock-add-keywords 
-   nil 
-   '((;"#[abcdef[:digit:]]\\{6\\}" ; 
-      "#\\([abcdef[:digit:]]\\{6\\}\\|[abcdef[:digit:]]\\{3\\}\\)"
-      (0 (put-text-property
-          (match-beginning 0)
-          (match-end 0)
-          'face (list :background 
-                      (let ((property (match-string-no-properties 0)))
-                        (if (< 5 (length property))
-                            property ; 6-char color
-                          (format "#%s%s%s%s%s%s"
-                                  (substring property 1 2)
-                                  (substring property 1 2)
-                                  (substring property 2 3)
-                                  (substring property 2 3)
-                                  (substring property 3 4)
-                                  (substring property 3 4)
-                                  ))  ; 3-char color
-                       )
-                      )))))))
+(load-file "~/.emacs.d/jd-el/rainbow-mode.el")
+;;;; ; <CSS color values colored by themselves>
+;;;; ; http://xahlee.org/emacs/emacs_html.html
+;;;; (defun hexcolour-add-to-font-lock ()
+;;;;   (font-lock-add-keywords 
+;;;;    nil 
+;;;;    '((;"#[abcdef[:digit:]]\\{6\\}" ; 
+;;;;       "#\\([abcdef[:digit:]]\\{6\\}\\|[abcdef[:digit:]]\\{3\\}\\)"
+;;;;       (0 (put-text-property
+;;;;           (match-beginning 0)
+;;;;           (match-end 0)
+;;;;           'face (list :background 
+;;;;                       (let ((property (match-string-no-properties 0)))
+;;;;                         (if (< 5 (length property))
+;;;;                             property ; 6-char color
+;;;;                           (format "#%s%s%s%s%s%s"
+;;;;                                   (substring property 1 2)
+;;;;                                   (substring property 1 2)
+;;;;                                   (substring property 2 3)
+;;;;                                   (substring property 2 3)
+;;;;                                   (substring property 3 4)
+;;;;                                   (substring property 3 4)
+;;;;                                   ))  ; 3-char color
+;;;;                        )
+;;;;                       )))))))
+;;;; 
+;;;; 
+;;;; (add-hook 'css-mode-hook 'hexcolour-add-to-font-lock)
+;;;; ; </CSS color values colored by themselves>
 
-
-(add-hook 'css-mode-hook 'hexcolour-add-to-font-lock)
-; </CSS color values colored by themselves>
-
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
 
 
@@ -422,18 +365,58 @@ one step, else indent 'correctly'"
                             (font-spec :family (cdr charset-font) :size
                                        12)))
         charset-font))
+(defun osx-resize-current-window ()
+  (interactive)
+  (let* ((ncol (string-to-number (read-from-minibuffer "ncol? ")))
+         (nrow (string-to-number (read-from-minibuffer "nrow? "))))
+    (set-frame-size (selected-frame) ncol nrow)
+    ))
+(defun osx-move-current-window ()
+  (interactive)
+  (let* ((x (string-to-number (read-from-minibuffer "x? ")))
+         (y (string-to-number (read-from-minibuffer "y? "))))
+    (set-frame-position (selected-frame) x y)
+    ))
+(defun osx-w1 ()
+  (interactive)
+  (set-frame-size (selected-frame) 200 56)
+  (set-frame-position (selected-frame) 0 20))
+(defun osx-w2 ()
+  (interactive)
+  (set-frame-position (selected-frame) 1440 -200)
+  (set-frame-position (selected-frame) 1440 -200)
+  (set-frame-size (selected-frame) 268 78))
+(defun osx-w-lh ()
+  (interactive)
+  (set-frame-position (selected-frame) 40 22)
+  (set-frame-size (selected-frame) 100 56))
+(defun osx-w-rh ()
+  (interactive)
+  (set-frame-position (selected-frame) 600 22)
+  (set-frame-size (selected-frame) 100 56))
 ;;;;;; </OS X customizations> ;;;;;;
 
 
-(add-to-list 'load-path "$PATH_TO_ORG_CONTRIB/org-mode/contrib/lisp")
+(add-to-list 'load-path "~/ubin/elisp/org-6.36c/lisp")
+(add-to-list 'load-path "~/ubin/elisp/org-6.36c/contrib/lisp")
+(require 'org-install)
 (require 'org-babel-init)
 (require 'org-babel-python)
 (require 'org-babel-ruby)
-(require 'org-babel-R)
+;; (require 'org-babel-R)
 (org-babel-load-library-of-babel)
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; </custom command> ;;
 ;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+
+;(setq ipython-command "/opt/local/bin/ipython")
+;(require 'ipython)
+;(setq py-python-command-args '( "-colors" "Linux"))
+;(require 'python-mode)
+(setenv "PYTHONPATH" "/opt/local/bin/python")
 
 
 
@@ -443,7 +426,114 @@ one step, else indent 'correctly'"
 ;; <newsticker> ;;
 ;;;;;;;;;;;;;;;;;;
 (setq newsticker-url-list
-      '($URL_LIST        ))
+      '(("mind brain" "http://www.sciencedaily.com/rss/mind_brain.xml" nil nil nil)
+        ("BBC" "http://newsrss.bbc.co.uk/rss/newsonline_world_edition/front_page/rss.xml" nil nil nil)
+        ("UDN" "http://udn.com/udnrss/focus.xml" nil nil nil)
+        ("reddit" "http://www.reddit.com/.rss" nil nil nil)
+        ("PPCT" "http://feeds.pocketpcthoughts.com/pocketpcthoughts" nil nil nil)
+        ("slashdot" "http://rss.slashdot.org/Slashdot/slashdot" nil nil nil)
+        ("Ken Tilton's blog" "http://smuglispweeny.blogspot.com/feeds/posts/default" nil nil nil)
+        ("ku-ma-ne まめめも" "http://d.hatena.ne.jp/ku-ma-me/rss" nil nil nil)
+        ("Lazy Pythonista" "http://lazypython.blogspot.com/feeds/posts/default" nil nil nil)
+        ("catonmat" "http://feeds.feedburner.com/catonmat" nil nil nil)
+        ("tim gowers" "http://gowers.wordpress.com/feed/" nil nil nil)
+        ("Lambda the Ultimate" "http://lambda-the-ultimate.org/rss.xml" nil nil nil)
+        ("Fire Hose Games" "http://www.firehosegames.com/feed/" nil nil nil)
+        ("Language log" "http://languagelog.ldc.upenn.edu/nll/?feed=rss2" nil nil nil)
+        ("Will Larson's code blog" "http://lethain.com/feeds/flow/code/" nil nil nil)
+        ("The Big Picture" "http://www.ritholtz.com/blog/feed/" nil nil nil)
+        ))
 ;;;;;;;;;;;;;;;;;;;
 ;; </newsticker> ;;
 ;;;;;;;;;;;;;;;;;;;
+
+
+
+
+ 
+
+
+;; django mode
+; (load "~/.emacs.d/django-mode/django-mode.el")
+; (yas/load-directory "~/.emacs.d/django-mode/snippets")
+
+
+
+
+
+;;; http://sites.google.com/site/steveyegge2/my-dot-emacs-file
+;; someday might want to rotate windows if more than 2 of them
+(defun win-swap ()
+ "If you have 2 windows, it swaps them." (interactive) (cond ((not (= (count-windows) 2)) (message "You need exactly 2 windows to do this."))
+ (t
+ (let* ((w1 (first (window-list)))
+	 (w2 (second (window-list)))
+	 (b1 (window-buffer w1))
+	 (b2 (window-buffer w2))
+	 (s1 (window-start w1))
+	 (s2 (window-start w2)))
+ (set-window-buffer w1 b2)
+ (set-window-buffer w2 b1)
+ (set-window-start w1 s2)
+ (set-window-start w2 s1)))))
+
+;;; http://github.com/banister/window-rotate-for-emacs/blob/master/window-rotate.el
+(defun rotate-windows-helper (x d)
+  (if (equal (cdr x) nil) (set-window-buffer (car x) d)
+    (set-window-buffer (car x) (window-buffer (cadr x))) (rotate-windows-helper (cdr x) d)))
+ 
+(defun win-rotate ()
+  (interactive)
+  (rotate-windows-helper (window-list) (window-buffer (car (window-list))))
+  (select-window (car (last (window-list)))))
+
+
+
+(set-cursor-color "green")
+
+
+(require 'swank-clojure)
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/clj-tuples-0.3.3.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/clojure-1.1.0.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/clojure-contrib-1.1.0.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/clojureql-1.0.0.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/clout-0.2.0-20100502.112537-4.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/commons-codec-1.4.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/commons-fileupload-1.2.1.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/commons-io-1.4.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/compojure-0.4.0-20100308.145053-8.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/derby-10.5.3.0_1.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/hiccup-0.2.4.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/jetty-6.1.14.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/jetty-util-6.1.14.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/matchure-0.9.1.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/mysql-connector-java-5.0.5.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/postgresql-8.2-504.jdbc4.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/ring-core-0.2.0.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/ring-jetty-adapter-0.2.0.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/ring-servlet-0.2.0.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/servlet-api-2.5-6.1.14.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/snakeyaml-1.5.jar")
+(add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/vijual-0.1.0-20091229.021828-11.jar       ")
+
+
+
+(add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0/")
+(require 'color-theme)
+(eval-after-load "color-theme"
+  '(progn
+     (color-theme-initialize)
+     (color-theme-jsc-light2)))
+ 
+
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(org-level-1 ((t (:inherit outline-1 :height 1.6))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.5))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.4))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.3))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.2))))
+ '(org-level-6 ((t (:inherit outline-6 :height 1.1)))))
