@@ -58,12 +58,6 @@
 (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
 
 
-(global-set-key [M-left] 'windmove-left)
-(global-set-key [M-right] 'windmove-right)
-(global-set-key [M-up] 'windmove-up)
-(global-set-key [M-down] 'windmove-down)
-(global-set-key "\C-x\C-b" 'bs-show)
-
 ; add more hooks here
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
@@ -73,6 +67,7 @@
  '(column-number-mode t)
  '(menu-bar-mode t)
  '(org-modules (quote (org-bbdb org-bibtex org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
+ '(org-startup-folded (quote showeverything))
  '(show-paren-mode t)
  '(tool-bar-mode nil)
  '(transient-mark-mode t))
@@ -118,66 +113,6 @@
 ; javascript-mode override
 ; 2009-06-13 18:45:02
 (setq javascript-indent-level 2)
-
-;;; taken from WINDOWS
-;;; ; gnuserv
-;;; (defvar dv-initial-frame (car (frame-list))     "Holds initial frame.")
-;;; 
-;;; (defun dv-focus-frame (frame)           "pop to top and give focus"
-;;; ;;          Code 'borrowed' from frame.el.
-;;; ;;         (Meaning I don't understand it. But it beats all I tried.  :)
-;;;   (make-frame-visible frame)
-;;;   (raise-frame frame)
-;;;   (select-frame frame)
-;;;   (w32-focus-frame frame))
-;;; 
-;;; (defun dv-focus-initial-frame ()        "Make the initial frame visible"
-;;;   (dv-focus-frame dv-initial-frame))
-;;; 
-;;; (defvar dv-mail-frames ()               "Frames created by dv-do-mailto")
-;;; 
-;;; (defun dv-do-mailto (arg)               "For handling mailto URLs via gnudoit"
-;;;   (dv-focus-frame (make-frame))
-;;;   (message-mail (substring arg 7))
-;;;   (delete-other-windows)
-;;;   (setq dv-mail-frames (cons (selected-frame) dv-mail-frames)))
-;;; 
-;;; (defun dv-close-client-frame ()         "Close frame, kill client buffer."
-;;;   (interactive)
-;;;   (if (or (not (member (selected-frame) dv-mail-frames))
-;;;           (and (> (length (buffer-name)) 4)
-;;;                (equal (substring (buffer-name) 0 5) "*mail")
-;;;                (not (buffer-modified-p))))
-;;;       (kill-buffer (current-buffer)))
-;;;   (setq dv-mail-frames (delete (selected-frame) dv-mail-frames))
-;;;   (if (equal (selected-frame) dv-initial-frame)
-;;;       (iconify-frame)
-;;;     (delete-frame)))
-;;; (global-set-key [\M-f4] 'dv-close-client-frame)
-;;; 
-;;; (defun dv-paste-to-temp ()              "Load clipboard in a temp buffer"
-;;;   (dv-focus-frame (make-frame))
-;;;   (switch-to-buffer (generate-new-buffer "temp"))
-;;;   (clipboard-yank))
-;;; 
-;;; (add-to-list 'load-path "~/.emacs.d/GnuServe")
-;;; (require 'gnuserv)
-;;; (gnuserv-start)
-;;; 
-;;; 
-;;; (setq air-adl-path "C:\\Users\\natto\\Desktop\\VM\\AdobeAIRSDK\\bin\\adl.exe")
-;;; (defun air-run ()
-;;;   (interactive)
-;;;   (shell-command
-;;;    (format 
-;;;     (concat air-adl-path " " 
-;;;             (first (split-string
-;;;                     (first (split-string (buffer-file-name) "\\."))
-;;;                     "-app"))
-;;;             "-app.xml"
-;;;             ))))
-
-
 
 
 ;;; This was installed by package-install.el.
@@ -312,38 +247,7 @@
 
 
 (load-file "~/.emacs.d/jd-el/rainbow-mode.el")
-;;;; ; <CSS color values colored by themselves>
-;;;; ; http://xahlee.org/emacs/emacs_html.html
-;;;; (defun hexcolour-add-to-font-lock ()
-;;;;   (font-lock-add-keywords 
-;;;;    nil 
-;;;;    '((;"#[abcdef[:digit:]]\\{6\\}" ; 
-;;;;       "#\\([abcdef[:digit:]]\\{6\\}\\|[abcdef[:digit:]]\\{3\\}\\)"
-;;;;       (0 (put-text-property
-;;;;           (match-beginning 0)
-;;;;           (match-end 0)
-;;;;           'face (list :background 
-;;;;                       (let ((property (match-string-no-properties 0)))
-;;;;                         (if (< 5 (length property))
-;;;;                             property ; 6-char color
-;;;;                           (format "#%s%s%s%s%s%s"
-;;;;                                   (substring property 1 2)
-;;;;                                   (substring property 1 2)
-;;;;                                   (substring property 2 3)
-;;;;                                   (substring property 2 3)
-;;;;                                   (substring property 3 4)
-;;;;                                   (substring property 3 4)
-;;;;                                   ))  ; 3-char color
-;;;;                        )
-;;;;                       )))))))
-;;;; 
-;;;; 
-;;;; (add-hook 'css-mode-hook 'hexcolour-add-to-font-lock)
-;;;; ; </CSS color values colored by themselves>
-
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-
-
 
 
 
@@ -531,9 +435,32 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(org-level-1 ((t (:inherit outline-1 :height 1.6))))
- '(org-level-2 ((t (:inherit outline-2 :height 1.5))))
- '(org-level-3 ((t (:inherit outline-3 :height 1.4))))
- '(org-level-4 ((t (:inherit outline-4 :height 1.3))))
- '(org-level-5 ((t (:inherit outline-5 :height 1.2))))
- '(org-level-6 ((t (:inherit outline-6 :height 1.1)))))
+ '(org-level-1 ((t (:inherit outline-1 :weight bold :height 1.6 :family "Verdana"))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.5 :family "Verdana"))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.4 :family "Verdana"))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.3 :family "Verdana"))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.2 :family "Verdana"))))
+ '(org-level-6 ((t (:inherit outline-6 :height 1.1 :family "Verdana")))))
+
+
+;; (global-set-key [M-left] 'windmove-left)
+;; (global-set-key [M-right] 'windmove-right)
+;; (global-set-key [M-up] 'windmove-up)
+;; (global-set-key [M-down] 'windmove-down)
+(global-set-key "\C-x\C-b" 'bs-show)
+
+
+;;; custom override keys
+;;; ref http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
+(defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
+(define-key my-keys-minor-mode-map [M-left] 'windmove-left)
+(define-key my-keys-minor-mode-map [M-right] 'windmove-right)
+(define-key my-keys-minor-mode-map [M-up] 'windmove-up)
+(define-key my-keys-minor-mode-map [M-down] 'windmove-down)
+(define-key my-keys-minor-mode-map (kbd "M-_") 'org-metaleft)
+(define-key my-keys-minor-mode-map (kbd "M-+") 'org-metaright)
+(define-minor-mode my-keys-minor-mode
+  "A minor mode so that my key settings override annoying major modes."
+  t " my-keys" 'my-keys-minor-mode-map)
+(my-keys-minor-mode 1)
+
