@@ -58,6 +58,28 @@
 (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
 
 
+
+
+
+
+;;;;;;;;;;;;;;;;;
+;; <yasnippet> ;;
+;;;;;;;;;;;;;;;;;
+
+(add-to-list 'load-path
+             "~/.emacs.d/plugins/yasnippet-read-only/")
+(require 'yasnippet) ;; not yasnippet-bundle
+(yas/initialize)
+(yas/load-directory "~/.emacs.d/plugins/yasnippet-read-only/snippets")
+
+;;;;;;;;;;;;;;;;;;
+;; </yasnippet> ;;
+;;;;;;;;;;;;;;;;;;
+
+
+
+
+
 ; add more hooks here
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
@@ -65,6 +87,7 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(column-number-mode t)
+ '(exec-path (quote ("/opt/local/bin" "/usr/bin" "/usr/local/bin" "/usr/sbin" "/bin")))
  '(menu-bar-mode t)
  '(org-modules (quote (org-bbdb org-bibtex org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
  '(org-startup-folded (quote showeverything))
@@ -191,7 +214,7 @@
   (interactive "sAre you sure about this? ")
   (if (equal really "yes") 
       (progn
-        (win-save-all-configurations)
+        ;(win-save-all-configurations)
         (save-buffers-kill-emacs))))
 (global-set-key [(control x)(control c)] 'maybe-save-buffers-kill-emacs)
 
@@ -307,11 +330,14 @@
 (require 'org-babel-init)
 (require 'org-babel-python)
 (require 'org-babel-ruby)
-;; (require 'org-babel-R)
+(require 'org-babel-R)
 (org-babel-load-library-of-babel)
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; </custom command> ;;
 ;;;;;;;;;;;;;;;;;;;;;;
+
+
+
 
 
 
@@ -321,7 +347,6 @@
 ;(setq py-python-command-args '( "-colors" "Linux"))
 ;(require 'python-mode)
 (setenv "PYTHONPATH" "/opt/local/bin/python")
-
 
 
 
@@ -459,6 +484,7 @@
 (define-key my-keys-minor-mode-map [M-down] 'windmove-down)
 (define-key my-keys-minor-mode-map (kbd "M-_") 'org-metaleft)
 (define-key my-keys-minor-mode-map (kbd "M-+") 'org-metaright)
+(define-key my-keys-minor-mode-map [tab] 'yas/expand-from-trigger-key)
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
   t " my-keys" 'my-keys-minor-mode-map)
