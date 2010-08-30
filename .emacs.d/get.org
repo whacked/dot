@@ -33,3 +33,13 @@ http://sourceforge.net/scm/?type=cvs&group_id=154105
 * [[http://www.nongnu.org/color-theme/][color-theme]]
 
   download from [[http://download.savannah.gnu.org/releases/color-theme/]] or see [[http://www.emacswiki.org/emacs/ColorTheme][color-theme wiki]]
+
+* [[http://code.google.com/p/yasnippet/][yasnippet (non bundle)]]
+
+yasnippet-bundle makes you unable to add your own templates
+
+=svn checkout http://yasnippet.googlecode.com/svn/trunk/ yasnippet-read-only=
+
+** [[http://github.com/cofi/yasnippet-org-mode.git][cofi's fork of yasnippet-orgmode]]
+
+get clone http://github.com/cofi/yasnippet-org-mode.git
