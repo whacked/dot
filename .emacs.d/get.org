@@ -1,0 +1,35 @@
+* [[http://www.emacswiki.org/emacs/ActionScriptMode][actionscript.el]]
+
+* [[http://www.gentei.org/~yuuji/software/][revive.el]]
+
+=wget http://www.gentei.org/~yuuji/software/revive.el=
+
+* [[http://www.emacswiki.org/emacs/MatlabMode][matlab.el]]
+
+http://sourceforge.net/scm/?type=cvs&group_id=154105
+
+* [[http://www.gentei.org/~yuuji/software/][windows.el]]
+
+=wget http://www.gentei.org/~yuuji/software/windows.el=
+
+* [[http://tromey.com/elpa/][elpa]] package.el
+
+  eval this:
+#+BEGIN_SRC emacs-lisp
+  (let ((buffer (url-retrieve-synchronously
+           "http://tromey.com/elpa/package-install.el")))
+  (save-excursion
+    (set-buffer buffer)
+    (goto-char (point-min))
+    (re-search-forward "^$" nil 'move)
+    (eval-region (point) (point-max))
+    (kill-buffer (current-buffer))))
+#+END_SRC
+
+* [[http://julien.danjou.info/rainbow-mode.html][rainbow-mode.el]]
+
+  =git clone git://git.naquadah.org/rainbow.git=
+
+* [[http://www.nongnu.org/color-theme/][color-theme]]
+
+  download from [[http://download.savannah.gnu.org/releases/color-theme/]] or see [[http://www.emacswiki.org/emacs/ColorTheme][color-theme wiki]]
