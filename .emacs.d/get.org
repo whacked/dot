@@ -42,4 +42,5 @@ yasnippet-bundle makes you unable to add your own templates
 
 ** [[http://github.com/cofi/yasnippet-org-mode.git][cofi's fork of yasnippet-orgmode]]
 
-get clone http://github.com/cofi/yasnippet-org-mode.git
+git clone http://github.com/cofi/yasnippet-org-mode.git org-mode
+
