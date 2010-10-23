@@ -2,7 +2,9 @@
 
 echo "setting up vim..."
 ln -s ~/dot/.vimrc ~/.vimrc
-ln -s ~/dot/.vim ~/.vim
+if [ ! -e ~/dot/.vim ]; then
+    ln -s ~/dot/.vim ~/.vim
+fi
 echo "setting up vim-pathogen..."
 ln -s ~/dot/.vim/vim-pathogen/autoload/pathogen.vim ~/.vim/autoload/pathogen.vim
 
