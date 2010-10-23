@@ -22,10 +22,15 @@
   (set-input-method "japanese")
   (end-of-buffer))
 
+(add-to-list 'load-path "/home/user/.emacs.d/muse-3.20/lisp")
+(require 'muse-mode)
+
 (split-window-vertically)
 (note!)
+(muse-mode)
 (other-window 1)
 (jp!)
+(muse-mode)
 (other-window 1)
 
 
@@ -41,19 +46,15 @@
 
 (enlarge-window 6)
 
-(add-to-list 'load-path "/home/user/.emacs.d/muse-3.20/lisp")
-(require 'muse-mode)
-(muse-mode)
-
 (setq newsticker-url-list
       '(("mind brain" "http://www.sciencedaily.com/rss/mind_brain.xml" nil nil nil)
        ))
 (defadvice newsticker-save-item (around override-the-uninformative-default-save-format)
   (interactive)
   (let ((filename ;(read-string "Filename: "
-                               (concat feed "-"
-                                       (replace-regexp-in-string
-                                        " " "_" (newsticker--title item))
+                               (concat "rss/" feed "-"
+				       (replace-regexp-in-string "[^a-zA-Z0-9_ -]" "-"
+                                        (newsticker--title item))
                                        ".muse")));)
     (with-temp-buffer
       (insert
@@ -70,7 +71,9 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
+ '(newsticker-automatically-mark-items-as-old nil)
  '(newsticker-enable-logo-manipulations nil)
+ '(newsticker-obsolete-item-max-age 172800)
  '(newsticker-treeview-listwindow-height 5)
  '(newsticker-treeview-treewindow-width 12)
  '(newsticker-url-list-defaults nil))
@@ -80,3 +83,20 @@
 	     (define-key newsticker-treeview-list-mode-map
 	       (kbd ".") 'newsticker-treeview-save-item)))
 
+(defun org-add-appt-after-save-hook ()
+  (if (string= mode-name "Org") (org-agenda-to-appt)))
+(add-hook 'after-save-hook 'org-add-appt-after-save-hook)
+(appt-activate 1)
+
+;;; org-mode with remember
+(org-remember-insinuate)
+(setq org-default-notes-file "/media/mmc1/note/todos.org")
+(define-key global-map [(control kp-enter)] 'org-remember)
+
+(setq org-remember-templates                                                                                                                                                                      
+ '(("Todo" ?t "* TODO %?\nAdded: %U" "/media/mmc1/note/todos.org" "Tasks")
+   ("Idea" ?i "* %^{Title}\n%?\n  %a" "/media/mmc1/note/idea.org")))
+(setq org-agenda-files (quote("~/org/idea.org"
+                              "~/org/todos.org")))
+
+(global-set-key [(shift backspace)] 'advertised-undo)
