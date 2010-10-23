@@ -37,13 +37,6 @@
 (require 'windows)
 (win:startup-with-window)
  
-(setq-default truncate-lines t)
-(setq-default tab-width 2)
-(setq-default indent-tabs-mode nil)
- 
-;(tool-bar-mode 0)
-;(menu-bar-mode 0)
- 
 ;(set-face-background 'hl-line "controlHighlightColor")
 ;(set-face-background 'hl-line "blue")
  
@@ -86,9 +79,14 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
+ '(appt-audible nil)
+ '(appt-disp-window-function (lambda (n-min-away tm-due message) (growl (format "in %s minutes" n-min-away) message)))
  '(column-number-mode t)
  '(exec-path (quote ("/opt/local/bin" "/usr/bin" "/usr/local/bin" "/usr/sbin" "/bin")))
  '(menu-bar-mode t)
+ '(org-agenda-restore-windows-after-quit t)
+ '(org-agenda-window-setup (quote other-window))
+ '(org-export-blocks (quote ((src org-babel-exp-src-blocks nil) (comment org-export-blocks-format-comment t) (ditaa org-export-blocks-format-ditaa nil) (dot org-export-blocks-format-dot nil))))
  '(org-modules (quote (org-bbdb org-bibtex org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
  '(org-startup-folded (quote showeverything))
  '(show-paren-mode t)
@@ -163,25 +161,51 @@
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; <org mode config> ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
+(add-to-list 'load-path "~/.emacs.d/plugins/org-mode/lisp")
+(add-to-list 'load-path "~/.emacs.d/plugins/org-mode/contrib/lisp")
 (require 'org-install)
-(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((R . t)
+   (python . t)
+   (emacs-lisp . t)
+   (ruby . t)
+   (sh . t)
+   (clojure . t)
+   (haskell . t)
+   ))
+(defun ansi-unansify (beg end)
+  "to help fix ansi- control sequences in babel-sh output"
+  (interactive (list (point) (mark)))
+  (unless (and beg end)
+    (error "The mark is not set now, so there is no region"))
+  (insert (ansi-color-filter-apply (filter-buffer-substring beg end t))))
+
+
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
 (setq org-log-done t)
+
+(defun org-add-appt-after-save-hook ()
+  (if (string= mode-name "Org") (org-agenda-to-appt)))
+(add-hook 'after-save-hook 'org-add-appt-after-save-hook)
+(appt-activate 1)
 
 ;;; org-mode with remember
 (org-remember-insinuate)
 (setq org-directory "~/org")
 (setq org-default-notes-file (concat org-directory "/todos.org"))
-(define-key global-map "\C-cr" 'org-remember)
+;(define-key global-map "\C-cr" 'org-remember)
+(define-key global-map "\M-\C-r" 'org-remember)
 
 (setq org-remember-templates
- '(("Todo" ?t "* TODO [#%^{IMPORTANCE|B}] [%^{URGENCY|5}] %?\nAdded: %U" "~/org/todos.org" "Tasks")
+ '(("Todo" ?t "* TODO %?\nAdded: %U" "~/org/todos.org" "Tasks")
    ("CNE-todo" ?c "* TODO [#%^{IMPORTANCE|B}] [%^{URGENCY|5}] %?\nAdded: %U" "~/org/cne.org" "All Todo")
    ("Nikki" ?n "* %U %?\n\n %i\n %a\n\n" "~/org/nikki.org" "ALL")
    ("State" ?s "* %U %? " "~/org/state.org")
    ("Vocab" ?v "* %U %^{Word}\n%?\n# -*- xkm-export -*-\n" "~/org/vocab.org")
    ("Idea" ?i "* %^{Title}\n%?\n  %a" "~/org/idea.org")))
+
 (setq org-agenda-files (quote("~/org/cne.org"
                               "~/org/idea.org"
                               "~/org/nikki.org"
@@ -194,8 +218,7 @@
 ;(setq iimage-mode-image-search-path (expand-file-name "~/"))
 ;;Match org file: links
 (add-to-list 'iimage-mode-image-regex-alist
-             (cons (concat "\\[\\[file:\\(~?" iimage-mode-image-filename-regex
-                           "\\)\\]")  1))
+             (cons (concat "file:\\(~?[]\\[\\(\\),~+./_0-9a-zA-Z -]+\\.\\(GIF\\|JP\\(?:E?G\\)\\|P\\(?:BM\\|GM\\|N[GM]\\|PM\\)\\|SVG\\|TIFF?\\|X\\(?:[BP]M\\)\\|gif\\|jp\\(?:e?g\\)\\|p\\(?:bm\\|gm\\|n[gm]\\|pm\\)\\|svg\\|tiff?\\|x\\(?:[bp]m\\)\\)\\)")  1))
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; </org mode config> ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -271,7 +294,7 @@
 
 (load-file "~/.emacs.d/jd-el/rainbow-mode.el")
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-
+(require 'ansi-color)
 
 
 
@@ -321,17 +344,17 @@
   (interactive)
   (set-frame-position (selected-frame) 600 22)
   (set-frame-size (selected-frame) 100 56))
+(defun osx-w-h ()
+  (interactive)
+  (set-frame-size (selected-frame) (frame-width) (cond ((= 56 (frame-height))
+                                                        67)
+                                                       ((= 67 (frame-height))
+                                                        78)
+                                                       ((= 78 (frame-height))
+                                                        56))))
 ;;;;;; </OS X customizations> ;;;;;;
 
 
-(add-to-list 'load-path "~/ubin/elisp/org-6.36c/lisp")
-(add-to-list 'load-path "~/ubin/elisp/org-6.36c/contrib/lisp")
-(require 'org-install)
-(require 'org-babel-init)
-(require 'org-babel-python)
-(require 'org-babel-ruby)
-(require 'org-babel-R)
-(org-babel-load-library-of-babel)
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; </custom command> ;;
 ;;;;;;;;;;;;;;;;;;;;;;
@@ -347,31 +370,44 @@
 ;(setq py-python-command-args '( "-colors" "Linux"))
 ;(require 'python-mode)
 (setenv "PYTHONPATH" "/opt/local/bin/python")
-
+(setenv "PATH" (concat "/opt/local/bin:" (getenv "PATH")))
 
 
 
 ;;;;;;;;;;;;;;;;;;
 ;; <newsticker> ;;
 ;;;;;;;;;;;;;;;;;;
-(setq newsticker-url-list
-      '(("mind brain" "http://www.sciencedaily.com/rss/mind_brain.xml" nil nil nil)
-        ("BBC" "http://newsrss.bbc.co.uk/rss/newsonline_world_edition/front_page/rss.xml" nil nil nil)
-        ("UDN" "http://udn.com/udnrss/focus.xml" nil nil nil)
-        ("reddit" "http://www.reddit.com/.rss" nil nil nil)
-        ("PPCT" "http://feeds.pocketpcthoughts.com/pocketpcthoughts" nil nil nil)
-        ("slashdot" "http://rss.slashdot.org/Slashdot/slashdot" nil nil nil)
-        ("Ken Tilton's blog" "http://smuglispweeny.blogspot.com/feeds/posts/default" nil nil nil)
-        ("ku-ma-ne まめめも" "http://d.hatena.ne.jp/ku-ma-me/rss" nil nil nil)
-        ("Lazy Pythonista" "http://lazypython.blogspot.com/feeds/posts/default" nil nil nil)
-        ("catonmat" "http://feeds.feedburner.com/catonmat" nil nil nil)
-        ("tim gowers" "http://gowers.wordpress.com/feed/" nil nil nil)
-        ("Lambda the Ultimate" "http://lambda-the-ultimate.org/rss.xml" nil nil nil)
-        ("Fire Hose Games" "http://www.firehosegames.com/feed/" nil nil nil)
-        ("Language log" "http://languagelog.ldc.upenn.edu/nll/?feed=rss2" nil nil nil)
-        ("Will Larson's code blog" "http://lethain.com/feeds/flow/code/" nil nil nil)
-        ("The Big Picture" "http://www.ritholtz.com/blog/feed/" nil nil nil)
-        ))
+;;(setq newsticker-url-list
+;;      '(("mind brain" "http://www.sciencedaily.com/rss/mind_brain.xml" nil nil nil)
+;;        ;;("BBC" "http://newsrss.bbc.co.uk/rss/newsonline_world_edition/front_page/rss.xml" nil nil nil)
+;;        ;;("UDN" "http://udn.com/udnrss/focus.xml" nil nil nil)
+;;        ;;("slashdot" "http://rss.slashdot.org/Slashdot/slashdot" nil nil nil)
+;;        ;;("Ken Tilton's blog" "http://smuglispweeny.blogspot.com/feeds/posts/default" nil nil nil)
+;;        ;;("ku-ma-ne まめめも" "http://d.hatena.ne.jp/ku-ma-me/rss" nil nil nil)
+;;        ;;("Lazy Pythonista" "http://lazypython.blogspot.com/feeds/posts/default" nil nil nil)
+;;        ;;("catonmat" "http://feeds.feedburner.com/catonmat" nil nil nil)
+;;        ;;("tim gowers" "http://gowers.wordpress.com/feed/" nil nil nil)
+;;        ;;("Lambda the Ultimate" "http://lambda-the-ultimate.org/rss.xml" nil nil nil)
+;;        ;;("Fire Hose Games" "http://www.firehosegames.com/feed/" nil nil nil) ;
+;;        ;;("Language log" "http://languagelog.ldc.upenn.edu/nll/?feed=rss2" nil nil nil)
+;;        ;;("Will Larson's code blog" "http://lethain.com/feeds/flow/code/" nil nil nil)
+;;        ;;("The Big Picture" "http://www.ritholtz.com/blog/feed/" nil nil nil)
+;;        ))
+(defadvice newsticker-save-item (around override-the-uninformative-default-save-format)
+  (interactive)
+  (let ((filename (read-string "Filename: "
+                               (concat feed "-"
+                                       (replace-regexp-in-string
+                                        " " "_" (newsticker--title item))
+                                       ".html"))))
+    (with-temp-buffer
+      (insert
+       (format "** %s - %s\n" (now) (newsticker--title item))
+       (newsticker--link item)
+       "\n\n"
+       (newsticker--desc item))
+      (write-file filename t))))
+(ad-activate 'newsticker-save-item)
 ;;;;;;;;;;;;;;;;;;;
 ;; </newsticker> ;;
 ;;;;;;;;;;;;;;;;;;;
@@ -418,7 +454,7 @@
 
 
 
-(set-cursor-color "green")
+(set-cursor-color "purple")
 
 
 (require 'swank-clojure)
@@ -446,13 +482,29 @@
 (add-to-list 'swank-clojure-extra-classpaths "~/dev/clojure/xn/lib/vijual-0.1.0-20091229.021828-11.jar       ")
 
 
+(load "~/.emacs.d/haskellmode-emacs/haskell-site-file")
+(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+
+;; w3m
+(add-to-list 'load-path "/opt/local/share/emacs/site-lisp/w3m")
+(setq w3m-command "/opt/local/bin/w3m")
+(require 'w3m-load)
+(require 'w3m-e21)
+(provide 'w3m-e23)
+
+
+;(add-to-list 'load-path "~/.emacs.d/plugins/icicles")
+;(require 'icicles)
+
 
 (add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0/")
 (require 'color-theme)
+(load-file "~/.emacs.d/color-theme-6.6.0/themes/color-theme-featured.el")
 (eval-after-load "color-theme"
   '(progn
      (color-theme-initialize)
-     (color-theme-jsc-light2)))
+     (color-theme-github)))
  
 
 (custom-set-faces
@@ -463,7 +515,7 @@
  '(org-level-1 ((t (:inherit outline-1 :weight bold :height 1.6 :family "Verdana"))))
  '(org-level-2 ((t (:inherit outline-2 :height 1.5 :family "Verdana"))))
  '(org-level-3 ((t (:inherit outline-3 :height 1.4 :family "Verdana"))))
- '(org-level-4 ((t (:inherit outline-4 :height 1.3 :family "Verdana"))))
+ '(org-level-4 ((t (:inherit outline-4 :foreground "brown" :height 1.3 :family "Verdana"))))
  '(org-level-5 ((t (:inherit outline-5 :height 1.2 :family "Verdana"))))
  '(org-level-6 ((t (:inherit outline-6 :height 1.1 :family "Verdana")))))
 
@@ -489,4 +541,5 @@
   "A minor mode so that my key settings override annoying major modes."
   t " my-keys" 'my-keys-minor-mode-map)
 (my-keys-minor-mode 1)
+
 
