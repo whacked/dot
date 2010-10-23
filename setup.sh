@@ -1,5 +1,10 @@
-#ls -s ~/dot/.vimrc ~/.vimrc
-ls -s dot/.vim/vim-pathogen/autoload/pathogen.vim dot/.vim/autoload/pathogen.vim
+#ln -s ~/dot/.vimrc ~/.vimrc
 
-#ls -s ~/dot/.emacs ~/.emacs
+echo "setting up vim-pathogen..."
+ln -s ./.vim/vim-pathogen/autoload/pathogen.vim ./.vim/autoload/pathogen.vim
 
+#ln -s ~/dot/.emacs ~/.emacs
+
+cd .vim/autoload
+ln -s /Users/natto/.vim/vim-pathogen/autoload/pathogen.vim pathogen.vim
+cd -
