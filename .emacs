@@ -26,8 +26,6 @@
 
 (setq backup-directory-alist '(("" . "~/.emacs.d/emacs-backup")))
 
-(setq transient-mark-mode t)
-
 (set-default-coding-systems 'undecided-unix)
  
 (autoload 'save-current-configuration "revive" "Save status" t)
@@ -522,12 +520,7 @@
  '(org-level-6 ((t (:inherit outline-6 :height 1.1 :family "Verdana")))))
 
 
-;; (global-set-key [M-left] 'windmove-left)
-;; (global-set-key [M-right] 'windmove-right)
-;; (global-set-key [M-up] 'windmove-up)
-;; (global-set-key [M-down] 'windmove-down)
 (global-set-key "\C-x\C-b" 'bs-show)
-
 
 ;;; custom override keys
 ;;; ref http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
