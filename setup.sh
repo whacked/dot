@@ -1,6 +1,12 @@
+# EMACS ----------------------------------------------------------------
 echo "setting up emacs..."
 ln -s ~/dot/.emacs ~/.emacs
+ln -s ~/dot/.emacs.d ~/.emacs.d
 
+# git submodule add git://github.com/chrisdone/zencoding.git .emacs.d/bundle/zencoding
+
+
+# VIM ----------------------------------------------------------------
 echo "setting up vim..."
 ln -s ~/dot/.vimrc ~/.vimrc
 if [ ! -e ~/dot/.vim ]; then
