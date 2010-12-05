@@ -1,19 +1,21 @@
 # EMACS ----------------------------------------------------------------
 echo "setting up emacs..."
-ln -s ~/dot/.emacs ~/.emacs
-ln -s ~/dot/.emacs.d ~/.emacs.d
+if [ ! -e ~/.emacs ]; then
+    ln -s ~/dot/.emacs ~/.emacs
+    ln -s ~/dot/.emacs.d ~/.emacs.d
+fi
 
 # git submodule add git://github.com/chrisdone/zencoding.git .emacs.d/bundle/zencoding
-
+# git submodule add git://repo.or.cz/org-mode.git .emacs.d/bundle/org-mode
 
 # VIM ----------------------------------------------------------------
 echo "setting up vim..."
-ln -s ~/dot/.vimrc ~/.vimrc
-if [ ! -e ~/dot/.vim ]; then
+if [ ! -e ~/.vimrc ]; then
+    ln -s ~/dot/.vimrc ~/.vimrc
     ln -s ~/dot/.vim ~/.vim
+    echo "setting up vim-pathogen..."
+    ln -s ~/dot/.vim/vim-pathogen/autoload/pathogen.vim ~/.vim/autoload/pathogen.vim
 fi
-echo "setting up vim-pathogen..."
-ln -s ~/dot/.vim/vim-pathogen/autoload/pathogen.vim ~/.vim/autoload/pathogen.vim
 
 # submodule command sample
 # git submodule add http://github.com/scrooloose/nerdtree.git .vim/bundle/nerdtree
