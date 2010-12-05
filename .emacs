@@ -6,7 +6,6 @@
                 "~/.emacs.d/matlab.el"
                 "~/.emacs.d/jd-el/rainbow-mode.el"
                 "~/.emacs.d/windows.el"
-                "~/.emacs.d/elpa/yaml-mode-0.0.5/yaml-mode.el"
                 "~/.emacs.d/bundle/zencoding/zencoding-mode.el"
                 "~/.emacs.d/graphviz-dot-mode.el"
                 ))
@@ -195,19 +194,6 @@
 (setq javascript-indent-level 2)
 
 
-;;; This was installed by package-install.el.
-;;; This provides support for the package system and
-;;; interfacing with ELPA, the package archive.
-;;; Move this code earlier if you want to reference
-;;; packages in your .emacs.
-(when
-    (load
-     (expand-file-name "~/.emacs.d/elpa/package.el"))
-  (package-initialize))
-
-(require 'muse-wiki)
-;; w3 should be loaded by ELPA
-(require 'w3-auto)
 
 
 
@@ -460,44 +446,6 @@
 
 
 
-;;; (require 'swank-clojure)
-;;; (dolist (xn-lib-path '("clj-tuples-0.3.3.jar"
-;;;                        "clojure-1.1.0.jar"
-;;;                        "clojure-contrib-1.1.0.jar"
-;;;                        "clojureql-1.0.0.jar"
-;;;                        "clout-0.2.0-20100502.112537-4.jar"
-;;;                        "commons-codec-1.4.jar"
-;;;                        "commons-fileupload-1.2.1.jar"
-;;;                        "commons-io-1.4.jar"
-;;;                        "compojure-0.4.0-20100308.145053-8.jar"
-;;;                        "derby-10.5.3.0_1.jar"
-;;;                        "hiccup-0.2.4.jar"
-;;;                        "jetty-6.1.14.jar"
-;;;                        "jetty-util-6.1.14.jar"
-;;;                        "matchure-0.9.1.jar"
-;;;                        "mysql-connector-java-5.0.5.jar"
-;;;                        "postgresql-8.2-504.jdbc4.jar"
-;;;                        "ring-core-0.2.0.jar"
-;;;                        "ring-jetty-adapter-0.2.0.jar"
-;;;                        "ring-servlet-0.2.0.jar"
-;;;                        "servlet-api-2.5-6.1.14.jar"
-;;;                        "snakeyaml-1.5.jar"
-;;;                        "vijual-0.1.0-20091229.021828-11.jar"))
-;;;   (add-to-list 'swank-clojure-extra-classpaths (concat "~/dev/clojure/xn/lib/" xn-lib-path)))
-;;; ;;;;;;;;;;;;;;;;;
-;;; ;;;; <clojure> ;;
-;;; ;;;;;;;;;;;;;;;;;
-;;; ;;(setq clojure-src-root "~/dev/clojure")
-;;; ;;;(eval-after-load 'clojure-mode '(clojure-slime-config))
-;;; ;;(setq swank-clojure-jar-path (concat clojure-src-root "/clojure.jar")
-;;; ;;      swank-clojure-extra-classpaths
-;;; ;;      (list (concat clojure-src-root "/clojure-contrib/src/")))
-;;; ;;(slime-setup)
-;;; ;;;;;;;;;;;;;;;;;
-;;; ;;;; </clojure> ;;
-;;; ;;;;;;;;;;;;;;;;;
-
-
 
 
 (load "~/.emacs.d/haskellmode-emacs/haskell-site-file")
@@ -575,13 +523,9 @@
      (expand-file-name "~/.emacs.d/elpa/package.el"))
   (package-initialize))
 
+(require 'muse-wiki)
+;; w3 should be loaded by ELPA
+(require 'w3-auto)
 
-;;; This was installed by package-install.el.
-;;; This provides support for the package system and
-;;; interfacing with ELPA, the package archive.
-;;; Move this code earlier if you want to reference
-;;; packages in your .emacs.
-(when
-    (load
-     (expand-file-name "~/.emacs.d/elpa/package.el"))
-  (package-initialize))
+(setq swank-clojure-jar-home "~/opt/swank-clojure")
+(setq swank-clojure-extra-vm-args (list "-Xmx1024m"))
