@@ -7,7 +7,7 @@
                 "~/.emacs.d/jd-el/rainbow-mode.el"
                 "~/.emacs.d/windows.el"
                 "~/.emacs.d/elpa/yaml-mode-0.0.5/yaml-mode.el"
-                "~/.emacs.d/plugins/zencoding/zencoding-mode.el"
+                "~/.emacs.d/bundle/zencoding/zencoding-mode.el"
                 "~/.emacs.d/graphviz-dot-mode.el"
                 ))
   (load-file path))
@@ -69,16 +69,16 @@
 ;; <yasnippet> ;;
 ;;;;;;;;;;;;;;;;;
 
-(add-to-list 'load-path "~/.emacs.d/plugins/yasnippet-read-only/")
+(add-to-list 'load-path "~/.emacs.d/bundle/yasnippet-read-only/")
 (require 'yasnippet) ;; not yasnippet-bundle
 (yas/initialize)
-(yas/load-directory "~/.emacs.d/plugins/yasnippet-read-only/snippets")
+(yas/load-directory "~/.emacs.d/bundle/yasnippet-read-only/snippets")
 
 ;;;;;;;;;;;;;;;;;;
 ;; </yasnippet> ;;
 ;;;;;;;;;;;;;;;;;;
 
-(add-to-list 'load-path "~/.emacs.d/plugins/autopair-read-only/")
+(add-to-list 'load-path "~/.emacs.d/bundle/autopair-read-only/")
 (require 'autopair)
 (autopair-global-mode) ;; enable autopair in all buffers 
 (add-hook 'js2-mode-hook #'(lambda () (setq autopair-dont-activate t))) ; the #'(lambda ...) form is the same as just doing (lambda ...). leaving it here just as example
@@ -221,8 +221,8 @@
 ;; <org mode config> ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; commented out for ubuntu
-(add-to-list 'load-path "~/.emacs.d/plugins/org-mode/lisp")
-(add-to-list 'load-path "~/.emacs.d/plugins/org-mode/contrib/lisp")
+(add-to-list 'load-path "~/.emacs.d/bundle/org-mode/lisp")
+(add-to-list 'load-path "~/.emacs.d/bundle/org-mode/contrib/lisp")
 (require 'org-install)
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -513,7 +513,7 @@
 (provide 'w3m-e23)
 
 
-;(add-to-list 'load-path "~/.emacs.d/plugins/icicles")
+;(add-to-list 'load-path "~/.emacs.d/bundle/icicles")
 ;(require 'icicles)
 
 
