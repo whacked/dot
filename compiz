@@ -1,0 +1,56 @@
+[staticswitcher]
+s0_speed = 13.709100
+s0_popup_delay = 0.110000
+s0_opacity = 45
+
+[firepaint]
+s0_num_particles = 3050
+
+[decoration]
+as_shadow_radius = 9.000000
+
+[fade]
+s0_fullscreen_visual_bell = true
+
+[gnomecompat]
+as_run_command_terminal_key = <Control><Alt>t
+
+[wall]
+as_left_key = <Super>Left
+as_right_key = <Super>Right
+as_up_key = <Super>Up
+as_down_key = <Super>Down
+as_left_window_key = <Shift><Super>Left
+as_right_window_key = <Shift><Super>Right
+as_up_window_key = <Shift><Super>Up
+as_down_window_key = <Shift><Super>Down
+
+[core]
+as_active_plugins = core;ccp;move;resize;place;decoration;neg;widget;regex;svg;gnomecompat;text;imgjpeg;grid;workarounds;annotate;vpswitch;png;mousepoll;commands;session;dbus;wall;snap;animation;fade;expo;ezoom;scale;staticswitcher;scaleaddon;
+as_cursor_theme = DMZ-White
+as_autoraise = false
+as_autoraise_delay = 500
+as_maximize_window_key = Disabled
+as_show_desktop_key = <Super>d
+as_toggle_window_maximized_key = <Alt>F10
+as_toggle_window_shaded_key = Disabled
+s0_hsize = 2
+s0_vsize = 2
+s0_outputs = 1920x1200+1280+0;1280x800+0+0;
+
+[rotate]
+as_rotate_left_key = <Super>Left
+as_rotate_right_key = <Super>Right
+as_rotate_left_window_key = <Shift><Super>Left
+as_rotate_right_window_key = <Shift><Super>Right
+
+[put]
+as_put_left_key = Disabled
+as_put_right_key = Disabled
+as_put_top_key = Disabled
+as_put_bottom_key = Disabled
+as_put_topleft_key = Disabled
+as_put_topright_key = Disabled
+as_put_bottomleft_key = Disabled
+as_put_bottomright_key = Disabled
+
