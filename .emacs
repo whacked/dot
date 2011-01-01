@@ -1,36 +1,19 @@
 (setq inhibit-splash-screen t)
 
 (add-to-list 'load-path "~/.emacs.d")
-
+                
 (dolist (path '("~/.emacs.d/revive.el"
                 "~/.emacs.d/matlab.el"
+                "~/.emacs.d/haxe-mode.el"
                 "~/.emacs.d/jd-el/rainbow-mode.el"
                 "~/.emacs.d/windows.el"
                 "~/.emacs.d/bundle/zencoding/zencoding-mode.el"
                 "~/.emacs.d/graphviz-dot-mode.el"
+                "~/.emacs.d/elpa/yaml-mode-0.0.5/yaml-mode.el"
                 ))
   (load-file path))
 
-; windows only
-; (load-file "~/.emacs.d/martin-w32-fullscreen.el")
-
-(setq matlab-auto-fill nil)
 (setq auto-mode-alist (cons '("\\.m\\'" . matlab-mode) auto-mode-alist))
-
-;; set-true
-(dolist (fn-setting '(line-number-mode
-                      column-number-mode
-                      show-paren-mode
-                      desktop-save-mode
-                      global-hl-line-mode
-                      iswitchb-mode))
-  (apply fn-setting '(t)))
-
-(setq-default truncate-lines t
-              tab-width 2
-              indent-tabs-mode nil
-              echo-keystrokes 0.1 ;; = delay for minibuffer display after pressing function key default is 1
-              )
 
 (setq backup-directory-alist '(("" . "~/.emacs.d/emacs-backup")))
 
@@ -54,8 +37,15 @@
  
  
 
-
- 
+;; prevent special buffers from messing with the current layout
+;; see: http://www.gnu.org/software/emacs/manual/html_node/emacs/Special-Buffer-Frames.html
+(setq special-display-buffer-names
+           '("*grep*" "*tex-shell*" "*Help*" "*Packages*"))
+(setq special-display-function 'my-special-display-function)
+(defun my-special-display-function (buf &optional args)
+  (special-display-popup-frame buf `((height . 40)
+                                     (left . ,(+ 40 (frame-parameter (selected-frame) 'left)))
+                                     (top . ,(+ 20 (frame-parameter (selected-frame) 'top))))))
 
 (require 'dabbrev)
 (setq dabbrev-always-check-other-buffers t)
@@ -63,19 +53,6 @@
 
 
 
-
-;;;;;;;;;;;;;;;;;
-;; <yasnippet> ;;
-;;;;;;;;;;;;;;;;;
-
-(add-to-list 'load-path "~/.emacs.d/bundle/yasnippet-read-only/")
-(require 'yasnippet) ;; not yasnippet-bundle
-(yas/initialize)
-(yas/load-directory "~/.emacs.d/bundle/yasnippet-read-only/snippets")
-
-;;;;;;;;;;;;;;;;;;
-;; </yasnippet> ;;
-;;;;;;;;;;;;;;;;;;
 
 (add-to-list 'load-path "~/.emacs.d/bundle/autopair-read-only/")
 (require 'autopair)
@@ -87,7 +64,7 @@
 
 
 
-;;;;; js mode customization
+;; <js mode customization>
 ;;;;; ref: https://github.com/mitchellh/dotfiles/blob/master/emacs.d/modes.el
 ;; js-mode (espresso)
 ;; Espresso mode has sane indenting so we use that.
@@ -99,9 +76,7 @@
 
 ;; Custom indentation function since JS2 indenting is terrible.
 ;; Uses js-mode's (espresso-mode) indentation semantics.
-;;
 ;; Based on: http://mihai.bazon.net/projects/editing-javascript-with-emacs-js2-mode
-;; (Thanks!)
 (defun my-js2-indent-function ()
   (interactive)
   (save-restriction
@@ -143,13 +118,19 @@
   (define-key js2-mode-map [(return)] 'newline-and-indent)
   (define-key js2-mode-map [(backspace)] 'c-electric-backspace)
   (define-key js2-mode-map [(control d)] 'c-electric-delete-forward)
-  (message "JS2 mode hook ran."))
+  (message "custom JS2 mode hook ran."))
 
 ;; Add the hook so this is all loaded when JS2-mode is loaded
 (add-hook 'js2-mode-hook 'my-js2-mode-hook)
+;; </js mode customization>
 
 
 
+(setq-default truncate-lines t
+              tab-width 2
+              indent-tabs-mode nil
+              echo-keystrokes 0.1 ;; = delay for minibuffer display after pressing function key default is 1
+              )
 
 
 ; add more hooks here
@@ -161,32 +142,40 @@
  '(appt-audible nil)
  '(appt-disp-window-function (lambda (n-min-away tm-due message) (growl (format "in %s minutes" n-min-away) message)))
  '(column-number-mode t)
+ '(desktop-save-mode t)
  '(exec-path (quote ("/opt/local/bin" "/usr/bin" "/usr/local/bin" "/usr/sbin" "/bin")))
+ '(global-hl-line-mode t)
+ '(hscroll-step 1)
+ '(iswitchb-mode t)
+ '(line-number-mode t)
+ '(matlab-auto-fill nil)
  '(menu-bar-mode nil)
  '(org-agenda-restore-windows-after-quit t)
  '(org-agenda-window-setup (quote other-window))
  '(org-export-blocks (quote ((src org-babel-exp-src-blocks nil) (comment org-export-blocks-format-comment t) (ditaa org-export-blocks-format-ditaa nil) (dot org-export-blocks-format-dot nil))))
  '(org-modules (quote (org-bbdb org-bibtex org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
+ '(org-src-fontify-natively t)
  '(org-startup-folded (quote showeverything))
  '(show-paren-mode t)
  '(tool-bar-mode nil)
  '(transient-mark-mode t))
 
+;; for smooth scrolling
+; (setq scroll-conservatively 10000)
 
 
+(set-scroll-bar-mode 'right)
+
+
+(load "auctex.el" nil t t)
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex) 
 
 
 (setq TeX-command-master "latex")
 
-;; commented out for ubuntu
-;;(load "/usr/share/emacs/site-lisp/auctex.el" nil t t)
-;;(load "/usr/share/emacs/site-lisp/preview-latex.el" nil t t)
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq TeX-save-query t)
-
-
-
 
 
 ; javascript-mode override
@@ -195,39 +184,40 @@
 
 
 
-
-
-;; commented out for ubuntu
-;;(setenv "PATH" (format "%s:%s" (getenv "PATH") "/usr/texbin:/usr/local/bin"))
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; <org mode config> ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
-;; commented out for ubuntu
-(add-to-list 'load-path "~/.emacs.d/bundle/org-mode/lisp")
-(add-to-list 'load-path "~/.emacs.d/bundle/org-mode/contrib/lisp")
+; below add-to-list not required if org-mode successfully built with =make= and =make-install=
+;(add-to-list 'load-path "~/.emacs.d/bundle/org-mode/lisp")
+;(add-to-list 'load-path "~/.emacs.d/bundle/org-mode/contrib/lisp")
+(add-to-list 'load-path "~/.emacs.d/dev")
 (require 'org-install)
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((R . t)
    (python . t)
+   (C . t)
+   (lua . t)
    (emacs-lisp . t)
    (ruby . t)
    (sh . t)
    (clojure . t)
+   (lisp . t)
    (haskell . t)
    (dot . t)
+   (perl . t)
+   (matlab . t)
+   (octave . t)
+   (org . t)
+   (latex . t)
    ))
+
 (defun ansi-unansify (beg end)
   "to help fix ansi- control sequences in babel-sh output"
   (interactive (list (point) (mark)))
   (unless (and beg end)
     (error "The mark is not set now, so there is no region"))
   (insert (ansi-color-filter-apply (filter-buffer-substring beg end t))))
-
 
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
@@ -249,12 +239,14 @@
  '(("Todo" ?t "* TODO %?\nAdded: %U" "~/note/org/todos.org" "Tasks")
    ("CNE-todo" ?c "* TODO [#%^{IMPORTANCE|B}] [%^{URGENCY|5}] %?\nAdded: %U" "~/note/org/cne.org" "All Todo")
    ("Nikki" ?n "* %U %?\n\n %i\n %a\n\n" "~/note/org/nikki.org" "ALL")
-   ("State" ?s "* %U %? " "~/note/org/state.org")
+   ;; ("State" ?s "* %U %? " "~/note/org/state.org")
    ("Vocab" ?v "* %U %^{Word}\n%?\n# -*- xkm-export -*-\n" "~/note/org/vocab.org")
-   ("Idea" ?i "* %^{Title}\n%?\n  %a" "~/note/org/idea.org")))
+   ("Idea" ?i "* %^{Title}\n%?\n  %a" "~/note/org/idea.org")
+   ("Dump" ?d "%?\n" "~/note/org/dump.org")))
 
 (setq org-agenda-files '("~/note/org/cne.org"
                          "~/note/org/idea.org"
+                         "~/note/org/dump.org"
                          "~/note/org/nikki.org"
                          "~/note/org/todos.org"
                          "~/note/org/vocab.org"
@@ -270,13 +262,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-
-;; (require 'ess-site)
-
-
-;;;;;;;;;;;;;;;;;;;;;;
-;; <custom command> ;;
-;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; <OS-specific command> ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Don't quit unless you mean it!
 (defun maybe-save-buffers-kill-emacs (really) 
   "If REALLY is 'yes', call save-buffers-kill-emacs."
@@ -300,13 +288,10 @@
     (goto-char beg)
     (insert "<" tag-name ">")))
 
-(defun now ()
-  (interactive)
-  (message (format-time-string "%Y-%m-%d %H:%M:%S")))
+(defun now () (interactive) (message (format-time-string "%Y-%m-%d %H:%M:%S")))
 (defun insert-timestamp ()
   "Insert date at current cursor position in current active buffer"
-  (interactive)
-  (insert (now)))
+  (interactive) (insert (now)))
 
 (defun djcb-opacity-modify (&optional dec)
   "modify the transparency of the emacs frame; if DEC is t,
@@ -331,89 +316,113 @@
 (require 'ansi-color)
 
 
-;;;;;; <ubuntu-tp customizations> ;;;;;;
-(defun ubu-w1 ()
-  (interactive)
-  (set-frame-size (selected-frame) 177 50))
-(defun ubu-w2 ()
-  (interactive)
-  (set-frame-position (selected-frame) 1280 0)
-  (set-frame-size (selected-frame) 268 73))
-;; use x-clipboard
-(setq x-select-enable-clipboard t)
-;;;;;; <ubuntu-tp customizations> ;;;;;;
+(cond ((eq system-type 'gnu/linux)
+       (progn ;; Linux
+         ;; <ubuntu-tp customizations> ;;;;;;
+         (defun win:to1 ()
+           (interactive)
+           (set-frame-size (selected-frame) 177 50))
+         (defun win:to2 ()
+           (interactive)
+           (set-frame-position (selected-frame) 1280 0)
+           (set-frame-size (selected-frame) 268 73))
+         (defun win:fullscreen ()
+           (interactive)
+           (let ((f (selected-frame)))
+             (modify-frame-parameters f `((fullscreen . ,(if (eq nil (frame-parameter f 'fullscreen)) 'fullboth nil))))))
+         ;; use x-clipboard
+         (setq x-select-enable-clipboard t)
+         ;; <ubuntu-tp customizations> ;;;;;;
 
+         ;; (server-start)
 
+         )
+       (message "using linux"))
+      ((eq system-type 'darwin)
+       (progn ;; OS X
 
+         ;;;;;; <OS X customizations> ;;;;;;
+         ;;; turn apple key into Meta
+         (setq ns-command-modifier 'meta)
+         (if (eq window-system 'mac) (require 'carbon-font))
+         (setq ; xwl-default-font "Monaco-12"
+          xwl-japanese-font "Hiragino_Kaku_Gothic_ProN")
+         (let ((charset-font `((japanese-jisx0208 . ,xwl-japanese-font)
+                               (japanese-jisx0208 . ,xwl-japanese-font)
+                               ;; (japanese-jisx0212 . ,xwl-japanese-font)
+                               )))
+                                        ; (set-default-font xwl-default-font)
+           (mapc (lambda (charset-font)
+                   (set-fontset-font (frame-parameter nil 'font)
+                                     (car charset-font)
+                                     (font-spec :family (cdr charset-font) :size
+                                                12)))
+                 charset-font))
+         (defun osx-resize-current-window ()
+           (interactive)
+           (let* ((ncol (string-to-number (read-from-minibuffer "ncol? ")))
+                  (nrow (string-to-number (read-from-minibuffer "nrow? "))))
+             (set-frame-size (selected-frame) ncol nrow)))
+         (defun osx-move-current-window ()
+           (interactive)
+           (let* ((x (string-to-number (read-from-minibuffer "x? ")))
+                  (y (string-to-number (read-from-minibuffer "y? "))))
+             (set-frame-position (selected-frame) x y)))
+         (defun win:to1 ()
+           (interactive)
+           (set-frame-size (selected-frame) 200 56)
+           (set-frame-position (selected-frame) 0 20))
+         (defun win:to2 ()
+           (interactive)
+           (set-frame-position (selected-frame) 1440 -200)
+           (set-frame-size (selected-frame) 268 78))
+         (defun osx-w-lh ()
+           (interactive)
+           (set-frame-position (selected-frame) 40 22)
+           (set-frame-size (selected-frame) 100 56))
+         (defun osx-w-rh ()
+           (interactive)
+           (set-frame-position (selected-frame) 600 22)
+           (set-frame-size (selected-frame) 100 56))
+         (defun osx-w-h ()
+           (interactive)
+           (set-frame-size (selected-frame) (frame-width) (cond ((= 56 (frame-height)) 67)
+                                                                ((= 67 (frame-height)) 78)
+                                                                ((= 78 (frame-height)) 56))))
 
-;;;;;; <OS X customizations> ;;;;;;
-;;; turn apple key into Meta
-(setq ns-command-modifier 'meta)
-(if (eq window-system 'mac) (require 'carbon-font))
-(setq ; xwl-default-font "Monaco-12"
-      xwl-japanese-font "Hiragino_Kaku_Gothic_ProN")
-(let ((charset-font `((japanese-jisx0208 . ,xwl-japanese-font)
-                      (japanese-jisx0208 . ,xwl-japanese-font)
-                      ;; (japanese-jisx0212 . ,xwl-japanese-font)
-                      )))
-  ; (set-default-font xwl-default-font)
-  (mapc (lambda (charset-font)
-          (set-fontset-font (frame-parameter nil 'font)
-                            (car charset-font)
-                            (font-spec :family (cdr charset-font) :size
-                                       12)))
-        charset-font))
-(defun osx-resize-current-window ()
-  (interactive)
-  (let* ((ncol (string-to-number (read-from-minibuffer "ncol? ")))
-         (nrow (string-to-number (read-from-minibuffer "nrow? "))))
-    (set-frame-size (selected-frame) ncol nrow)))
-(defun osx-move-current-window ()
-  (interactive)
-  (let* ((x (string-to-number (read-from-minibuffer "x? ")))
-         (y (string-to-number (read-from-minibuffer "y? "))))
-    (set-frame-position (selected-frame) x y)))
-(defun osx-w1 ()
-  (interactive)
-  (set-frame-size (selected-frame) 200 56)
-  (set-frame-position (selected-frame) 0 20))
-(defun osx-w2 ()
-  (interactive)
-  (set-frame-position (selected-frame) 1440 -200)
-  (set-frame-size (selected-frame) 268 78))
-(defun osx-w-lh ()
-  (interactive)
-  (set-frame-position (selected-frame) 40 22)
-  (set-frame-size (selected-frame) 100 56))
-(defun osx-w-rh ()
-  (interactive)
-  (set-frame-position (selected-frame) 600 22)
-  (set-frame-size (selected-frame) 100 56))
-(defun osx-w-h ()
-  (interactive)
-  (set-frame-size (selected-frame) (frame-width) (cond ((= 56 (frame-height)) 67)
-                                                       ((= 67 (frame-height)) 78)
-                                                       ((= 78 (frame-height)) 56))))
-;;;;;; </OS X customizations> ;;;;;;
+         ;;(setq ipython-command "/opt/local/bin/ipython")
+         ;;(require 'ipython)
+         ;;(setq py-python-command-args '( "-colors" "Linux"))
+         ;;(require 'python-mode)
+         (setenv "PYTHONPATH" "/opt/local/bin/python")
+         (setenv "PATH" (concat "/opt/local/bin:" (getenv "PATH")))
 
+         ;; w3m
+         ;;(add-to-list 'load-path "/opt/local/share/emacs/site-lisp/w3m")
+         ;;(setq w3m-command "/usr/bin/w3m")
+         ;;(require 'w3m-load)
+         ;;(require 'w3m-e21)
+         ;;(provide 'w3m-e23)
 
-;;;;;;;;;;;;;;;;;;;;;;
-;; </custom command> ;;
-;;;;;;;;;;;;;;;;;;;;;;
+         ;;(setenv "PATH" (format "%s:%s" (getenv "PATH") "/usr/texbin:/usr/local/bin"))
+         ;;(load "/usr/share/emacs/site-lisp/auctex.el" nil t t)
+         ;;(load "/usr/share/emacs/site-lisp/preview-latex.el" nil t t)
 
+         ;;;;;; </OS X customizations> ;;;;;;
 
+         )
+       )
+      ((eq system-type 'windows-nt)
+       (progn ;; Windows
+         ;; windows only
+         ;; (load-file "~/.emacs.d/martin-w32-fullscreen.el")
+         )
+       )
+      )
 
-
-
-
-
-;(setq ipython-command "/opt/local/bin/ipython")
-;(require 'ipython)
-;(setq py-python-command-args '( "-colors" "Linux"))
-;(require 'python-mode)
-(setenv "PYTHONPATH" "/opt/local/bin/python")
-(setenv "PATH" (concat "/opt/local/bin:" (getenv "PATH")))
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; </OS-specific command> ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 
@@ -451,14 +460,6 @@
 (load "~/.emacs.d/haskellmode-emacs/haskell-site-file")
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-
-;; w3m
-(add-to-list 'load-path "/opt/local/share/emacs/site-lisp/w3m")
-(setq w3m-command "/usr/bin/w3m")
-(require 'w3m-load)
-;; commented out for ubuntu
-;;(require 'w3m-e21)
-(provide 'w3m-e23)
 
 
 ;(add-to-list 'load-path "~/.emacs.d/bundle/icicles")
@@ -527,5 +528,30 @@
 ;; w3 should be loaded by ELPA
 (require 'w3-auto)
 
-(setq swank-clojure-jar-home "~/opt/swank-clojure")
-(setq swank-clojure-extra-vm-args (list "-Xmx1024m"))
+;; <yasnippet> ;; not using elpa version
+(add-to-list 'load-path "~/.emacs.d/bundle/yasnippet-read-only/")
+(require 'yasnippet) ;; not yasnippet-bundle
+(yas/initialize)
+(yas/load-directory "~/.emacs.d/bundle/yasnippet-read-only/snippets")
+;; </yasnippet> ;;
+
+
+
+;; thanks to http://kliketa.wordpress.com/2010/08/04/gtklook-browse-documentation-for-gtk-glib-and-gnome-inside-emacs/
+(require 'gtk-look)
+(setq browse-url-browser-function
+ '(("file:.*/usr/share/doc/.*gtk.*-doc/.*" . w3m-browse-url)
+   ("." . browse-url-firefox)))
+(defun my-c-mode-hook ()
+  (define-key c-mode-map (kbd "C-<return>") 'gtk-lookup-symbol)
+  (message "C mode hook ran."))
+(add-hook 'c-mode-hook 'my-c-mode-hook)
+
+;;; (setq swank-clojure-binary (expand-file-name "~/.lein/bin/swank-clojure"))
+;;; (setq slime-protocol-version "20100404")
+;;; (setq swank-clojure-classpath (list
+;;;                                (expand-file-name "~/.m2/repository/swank-clojure/swank-clojure/1.3.0-SNAPSHOT/swank-clojure-1.3.0-SNAPSHOT.jar")
+;;;                                (expand-file-name "~/.m2/repository/org/clojure/clojure/1.2.0/clojure-1.2.0.jar")))
+
+
+
