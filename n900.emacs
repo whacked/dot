@@ -7,6 +7,13 @@
 (menu-bar-mode 0)
 (setq inhibit-splash-screen 1)
 
+;(add-to-list 'load-path "/home/user/.emacs.d")
+;(require 'real-auto-save)
+;(add-hook 'muse-mode-hook 'turn-on-real-auto-save)
+;(add-hook 'org-mode-hook 'turn-on-real-auto-save)
+(setq auto-save-visited-file-name t)
+
+
 (set-clipboard-coding-system 'utf-8)
 (setq x-select-enable-clipboard t)
 
@@ -24,6 +31,16 @@
 
 (add-to-list 'load-path "/home/user/.emacs.d/muse-3.20/lisp")
 (require 'muse-mode)
+(add-to-list 'load-path "/media/mmc1/src/org-mode/lisp")
+(add-to-list 'load-path "/media/mmc1/src/org-mode/contrib/lisp")
+(require 'org)
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)
+   (ruby . t)
+   (perl . t)
+   (emacs-lisp . t)
+   (sh . t)))
 
 (split-window-vertically)
 (note!)
@@ -52,9 +69,10 @@
 (defadvice newsticker-save-item (around override-the-uninformative-default-save-format)
   (interactive)
   (let ((filename ;(read-string "Filename: "
-                               (concat "rss/" feed "-"
-				       (replace-regexp-in-string "[^a-zA-Z0-9_ -]" "-"
-                                        (newsticker--title item))
+                               (concat "~/dropbox-sync/rss/" feed "-"
+				       (replace-regexp-in-string "'" ""
+					       (replace-regexp-in-string "[^a-zA-Z0-9_ -]" "-"
+						(newsticker--title item)))
                                        ".muse")));)
     (with-temp-buffer
       (insert
@@ -95,8 +113,42 @@
 
 (setq org-remember-templates                                                                                                                                                                      
  '(("Todo" ?t "* TODO %?\nAdded: %U" "/media/mmc1/note/todos.org" "Tasks")
+   ("Memo" ?m "* %?\nAdded: %U" "/media/mmc1/note/memo.org")
    ("Idea" ?i "* %^{Title}\n%?\n  %a" "/media/mmc1/note/idea.org")))
-(setq org-agenda-files (quote("~/org/idea.org"
-                              "~/org/todos.org")))
+(setq org-agenda-files (quote("/media/mmc1/note/idea.org"
+                              "/media/mmc1/note/todos.org")))
 
 (global-set-key [(shift backspace)] 'advertised-undo)
+(global-set-key [(control z)] 'ignore)
+
+
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+
+(defun set-calendar-appt ()
+  (save-excursion
+    (end-of-buffer)
+    (outline-previous-visible-heading 1)
+    (backward-char)
+    (when (re-search-forward org-ts-regexp nil t)
+      (let* ((spl-matched (split-string (match-string 1) " "))
+	     (date (first spl-matched))
+	     (time (if (= 3 (length spl-matched)) ;; contains time
+		       (third spl-matched)
+		     ;; only contains date
+		     nil))
+	     (tm-start (if time
+			   (concat time ":00")
+			 "00:00:00"))
+	     (alarm "5min")
+	     (name (save-excursion
+		     (end-of-buffer)
+		     (outline-previous-visible-heading 1)
+		     (backward-char)
+		     (when (re-search-forward org-complex-heading-regexp nil t)
+		       (replace-regexp-in-string (concat "[[:space:]]*" org-ts-regexp "[[:space:]]*") "" (match-string 4))))))
+	(shell-command
+	 (format "/home/user/setcal --name \"%s\" --start \"%s %s\" --alarm %s" name date tm-start alarm))))))
+(add-hook 'after-save-hook
+  (lambda () (if (string= "todos.org" (buffer-name))
+		 (set-calendar-appt))))
