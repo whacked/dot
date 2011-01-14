@@ -149,6 +149,4 @@
 		       (replace-regexp-in-string (concat "[[:space:]]*" org-ts-regexp "[[:space:]]*") "" (match-string 4))))))
 	(shell-command
 	 (format "/home/user/setcal --name \"%s\" --start \"%s %s\" --alarm %s" name date tm-start alarm))))))
-(add-hook 'after-save-hook
-  (lambda () (if (string= "todos.org" (buffer-name))
-		 (set-calendar-appt))))
+(add-hook 'org-remember-before-finalize-hook 'set-calendar-appt)
