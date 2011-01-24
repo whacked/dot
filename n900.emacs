@@ -110,6 +110,7 @@
 (org-remember-insinuate)
 (setq org-default-notes-file "/media/mmc1/note/todos.org")
 (define-key global-map [(control kp-enter)] 'org-remember)
+(define-key global-map (kbd "C-,") 'org-time-stamp)
 
 (setq org-remember-templates                                                                                                                                                                      
  '(("Todo" ?t "* TODO %?\nAdded: %U" "/media/mmc1/note/todos.org" "Tasks")
@@ -147,6 +148,12 @@
 		     (backward-char)
 		     (when (re-search-forward org-complex-heading-regexp nil t)
 		       (replace-regexp-in-string (concat "[[:space:]]*" org-ts-regexp "[[:space:]]*") "" (match-string 4))))))
-	(shell-command
-	 (format "/home/user/setcal --name \"%s\" --start \"%s %s\" --alarm %s" name date tm-start alarm))))))
+
+	(start-process "setcalendar-process" "*Messages*" "/home/user/setcal" 
+		       "--name"
+		       (format "%s" name)
+		       "--start"
+		       (format "%s %s" date tm-start)
+		       "--alarm"
+		       (format "%s" alarm))))))
 (add-hook 'org-remember-before-finalize-hook 'set-calendar-appt)

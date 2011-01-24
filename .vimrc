@@ -11,6 +11,7 @@ set cindent
 set autoindent
 let g:slimv_lisp = '"java cp $HOME/dev/lisp/clojure/clojure.jar clojure.lang.Repl"'
 set nowrap
+set ic
 
 set nocompatible
 filetype plugin indent on

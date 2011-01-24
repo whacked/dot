@@ -12,7 +12,7 @@
 	url = git://github.com/chrisdone/zencoding.git
 [submodule ".emacs.d/bundle/org-mode"]
 	path = .emacs.d/bundle/org-mode
-	url = git://repo.or.cz/org-mode.git
+	url = git://orgmode.org/org-mode.git
 [submodule ".emacs.d/bundle/clojure-mode"]
 	path = .emacs.d/bundle/clojure-mode
 	url = git://github.com/technomancy/clojure-mode.git
