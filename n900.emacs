@@ -6,9 +6,7 @@
 (tool-bar-mode 0)
 (menu-bar-mode 0)
 (setq inhibit-splash-screen 1)
-
-;(add-to-list 'load-path "/home/user/.emacs.d")
-;(require 'real-auto-save)
+;(add-to-list 'load-path "/home/user/.emacs.d") ;(require 'real-auto-save)
 ;(add-hook 'muse-mode-hook 'turn-on-real-auto-save)
 ;(add-hook 'org-mode-hook 'turn-on-real-auto-save)
 (setq auto-save-visited-file-name t)
@@ -16,6 +14,7 @@
 
 (set-clipboard-coding-system 'utf-8)
 (setq x-select-enable-clipboard t)
+(setq visual-line-mode t)
 
 
 (defun note! ()
@@ -69,18 +68,21 @@
 (defadvice newsticker-save-item (around override-the-uninformative-default-save-format)
   (interactive)
   (let ((filename ;(read-string "Filename: "
-                               (concat "~/dropbox-sync/rss/" feed "-"
-				       (replace-regexp-in-string "'" ""
-					       (replace-regexp-in-string "[^a-zA-Z0-9_ -]" "-"
-						(newsticker--title item)))
-                                       ".muse")));)
-    (with-temp-buffer
-      (insert
-       (format "** %s - %s\n" (now) (newsticker--title item))
-       (newsticker--link item)
-       "\n\n"
-       (newsticker--desc item))
-      (write-file filename t))))
+	 (concat "~/dropbox-sync/rss/" feed "-"
+		 (replace-regexp-in-string "'" ""
+					   (replace-regexp-in-string "[^a-zA-Z0-9_ -]" "-"
+								     (newsticker--title item)))
+		 ".muse")));)
+    (if (file-exists-p filename)
+	(message "file already saved")
+	(with-temp-buffer
+	  (insert
+	   (format "** %s - %s\n" (now) (newsticker--title item))
+	   (newsticker--link item)
+	   "\n\n"
+	   (newsticker--desc item))
+	  (write-file filename t))
+      )))
 (ad-activate 'newsticker-save-item)
 
 (defalias 'rss 'newsticker-show-news)
@@ -110,9 +112,9 @@
 (org-remember-insinuate)
 (setq org-default-notes-file "/media/mmc1/note/todos.org")
 (define-key global-map [(control kp-enter)] 'org-remember)
-(define-key global-map (kbd "C-,") 'org-time-stamp)
+(define-key global-map (kbd "C-p") 'org-time-stamp)
 
-(setq org-remember-templates                                                                                                                                                                      
+(setq org-remember-templates
  '(("Todo" ?t "* TODO %?\nAdded: %U" "/media/mmc1/note/todos.org" "Tasks")
    ("Memo" ?m "* %?\nAdded: %U" "/media/mmc1/note/memo.org")
    ("Idea" ?i "* %^{Title}\n%?\n  %a" "/media/mmc1/note/idea.org")))
