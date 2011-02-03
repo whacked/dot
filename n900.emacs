@@ -75,6 +75,7 @@
 		 ".muse")));)
     (if (file-exists-p filename)
 	(message "file already saved")
+      (progn
 	(with-temp-buffer
 	  (insert
 	   (format "** %s - %s\n" (now) (newsticker--title item))
@@ -82,7 +83,10 @@
 	   "\n\n"
 	   (newsticker--desc item))
 	  (write-file filename t))
-      )))
+	(when (yes-or-no-p "try fetch article? ")
+	  (shell-command (concat "python ~/dropbox-sync/rss/scraper.py '" filename "' '" (newsticker--link item) "'"))
+	  (find-file-other-frame filename)
+	  )))))
 (ad-activate 'newsticker-save-item)
 
 (defalias 'rss 'newsticker-show-news)
