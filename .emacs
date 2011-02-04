@@ -237,7 +237,37 @@
    ("Music" ?m "- %? %U\n" "~/note/org/music.org" "good")
    ("Dump" ?d "%?\n" "~/note/org/dump.org")))
 (define-key global-map (kbd "<f12>") 'org-agenda)
-
+(defun set-calendar-appt ()
+  (save-excursion
+    (end-of-buffer)
+    (outline-previous-visible-heading 1)
+    (backward-char)
+    (when (re-search-forward org-ts-regexp nil t)
+      (let* ((spl-matched (split-string (match-string 1) " "))
+             (date (first spl-matched))
+             (time (if (= 3 (length spl-matched)) ;; contains time
+                       (third spl-matched)
+                     ;; only contains date
+                     nil))
+             (tm-start (or time "00:00"))
+             (alarm "5min")
+             (name (save-excursion
+                     (end-of-buffer)
+                     (outline-previous-visible-heading 1)
+                     (backward-char)
+                     (when (re-search-forward org-complex-heading-regexp nil t)
+                       (replace-regexp-in-string (concat "[[:space:]]*" org-ts-regexp "[[:space:]]*") "" (match-string 4))))))
+        (start-process
+         "kalarm-process" "*Messages*" "/usr/bin/kalarm" 
+         "--color"
+         "0x00FF00"
+         "--time"
+         (format "%s-%s" date tm-start)
+         "--reminder"
+         "0H5M"
+         "--beep"
+         (format "%s" name))))))
+(add-hook 'org-remember-before-finalize-hook 'set-calendar-appt)
 
 ;;; attempt to use org-capture.
 ;;; remember's work flow is actually more pleasant.
