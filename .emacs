@@ -263,9 +263,10 @@
          "0x00FF00"
          "--time"
          (format "%s-%s" date tm-start)
-         "--reminder"
-         "0H5M"
-         "--beep"
+         ;;"--reminder"
+         ;;"0H5M"
+         "--play"
+         "/usr/share/sounds/KDE-Im-Sms.ogg"
          (format "%s" name))))))
 (add-hook 'org-remember-before-finalize-hook 'set-calendar-appt)
 
