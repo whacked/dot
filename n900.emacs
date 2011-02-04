@@ -68,25 +68,25 @@
 (defadvice newsticker-save-item (around override-the-uninformative-default-save-format)
   (interactive)
   (let ((filename ;(read-string "Filename: "
-	 (concat "~/dropbox-sync/rss/" feed "-"
-		 (replace-regexp-in-string "'" ""
-					   (replace-regexp-in-string "[^a-zA-Z0-9_ -]" "-"
-								     (newsticker--title item)))
-		 ".muse")));)
+         (concat "~/dropbox-sync/rss/" feed "-"
+                 (replace-regexp-in-string "'" ""
+                                           (replace-regexp-in-string "[^a-zA-Z0-9_ -]" "-"
+                                                                     (newsticker--title item)))
+                 ".muse")));)
     (if (file-exists-p filename)
-	(message "file already saved")
+        (message "file already saved")
       (progn
-	(with-temp-buffer
-	  (insert
-	   (format "** %s - %s\n" (now) (newsticker--title item))
-	   (newsticker--link item)
-	   "\n\n"
-	   (newsticker--desc item))
-	  (write-file filename t))
-	(when (yes-or-no-p "try fetch article? ")
-	  (shell-command (concat "python ~/dropbox-sync/rss/scraper.py '" filename "' '" (newsticker--link item) "'"))
-	  (find-file-other-frame filename)
-	  )))))
+        (with-temp-buffer
+          (insert
+           (format "** %s - %s\n" (now) (newsticker--title item))
+           (newsticker--link item)
+           "\n\n"
+           (newsticker--desc item))
+          (write-file filename t))
+        (when (yes-or-no-p "try fetch article? ")
+          (shell-command (concat "python ~/dropbox-sync/rss/scraper.py '" filename "' '" (newsticker--link item) "'"))
+          (find-file-other-frame filename)
+          )))))
 (ad-activate 'newsticker-save-item)
 
 (defalias 'rss 'newsticker-show-news)
@@ -163,3 +163,14 @@
 		       "--alarm"
 		       (format "%s" alarm))))))
 (add-hook 'org-remember-before-finalize-hook 'set-calendar-appt)
+
+
+
+(defun newsticker-mind-brain-try-fetch-article-hook (feed item)
+  "if FEED is `mind brain', attempt to cache the article content"
+  (when (string= feed "mind brain")
+    ;; attempt to cache the item
+    (message (concat "attempting to cache: `%s'")
+             (newsticker--link item))))
+(add-hook 'newsticker-new-item-functions 'newsticker-mind-brain-try-fetch-article-hook)
+

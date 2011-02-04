@@ -30,17 +30,10 @@
 (require 'windows)
 (win:startup-with-window)
 
-
-;(set-face-background 'hl-line "controlHighlightColor")
-;(set-face-background 'hl-line "blue")
- 
- 
- 
-
 ;; prevent special buffers from messing with the current layout
 ;; see: http://www.gnu.org/software/emacs/manual/html_node/emacs/Special-Buffer-Frames.html
 (setq special-display-buffer-names
-           '("*grep*" "*tex-shell*" "*Help*" "*Packages*"))
+           '("*grep*" "*tex-shell*" "*Help*" "*Packages*" "*Capture*"))
 (setq special-display-function 'my-special-display-function)
 (defun my-special-display-function (buf &optional args)
   (special-display-popup-frame buf `((height . 40)
@@ -139,8 +132,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(appt-audible nil)
- '(appt-disp-window-function (lambda (n-min-away tm-due message) (growl (format "in %s minutes" n-min-away) message)))
+ ;;'(appt-disp-window-function (lambda (n-min-away tm-due message) (growl (format "in %s minutes" n-min-away) message)))
  '(column-number-mode t)
  '(desktop-save-mode t)
  '(exec-path (quote ("/opt/local/bin" "/usr/bin" "/usr/local/bin" "/usr/sbin" "/bin")))
@@ -198,6 +190,7 @@
    (python . t)
    (C . t)
    (lua . t)
+   (gnuplot . t)
    (emacs-lisp . t)
    (ruby . t)
    (sh . t)
@@ -210,7 +203,11 @@
    (octave . t)
    (org . t)
    (latex . t)
+   (ditaa . t)
    ))
+(add-to-list 'load-path "~/.emacs.d/bundle/org-mode/contrib/lisp/")
+(require 'org-drill)
+(setq org-ditaa-jar-path "~/.emacs.d/bundle/org-mode/contrib/scripts/ditaa.jar")
 
 (defun ansi-unansify (beg end)
   "to help fix ansi- control sequences in babel-sh output"
@@ -223,34 +220,72 @@
 (define-key global-map "\C-ca" 'org-agenda)
 (setq org-log-done t)
 
-(defun org-add-appt-after-save-hook ()
-  (if (string= mode-name "Org") (org-agenda-to-appt)))
-(add-hook 'after-save-hook 'org-add-appt-after-save-hook)
-(appt-activate 1)
-
 ;;; org-mode with remember
 (org-remember-insinuate)
 (setq org-directory "~/org")
 (setq org-default-notes-file (concat org-directory "/todos.org"))
 ;(define-key global-map "\C-cr" 'org-remember)
-(define-key global-map "\M-\C-r" 'org-remember)
 
+(define-key global-map "\M-\C-r" 'org-remember)
 (setq org-remember-templates
  '(("Todo" ?t "* TODO %?\nAdded: %U" "~/note/org/todos.org" "Tasks")
-   ("CNE-todo" ?c "* TODO [#%^{IMPORTANCE|B}] [%^{URGENCY|5}] %?\nAdded: %U" "~/note/org/cne.org" "All Todo")
+   ("CNE-todo" ?c "* TODO [#%^{IMPORTANCE|B}] [%^{URGENCY|5}] %?\nAdded: %U" "~/note/cne/cne.org" "All Todo")
    ("Nikki" ?n "* %U %?\n\n %i\n %a\n\n" "~/note/org/nikki.org" "ALL")
    ;; ("State" ?s "* %U %? " "~/note/org/state.org")
    ("Vocab" ?v "* %U %^{Word}\n%?\n# -*- xkm-export -*-\n" "~/note/org/vocab.org")
-   ("Idea" ?i "* %^{Title}\n%?\n  %a" "~/note/org/idea.org")
+   ("Idea" ?i "* %^{Title}\n%?\n  %a\n  %U" "~/note/org/idea.org")
+   ("Music" ?m "- %? %U\n" "~/note/org/music.org" "good")
    ("Dump" ?d "%?\n" "~/note/org/dump.org")))
+(define-key global-map (kbd "<f12>") 'org-agenda)
 
-(setq org-agenda-files '("~/note/org/cne.org"
-                         "~/note/org/idea.org"
-                         "~/note/org/dump.org"
-                         "~/note/org/nikki.org"
-                         "~/note/org/todos.org"
-                         "~/note/org/vocab.org"
-                         "~/note/org/的.org"))
+
+;;; attempt to use org-capture.
+;;; remember's work flow is actually more pleasant.
+;;; in single buffer visible phase, capture:
+;;; 1. creates split buffer, gets selection
+;;; 2. fills template in that buffer
+;;; 3. completes capture in that buffer
+;;; 4. restores original buffer
+;;; this is identical to remember
+;;; in split-buffer phase, capture:
+;;; 1. opens selection window in non-focused buffer (good)
+;;; 2. after get selection, fills template in focused buffer,
+;;; i.e. it switches away from the window where the selection took place (bad)
+;;; 3. when authoring buffer for capture is open, the previously
+;;; focused buffer is again put in the split where the template
+;;; selection screen came up (bad)
+;;; 4. when finished, layout is restored (expected)
+;;; the amount of attention shifting is pretty annoying
+;;;
+;;;;(define-key global-map "\M-\C-r" 'org-capture)
+;;;(setq org-capture-templates
+;;;      '(("t" "Todo" entry (file "~/note/org/todos.org" "Tasks")
+;;;         "* TODO %?\nAdded: %U" :empty-lines 1)
+;;;        ("c" "CNE-todo" entry ("~/note/cne/cne.org" "All Todo")
+;;;         "* TODO [#%^{IMPORTANCE|B}] [%^{URGENCY|5}] %?\nAdded: %U")
+;;;        ("n" "Nikki" entry (file+headline "~/note/org/nikki.org" "ALL")
+;;;         "* %U %?\n\n %i\n %a\n\n" :empty-lines 1)
+;;;        ("s" "State" entry (file "~/note/org/state.org")
+;;;         "* %U %? " :empty-lines 1)
+;;;        ("v" "Vocab" plain (file "~/note/org/vocab.org")
+;;;         "** %U %^{Word}\n%?\n# -*- xkm-export -*-\n" :empty-lines 1)
+;;;        ;; idea template used to be:
+;;;        ;; "* %^{Title}\n%?\n  %a"
+;;;        ;; but org-capture-fill-template calls (delete-other-windows)
+;;;        ;; and maximizes the template-filling buffer
+;;;        ;; which is pretty annoying. so simply stop using template prompts
+;;;        ("i" "Idea" entry (file "~/note/org/idea.org")
+;;;         "* %?\n  %a" :empty-lines 1)
+;;;        ("d" "Dump" entry (file+datetree "~/note/org/dump.org")
+;;;         "* %?\n%U\n" :empty-lines 1)))
+
+(setq org-agenda-files (map 'list 'expand-file-name '("~/note/cne/cne.org"
+                                                      "~/note/org/idea.org"
+                                                      "~/note/org/dump.org"
+                                                      "~/note/org/nikki.org"
+                                                      "~/note/org/todos.org"
+                                                      "~/note/org/vocab.org"
+                                                      "~/note/org/的.org")))
 
 (require 'iimage)
 ;(setq iimage-mode-image-search-path (expand-file-name "~/"))
@@ -336,6 +371,12 @@
 
          ;; (server-start)
 
+         ;; use anthy
+         ;; http://www.emacswiki.org/emacs/IBusMode
+         (add-to-list 'load-path "/usr/share/emacs/site-lisp/ibus")
+         (require 'ibus)
+         (add-hook 'after-init-hook 'ibus-mode-on)
+         (setq ibus-agent-file-name "/usr/lib/ibus-el/ibus-el-agent")
          )
        (message "using linux"))
       ((eq system-type 'darwin)
@@ -410,12 +451,15 @@
 
          ;;;;;; </OS X customizations> ;;;;;;
 
+         (message "using OS X")
          )
        )
       ((eq system-type 'windows-nt)
        (progn ;; Windows
          ;; windows only
          ;; (load-file "~/.emacs.d/martin-w32-fullscreen.el")
+         
+         (message "windows")
          )
        )
       )
@@ -466,14 +510,6 @@
 ;(require 'icicles)
 
 
-(add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0/")
-(require 'color-theme)
-(eval-after-load "color-theme"
-  '(progn
-     (load-file "~/.emacs.d/color-theme-6.6.0/themes/color-theme-featured.el")
-     (color-theme-initialize)
-     (color-theme-github)
-     ))
 
 ; (set-default-font "Consolas 10")
 (custom-set-faces
@@ -489,8 +525,20 @@
  '(org-level-4 ((t (:inherit outline-4 :foreground "blue" :height 1.3 :family "Verdana"))))
  '(org-level-5 ((t (:inherit outline-5 :height 1.2 :family "Verdana"))))
  '(org-level-6 ((t (:inherit outline-6 :height 1.1 :family "Verdana"))))
- '(region ((t (:background "PapayaWhip")))))
-(set-cursor-color "orange")
+ ;'(region ((t (:background "PapayaWhip"))))
+ )
+;(set-cursor-color "orange")
+
+(add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0/")
+(require 'color-theme)
+(eval-after-load "color-theme"
+  '(progn
+     ;(load-file "~/.emacs.d/color-theme-6.6.0/themes/color-theme-featured.el")
+     (color-theme-initialize)
+     (color-theme-snow)
+     ))
+; snow's hl-line seems to be same as paren-match color
+(set-face-background 'hl-line "PapayaWhip")
 
 
 
@@ -522,6 +570,12 @@
 (when
     (load
      (expand-file-name "~/.emacs.d/elpa/package.el"))
+  ;; Add the original Emacs Lisp Package Archive
+  (add-to-list 'package-archives
+               '("elpa" . "http://tromey.com/elpa/"))
+  ;; Add the user-contributed repository
+  (add-to-list 'package-archives
+               '("marmalade" . "http://marmalade-repo.org/packages/"))
   (package-initialize))
 
 (require 'muse-wiki)
@@ -555,3 +609,66 @@
 
 
 
+;; ref: http://emacs-fu.blogspot.com/2009/11/showing-pop-ups.html
+(defun djcb-popup (title msg &optional icon sound)
+  "Show a popup if we're on X, or echo it otherwise; TITLE is the title
+of the message, MSG is the context. Optionally, you can provide an ICON and
+a sound to be played"
+
+  (interactive)
+  (if (eq window-system 'x)
+      (shell-command (concat "notify-send "
+
+                             (if icon (concat "-i " icon) "")
+                             " '" title "' '" msg "'")))
+  (when sound (shell-command
+               (concat "mplayer -really-quiet " sound " 2> /dev/null"))))
+
+;; the appointment notification facility
+(setq
+ appt-message-warning-time 10 ;; warn 10 min in advance
+ appt-display-mode-line t     ;; show in the modeline
+ appt-display-format 'window) ;; use our func
+(appt-activate 1)              ;; active appt (appointment notification)
+(display-time)                 ;; time display is required for this...
+(setq appt-audible t)
+
+;; our little façade-function for djcb-popup
+(defun djcb-appt-display (min-to-app new-time msg)
+  (djcb-popup (format "Appointment in %s minute(s)" min-to-app) msg 
+              "/usr/share/icons/gnome/32x32/status/appointment-soon.png"
+              "/usr/share/sounds/ubuntu/stereo/phone-incoming-call.ogg"))
+(setq appt-disp-window-function (function djcb-appt-display))
+
+(defun org-add-appt-after-save-hook ()
+  (if ;(string= mode-name "Org")
+      (member (buffer-file-name) org-agenda-files)
+      (org-agenda-to-appt)))
+(add-hook 'after-save-hook 'org-add-appt-after-save-hook)
+
+ ;; update appt each time agenda opened
+(add-hook 'org-finalize-agenda-hook 'org-agenda-to-appt)
+
+(defun kiwon/merge-appt-time-msg-list (time-msg-list)
+  "Merge time-msg-list's elements if they have the same time."
+  (let* ((merged-time-msg-list (list)))
+    (while time-msg-list
+      (if (eq (car (caar time-msg-list)) (car (caar (cdr time-msg-list))))
+          (setq time-msg-list
+                (cons
+                 (append
+                  (list (car (car time-msg-list)) ; time
+                        (concat (car (cdr (car time-msg-list))) " / "(car (cdr (car (cdr time-msg-list)))))) ; combined msg
+                  (cdr (cdr (car time-msg-list)))) ; rest information
+                 (nthcdr 2 time-msg-list)))
+        (progn (add-to-list 'merged-time-msg-list (car time-msg-list) t)
+               (setq time-msg-list (cdr time-msg-list)))))
+    merged-time-msg-list))
+
+(defun kiwon/org-agenda-to-appt ()
+  (prog2
+      (setq appt-time-msg-list nil)
+      (org-agenda-to-appt)
+    (setq appt-time-msg-list (kiwon/merge-appt-time-msg-list appt-time-msg-list))))
+
+(add-hook 'org-finalize-agenda-hook (function kiwon/org-agenda-to-appt))
