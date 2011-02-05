@@ -228,12 +228,12 @@
 
 (define-key global-map "\M-\C-r" 'org-remember)
 (setq org-remember-templates
- '(("Todo" ?t "* TODO %?\nAdded: %U" "~/note/org/todos.org" "Tasks")
+ '(("Todo" ?t "* TODO %?\nAdded: %U" "~/note/org/todos.org" "Main")
    ("CNE-todo" ?c "* TODO [#%^{IMPORTANCE|B}] [%^{URGENCY|5}] %?\nAdded: %U" "~/note/cne/cne.org" "All Todo")
    ("Nikki" ?n "* %U %?\n\n %i\n %a\n\n" "~/note/org/nikki.org" "ALL")
    ;; ("State" ?s "* %U %? " "~/note/org/state.org")
    ("Vocab" ?v "* %U %^{Word}\n%?\n# -*- xkm-export -*-\n" "~/note/org/vocab.org")
-   ("Idea" ?i "* %^{Title}\n%?\n  %a\n  %U" "~/note/org/idea.org")
+   ("Idea" ?i "* %^{Title}\n%?\n  %a\n  %U" "~/note/org/idea.org" "Main")
    ("Music" ?m "- %? %U\n" "~/note/org/music.org" "good")
    ("Dump" ?d "%?\n" "~/note/org/dump.org")))
 (define-key global-map (kbd "<f12>") 'org-agenda)
@@ -263,8 +263,8 @@
          "0x00FF00"
          "--time"
          (format "%s-%s" date tm-start)
-         ;;"--reminder"
-         ;;"0H5M"
+         "--reminder"
+         "0H5M"
          "--play"
          "/usr/share/sounds/KDE-Im-Sms.ogg"
          (format "%s" name))))))

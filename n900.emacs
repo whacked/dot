@@ -122,9 +122,9 @@
 (define-key global-map (kbd "C-p") 'org-time-stamp)
 
 (setq org-remember-templates
- '(("Todo" ?t "* TODO %?\nAdded: %U" "/media/mmc1/note/todos.org" "Tasks")
+ '(("Todo" ?t "* TODO %?\nAdded: %U" "/media/mmc1/note/todos.org" "N900")
    ("Memo" ?m "* %?\nAdded: %U" "/media/mmc1/note/memo.org")
-   ("Idea" ?i "* %^{Title}\n%?\n  %a" "/media/mmc1/note/idea.org")))
+   ("Idea" ?i "* %^{Title}\n%?\n  %a" "/media/mmc1/note/idea.org" "N900")))
 (setq org-agenda-files (quote("/media/mmc1/note/idea.org"
                               "/media/mmc1/note/todos.org")))
 
