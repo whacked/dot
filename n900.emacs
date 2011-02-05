@@ -82,10 +82,13 @@
            (newsticker--link item)
            "\n\n"
            (newsticker--desc item))
-          (write-file filename t))
-        (when (yes-or-no-p "try fetch article? ")
-          (shell-command (concat "python ~/dropbox-sync/rss/scraper.py '" filename "' '" (newsticker--link item) "'"))
+          (write-file filename t)
+          (shell-command (concat "sqlite3 /media/mmc1/note/article-cache.db \"SELECT text FROM articletext WHERE url='"
+                                 (newsticker--link item) "'\" >> " (replace-regexp-in-string " " "\\\\ " filename))))
+        (when (yes-or-no-p "open article? ")
+          ;; (shell-command (concat "python ~/dropbox-sync/rss/scraper.py '" filename "' '" (newsticker--link item) "'"))
           (find-file-other-frame filename)
+          (rex-mode)
           )))))
 (ad-activate 'newsticker-save-item)
 
@@ -169,8 +172,10 @@
 (defun newsticker-mind-brain-try-fetch-article-hook (feed item)
   "if FEED is `mind brain', attempt to cache the article content"
   (when (string= feed "mind brain")
-    ;; attempt to cache the item
-    (message (concat "attempting to cache: `%s'")
-             (newsticker--link item))))
+  ;; attempt to cache the item
+  (start-process "cache-article-process" "*Messages*" "/usr/bin/python" 
+  		       "/media/mmc1/DropN900/sync/rss/cachearticle.py"
+  		       (newsticker--link item))))
 (add-hook 'newsticker-new-item-functions 'newsticker-mind-brain-try-fetch-article-hook)
 
+(find-file "/media/mmc1/DropN900/sync/rss/janitor.org")
