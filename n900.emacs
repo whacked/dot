@@ -124,7 +124,7 @@
 (setq org-remember-templates
  '(("Todo" ?t "* TODO %?\nAdded: %U" "/media/mmc1/note/todos.org" "N900")
    ("Memo" ?m "* %?\nAdded: %U" "/media/mmc1/note/memo.org")
-   ("Idea" ?i "* %^{Title}\n%?\n  %a" "/media/mmc1/note/idea.org" "N900")))
+   ("Idea" ?i "* %^{Title}\n%?\n  %a\n  %U" "/media/mmc1/note/idea.org" "N900")))
 (setq org-agenda-files (quote("/media/mmc1/note/idea.org"
                               "/media/mmc1/note/todos.org")))
 
