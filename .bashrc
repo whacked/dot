@@ -122,4 +122,6 @@ alias pbcopy='xsel --clipboard --input'
 alias pbpaste='xsel --clipboard --output'
 export PATH=$PATH:~/.config/thinkpad
 
+keychain ~/.ssh/id_rsa
+. ~/.keychain/`uname -n`-sh
 
