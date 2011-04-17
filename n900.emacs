@@ -65,6 +65,8 @@
 (setq newsticker-url-list
       '(("mind brain" "http://www.sciencedaily.com/rss/mind_brain.xml" nil nil nil)
        ))
+
+
 (defadvice newsticker-save-item (around override-the-uninformative-default-save-format)
   (interactive)
   (let ((filename ;(read-string "Filename: "
@@ -85,11 +87,14 @@
           (write-file filename t)
           (shell-command (concat "sqlite3 /media/mmc1/note/article-cache.db \"SELECT text FROM articletext WHERE url='"
                                  (newsticker--link item) "'\" >> " (replace-regexp-in-string " " "\\\\ " filename))))
-        (when (yes-or-no-p "open article? ")
+    ))
+
+    (when (yes-or-no-p "open article? ")
           ;; (shell-command (concat "python ~/dropbox-sync/rss/scraper.py '" filename "' '" (newsticker--link item) "'"))
           (find-file-other-frame filename)
           (rex-mode)
-          )))))
+          )
+))
 (ad-activate 'newsticker-save-item)
 
 (defalias 'rss 'newsticker-show-news)
@@ -124,13 +129,17 @@
 (setq org-remember-templates
  '(("Todo" ?t "* TODO %?\nAdded: %U" "/media/mmc1/note/todos.org" "N900")
    ("Memo" ?m "* %?\nAdded: %U" "/media/mmc1/note/memo.org")
+   ("NK" ?n "* %U %?\n\n %i\n %a\n\n" "/media/mmc1/note/nikki.org" "ALL")
    ("Idea" ?i "* %^{Title}\n%?\n  %a\n  %U" "/media/mmc1/note/idea.org" "N900")))
 (setq org-agenda-files (quote("/media/mmc1/note/idea.org"
                               "/media/mmc1/note/todos.org")))
 
 (global-set-key [(shift backspace)] 'advertised-undo)
 (global-set-key [(control z)] 'ignore)
-
+(global-set-key [M-left] 'windmove-left)
+(global-set-key [M-right] 'windmove-right)
+(global-set-key [M-up] 'windmove-up)
+(global-set-key [M-down] 'windmove-down)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -165,6 +174,7 @@
 		       (format "%s %s" date tm-start)
 		       "--alarm"
 		       (format "%s" alarm))))))
+(add-hook 'org-remember-mode-hook '(lambda () (visual-line-mode t)))
 (add-hook 'org-remember-before-finalize-hook 'set-calendar-appt)
 
 
