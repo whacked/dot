@@ -229,7 +229,7 @@
 (define-key global-map "\M-\C-r" 'org-remember)
 (setq org-remember-templates
  '(("Todo" ?t "* TODO %?\nAdded: %U" "~/note/org/todos.org" "Main")
-   ("CNE-todo" ?c "* TODO [#%^{IMPORTANCE|B}] [%^{URGENCY|5}] %?\nAdded: %U" "~/note/cne/cne.org" "All Todo")
+   ("CNE-todo" ?c "* TODO %?\nAdded: %U" "~/note/cne/cne.org" "All Todo")
    ("Nikki" ?n "* %U %?\n\n %i\n %a\n\n" "~/note/org/nikki.org" "ALL")
    ;; ("State" ?s "* %U %? " "~/note/org/state.org")
    ("Vocab" ?v "* %U %^{Word}\n%?\n# -*- xkm-export -*-\n" "~/note/org/vocab.org")
@@ -265,8 +265,9 @@
          (format "%s-%s" date tm-start)
          "--reminder"
          "0H5M"
-         "--play"
-         "/usr/share/sounds/KDE-Im-Sms.ogg"
+         ;; doesn't work :(
+         ;; "--play" "/usr/share/sounds/KDE-Im-Sms.ogg"
+         "--beep"
          (format "%s" name))))))
 (add-hook 'org-remember-before-finalize-hook 'set-calendar-appt)
 
