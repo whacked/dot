@@ -137,10 +137,8 @@
 
 (global-set-key [(shift backspace)] 'advertised-undo)
 (global-set-key [(control z)] 'ignore)
-(global-set-key [M-left] 'windmove-left)
-(global-set-key [M-right] 'windmove-right)
-(global-set-key [M-up] 'windmove-up)
-(global-set-key [M-down] 'windmove-down)
+(global-set-key (kbd "<escape> <up>") '(lambda () (interactive) (other-window -1)))
+(global-set-key (kbd "<escape> <down>") 'other-window)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
