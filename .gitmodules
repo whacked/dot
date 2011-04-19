@@ -19,3 +19,6 @@
 [submodule ".emacs.d/bundle/swank-clojure"]
 	path = .emacs.d/bundle/swank-clojure
 	url = git://github.com/technomancy/swank-clojure.git
+[submodule ".emacs.d/bundle/undo-tree"]
+	path = .emacs.d/bundle/undo-tree
+	url = http://www.dr-qubit.org/git/undo-tree.git
