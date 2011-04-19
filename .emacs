@@ -188,6 +188,7 @@
  'org-babel-load-languages
  '((R . t)
    (python . t)
+   (ledger . t)
    (C . t)
    (lua . t)
    (gnuplot . t)
@@ -269,6 +270,7 @@
          ;; "--play" "/usr/share/sounds/KDE-Im-Sms.ogg"
          "--beep"
          (format "%s" name))))))
+(add-hook 'org-remember-mode-hook '(lambda () (visual-line-mode t)))
 (add-hook 'org-remember-before-finalize-hook 'set-calendar-appt)
 
 ;;; attempt to use org-capture.
@@ -621,7 +623,8 @@
 (yas/load-directory "~/.emacs.d/bundle/yasnippet-read-only/snippets")
 ;; </yasnippet> ;;
 
-
+(add-to-list 'load-path "~/.emacs.d/bundle/undo-tree")
+(require 'undo-tree)
 
 ;; thanks to http://kliketa.wordpress.com/2010/08/04/gtklook-browse-documentation-for-gtk-glib-and-gnome-inside-emacs/
 (require 'gtk-look)
@@ -704,3 +707,4 @@ a sound to be played"
     (setq appt-time-msg-list (kiwon/merge-appt-time-msg-list appt-time-msg-list))))
 
 (add-hook 'org-finalize-agenda-hook (function kiwon/org-agenda-to-appt))
+(load "ledger")
