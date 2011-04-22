@@ -6,9 +6,7 @@
 [ -z "$PS1" ] && return
 
 # don't put duplicate lines in the history. See bash(1) for more options
-# ... or force ignoredups and ignorespace
-HISTCONTROL=ignoredups:ignorespace
-
+# ... or force ignoredups and ignorespace HISTCONTROL=ignoredups:ignorespace 
 # append to the history file, don't overwrite it
 shopt -s histappend
 
@@ -120,8 +118,10 @@ if [[ -s "$HOME/.rvm/scripts/rvm" ]]  ; then source "$HOME/.rvm/scripts/rvm" ; f
 alias open=gnome-open
 alias pbcopy='xsel --clipboard --input'
 alias pbpaste='xsel --clipboard --output'
-export PATH=$PATH:~/.config/thinkpad
+export PATH=$PATH:~/opt/leiningen:~/.config/thinkpad
 
 keychain ~/.ssh/id_rsa
 . ~/.keychain/`uname -n`-sh
 
+# ref http://d.hatena.ne.jp/dame-p/20110313/1299992080
+export JAVA_OPTS="-Dswank.encoding=utf-8-unix" # 日本語用？

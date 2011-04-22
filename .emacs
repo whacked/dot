@@ -49,8 +49,8 @@
 
 (add-to-list 'load-path "~/.emacs.d/bundle/autopair-read-only/")
 (require 'autopair)
-(autopair-global-mode) ;; enable autopair in all buffers 
-(add-hook 'js2-mode-hook #'(lambda () (setq autopair-dont-activate t))) ; the #'(lambda ...) form is the same as just doing (lambda ...). leaving it here just as example
+;; (autopair-global-mode) ;; enable autopair in all buffers 
+;; (add-hook 'js2-mode-hook #'(lambda () (setq autopair-dont-activate t))) ; the #'(lambda ...) form is the same as just doing (lambda ...). leaving it here just as example
 
 
 
@@ -641,6 +641,10 @@
 ;;; (setq swank-clojure-classpath (list
 ;;;                                (expand-file-name "~/.m2/repository/swank-clojure/swank-clojure/1.3.0-SNAPSHOT/swank-clojure-1.3.0-SNAPSHOT.jar")
 ;;;                                (expand-file-name "~/.m2/repository/org/clojure/clojure/1.2.0/clojure-1.2.0.jar")))
+(setq slime-multiprocessing t)
+(set-language-environment "UTF-8")
+(setq slime-net-coding-system 'utf-8-unix)
+
 
 
 
