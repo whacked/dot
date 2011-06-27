@@ -49,8 +49,9 @@
 
 (add-to-list 'load-path "~/.emacs.d/bundle/autopair-read-only/")
 (require 'autopair)
-;; (autopair-global-mode) ;; enable autopair in all buffers 
-;; (add-hook 'js2-mode-hook #'(lambda () (setq autopair-dont-activate t))) ; the #'(lambda ...) form is the same as just doing (lambda ...). leaving it here just as example
+(autopair-global-mode) ;; enable autopair in all buffers 
+(add-hook 'js2-mode-hook #'(lambda () (setq autopair-dont-activate t))) ; the #'(lambda ...) form is the same as just doing (lambda ...). leaving it here just as example
+;; (add-hook 'clojure-mode-hook #'(lambda () (setq autopair-dont-activate t)))
 
 
 
@@ -357,10 +358,10 @@
     (goto-char beg)
     (insert "<" tag-name ">")))
 
-(defun now () (interactive) (message (format-time-string "%Y-%m-%d %H:%M:%S")))
-(defun insert-timestamp ()
+(defun now (&optional return-date-only) (interactive "P") (message (format-time-string (if return-date-only "%Y-%m-%d" "%Y-%m-%d %H:%M:%S"))))
+(defun insert-timestamp (&optional return-date-only)
   "Insert date at current cursor position in current active buffer"
-  (interactive) (insert (now)))
+  (interactive "P") (insert (now return-date-only)))
 
 (defun djcb-opacity-modify (&optional dec)
   "modify the transparency of the emacs frame; if DEC is t,
@@ -626,6 +627,9 @@
 (add-to-list 'load-path "~/.emacs.d/bundle/undo-tree")
 (require 'undo-tree)
 
+(add-to-list 'load-path "~/.emacs.d/bundle/minimap/")
+(require 'minimap)
+
 ;; thanks to http://kliketa.wordpress.com/2010/08/04/gtklook-browse-documentation-for-gtk-glib-and-gnome-inside-emacs/
 (require 'gtk-look)
 (setq browse-url-browser-function
@@ -712,3 +716,14 @@ a sound to be played"
 
 (add-hook 'org-finalize-agenda-hook (function kiwon/org-agenda-to-appt))
 (load "ledger")
+
+
+
+; to clear shell in ESS mode
+; http://stackoverflow.com/questions/3447531/emacs-ess-version-of-clear-console
+(defun clear-shell ()
+   (interactive)
+   (let ((old-max comint-buffer-maximum-size))
+     (setq comint-buffer-maximum-size 0)
+     (comint-truncate-buffer)
+     (setq comint-buffer-maximum-size old-max)))
