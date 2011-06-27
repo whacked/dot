@@ -125,3 +125,5 @@ keychain ~/.ssh/id_rsa
 
 # ref http://d.hatena.ne.jp/dame-p/20110313/1299992080
 export JAVA_OPTS="-Dswank.encoding=utf-8-unix" # 日本語用？
+export HISTIGNORE="[ \t]*"
+export HISTCONTROL=ignoredups
