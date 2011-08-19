@@ -36,7 +36,7 @@
            '("*grep*" "*tex-shell*" "*Help*" "*Packages*" "*Capture*"))
 (setq special-display-function 'my-special-display-function)
 (defun my-special-display-function (buf &optional args)
-  (special-display-popup-frame buf `((height . 40)
+  (special-display-popup-frame buf `((height . 50)
                                      (left . ,(+ 40 (frame-parameter (selected-frame) 'left)))
                                      (top . ,(+ 20 (frame-parameter (selected-frame) 'top))))))
 
@@ -51,7 +51,8 @@
 (require 'autopair)
 (autopair-global-mode) ;; enable autopair in all buffers 
 (add-hook 'js2-mode-hook #'(lambda () (setq autopair-dont-activate t))) ; the #'(lambda ...) form is the same as just doing (lambda ...). leaving it here just as example
-;; (add-hook 'clojure-mode-hook #'(lambda () (setq autopair-dont-activate t)))
+;; fix autopair infinite loop in sldb
+(add-hook 'sldb-mode-hook #'(lambda () (setq autopair-dont-activate t)))
 
 
 
@@ -133,7 +134,6 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- ;;'(appt-disp-window-function (lambda (n-min-away tm-due message) (growl (format "in %s minutes" n-min-away) message)))
  '(column-number-mode t)
  '(desktop-save-mode t)
  '(exec-path (quote ("/opt/local/bin" "/usr/bin" "/usr/local/bin" "/usr/sbin" "/bin")))
@@ -145,8 +145,9 @@
  '(menu-bar-mode nil)
  '(org-agenda-restore-windows-after-quit t)
  '(org-agenda-window-setup (quote other-window))
+ '(org-drill-optimal-factor-matrix (quote ((2 (2.6 . 2.6) (2.7 . 2.691)) (1 (2.6 . 4.14) (2.36 . 3.86) (2.1799999999999997 . 3.72) (1.96 . 3.58) (1.7000000000000002 . 3.44) (2.5 . 4.0)))))
  '(org-export-blocks (quote ((src org-babel-exp-src-blocks nil) (comment org-export-blocks-format-comment t) (ditaa org-export-blocks-format-ditaa nil) (dot org-export-blocks-format-dot nil))))
- '(org-modules (quote (org-bbdb org-bibtex org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
+ '(org-modules (quote (org-bbdb org-bibtex org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m org-drill)))
  '(org-src-fontify-natively t)
  '(org-startup-folded (quote showeverything))
  '(show-paren-mode t)
@@ -231,12 +232,19 @@
 (define-key global-map "\M-\C-r" 'org-remember)
 (setq org-remember-templates
  '(("Todo" ?t "* TODO %?\nAdded: %U" "~/note/org/todos.org" "Main")
-   ("CNE-todo" ?c "* TODO %?\nAdded: %U" "~/note/cne/cne.org" "All Todo")
+   ("CNE" ?c "* TODO %?\nAdded: %U" "~/note/cne/cne.org" "All Todo")
    ("Nikki" ?n "* %U %?\n\n %i\n %a\n\n" "~/note/org/nikki.org" "ALL")
    ;; ("State" ?s "* %U %? " "~/note/org/state.org")
    ("Vocab" ?v "* %U %^{Word}\n%?\n# -*- xkm-export -*-\n" "~/note/org/vocab.org")
    ("Idea" ?i "* %^{Title}\n%?\n  %a\n  %U" "~/note/org/idea.org" "Main")
-   ("Music" ?m "- %? %U\n" "~/note/org/music.org" "good")
+   ;;("Music" ?m "- %? %U\n" "~/note/org/music.org" "good")
+   ("learn" ?l "omi%?" "~/note/org/learn.org" "captured")
+   ("mem" ?m "** %U    :drill:\n
+    :PROPERTIES:
+    :DATE_ADDED: %U
+    :SOURCE_URL: %a
+    :END:
+\n%i%?" "~/note/org/learn.org" "captured")
    ("Dump" ?d "%?\n" "~/note/org/dump.org")))
 (define-key global-map (kbd "<f12>") 'org-agenda)
 (defun set-calendar-appt ()
@@ -314,11 +322,12 @@
 ;;;        ("d" "Dump" entry (file+datetree "~/note/org/dump.org")
 ;;;         "* %?\n%U\n" :empty-lines 1)))
 
-(setq org-agenda-files (map 'list 'expand-file-name '("~/note/cne/cne.org"
+(setq org-agenda-files (map 'list 'expand-file-name '(;;"~/note/cne/cne.org"
                                                       "~/note/org/idea.org"
                                                       "~/note/org/dump.org"
                                                       "~/note/org/nikki.org"
                                                       "~/note/org/todos.org"
+                                                      "~/note/org/learn.org"
                                                       "~/note/org/vocab.org"
                                                       "~/note/org/的.org")))
 
@@ -559,9 +568,7 @@
  '(org-level-3 ((t (:inherit outline-3 :height 1.4 :family "Verdana"))))
  '(org-level-4 ((t (:inherit outline-4 :foreground "blue" :height 1.3 :family "Verdana"))))
  '(org-level-5 ((t (:inherit outline-5 :height 1.2 :family "Verdana"))))
- '(org-level-6 ((t (:inherit outline-6 :height 1.1 :family "Verdana"))))
- ;'(region ((t (:background "PapayaWhip"))))
- )
+ '(org-level-6 ((t (:inherit outline-6 :height 1.1 :family "Verdana")))))
 ;(set-cursor-color "orange")
 
 (add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0/")
@@ -632,9 +639,11 @@
 
 ;; thanks to http://kliketa.wordpress.com/2010/08/04/gtklook-browse-documentation-for-gtk-glib-and-gnome-inside-emacs/
 (require 'gtk-look)
-(setq browse-url-browser-function
- '(("file:.*/usr/share/doc/.*gtk.*-doc/.*" . w3m-browse-url)
-   ("." . browse-url-firefox)))
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "chromium-browser")
+;;(setq browse-url-browser-function
+;; '(("file:.*/usr/share/doc/.*gtk.*-doc/.*" . w3m-browse-url)
+;;   ("." . browse-url-firefox)))
 (defun my-c-mode-hook ()
   (define-key c-mode-map (kbd "C-<return>") 'gtk-lookup-symbol)
   (message "C mode hook ran."))
@@ -727,3 +736,50 @@ a sound to be played"
      (setq comint-buffer-maximum-size 0)
      (comint-truncate-buffer)
      (setq comint-buffer-maximum-size old-max)))
+(put 'set-goal-column 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+
+
+;; for sqlite
+;; see http://mysite.verizon.net/mbcladwell/sqlite.html for technique
+(defvar sql-sqlite-program "sqlite3")
+(defvar sql-sqlite-process-buffer "*sqlite-process*"
+  "*Name of the SQLITE process buffer.  This is where SQL commands are sent.")
+(defvar sql-sqlite-output-buffer "*sqlite-output-buffer*"
+  "Name of the buffer to which all SQLITE output is redirected.")
+
+;; (apply 'make-comint "sqlite-process"  sql-sqlite-program  nil `(,sql-sqlite-db ))
+;; (get-buffer-create sql-sqlite-output-buffer)
+;; chomp is a utility that will remove whitespace from the results:
+(defun sql-chomp (str)
+  "Trim whitespace from string"
+  (let ((s (if (symbolp str)(symbol-name str) str)))
+    (save-excursion
+      (while (and
+              (not (null (string-match "^\\( \\|\f\\|\t\\|\n\\)" s)))
+              (> (length s) (string-match "^\\( \\|\f\\|\t\\|\n\\)" s)))
+        (setq s (replace-match "" t nil s)))
+      (while (and
+              (not (null (string-match "\\( \\|\f\\|\t\\|\n\\)$" s)))
+              (> (length s) (string-match "\\( \\|\f\\|\t\\|\n\\)$" s)))
+        (setq s (replace-match "" t nil s))))
+    s))
+
+(defun sqlite-query (sql-command)
+  (set-buffer sql-sqlite-output-buffer)      ;; Navigate to the output buffer.
+  (erase-buffer)                             ;; Erase the contents of the output buffer, if any.
+  (comint-redirect-send-command-to-process sql-command sql-sqlite-output-buffer (get-buffer-process sql-sqlite-process-buffer) nil)  ;; Send the sql-statement to SQLITE using the sqlite-process buffer
+  (accept-process-output (get-buffer-process sql-sqlite-process-buffer) 1)  ;need to wait to obtain results
+  
+  (let*  ((begin (goto-char (point-min)))   ;; Switch back to the sqlite-output buffer and retrieve the results. One result row per line of the buffer. Extract each line as an element of the result list.
+          (end (goto-char (point-max)))
+          (num-lines (count-lines begin end))
+          (counter 0)
+          (results-rows ()))
+    (goto-char (point-min))
+    (while ( < counter num-lines)
+      (setq results-rows (cons (sql-chomp (thing-at-point 'line)) results-rows))
+      (forward-line)
+      (setq counter (+ 1 counter)))
+    (car `(,results-rows)))
+  (replace-regexp-in-string "$" "|" (replace-regexp-in-string "^" "|" (buffer-string))))
