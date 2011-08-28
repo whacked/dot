@@ -25,3 +25,6 @@
 [submodule ".emacs.d/bundle/minimap"]
 	path = .emacs.d/bundle/minimap
 	url = git://randomsample.de/minimap.git
+[submodule ".emacs.d/bundle/pymacs"]
+	path = .emacs.d/bundle/pymacs
+	url = https://github.com/pinard/Pymacs.git
