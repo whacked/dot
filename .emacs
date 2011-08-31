@@ -36,9 +36,11 @@
            '("*grep*" "*tex-shell*" "*Help*" "*Packages*" "*Capture*"))
 (setq special-display-function 'my-special-display-function)
 (defun my-special-display-function (buf &optional args)
-  (special-display-popup-frame buf `((height . 50)
-                                     (left . ,(+ 40 (frame-parameter (selected-frame) 'left)))
-                                     (top . ,(+ 20 (frame-parameter (selected-frame) 'top))))))
+  (special-display-popup-frame buf))
+;; (defun my-special-display-function (buf &optional args)
+;;   (special-display-popup-frame buf `((height . 50)
+;;                                      (left . ,(+ 40 (frame-parameter (selected-frame) 'left)))
+;;                                      (top . ,(+ 20 (frame-parameter (selected-frame) 'top))))))
 
 (require 'dabbrev)
 (setq dabbrev-always-check-other-buffers t)
@@ -127,6 +129,25 @@
               echo-keystrokes 0.1 ;; = delay for minibuffer display after pressing function key default is 1
               )
 
+;;; see http://www.emacswiki.org/emacs/DeskTop
+;;; desktop-override-stale-locks.el begins here
+(defun emacs-process-p (pid)
+  "If pid is the process ID of an emacs process, return t, else nil.
+Also returns nil if pid is nil."
+  (when pid
+    (let* ((cmdline-file (concat "/proc/" (int-to-string pid) "/cmdline")))
+      (when (file-exists-p cmdline-file)
+        (with-temp-buffer
+          (insert-file-contents-literally cmdline-file)
+          (goto-char (point-min))
+          (search-forward "emacs" nil t)
+          pid)))))
+
+(defadvice desktop-owner (after pry-from-cold-dead-hands activate)
+  "Don't allow dead emacsen to own the desktop file."
+  (when (not (emacs-process-p ad-return-value))
+    (setq ad-return-value nil)))
+;;; desktop-override-stale-locks.el ends here
 
 ; add more hooks here
 (custom-set-variables
@@ -147,6 +168,7 @@
  '(org-agenda-window-setup (quote other-window))
  '(org-drill-optimal-factor-matrix (quote ((2 (2.6 . 2.6) (2.7 . 2.691)) (1 (2.6 . 4.14) (2.36 . 3.86) (2.1799999999999997 . 3.72) (1.96 . 3.58) (1.7000000000000002 . 3.44) (2.5 . 4.0)))))
  '(org-export-blocks (quote ((src org-babel-exp-src-blocks nil) (comment org-export-blocks-format-comment t) (ditaa org-export-blocks-format-ditaa nil) (dot org-export-blocks-format-dot nil))))
+ '(org-file-apps (quote ((auto-mode . emacs) ("\\.mm\\'" . default) ("\\.x?html?\\'" . default) ("\\.pdf\\'" . "xournal %s"))))
  '(org-modules (quote (org-bbdb org-bibtex org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m org-drill)))
  '(org-src-fontify-natively t)
  '(org-startup-folded (quote showeverything))
@@ -354,6 +376,7 @@
         (save-buffers-kill-emacs))))
 (global-set-key [(control x)(control c)] 'maybe-save-buffers-kill-emacs)
 (defun kill-emacs-NOW-iikara ()
+  (interactive)
   (setq kill-emacs-hook nil)
   (kill-emacs))
 
@@ -789,3 +812,24 @@ a sound to be played"
         (setq counter (+ 1 counter)))
       (car `(,results-rows)))
     (replace-regexp-in-string "$" "|" (replace-regexp-in-string "^" "|" (buffer-string)))))
+
+;; pymacs see http://pymacs.progiciels-bpi.ca/pymacs.html#installation
+;; (load-file "~/.emacs.d/bundle/pymacs/pymacs.el")
+(autoload 'pymacs-apply "pymacs")
+(autoload 'pymacs-call "pymacs")
+(autoload 'pymacs-eval "pymacs" nil t)
+(autoload 'pymacs-exec "pymacs" nil t)
+(autoload 'pymacs-load "pymacs" nil t)
+;;(eval-after-load "pymacs"
+;;  '(add-to-list 'pymacs-load-path YOUR-PYMACS-DIRECTORY"))
+
+;; freex mode
+
+(setq pymacs-load-path '("~/dev/elisp/org-freex"))
+(add-to-list 'load-path (expand-file-name "~/dev/elisp/org-freex/"))
+(load-file "~/dev/elisp/org-freex/freex-conf.el")
+;;;;(load-file "~/dev/elisp/org-freex/freex-mode.el")
+;;(require 'freex-mode)
+
+
+ 
