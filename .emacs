@@ -35,12 +35,13 @@
 (setq special-display-buffer-names
            '("*grep*" "*tex-shell*" "*Help*" "*Packages*" "*Capture*"))
 (setq special-display-function 'my-special-display-function)
-(defun my-special-display-function (buf &optional args)
-  (special-display-popup-frame buf))
 ;; (defun my-special-display-function (buf &optional args)
-;;   (special-display-popup-frame buf `((height . 50)
-;;                                      (left . ,(+ 40 (frame-parameter (selected-frame) 'left)))
-;;                                      (top . ,(+ 20 (frame-parameter (selected-frame) 'top))))))
+;;   (special-display-popup-frame buf))
+(defun my-special-display-function (buf &optional args)
+  (special-display-popup-frame buf `((height . 40)
+                                     ;; (left . ,(+ 40 (frame-parameter (selected-frame) 'left)))
+                                     ;; (top . ,(+ 20 (frame-parameter (selected-frame) 'top)))
+                                     )))
 
 (require 'dabbrev)
 (setq dabbrev-always-check-other-buffers t)
@@ -606,8 +607,16 @@ Also returns nil if pid is nil."
 (set-face-background 'hl-line "PapayaWhip")
 
 
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
-(global-set-key "\C-x\C-b" 'bs-show)
+
+(global-set-key "\C-x\C-b" 'ibuffer)
+(setq ibuffer-expert t)
+(add-hook 'ibuffer-mode-hook 
+          '(lambda ()
+             (ibuffer-auto-mode 1)))
+
 
 ;;; custom override keys
 ;;; ref http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
