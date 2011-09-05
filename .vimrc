@@ -1,6 +1,27 @@
+set nocompatible
 filetype off
 call pathogen#runtime_append_all_bundles()
 call pathogen#helptags()
+
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+" let Vundle manage Vundle
+" required! 
+Bundle 'gmarik/vundle'
+
+" My Bundles here:
+"
+"" " original repos on github
+"" Bundle 'tpope/vim-fugitive'
+Bundle 'docunext/closetag.vim'
+Bundle 'altercation/vim-colors-solarized'
+"" " vim-scripts repos
+Bundle 'matchit.zip'
+"" Bundle 'L9'
+"" Bundle 'FuzzyFinder'
+"" " non github repos
+"" Bundle 'git://git.wincent.com/command-t.git'
 
 syntax on
 set number " to turn off use :set number! or :set nu!
@@ -13,7 +34,6 @@ let g:slimv_lisp = '"java cp $HOME/dev/lisp/clojure/clojure.jar clojure.lang.Rep
 set nowrap
 set ic
 
-set nocompatible
 filetype plugin indent on
 let clj_highlight_builtins = 1
 let clj_paren_rainbow = 1
@@ -36,3 +56,9 @@ autocmd FileAppendPre         *.xoj  call gzip#appre("gzip -S .xoj -dn")
 autocmd FileAppendPost      *.xoj  call gzip#write("gzip -S .xoj")
 
 
+set background=dark
+let g:solarized_termtrans=1
+let g:solarized_termcolors=256
+let g:solarized_contrast="high"
+let g:solarized_visibility="high"
+colorscheme solarized
