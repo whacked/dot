@@ -27,10 +27,10 @@
 	url = git://randomsample.de/minimap.git
 [submodule ".emacs.d/bundle/pymacs"]
 	path = .emacs.d/bundle/pymacs
-	url = https://github.com/pinard/Pymacs.git
+	url = git://github.com/pinard/Pymacs.git
 [submodule ".vim/bundle/vundle"]
 	path = .vim/bundle/vundle
 	url = git://github.com/gmarik/vundle.git
 [submodule ".emacs.d/bundle/ibuffer-vc"]
 	path = .emacs.d/bundle/ibuffer-vc
-	url = https://github.com/purcell/ibuffer-vc.git
+	url = git://github.com/purcell/ibuffer-vc.git
