@@ -30,6 +30,24 @@
 (require 'windows)
 (win:startup-with-window)
 
+;;; This was installed by package-install.el.
+;;; This provides support for the package system and
+;;; interfacing with ELPA, the package archive.
+;;; Move this code earlier if you want to reference
+;;; packages in your .emacs.
+(when
+    (load
+     (expand-file-name "~/.emacs.d/elpa/package.el"))
+  ;; Add the original Emacs Lisp Package Archive
+  (add-to-list 'package-archives
+               '("elpa" . "http://tromey.com/elpa/"))
+  ;; Add the user-contributed repository
+  (add-to-list 'package-archives
+               '("marmalade" . "http://marmalade-repo.org/packages/"))
+  (package-initialize))
+
+
+
 ;; prevent special buffers from messing with the current layout
 ;; see: http://www.gnu.org/software/emacs/manual/html_node/emacs/Special-Buffer-Frames.html
 (setq special-display-buffer-names
@@ -161,6 +179,17 @@ Also returns nil if pid is nil."
  '(exec-path (quote ("/opt/local/bin" "/usr/bin" "/usr/local/bin" "/usr/sbin" "/bin")))
  '(global-hl-line-mode t)
  '(hscroll-step 1)
+ '(ibuffer-fontification-alist
+   (quote
+    ((10 buffer-read-only font-lock-constant-face)
+     (15 (and buffer-file-name (string-match ibuffer-compressed-file-name-regexp buffer-file-name)) font-lock-doc-face)
+     (20 (string-match "^*" (buffer-name)) font-lock-keyword-face)
+     (25 (and (string-match "^ " (buffer-name)) (null buffer-file-name)) italic)
+     (30 (memq major-mode ibuffer-help-buffer-modes) font-lock-comment-face)
+     (35 (eq major-mode (quote dired-mode)) font-lock-function-name-face)
+     (40 (string-match "\.py" (buffer-name)) font-lock-type-face)
+     (45 (string-match "\.rb" (buffer-name)) font-lock-string-face)
+     (50 (string-match "\.org" (buffer-name)) font-lock-preprocessor-face))))
  '(iswitchb-mode t)
  '(line-number-mode t)
  '(matlab-auto-fill nil)
@@ -616,7 +645,37 @@ Also returns nil if pid is nil."
 (add-hook 'ibuffer-mode-hook 
           '(lambda ()
              (ibuffer-auto-mode 1)))
+;; (setq ibuffer-show-empty-filter-groups nil)
+(load-file "~/.emacs.d/bundle/ibuffer-vc/ibuffer-vc.el")
+(add-hook 'ibuffer-hook
+  (lambda ()
+    (ibuffer-vc-set-filter-groups-by-vc-root)
+    (ibuffer-do-sort-by-alphabetic)))
+;; see http://www.emacswiki.org/emacs/IbufferMode#toc3
+;; Switching to ibuffer puts the cursor on the most recent buffer
+(defadvice ibuffer (around ibuffer-point-to-most-recent) ()
+  "Open ibuffer with cursor pointed to most recent buffer name"
+  (let ((recent-buffer-name (buffer-name)))
+    ad-do-it
+    (ibuffer-jump-to-buffer recent-buffer-name)))
+(ad-activate 'ibuffer)
 
+;;;; see http://lispuser.net/emacs/emacstips.html
+;;(defvar *original-dired-font-lock-keywords* dired-font-lock-keywords)
+;;(defun dired-highlight-by-extensions (highlight-list)
+;;  "highlight-list accept list of (regexp [regexp] ... face)."
+;;  (let ((lst nil))
+;;    (dolist (highlight highlight-list)
+;;      (push `(,(concat "\\.\\(" (regexp-opt (butlast highlight)) "\\)$")
+;;              (".+" (dired-move-to-filename)
+;;               nil (0 ,(car (last highlight)))))
+;;            lst))
+;;    (setq dired-font-lock-keywords
+;;          (append *original-dired-font-lock-keywords* lst))))
+;;(dired-highlight-by-extensions
+;;  '(("txt" font-lock-variable-name-face)
+;;    ("rb" font-lock-string-face)
+;;    ("org" "lisp" "el" "pl" "c" "h" "cc" font-lock-constant-face)))
 
 ;;; custom override keys
 ;;; ref http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
@@ -635,22 +694,6 @@ Also returns nil if pid is nil."
 
 
 
-
-;;; This was installed by package-install.el.
-;;; This provides support for the package system and
-;;; interfacing with ELPA, the package archive.
-;;; Move this code earlier if you want to reference
-;;; packages in your .emacs.
-(when
-    (load
-     (expand-file-name "~/.emacs.d/elpa/package.el"))
-  ;; Add the original Emacs Lisp Package Archive
-  (add-to-list 'package-archives
-               '("elpa" . "http://tromey.com/elpa/"))
-  ;; Add the user-contributed repository
-  (add-to-list 'package-archives
-               '("marmalade" . "http://marmalade-repo.org/packages/"))
-  (package-initialize))
 
 (require 'muse-wiki)
 ;; w3 should be loaded by ELPA
