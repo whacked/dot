@@ -34,3 +34,6 @@
 [submodule ".emacs.d/bundle/ibuffer-vc"]
 	path = .emacs.d/bundle/ibuffer-vc
 	url = git://github.com/purcell/ibuffer-vc.git
+[submodule ".emacs.d/bundle/rainbow-mode"]
+	path = .emacs.d/bundle/rainbow-mode
+	url = git://git.naquadah.org/rainbow.git

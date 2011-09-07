@@ -5,7 +5,7 @@
 (dolist (path '("~/.emacs.d/revive.el"
                 "~/.emacs.d/matlab.el"
                 "~/.emacs.d/haxe-mode.el"
-                "~/.emacs.d/jd-el/rainbow-mode.el"
+                "~/.emacs.d/bundle/rainbow-mode/rainbow-mode.el"
                 "~/.emacs.d/windows.el"
                 "~/.emacs.d/bundle/zencoding/zencoding-mode.el"
                 "~/.emacs.d/graphviz-dot-mode.el"
