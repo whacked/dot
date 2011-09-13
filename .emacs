@@ -68,6 +68,7 @@
 
 
 
+;; get this with svn checkout http://autopair.googlecode.com/svn/trunk/ autopair-read-only, run from inside the bundle folder
 (add-to-list 'load-path "~/.emacs.d/bundle/autopair-read-only/")
 (require 'autopair)
 (autopair-global-mode) ;; enable autopair in all buffers 
@@ -374,14 +375,12 @@ Also returns nil if pid is nil."
 ;;;        ("d" "Dump" entry (file+datetree "~/note/org/dump.org")
 ;;;         "* %?\n%U\n" :empty-lines 1)))
 
-(setq org-agenda-files (map 'list 'expand-file-name '(;;"~/note/cne/cne.org"
+(setq org-agenda-files (map 'list 'expand-file-name '("~/note/cne/cne.org"
+                                                      "~/note/org/gcal.org"
+                                                      "~/note/org/sakusen.org"
                                                       "~/note/org/idea.org"
-                                                      "~/note/org/dump.org"
-                                                      "~/note/org/nikki.org"
                                                       "~/note/org/todos.org"
-                                                      "~/note/org/learn.org"
-                                                      "~/note/org/vocab.org"
-                                                      "~/note/org/的.org")))
+                                                      "~/note/org/learn.org")))
 
 (require 'iimage)
 ;(setq iimage-mode-image-search-path (expand-file-name "~/"))
@@ -885,3 +884,48 @@ a sound to be played"
 
 
  
+
+
+
+;; ;; google calendar interaction
+;; ;; see http://article.gmane.org/gmane.emacs.orgmode/27214
+;; (defadvice org-agenda-add-entry-to-org-agenda-diary-file 
+;;   (after add-to-google-calendar)
+;;   "Add a new Google calendar entry that mirrors the diary entry just created by org-mode."
+;;   (let ((type (ad-get-arg 0))
+;; 	(text (ad-get-arg 1))
+;; 	(d1 (ad-get-arg 2))
+;; 	(year1 (nth 2 d1))
+;; 	(month1 (car d1))
+;; 	(day1 (nth 1 d1))
+;; 	(d2 (ad-get-arg 3))
+;; 	entry dates)
+;;     (if (or (not (eq type 'block)) (not d2))
+;; 	(setq dates (format "%d-%02d-%02d" year1 month1 day1))
+;;       (let ((year2 (nth 2 d2)) (month2 (car d2)) (day2 (nth 1 d2)) (repeats (-
+;; (calendar-absolute-from-gregorian d1)
+;; 									       (calendar-absolute-from-gregorian d2))))
+;; 	(if (> repeats 0)
+;; 	    (setq dates (format "%d-%02d-%02d every day for %d days" year1 month1 day1 (abs repeats)))
+;; 	  (setq dates (format "%d-%02d-%02d every day for %d days" year1 month1 day1 (abs repeats))))
+;; 	))
+;;     (setq entry  (format "/usr/local/bin/google calendar add --cal org \"%s on %s\"" text dates))
+;;     ;;(message entry)
+;;     (if (not (string= "MYLAPTOPCOMPUTER" mail-host-address))
+;; 	(shell-command entry)
+;;       (let ((offline "~/note/org/org2google-buffer"))
+;; 	(find-file offline)
+;; 	(goto-char (point-max))
+;; 	(insert (concat entry "\n"))
+;; 	(save-buffer)
+;; 	(kill-buffer (current-buffer))
+;; 	(message "Plain text written to %s" offline)))))
+;; (ad-activate 'org-agenda-add-entry-to-org-agenda-diary-file)
+
+
+
+;; in case useful: http://jblevins.org/projects/deft/
+;; Deft is an Emacs mode for quickly browsing, filtering, and editing directories of plain text notes, inspired by Notational Velocity.
+(setq deft-extension "org")
+(setq deft-directory "~/note/org")
+(setq deft-text-mode 'org-mode)
