@@ -1,7 +1,7 @@
 set nocompatible
 filetype off
-call pathogen#runtime_append_all_bundles()
-call pathogen#helptags()
+"call pathogen#runtime_append_all_bundles()
+"call pathogen#helptags()
 
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
@@ -13,11 +13,12 @@ Bundle 'gmarik/vundle'
 " My Bundles here:
 "
 "" " original repos on github
-"" Bundle 'tpope/vim-fugitive'
+Bundle 'tpope/vim-fugitive'
 Bundle 'docunext/closetag.vim'
 Bundle 'altercation/vim-colors-solarized'
 "" " vim-scripts repos
 Bundle 'matchit.zip'
+Bundle 'AutoClose'
 "" Bundle 'L9'
 "" Bundle 'FuzzyFinder'
 "" " non github repos
