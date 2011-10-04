@@ -199,7 +199,7 @@ Also returns nil if pid is nil."
  '(org-agenda-window-setup (quote other-window))
  '(org-drill-optimal-factor-matrix (quote ((2 (2.6 . 2.6) (2.7 . 2.691)) (1 (2.6 . 4.14) (2.36 . 3.86) (2.1799999999999997 . 3.72) (1.96 . 3.58) (1.7000000000000002 . 3.44) (2.5 . 4.0)))))
  '(org-export-blocks (quote ((src org-babel-exp-src-blocks nil) (comment org-export-blocks-format-comment t) (ditaa org-export-blocks-format-ditaa nil) (dot org-export-blocks-format-dot nil))))
- '(org-file-apps (quote ((auto-mode . emacs) ("\\.mm\\'" . default) ("\\.x?html?\\'" . default) ("\\.pdf\\'" . "xournal %s"))))
+ '(org-file-apps (quote ((auto-mode . emacs) ("\\.mm\\'" . default) ("\\.x?html?\\'" . default) ("\\.xoj\\'" . "xournal %s") ("\\.pdf\\'" . "xournal %s"))))
  '(org-modules (quote (org-bbdb org-bibtex org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m org-drill)))
  '(org-src-fontify-natively t)
  '(org-startup-folded (quote showeverything))
@@ -288,6 +288,7 @@ Also returns nil if pid is nil."
    ("CNE" ?c "* TODO %?\nAdded: %U" "~/note/cne/cne.org" "All Todo")
    ("Nikki" ?n "* %U %?\n\n %i\n %a\n\n" "~/note/org/nikki.org" "ALL")
    ;; ("State" ?s "* %U %? " "~/note/org/state.org")
+   ("Scholar" ?s "* %?\nadded: %U" "~/note/org/scholar.org")
    ("Vocab" ?v "* %U %^{Word}\n%?\n# -*- xkm-export -*-\n" "~/note/org/vocab.org")
    ("Idea" ?i "* %^{Title}\n%?\n  %a\n  %U" "~/note/org/idea.org" "Main")
    ;;("Music" ?m "- %? %U\n" "~/note/org/music.org" "good")
@@ -380,6 +381,7 @@ Also returns nil if pid is nil."
                                                       "~/note/org/sakusen.org"
                                                       "~/note/org/idea.org"
                                                       "~/note/org/todos.org"
+                                                      "~/note/org/scholar.org"
                                                       "~/note/org/learn.org")))
 
 (require 'iimage)
@@ -927,5 +929,5 @@ a sound to be played"
 ;; in case useful: http://jblevins.org/projects/deft/
 ;; Deft is an Emacs mode for quickly browsing, filtering, and editing directories of plain text notes, inspired by Notational Velocity.
 (setq deft-extension "org")
-(setq deft-directory "~/note/org")
+(setq deft-directory "~/note/org/")
 (setq deft-text-mode 'org-mode)
