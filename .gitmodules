@@ -37,3 +37,6 @@
 [submodule ".emacs.d/bundle/rainbow-mode"]
 	path = .emacs.d/bundle/rainbow-mode
 	url = git://git.naquadah.org/rainbow.git
+[submodule ".emacs.d/perspective"]
+	path = .emacs.d/perspective
+	url = https://github.com/nex3/perspective-el.git
