@@ -13,6 +13,7 @@ Bundle 'gmarik/vundle'
 " My Bundles here:
 "
 "" " original repos on github
+Bundle 'scrooloose/nerdtree'
 Bundle 'tpope/vim-fugitive'
 Bundle 'docunext/closetag.vim'
 Bundle 'altercation/vim-colors-solarized'
@@ -45,6 +46,8 @@ set statusline=%F%m%r%h%w\ %{&ff}\ (%Y)\ (%04l,%04v)\ [ASC=\%03.3b,\ HEX=\%02.2B
 set laststatus=2
 set pastetoggle=<F2>
 set cursorline
+" set cwd to that of the current active buffer
+set autochdir
 
 
 
