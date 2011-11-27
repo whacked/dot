@@ -10,6 +10,7 @@
                 "~/.emacs.d/bundle/zencoding/zencoding-mode.el"
                 "~/.emacs.d/graphviz-dot-mode.el"
                 "~/.emacs.d/elpa/yaml-mode-0.0.5/yaml-mode.el"
+                "~/.emacs.d/perspective/perspective.el"
                 ))
   (load-file path))
 
@@ -30,6 +31,19 @@
 (require 'windows)
 (win:startup-with-window)
 
+;; perspective mode
+;; ref: http://emacsrookie.com/2011/09/25/workspaces/
+(persp-mode)
+(defmacro custom-persp (name &rest body)
+  `(let ((initialize (not (gethash ,name perspectives-hash)))
+         (current-perspective persp-curr))
+     (persp-switch ,name)
+     (when initialize ,@body)
+     (setq persp-last current-perspective)))
+(defun custom-persp/org ()
+  (interactive)
+  (custom-persp "@org"
+                (find-file (first org-agenda-files))))
 ;;; This was installed by package-install.el.
 ;;; This provides support for the package system and
 ;;; interfacing with ELPA, the package archive.
@@ -469,12 +483,12 @@ Also returns nil if pid is nil."
 
          ;; (server-start)
 
-         ;; use anthy
-         ;; http://www.emacswiki.org/emacs/IBusMode
-         (add-to-list 'load-path "/usr/share/emacs/site-lisp/ibus")
-         (require 'ibus)
-         (add-hook 'after-init-hook 'ibus-mode-on)
-         (setq ibus-agent-file-name "/usr/lib/ibus-el/ibus-el-agent")
+         ;; ;; use anthy
+         ;; ;; http://www.emacswiki.org/emacs/IBusMode
+         ;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/ibus")
+         ;; (require 'ibus)
+         ;; (add-hook 'after-init-hook 'ibus-mode-on)
+         ;; (setq ibus-agent-file-name "/usr/lib/ibus-el/ibus-el-agent")
          )
        (message "using linux"))
       ((eq system-type 'darwin)
