@@ -1,2 +1,4 @@
 .vim/autoload/pathogen.vim
 .emacs.d/session.*
+.emacs.d/.emacs.desktop*
+.emacs.d/emacs-backup
