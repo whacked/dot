@@ -1,7 +1,7 @@
 import XMonad
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
-import XMonad.Util.Run(spawnPipe)
+import XMonad.Util.Run
 import XMonad.Util.EZConfig
 import System.IO
 
@@ -24,13 +24,34 @@ main = do
         -- , focusedBorderColor = "red"
         -- , manageHook = manageDocks -- <+> manageHook gnomeConfig
         -- , layoutHook = avoidStruts $ layoutHook gnomeConfig
+        , manageHook = myManageHook <+> manageHook gnomeConfig
         , workspaces = myWorkspaces
         } `additionalKeys` myKeys
 
 myModMask = mod3Mask
-myWorkspaces = ["1","2","3","4","5","6","7","8","9"]
+myWorkspaces = ["1",
+                "2:web",
+                "3",
+                "4:mail",
+                "5",
+                "6:code1",
+                "7",
+                "8:read",
+                "9"]
+
+myManageHook :: ManageHook
+myManageHook = composeAll
+    [ className =? "Pidgin" --> doFloat
+    , className =? "Skype" --> doFloat
+    , className =? "SpiderOak" --> doFloat
+    , className =? "CrashPlan" --> doFloat
+    -- , className =? "chromium-browser" --> doShift "2:web"
+    , className =? "ThunderBird" --> doShift "4:mail"
+    , className =? "Calibre" --> doShift "8:read"
+    ]
 
 myKeys = [] ++
+         [ ((mod4Mask, xK_space    ), unsafeSpawn "$HOME/.config/thinkpad/dzen/popup_calendar.sh")] ++
          -- cycle windows, emulate old-style alt-tab
          [ ((mod1Mask,               xK_Tab   ), windows W.focusDown)
          ] ++
