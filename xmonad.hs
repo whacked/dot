@@ -38,22 +38,27 @@ myWorkspaces = ["1",
                 "7",
                 "8:read",
                 "9"]
+role = stringProperty "WM_WINDOW_ROLE"
 
 myManageHook :: ManageHook
 myManageHook = composeAll
     [ className =? "Pidgin" --> doFloat
     , className =? "Skype" --> doFloat
+    , className =? "Shutter" --> doFloat
     , className =? "SpiderOak" --> doFloat
     , className =? "CrashPlan" --> doFloat
     -- , className =? "chromium-browser" --> doShift "2:web"
-    , className =? "ThunderBird" --> doShift "4:mail"
+    , className =? "Thunderbird" --> doShift "4:mail"
     , className =? "Calibre" --> doShift "8:read"
+    , className =? "Gimp" --> doFloat
+    -- , ( role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
     ]
 
 myKeys = [] ++
          [ ((mod4Mask, xK_space    ), unsafeSpawn "$HOME/.config/thinkpad/dzen/popup_calendar.sh")] ++
          -- cycle windows, emulate old-style alt-tab
          [ ((mod1Mask,               xK_Tab   ), windows W.focusDown)
+         , ((mod1Mask .|. shiftMask, xK_Tab   ), windows W.focusUp)
          ] ++
          -- a basic CycleWS setup
          [ ((myModMask,               xK_Down),  nextWS)
