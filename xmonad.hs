@@ -8,11 +8,13 @@ import System.IO
 import XMonad.Util.EZConfig
 import XMonad.Config.Gnome
 import XMonad.Actions.SimpleDate
-import XMonad.Layout.ThreeColumns
 
 import qualified XMonad.StackSet as W
 import XMonad.Actions.CycleWS
 import XMonad.Actions.CycleWindows
+
+import XMonad.Layout.ThreeColumns
+import XMonad.Layout.Tabbed
 
 -- check xmodmap -pm to see mod key mapping
 
@@ -24,9 +26,17 @@ main = do
         -- , focusedBorderColor = "red"
         -- , manageHook = manageDocks -- <+> manageHook gnomeConfig
         -- , layoutHook = avoidStruts $ layoutHook gnomeConfig
+        , layoutHook = myLayout -- avoidStruts $ layoutHook defaultConfig
         , manageHook = myManageHook <+> manageHook gnomeConfig
         , workspaces = myWorkspaces
         } `additionalKeys` myKeys
+
+myLayout = tiled ||| Mirror tiled ||| ThreeCol 1 (3/100) (1/2) ||| ThreeColMid 1 (3/100) (1/2) ||| simpleTabbed ||| Full
+  where
+    tiled   = Tall nmaster delta ratio
+    nmaster = 1
+    ratio   = 1/2
+    delta   = 3/100
 
 myModMask = mod3Mask
 myWorkspaces = ["1",
