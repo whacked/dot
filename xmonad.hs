@@ -47,6 +47,7 @@ myManageHook = composeAll
     , className =? "Shutter" --> doFloat
     , className =? "SpiderOak" --> doFloat
     , className =? "CrashPlan" --> doFloat
+    , title     =? "Run Application" --> doFloat
     -- , className =? "chromium-browser" --> doShift "2:web"
     , className =? "Thunderbird" --> doShift "4:mail"
     , className =? "Calibre" --> doShift "8:read"
