@@ -89,6 +89,9 @@
 (add-hook 'js2-mode-hook #'(lambda () (setq autopair-dont-activate t))) ; the #'(lambda ...) form is the same as just doing (lambda ...). leaving it here just as example
 ;; fix autopair infinite loop in sldb
 (add-hook 'sldb-mode-hook #'(lambda () (setq autopair-dont-activate t)))
+(add-hook 'clojure-mode-hook #'(lambda ()
+                                 (setq autopair-dont-activate t)
+                                 (paredit-mode)))
 
 
 
@@ -390,13 +393,10 @@ Also returns nil if pid is nil."
 ;;;        ("d" "Dump" entry (file+datetree "~/note/org/dump.org")
 ;;;         "* %?\n%U\n" :empty-lines 1)))
 
-(setq org-agenda-files (map 'list 'expand-file-name '("~/note/cne/cne.org"
-                                                      "~/note/org/gcal.org"
-                                                      "~/note/org/sakusen.org"
-                                                      "~/note/org/idea.org"
-                                                      "~/note/org/todos.org"
-                                                      "~/note/org/scholar.org"
-                                                      "~/note/org/learn.org")))
+(setq org-agenda-files (map 'list 'expand-file-name '("~/note/org/main.org"
+                                                      "~/note/cne/cne.org"
+                                                      "~/note/org/freex/index.org"
+                                                      "~/note/org/todos.org")))
 
 (require 'iimage)
 ;(setq iimage-mode-image-search-path (expand-file-name "~/"))
