@@ -39,15 +39,17 @@ myLayout = tiled ||| Mirror tiled ||| ThreeCol 1 (3/100) (1/2) ||| ThreeColMid 1
     delta   = 3/100
 
 myModMask = mod3Mask
-myWorkspaces = ["1",
-                "2:web",
-                "3",
-                "4:mail",
-                "5",
-                "6:code1",
-                "7",
-                "8:read",
-                "9"]
+myWorkspaces = [ "1"
+               , "2:web"
+               , "3"
+               , "4:mail"
+               , "5"
+               , "6:code1"
+               , "7"
+               , "8:read"
+               , "9"
+               , "0:swap"
+               ]
 role = stringProperty "WM_WINDOW_ROLE"
 
 myManageHook :: ManageHook
@@ -58,10 +60,11 @@ myManageHook = composeAll
     , className =? "SpiderOak" --> doFloat
     , className =? "CrashPlan" --> doFloat
     , title     =? "Run Application" --> doFloat
-    -- , className =? "chromium-browser" --> doShift "2:web"
+    , className =? "Chromium-browser" --> doShift "2:web"
     , className =? "Thunderbird" --> doShift "4:mail"
     , className =? "Calibre" --> doShift "8:read"
     , className =? "Gimp" --> doFloat
+    , className =? "Kalarm" --> doShift "0:swap"
     -- , ( role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
     ]
 
@@ -83,5 +86,5 @@ myKeys = [] ++
          , ((myModMask,               xK_z),     toggleWS)
          ] ++
          [((m .|. mod3Mask, k), windows $ f i)
-              | (i, k) <- zip myWorkspaces [xK_1 .. xK_9]
+              | (i, k) <- zip myWorkspaces ([xK_1 .. xK_9] ++ [xK_0])
               , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
