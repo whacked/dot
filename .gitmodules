@@ -58,3 +58,6 @@
 [submodule ".emacs.d/bundle/icicles"]
 	path = .emacs.d/bundle/icicles
 	url = http://github.com/emacsmirror/icicles.git
+[submodule ".emacs.d/bundle/mmm-mode"]
+	path = .emacs.d/bundle/mmm-mode
+	url = https://github.com/purcell/mmm-mode.git
