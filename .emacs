@@ -4,11 +4,10 @@
                 
 (dolist (path '("~/.emacs.d/revive.el"
                 "~/.emacs.d/matlab.el"
-                "~/.emacs.d/haxe-mode.el"
-                "~/.emacs.d/bundle/rainbow-mode/rainbow-mode.el"
+                "~/.emacs.d/bundle/mode/haxe-mode.el"
                 "~/.emacs.d/windows.el"
                 "~/.emacs.d/bundle/zencoding/zencoding-mode.el"
-                "~/.emacs.d/graphviz-dot-mode.el"
+                "~/.emacs.d/bundle/mode/graphviz-dot-mode.el"
                 "~/.emacs.d/elpa/yaml-mode-0.0.5/yaml-mode.el"
                 "~/.emacs.d/perspective/perspective.el"
                 ))
