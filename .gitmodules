@@ -67,3 +67,15 @@
 [submodule ".emacs.d/bundle/yasnippet"]
 	path = .emacs.d/bundle/yasnippet
 	url = https://github.com/emacsmirror/yasnippet.git
+[submodule ".vim/bundle/AutoClose"]
+	path = .vim/bundle/AutoClose
+	url = https://github.com/vim-scripts/AutoClose.git
+[submodule ".vim/bundle/closetag.vim"]
+	path = .vim/bundle/closetag.vim
+	url = https://github.com/docunext/closetag.vim.git
+[submodule ".vim/bundle/matchit.zip"]
+	path = .vim/bundle/matchit.zip
+	url = https://github.com/vim-scripts/matchit.zip.git
+[submodule ".vim/bundle/vim-colors-solarized"]
+	path = .vim/bundle/vim-colors-solarized
+	url = https://github.com/altercation/vim-colors-solarized.git
