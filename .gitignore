@@ -8,3 +8,4 @@
 .emacs.d/image-dired
 .emacs.d/image-dired/*.png
 .emacs.d/auto-save-list/
+*.elc
