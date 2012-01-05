@@ -61,3 +61,6 @@
 [submodule ".emacs.d/bundle/mmm-mode"]
 	path = .emacs.d/bundle/mmm-mode
 	url = https://github.com/purcell/mmm-mode.git
+[submodule ".emacs.d/bundle/slime"]
+	path = .emacs.d/bundle/slime
+	url = git://sbcl.boinkor.net/slime.git
