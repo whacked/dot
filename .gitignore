@@ -2,3 +2,5 @@
 .emacs.d/session.*
 .emacs.d/.emacs.desktop*
 .emacs.d/emacs-backup
+.emacs.d/.org-id-locations
+.vim/.netrwhist
