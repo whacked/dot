@@ -46,3 +46,6 @@
 [submodule ".emacs.d/bundle/predictive"]
 	path = .emacs.d/bundle/predictive
 	url = http://www.dr-qubit.org/git/predictive.git
+[submodule ".emacs.d/bundle/pabbrev"]
+	path = .emacs.d/bundle/pabbrev
+	url = https://github.com/emacsmirror/pabbrev.git
