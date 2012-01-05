@@ -31,7 +31,7 @@ main = do
         , workspaces = myWorkspaces
         } `additionalKeys` myKeys
 
-myLayout = tiled ||| Mirror tiled ||| ThreeCol 1 (3/100) (1/2) ||| ThreeColMid 1 (3/100) (1/2) ||| simpleTabbed ||| Full
+myLayout = tiled ||| Mirror tiled ||| ThreeColMid 1 (3/100) (1/3) ||| simpleTabbed ||| Full -- ThreeCol 1 (3/100) (1/2) |||
   where
     tiled   = Tall nmaster delta ratio
     nmaster = 1
