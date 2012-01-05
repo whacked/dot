@@ -9,3 +9,5 @@
 .emacs.d/image-dired/*.png
 .emacs.d/auto-save-list/
 *.elc
+abbrev_defs
+.emacs.d/newsticker/
