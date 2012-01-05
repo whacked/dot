@@ -612,7 +612,7 @@ Also returns nil if pid is nil."
 
 
 
-(load "~/.emacs.d/haskellmode-emacs/haskell-site-file")
+(load "~/.emacs.d/bundle/haskell-mode/haskell-site-file")
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 
