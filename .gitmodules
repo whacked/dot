@@ -49,3 +49,6 @@
 [submodule ".emacs.d/bundle/pabbrev"]
 	path = .emacs.d/bundle/pabbrev
 	url = https://github.com/emacsmirror/pabbrev.git
+[submodule ".emacs.d/bundle/auctex"]
+	path = .emacs.d/bundle/auctex
+	url = https://github.com/emacsmirror/auctex.git
