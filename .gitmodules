@@ -43,3 +43,6 @@
 [submodule ".emacs.d/bundle/mozrepl"]
 	path = .emacs.d/bundle/mozrepl
 	url = git://github.com/bard/mozrepl.git
+[submodule ".emacs.d/bundle/predictive"]
+	path = .emacs.d/bundle/predictive
+	url = http://www.dr-qubit.org/git/predictive.git
