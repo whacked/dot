@@ -79,3 +79,6 @@
 [submodule ".vim/bundle/vim-colors-solarized"]
 	path = .vim/bundle/vim-colors-solarized
 	url = https://github.com/altercation/vim-colors-solarized.git
+[submodule ".emacs.d/bundle/mode-compile"]
+	path = .emacs.d/bundle/mode-compile
+	url = https://github.com/emacsmirror/mode-compile.git
