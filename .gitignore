@@ -4,3 +4,6 @@
 .emacs.d/emacs-backup
 .emacs.d/.org-id-locations
 .vim/.netrwhist
+.emacs.d/url/cookies
+.emacs.d/image-dired/*.png
+.emacs.d/auto-save-list/
