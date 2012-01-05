@@ -52,3 +52,6 @@
 [submodule ".emacs.d/bundle/auctex"]
 	path = .emacs.d/bundle/auctex
 	url = https://github.com/emacsmirror/auctex.git
+[submodule ".emacs.d/bundle/haskell-mode"]
+	path = .emacs.d/bundle/haskell-mode
+	url = https://github.com/emacsmirror/haskell-mode.git
