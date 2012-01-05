@@ -714,10 +714,10 @@ Also returns nil if pid is nil."
 (require 'w3-auto)
 
 ;; <yasnippet> ;; not using elpa version
-(add-to-list 'load-path "~/.emacs.d/bundle/yasnippet-read-only/")
+(add-to-list 'load-path "~/.emacs.d/bundle/yasnippet")
 (require 'yasnippet) ;; not yasnippet-bundle
 (yas/initialize)
-(yas/load-directory "~/.emacs.d/bundle/yasnippet-read-only/snippets")
+(yas/load-directory "~/.emacs.d/bundle/yasnippet/snippets")
 ;; </yasnippet> ;;
 
 (add-to-list 'load-path "~/.emacs.d/bundle/undo-tree")
