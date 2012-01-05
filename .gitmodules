@@ -55,3 +55,6 @@
 [submodule ".emacs.d/bundle/haskell-mode"]
 	path = .emacs.d/bundle/haskell-mode
 	url = https://github.com/emacsmirror/haskell-mode.git
+[submodule ".emacs.d/bundle/icicles"]
+	path = .emacs.d/bundle/icicles
+	url = http://github.com/emacsmirror/icicles.git
