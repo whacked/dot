@@ -1,21 +1,55 @@
 (setq inhibit-splash-screen t)
 
+(add-to-list 'load-path "~/.emacs.d")
+;; https://github.com/dimitri/el-get#readme
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 (unless (require 'el-get nil t)
-  (url-retrieve "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
-                (lambda (s) (end-of-buffer) (eval-print-last-sexp))))
+  (with-current-buffer
+      (url-retrieve-synchronously "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
+    (end-of-buffer) (eval-print-last-sexp)))
+;; local sources
+;; example:
+;; (setq el-get-sources
+;;       '((:name magit :after (lambda () (global-set-key (kbd "C-x C-z") 'magit-status)))
+;;         (:name asciidoc :type elpa :after (lambda () (autoload 'doc-mode "doc-mode" nil t) (add-to-list 'auto-mode-alist '("\\.adoc$" . doc-mode)) (add-hook 'doc-mode-hook '(lambda () (turn-on-auto-fill) (require 'asciidoc))))) (:name lisppaste :type elpa) (:name emacs-goodies-el :type apt-get)))
+;; (setq my-packages
+;;       (append '(cssh el-get switch-window vkill google-maps nxhtml xcscope yasnippet)
+;; 	      (mapcar 'el-get-source-name el-get-sources)))
+(setq el-get-sources
+      '((:name autopair)
+        (:name magit)
+	(:name css-mode :type elpa)
+	(:name deft)
+	(:name inf-ruby)
+	(:name js2-mode)
+	(:name json)
+	(:name lua-mode)
+	(:name markdown-mode)
+	(:name muse)
+	(:name paredit)
+	;;(:name rainbow-mode) ;; failed -- also naquadah
+	(:name ruby-mode)
+	(:name rspec-mode)
+	(:name yaml-mode)
+        )
+      )
+(setq my-packages
+      (append
+       '(el-get
+	 ;; ... packages here ...
+	 )
+       (mapcar 'el-get-source-name el-get-sources)))
+(el-get 'sync my-packages)
 
 
 
-(add-to-list 'load-path "~/.emacs.d")
-                
 (dolist (path '("~/.emacs.d/revive.el"
                 "~/.emacs.d/matlab.el"
                 "~/.emacs.d/bundle/mode/haxe-mode.el"
                 "~/.emacs.d/windows.el"
                 "~/.emacs.d/bundle/zencoding/zencoding-mode.el"
                 "~/.emacs.d/bundle/mode/graphviz-dot-mode.el"
-                "~/.emacs.d/elpa/yaml-mode-0.0.5/yaml-mode.el"
+                ;NEW;"~/.emacs.d/elpa/yaml-mode-0.0.5/yaml-mode.el"
                 "~/.emacs.d/perspective/perspective.el"
                 ))
   (load-file path))
@@ -50,21 +84,23 @@
   (interactive)
   (custom-persp "@org"
                 (find-file (first org-agenda-files))))
-;;; This was installed by package-install.el.
-;;; This provides support for the package system and
-;;; interfacing with ELPA, the package archive.
-;;; Move this code earlier if you want to reference
-;;; packages in your .emacs.
-(when
-    (load
-     (expand-file-name "~/.emacs.d/elpa/package.el"))
-  ;; Add the original Emacs Lisp Package Archive
-  (add-to-list 'package-archives
-               '("elpa" . "http://tromey.com/elpa/"))
-  ;; Add the user-contributed repository
-  (add-to-list 'package-archives
-               '("marmalade" . "http://marmalade-repo.org/packages/"))
-  (package-initialize))
+
+;; superceded by el-get?
+;;;;;;; This was installed by package-install.el.
+;;;;;;; This provides support for the package system and
+;;;;;;; interfacing with ELPA, the package archive.
+;;;;;;; Move this code earlier if you want to reference
+;;;;;;; packages in your .emacs.
+;;;;(when
+;;;;    (load
+;;;;     (expand-file-name "~/.emacs.d/elpa/package.el"))
+;;;;  ;; Add the original Emacs Lisp Package Archive
+;;;;  (add-to-list 'package-archives
+;;;;               '("elpa" . "http://tromey.com/elpa/"))
+;;;;  ;; Add the user-contributed repository
+;;;;  (add-to-list 'package-archives
+;;;;               '("marmalade" . "http://marmalade-repo.org/packages/"))
+;;;;  (package-initialize))
 
 
 
@@ -88,9 +124,10 @@
 
 
 
+;; supercede by el-get?
 ;; get this with svn checkout http://autopair.googlecode.com/svn/trunk/ autopair-read-only, run from inside the bundle folder
-(add-to-list 'load-path "~/.emacs.d/bundle/autopair-read-only/")
-(require 'autopair)
+;; (add-to-list 'load-path "~/.emacs.d/bundle/autopair-read-only/")
+;; (require 'autopair)
 (autopair-global-mode) ;; enable autopair in all buffers 
 (add-hook 'js2-mode-hook #'(lambda () (setq autopair-dont-activate t))) ; the #'(lambda ...) form is the same as just doing (lambda ...). leaving it here just as example
 ;; fix autopair infinite loop in sldb
@@ -716,9 +753,9 @@ Also returns nil if pid is nil."
 
 
 
-(require 'muse-wiki)
+;NEW;(require 'muse-wiki)
 ;; w3 should be loaded by ELPA
-(require 'w3-auto)
+;NEW;(require 'w3-auto)
 
 ;; <yasnippet> ;; not using elpa version
 (add-to-list 'load-path "~/.emacs.d/bundle/yasnippet")
@@ -734,7 +771,7 @@ Also returns nil if pid is nil."
 (require 'minimap)
 
 ;; thanks to http://kliketa.wordpress.com/2010/08/04/gtklook-browse-documentation-for-gtk-glib-and-gnome-inside-emacs/
-(require 'gtk-look)
+;NEW;(require 'gtk-look)
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "chromium-browser")
 ;;(setq browse-url-browser-function
