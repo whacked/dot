@@ -11,46 +11,52 @@
 ;; example:
 ;; (setq el-get-sources
 ;;       '((:name magit :after (lambda () (global-set-key (kbd "C-x C-z") 'magit-status)))
-;;         (:name asciidoc :type elpa :after (lambda () (autoload 'doc-mode "doc-mode" nil t) (add-to-list 'auto-mode-alist '("\\.adoc$" . doc-mode)) (add-hook 'doc-mode-hook '(lambda () (turn-on-auto-fill) (require 'asciidoc))))) (:name lisppaste :type elpa) (:name emacs-goodies-el :type apt-get)))
+;;          (:name asciidoc :type elpa :after (lambda () (autoload 'doc-mode "doc-mode" nil t) (add-to-list 'auto-mode-alist '("\\.adoc$" . doc-mode)) (add-hook 'doc-mode-hook '(lambda () (turn-on-auto-fill) (require 'asciidoc)))))
+;;          (:name lisppaste :type elpa)
+;;          (:name emacs-goodies-el :type apt-get)))
 ;; (setq my-packages
 ;;       (append '(cssh el-get switch-window vkill google-maps nxhtml xcscope yasnippet)
 ;; 	      (mapcar 'el-get-source-name el-get-sources)))
+(el-get 'wait)
 (setq el-get-sources
       '((:name autopair)
         (:name magit)
-	(:name color-theme)
-	(:name css-mode :type elpa)
-	(:name deft)
-	(:name inf-ruby)
-	(:name js2-mode)
-	(:name json)
-	(:name lua-mode)
-	(:name markdown-mode)
-	(:name muse)
-	(:name paredit)
-	;;(:name rainbow-mode) ;; failed -- also naquadah
-	(:name ruby-mode)
-	(:name rspec-mode)
-	(:name yaml-mode)
+        (:name color-theme)
+        (:name clojure-mode)
+        (:name deft)
+        (:name inf-ruby)
+        (:name js2-mode)
+        (:name json)
+        (:name lua-mode)
+        (:name markdown-mode)
+        (:name matlab-mode)
+        (:name muse)
+        (:name paredit)
+        ;; (:name rainbow-mode :type elpa)
+        (:name ruby-mode)
+        (:name rspec-mode)
+        (:name slime)
+        (:name swank-clojure)
+        ;;(:name tex-math-preview :type elpa)
+        ;;(:name tumble :type elpa)
+        (:name yaml-mode)
         )
       )
 (setq my-packages
       (append
        '(el-get
-	 ;; ... packages here ...
-	 )
+         ;; ... packages here ...
+         )
        (mapcar 'el-get-source-name el-get-sources)))
 (el-get 'sync my-packages)
 
 
 
 (dolist (path '("~/.emacs.d/revive.el"
-                "~/.emacs.d/matlab.el"
                 "~/.emacs.d/bundle/mode/haxe-mode.el"
                 "~/.emacs.d/windows.el"
                 "~/.emacs.d/bundle/zencoding/zencoding-mode.el"
                 "~/.emacs.d/bundle/mode/graphviz-dot-mode.el"
-                ;NEW;"~/.emacs.d/elpa/yaml-mode-0.0.5/yaml-mode.el"
                 "~/.emacs.d/perspective/perspective.el"
                 ))
   (load-file path))
@@ -754,7 +760,6 @@ Also returns nil if pid is nil."
 
 
 
-;NEW;(require 'muse-wiki)
 ;; w3 should be loaded by ELPA
 ;NEW;(require 'w3-auto)
 
