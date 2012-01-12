@@ -18,6 +18,7 @@
 (setq el-get-sources
       '((:name autopair)
         (:name magit)
+	(:name color-theme)
 	(:name css-mode :type elpa)
 	(:name deft)
 	(:name inf-ruby)
@@ -682,7 +683,7 @@ Also returns nil if pid is nil."
  '(org-level-6 ((t (:inherit outline-6 :height 1.1 :family "Verdana")))))
 ;(set-cursor-color "orange")
 
-(add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0/")
+;;(add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0/")
 (require 'color-theme)
 (eval-after-load "color-theme"
   '(progn
