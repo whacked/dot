@@ -11,3 +11,4 @@
 *.elc
 abbrev_defs
 .emacs.d/newsticker/
+.emacs.d/el-get
