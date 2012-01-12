@@ -4,6 +4,7 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Util.Run
 import XMonad.Util.EZConfig
 import System.IO
+import Data.List
 
 import XMonad.Util.EZConfig
 import XMonad.Config.Gnome
@@ -18,12 +19,17 @@ import XMonad.Layout.Tabbed
 
 -- check xmodmap -pm to see mod key mapping
 
+
+devMode = False
+myFocusedBorderColor = if devMode == True then "green" else "red"
+
 main = do
     xmonad $ gnomeConfig
-        { terminal = "gnome-terminal" 
+        { terminal = "terminator" -- terminal = "gnome-terminal" 
         , borderWidth = 1
         , modMask = myModMask
-        -- , focusedBorderColor = "red"
+        --, focusedBorderColor = "red"
+        , focusedBorderColor = myFocusedBorderColor
         -- , manageHook = manageDocks -- <+> manageHook gnomeConfig
         -- , layoutHook = avoidStruts $ layoutHook gnomeConfig
         , layoutHook = myLayout -- avoidStruts $ layoutHook defaultConfig
@@ -31,7 +37,7 @@ main = do
         , workspaces = myWorkspaces
         } `additionalKeys` myKeys
 
-myLayout = tiled ||| Mirror tiled ||| ThreeColMid 1 (3/100) (1/3) ||| simpleTabbed ||| Full -- ThreeCol 1 (3/100) (1/2) |||
+myLayout = tiled ||| Mirror tiled ||| ThreeColMid 1 (3/100) (1/3) ||| simpleTabbed -- ||| Full ||| ThreeCol 1 (3/100) (1/2)
   where
     tiled   = Tall nmaster delta ratio
     nmaster = 1
@@ -59,12 +65,15 @@ myManageHook = composeAll
     , className =? "Shutter" --> doFloat
     , className =? "SpiderOak" --> doFloat
     , className =? "CrashPlan" --> doFloat
+    , title     =? "Set Zoom" --> doFloat -- xournal's zoom box
     , title     =? "Run Application" --> doFloat
+    , fmap ("Properties" `isInfixOf`) title --> doFloat
+    , className =? "Gimp-2.6" --> doFloat
     , className =? "Chromium-browser" --> doShift "2:web"
     , className =? "Thunderbird" --> doShift "4:mail"
     , className =? "Calibre" --> doShift "8:read"
-    , className =? "Gimp" --> doFloat
     , className =? "Kalarm" --> doShift "0:swap"
+    , className =? "Xournalpp" --> doShift "8:read"
     -- , ( role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
     ]
 
