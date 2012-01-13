@@ -14,6 +14,12 @@ if [ ! -e ~/.vimrc ]; then
     ln -s ~/dot/.vim/vim-pathogen/autoload/pathogen.vim ~/.vim/autoload/pathogen.vim
 fi
 
+# TMUX ----------------------------------------------------------------
+echo "setting up tmux..."
+if [ ! -e ~/.tmux.conf ]; then
+    ln -s ~/dot/.tmux.conf ~/.tmux.conf
+fi
+
 # submodule command sample
 # git submodule add http://github.com/scrooloose/nerdtree.git .vim/bundle/nerdtree
 
