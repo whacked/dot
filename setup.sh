@@ -5,9 +5,6 @@ if [ ! -e ~/.emacs ]; then
     ln -s ~/dot/.emacs.d ~/.emacs.d
 fi
 
-# git submodule add git://github.com/chrisdone/zencoding.git .emacs.d/bundle/zencoding
-# git submodule add git://repo.or.cz/org-mode.git .emacs.d/bundle/org-mode
-
 # VIM ----------------------------------------------------------------
 echo "setting up vim..."
 if [ ! -e ~/.vimrc ]; then
