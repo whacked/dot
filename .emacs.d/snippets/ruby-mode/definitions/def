@@ -1,0 +1,5 @@
+#name : def function ... end
+# --
+def ${function_name}
+  $0
+end
