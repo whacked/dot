@@ -295,8 +295,8 @@ Also returns nil if pid is nil."
 ;; <org mode config> ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 ; below add-to-list not required if org-mode successfully built with =make= and =make-install=
-;(add-to-list 'load-path "~/.emacs.d/bundle/org-mode/lisp")
-;(add-to-list 'load-path "~/.emacs.d/bundle/org-mode/contrib/lisp")
+(add-to-list 'load-path "~/.emacs.d/bundle/org-mode/lisp")
+(add-to-list 'load-path "~/.emacs.d/bundle/org-mode/contrib/lisp")
 (add-to-list 'load-path "~/.emacs.d/dev")
 (require 'org-install)
 (org-babel-do-load-languages
@@ -321,7 +321,6 @@ Also returns nil if pid is nil."
    (latex . t)
    (ditaa . t)
    ))
-(add-to-list 'load-path "~/.emacs.d/bundle/org-mode/contrib/lisp/")
 (require 'org-drill)
 (setq org-ditaa-jar-path "~/.emacs.d/bundle/org-mode/contrib/scripts/ditaa.jar")
 
@@ -856,7 +855,6 @@ a sound to be played"
     (setq appt-time-msg-list (kiwon/merge-appt-time-msg-list appt-time-msg-list))))
 
 (add-hook 'org-finalize-agenda-hook (function kiwon/org-agenda-to-appt))
-(load "ledger")
 
 
 
@@ -932,13 +930,16 @@ a sound to be played"
 ;;(eval-after-load "pymacs"
 ;;  '(add-to-list 'pymacs-load-path YOUR-PYMACS-DIRECTORY"))
 
-;; freex mode
+;;;; ledger
+;; (load "ledger")
 
-(setq pymacs-load-path '("~/dev/elisp/org-freex"))
-(add-to-list 'load-path (expand-file-name "~/dev/elisp/org-freex/"))
-(load-file "~/dev/elisp/org-freex/freex-conf.el")
-;;;;(load-file "~/dev/elisp/org-freex/freex-mode.el")
-;;(require 'freex-mode)
+;;;; freex mode
+;;
+;;(setq pymacs-load-path '("~/dev/elisp/org-freex"))
+;;(add-to-list 'load-path (expand-file-name "~/dev/elisp/org-freex/"))
+;;(load-file "~/dev/elisp/org-freex/freex-conf.el")
+;;;;;;(load-file "~/dev/elisp/org-freex/freex-mode.el")
+;;;;(require 'freex-mode)
 
 
  
