@@ -1,3 +1,4 @@
+.*.swp
 .vim/autoload/pathogen.vim
 .emacs.d/session.*
 .emacs.d/.emacs.desktop*
