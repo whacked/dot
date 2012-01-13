@@ -12,3 +12,4 @@
 abbrev_defs
 .emacs.d/newsticker/
 .emacs.d/el-get
+.emacs.d/swank
