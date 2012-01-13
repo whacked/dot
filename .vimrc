@@ -17,6 +17,7 @@ Bundle 'scrooloose/nerdtree'
 Bundle 'tpope/vim-fugitive'
 Bundle 'docunext/closetag.vim'
 Bundle 'altercation/vim-colors-solarized'
+Bundle 'Lokaltog/vim-powerline'
 "" " vim-scripts repos
 Bundle 'matchit.zip'
 Bundle 'AutoClose'
