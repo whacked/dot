@@ -748,7 +748,7 @@ Also returns nil if pid is nil."
   "A minor mode so that my key settings override annoying major modes."
   t " my-keys" 'my-keys-minor-mode-map)
 (my-keys-minor-mode 1)
-
+(winner-mode 1)
 
 
 
