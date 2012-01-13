@@ -82,3 +82,6 @@
 [submodule ".emacs.d/bundle/gnuplot-mode"]
 	path = .emacs.d/bundle/gnuplot-mode
 	url = https://github.com/bruceravel/gnuplot-mode.git
+[submodule ".emacs.d/snippets/org-mode"]
+	path = .emacs.d/snippets/org-mode
+	url = https://github.com/cofi/yasnippet-org-mode.git
