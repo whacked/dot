@@ -1,6 +1,9 @@
 (setq inhibit-splash-screen t)
 
 (add-to-list 'load-path "~/.emacs.d")
+(setq package-archives '(("ELPA" . "http://tromey.com/elpa/") 
+			 ("gnu" . "http://elpa.gnu.org/packages/")
+			 ("marmalade" . "http://marmalade-repo.org/packages/")))
 ;; https://github.com/dimitri/el-get#readme
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 (unless (require 'el-get nil t)
@@ -17,30 +20,12 @@
 ;; (setq my-packages
 ;;       (append '(cssh el-get switch-window vkill google-maps nxhtml xcscope yasnippet)
 ;; 	      (mapcar 'el-get-source-name el-get-sources)))
-(el-get 'wait)
 (setq el-get-sources
-      '((:name autopair)
-        (:name magit)
-        (:name color-theme)
-        ;;(:name clojure-mode)
-        (:name deft)
-        (:name inf-ruby)
-        (:name js2-mode)
-        (:name json)
-        (:name lua-mode)
-        (:name markdown-mode)
-        ;;(:name matlab-mode)
-        (:name muse)
-        (:name paredit)
-        ;; (:name rainbow-mode :type elpa)
-        (:name ruby-mode)
-        (:name rspec-mode)
-        ;;(:name slime)
-        ;; (:name slime-repl :type elpa)
-        ;;(:name swank-clojure)
-        ;;(:name tex-math-preview :type elpa)
-        ;;(:name tumble :type elpa)
-        (:name yaml-mode)
+      '(
+	(:name clojure-mode
+	       :type git
+	       :url "https://github.com/technomancy/clojure-mode.git") 
+	(:name tex-math-preview :type elpa)
 	(:name yasnippet
 	       :type git
 	       :url "https://github.com/capitaomorte/yasnippet.git"
@@ -50,18 +35,22 @@
       )
 (setq my-packages
       (append
-       '(el-get
-         ;; ... packages here ...
+       '(el-get package
+         ;; put el-get bundled packages here
+         magit color-theme deft
+	 muse paredit autopair
+	 inf-ruby js2-mode json lua-mode markdown-mode ruby-mode rspec-mode yaml-mode zencoding-mode
          )
        (mapcar 'el-get-source-name el-get-sources)))
 (el-get 'sync my-packages)
 
 (dolist (path '("~/.emacs.d/revive.el"
                 "~/.emacs.d/bundle/mode/haxe-mode.el"
+                "~/.emacs.d/matlab.el"
                 "~/.emacs.d/windows.el"
-                "~/.emacs.d/bundle/zencoding/zencoding-mode.el"
                 "~/.emacs.d/bundle/mode/graphviz-dot-mode.el"
                 "~/.emacs.d/perspective/perspective.el"
+                "~/.emacs.d/rainbow-mode.el"
                 ))
   (load-file path))
 
