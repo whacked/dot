@@ -20,6 +20,17 @@ if [ ! -e ~/.tmux.conf ]; then
     ln -s ~/dot/.tmux.conf ~/.tmux.conf
 fi
 
+echo "setting up leiningen"
+if [ -e ~/.lein ]; then
+    if [ -e ~/.lein/init.clj ]; then
+        echo ".lein/init.clj exists..."
+    else
+        ln -s ~/dot/init.clj ~/.lein/init.clj
+    fi
+else
+    echo "lein not installed"
+fi
+
 # submodule command sample
 # git submodule add http://github.com/scrooloose/nerdtree.git .vim/bundle/nerdtree
 
