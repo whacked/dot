@@ -135,7 +135,8 @@
 (add-hook 'clojure-mode-hook #'(lambda ()
                                  (setq autopair-dont-activate t)
                                  (paredit-mode)))
-
+;; highlight cljs with clojure-mode
+(add-to-list 'auto-mode-alist '("\.cljs$" . clojure-mode))
 
 
 
