@@ -21,25 +21,24 @@
 ;;       (append '(cssh el-get switch-window vkill google-maps nxhtml xcscope yasnippet)
 ;; 	      (mapcar 'el-get-source-name el-get-sources)))
 (setq el-get-sources
-      '(
-	(:name clojure-mode
+      '((:name clojure-mode
 	       :type git
 	       :url "https://github.com/technomancy/clojure-mode.git") 
-	(:name tex-math-preview :type elpa)
-	(:name yasnippet
-	       :type git
-	       :url "https://github.com/capitaomorte/yasnippet.git"
-	       :features "yasnippet"
-	       :compile nil)
-        )
-      )
+        (:name tex-math-preview :type elpa)
+        (:name yasnippet
+               :type git
+               :url "https://github.com/capitaomorte/yasnippet.git"
+               :features "yasnippet"
+               :compile nil)
+        ))
 (setq my-packages
       (append
        '(el-get package
          ;; put el-get bundled packages here
          magit color-theme deft
-	 muse paredit autopair
-	 inf-ruby js2-mode json lua-mode markdown-mode ruby-mode rspec-mode yaml-mode zencoding-mode
+         muse paredit autopair
+         inf-ruby js2-mode json lua-mode markdown-mode ruby-mode rspec-mode yaml-mode zencoding-mode
+         iedit
          )
        (mapcar 'el-get-source-name el-get-sources)))
 (el-get 'sync my-packages)
@@ -756,13 +755,6 @@ Also returns nil if pid is nil."
 ;; w3 should be loaded by ELPA
 ;NEW;(require 'w3-auto)
 
-;; <yasnippet> ;; not using elpa version
-(add-to-list 'load-path "~/.emacs.d/bundle/yasnippet")
-(require 'yasnippet) ;; not yasnippet-bundle
-(yas/initialize)
-(yas/load-directory "~/.emacs.d/bundle/yasnippet/snippets")
-;; </yasnippet> ;;
-
 (add-to-list 'load-path "~/.emacs.d/bundle/undo-tree")
 (require 'undo-tree)
 
@@ -989,3 +981,12 @@ a sound to be played"
 (setq deft-extension "org")
 (setq deft-directory "~/note/org/")
 (setq deft-text-mode 'org-mode)
+
+
+;; <yasnippet> ;; not using elpa version
+(add-to-list 'load-path "~/.emacs.d/bundle/yasnippet")
+(require 'yasnippet) ;; not yasnippet-bundle
+(yas/initialize)
+(yas/load-directory "~/.emacs.d/bundle/yasnippet/snippets")
+;; </yasnippet> ;;
+
