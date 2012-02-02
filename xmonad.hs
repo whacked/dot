@@ -1,12 +1,12 @@
 import XMonad
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.FadeInactive
 import XMonad.Util.Run
 import XMonad.Util.EZConfig
 import System.IO
 import Data.List
 
-import XMonad.Util.EZConfig
 import XMonad.Config.Gnome
 import XMonad.Actions.SimpleDate
 
@@ -26,7 +26,7 @@ myFocusedBorderColor = if devMode == True then "green" else "red"
 main = do
     xmonad $ gnomeConfig
         { terminal = "terminator" -- terminal = "gnome-terminal" 
-        , borderWidth = 1
+        , borderWidth = 2
         , modMask = myModMask
         --, focusedBorderColor = "red"
         , focusedBorderColor = myFocusedBorderColor
@@ -35,7 +35,12 @@ main = do
         , layoutHook = myLayout -- avoidStruts $ layoutHook defaultConfig
         , manageHook = myManageHook <+> manageHook gnomeConfig
         , workspaces = myWorkspaces
+        -- , logHook = myLogHook
         } `additionalKeys` myKeys
+
+-- myLogHook :: X ()
+-- myLogHook = fadeInactiveLogHook fadeAmount
+--     where fadeAmount = 1
 
 myLayout = tiled 
        ||| Mirror tiled 
@@ -72,7 +77,7 @@ myManageHook = composeAll
     , title     =? "Run Application" --> doFloat
     , fmap ("Properties" `isInfixOf`) title --> doFloat
     , className =? "Gimp-2.6" --> doFloat
-    , className =? "Chromium-browser" --> doShift "2:web"
+    -- , className =? "Chromium-browser" --> doShift "2:web"
     , className =? "Thunderbird" --> doShift "4:mail"
     , className =? "Calibre" --> doShift "8:read"
     , className =? "Kalarm" --> doShift "0:swap"
