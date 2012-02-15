@@ -176,3 +176,30 @@ EOF
               (setq end (+ end need-to-pad))
               (insert (format (format "%%%ds" need-to-pad) ""))))
           (next-line))))))
+
+
+
+;; http://xahlee.org/emacs/elisp_replace_html_entities_command.html
+(defun replace-html-chars-region (start end)
+  "Replace some HTML entities in region …."
+  (interactive "r")
+  (save-restriction 
+    (narrow-to-region start end)
+
+    (goto-char (point-min))
+    (while (search-forward "&lsquo;" nil t) (replace-match "‘" nil t))
+
+    (goto-char (point-min))
+    (while (search-forward "&rsquo;" nil t) (replace-match "’" nil t))
+
+    (goto-char (point-min))
+    (while (search-forward "&ldquo;" nil t) (replace-match "“" nil t))
+
+    (goto-char (point-min))
+    (while (search-forward "&rdquo;" nil t) (replace-match "”" nil t))
+
+    (goto-char (point-min))
+    (while (search-forward "&eacute;" nil t) (replace-match "é" nil t))
+    ;; more here
+    )
+  )
