@@ -69,6 +69,7 @@
 ;; (add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode +1)))
 (require 'windows)
 (win:startup-with-window)
+(recentf-mode 1)
 
 ;; perspective mode
 ;; ref: http://emacsrookie.com/2011/09/25/workspaces/
