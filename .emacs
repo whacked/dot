@@ -38,7 +38,7 @@
          magit color-theme deft
          muse paredit autopair
          inf-ruby js2-mode json lua-mode markdown-mode ruby-mode rspec-mode yaml-mode zencoding-mode
-         iedit
+         iedit nxhtml
          )
        (mapcar 'el-get-source-name el-get-sources)))
 (el-get 'sync my-packages)
