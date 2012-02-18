@@ -468,7 +468,8 @@ Also returns nil if pid is nil."
   (setq kill-emacs-hook nil)
   (kill-emacs))
 
-(defun wsm () (interactive) (win-switch-menu))
+(defalias 'wsm 'win-switch-menu)
+(defalias 'visu 'visual-line-mode)
 
 (defun surround-region-with-tag (tag-name beg end)
   (interactive "sTag name: \nr")
