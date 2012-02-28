@@ -209,18 +209,17 @@ EOF
 (defun org-screenshot ()
   "Take a screenshot into a time stamped unique-named file in the same directory as the org-buffer and insert a link to this file."
   (interactive)
-  ((png-filepath (concat
-                  default-directory
-                  "img/screenshot/"
-                  (format-time-string "%Y-%m-%d_%H%M%S_")
-                  (buffer-name) ".png"))
-   (base-dir (file-name-directory png-filepath)))
-  (unless (file-exists-p base-dir)
-    (make-directory base-dir t))
-  ;; -s  select window
-  ;; -u  use the focused window
-  (call-process "scrot" nil nil nil "-u" png-filepath)
-  (insert (concat "[[" png-filepath "]]"))
-  ;;(org-display-inline-images)
-  )
-
+  (let* ((png-filepath (concat
+                        default-directory
+                        "img/screenshot/"
+                        (format-time-string "%Y-%m-%d_%H%M%S_")
+                        (buffer-name) ".png"))
+         (base-dir (file-name-directory png-filepath)))
+    (unless (file-exists-p base-dir)
+      (make-directory base-dir t))
+    ;; -s  select window
+    ;; -u  use the focused window
+    (call-process "scrot" nil nil nil "-u" png-filepath)
+    (insert (concat "[[" png-filepath "]]"))
+    ;;(org-display-inline-images)
+  ))

@@ -38,7 +38,7 @@
          magit color-theme deft
          muse paredit autopair
          inf-ruby js2-mode json lua-mode markdown-mode ruby-mode rspec-mode yaml-mode zencoding-mode
-         iedit nxhtml
+         iedit ;; nxhtml
          )
        (mapcar 'el-get-source-name el-get-sources)))
 (el-get 'sync my-packages)
@@ -201,6 +201,10 @@
 ;; Add the hook so this is all loaded when JS2-mode is loaded
 (add-hook 'js2-mode-hook 'my-js2-mode-hook)
 ;; </js mode customization>
+
+(eval-after-load 'haxe-mode
+  '(define-key haxe-mode-map (kbd "C-c C-c")
+     (lambda () (interactive) (compile "make"))))
 
 
 
