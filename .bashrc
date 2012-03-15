@@ -11,8 +11,8 @@
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=10000
-HISTFILESIZE=20000
+HISTSIZE=1000000
+HISTFILESIZE=1000000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -129,3 +129,9 @@ export JAVA_OPTS="-Dswank.encoding=utf-8-unix" # 日本語用？
 export JAVA_HOME=/usr
 export HISTIGNORE="[ ]*"
 export HISTCONTROL=ignoredups
+export HISTTIMEFORMAT="%F %T "
+
+export HAXE_LIBRARY_PATH=/usr/local/haxe/std:. # the ':.' part is important
+export HAXE_HOME=/usr/local/haxe
+export NEKOPATH=/usr/local/neko
+PATH=$PATH:$HAXE_LIBRARY_PATH:$HAXE_HOME/bin
