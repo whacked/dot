@@ -16,6 +16,8 @@ import XMonad.Actions.CycleWindows
 
 import XMonad.Layout.ThreeColumns
 import XMonad.Layout.Tabbed
+import XMonad.Layout.IndependentScreens -- provides countScreens function
+-- see http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Actions-CycleWS.html
 
 -- check xmodmap -pm to see mod key mapping
 
