@@ -68,6 +68,7 @@ myWorkspaces = [ "1"
                ]
 role = stringProperty "WM_WINDOW_ROLE"
 
+-- use `xprop` to find out the window class name
 myManageHook :: ManageHook
 myManageHook = composeAll
     [ className =? "Pidgin" --> doFloat
@@ -75,6 +76,8 @@ myManageHook = composeAll
     , className =? "Shutter" --> doFloat
     , className =? "SpiderOak" --> doFloat
     , className =? "CrashPlan" --> doFloat
+    , className =? "Tk" --> doFloat
+    , fmap ("awt-X11" `isInfixOf`) title --> doFloat -- java awt windows
     , title     =? "Set Zoom" --> doFloat -- xournal's zoom box
     , title     =? "Run Application" --> doFloat
     , fmap ("Properties" `isInfixOf`) title --> doFloat
