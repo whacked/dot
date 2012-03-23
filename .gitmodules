@@ -58,9 +58,6 @@
 [submodule ".emacs.d/bundle/slime"]
 	path = .emacs.d/bundle/slime
 	url = git://sbcl.boinkor.net/slime.git
-[submodule ".emacs.d/bundle/yasnippet"]
-	path = .emacs.d/bundle/yasnippet
-	url = https://github.com/emacsmirror/yasnippet.git
 [submodule ".vim/bundle/AutoClose"]
 	path = .vim/bundle/AutoClose
 	url = https://github.com/vim-scripts/AutoClose.git
