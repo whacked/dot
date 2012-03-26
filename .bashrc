@@ -116,10 +116,10 @@ PS1="\[\033[0m\][\[\033[32m\]\A\[\033[0m\]] \[\033[1;33m\]\u\[\033[0m\]@\h \[\03
 if [[ -s "$HOME/.rvm/scripts/rvm" ]]  ; then source "$HOME/.rvm/scripts/rvm" ; fi
 
 # for UBUNTU
-alias open=gnome-open
+alias open=gnome-open 2>/dev/null
 alias pbcopy='xsel --clipboard --input'
 alias pbpaste='xsel --clipboard --output'
-export PATH=$PATH:~/opt/leiningen:~/.config/thinkpad
+export PATH=$PATH:~/opt/leiningen:~/.config/thinkpad:/opt
 
 keychain ~/.ssh/id_rsa
 . ~/.keychain/`uname -n`-sh
