@@ -989,10 +989,3 @@ a sound to be played"
 (setq deft-text-mode 'org-mode)
 
 
-;; <yasnippet> ;; not using elpa version
-(add-to-list 'load-path "~/.emacs.d/bundle/yasnippet")
-(require 'yasnippet) ;; not yasnippet-bundle
-(yas/initialize)
-(yas/load-directory "~/.emacs.d/bundle/yasnippet/snippets")
-;; </yasnippet> ;;
-
