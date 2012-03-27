@@ -121,8 +121,10 @@ alias pbcopy='xsel --clipboard --input'
 alias pbpaste='xsel --clipboard --output'
 export PATH=$PATH:~/opt/leiningen:~/.config/thinkpad:/opt
 
-keychain ~/.ssh/id_rsa
-. ~/.keychain/`uname -n`-sh
+if [ $(which keychain) ] ; then
+    keychain ~/.ssh/id_rsa
+    . ~/.keychain/`uname -n`-sh
+fi
 
 # ref http://d.hatena.ne.jp/dame-p/20110313/1299992080
 export JAVA_OPTS="-Dswank.encoding=utf-8-unix" # 日本語用？
