@@ -511,6 +511,8 @@ Also returns nil if pid is nil."
 (require 'ansi-color)
 
 
+(setenv "PATH" (concat "/opt:/opt/local/bin:" (getenv "PATH")))
+
 (cond ((eq system-type 'gnu/linux)
        (progn ;; Linux
          ;; <ubuntu-tp customizations> ;;;;;;
@@ -596,7 +598,6 @@ Also returns nil if pid is nil."
          ;;(setq py-python-command-args '( "-colors" "Linux"))
          ;;(require 'python-mode)
          (setenv "PYTHONPATH" "/opt/local/bin/python")
-         (setenv "PATH" (concat "/opt/local/bin:" (getenv "PATH")))
 
          ;; w3m
          ;;(add-to-list 'load-path "/opt/local/share/emacs/site-lisp/w3m")
