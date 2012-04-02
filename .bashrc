@@ -137,3 +137,4 @@ export HAXE_LIBRARY_PATH=/usr/local/haxe/std:. # the ':.' part is important
 export HAXE_HOME=/usr/local/haxe
 export NEKOPATH=/usr/local/neko
 PATH=$PATH:$HAXE_LIBRARY_PATH:$HAXE_HOME/bin
+set -o noclobber # prevent > FILE from overwriting existing
