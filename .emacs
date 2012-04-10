@@ -38,7 +38,7 @@
          magit color-theme deft
          muse paredit autopair
          inf-ruby js2-mode json lua-mode markdown-mode ruby-mode rspec-mode yaml-mode zencoding-mode
-         iedit ;; nxhtml
+         iedit frame-bufs ;; nxhtml
          )
        (mapcar 'el-get-source-name el-get-sources)))
 (el-get 'sync my-packages)
@@ -70,6 +70,9 @@
 (require 'windows)
 (win:startup-with-window)
 (recentf-mode 1)
+
+(require 'frame-bufs)
+(frame-bufs-mode t)
 
 ;; perspective mode
 ;; ref: http://emacsrookie.com/2011/09/25/workspaces/
@@ -990,3 +993,7 @@ a sound to be played"
 (setq deft-text-mode 'org-mode)
 
 
+
+
+;; eliminate strange error with this for now
+(defvar warning-suppress-types nil)
