@@ -688,7 +688,8 @@ Also returns nil if pid is nil."
  '(org-level-3 ((t (:inherit outline-3 :height 1.4 :family "Verdana"))))
  '(org-level-4 ((t (:inherit outline-4 :foreground "blue" :height 1.3 :family "Verdana"))))
  '(org-level-5 ((t (:inherit outline-5 :height 1.2 :family "Verdana"))))
- '(org-level-6 ((t (:inherit outline-6 :height 1.1 :family "Verdana")))))
+ '(org-level-6 ((t (:inherit outline-6 :height 1.1 :family "Verdana"))))
+ '(table-cell ((t (:background "#DD8" :foreground "gray50" :inverse-video nil))))))
 ;(set-cursor-color "orange")
 
 ;;(add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0/")
