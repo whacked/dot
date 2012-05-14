@@ -76,3 +76,6 @@
 [submodule ".emacs.d/snippets/org-mode"]
 	path = .emacs.d/snippets/org-mode
 	url = https://github.com/cofi/yasnippet-org-mode.git
+[submodule ".emacs.d/bundle/ess"]
+	path = .emacs.d/bundle/ess
+	url = https://github.com/emacs-ess/ESS
