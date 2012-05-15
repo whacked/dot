@@ -279,25 +279,22 @@ Also returns nil if pid is nil."
 ; (setq scroll-conservatively 10000)
 
 
-(set-scroll-bar-mode 'right)
+(when
+    (functionp 'set-scroll-bar-mode)
+  (set-scroll-bar-mode 'right))
 
 
-(load "auctex.el" nil t t)
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex) 
-
-
-(setq TeX-command-master "latex")
-
-(setq TeX-auto-save t)
-(setq TeX-parse-self t)
-(setq TeX-save-query t)
-
+(when (file-exists-p "auctex.el")
+  (load "auctex.el" nil t t)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex) 
+  (setq TeX-command-master "latex")
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq TeX-save-query t))
 
 ; javascript-mode override
 ; 2009-06-13 18:45:02
 (setq javascript-indent-level 2)
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; <org mode config> ;;
@@ -547,73 +544,78 @@ Also returns nil if pid is nil."
       ((eq system-type 'darwin)
        (progn ;; OS X
 
+         (when (file-exists-p (expand-file-name "~/dot/cne.emacs"))
+           (load-file (expand-file-name "~/dot/cne.emacs")))
          ;;;;;; <OS X customizations> ;;;;;;
          ;;; turn apple key into Meta
-         (setq ns-command-modifier 'meta)
-         (if (eq window-system 'mac) (require 'carbon-font))
-         (setq ; xwl-default-font "Monaco-12"
-          xwl-japanese-font "Hiragino_Kaku_Gothic_ProN")
-         (let ((charset-font `((japanese-jisx0208 . ,xwl-japanese-font)
-                               (japanese-jisx0208 . ,xwl-japanese-font)
-                               ;; (japanese-jisx0212 . ,xwl-japanese-font)
-                               )))
+         (when (featurep 'ns)
+           (setq ns-command-modifier 'meta)
+           (if (eq window-system 'mac) (require 'carbon-font))
+           (setq ; xwl-default-font "Monaco-12"
+            xwl-japanese-font "Hiragino_Kaku_Gothic_ProN")
+           (let ((charset-font `((japanese-jisx0208 . ,xwl-japanese-font)
+                                 (japanese-jisx0208 . ,xwl-japanese-font)
+                                 ;; (japanese-jisx0212 . ,xwl-japanese-font)
+                                 )))
                                         ; (set-default-font xwl-default-font)
-           (mapc (lambda (charset-font)
-                   (set-fontset-font (frame-parameter nil 'font)
-                                     (car charset-font)
-                                     (font-spec :family (cdr charset-font) :size
-                                                12)))
-                 charset-font))
-         (defun osx-resize-current-window ()
-           (interactive)
-           (let* ((ncol (string-to-number (read-from-minibuffer "ncol? ")))
-                  (nrow (string-to-number (read-from-minibuffer "nrow? "))))
-             (set-frame-size (selected-frame) ncol nrow)))
-         (defun osx-move-current-window ()
-           (interactive)
-           (let* ((x (string-to-number (read-from-minibuffer "x? ")))
-                  (y (string-to-number (read-from-minibuffer "y? "))))
-             (set-frame-position (selected-frame) x y)))
-         (defun win:to1 ()
-           (interactive)
-           (set-frame-size (selected-frame) 200 56)
-           (set-frame-position (selected-frame) 0 20))
-         (defun win:to2 ()
-           (interactive)
-           (set-frame-position (selected-frame) 1440 -200)
-           (set-frame-size (selected-frame) 268 78))
-         (defun osx-w-lh ()
-           (interactive)
-           (set-frame-position (selected-frame) 40 22)
-           (set-frame-size (selected-frame) 100 56))
-         (defun osx-w-rh ()
-           (interactive)
-           (set-frame-position (selected-frame) 600 22)
-           (set-frame-size (selected-frame) 100 56))
-         (defun osx-w-h ()
-           (interactive)
-           (set-frame-size (selected-frame) (frame-width) (cond ((= 56 (frame-height)) 67)
-                                                                ((= 67 (frame-height)) 78)
-                                                                ((= 78 (frame-height)) 56))))
+             (mapc (lambda (charset-font)
+                     (set-fontset-font (frame-parameter nil 'font)
+                                       (car charset-font)
+                                       (font-spec :family (cdr charset-font) :size
+                                                  12)))
+                   charset-font))
+           (defun osx-resize-current-window ()
+             (interactive)
+             (let* ((ncol (string-to-number (read-from-minibuffer "ncol? ")))
+                    (nrow (string-to-number (read-from-minibuffer "nrow? "))))
+               (set-frame-size (selected-frame) ncol nrow)))
+           (defun osx-move-current-window ()
+             (interactive)
+             (let* ((x (string-to-number (read-from-minibuffer "x? ")))
+                    (y (string-to-number (read-from-minibuffer "y? "))))
+               (set-frame-position (selected-frame) x y)))
+           (defun win:to1 ()
+             (interactive)
+             (set-frame-size (selected-frame) 200 56)
+             (set-frame-position (selected-frame) 0 20))
+           (defun win:to2 ()
+             (interactive)
+             (set-frame-position (selected-frame) 1440 -200)
+             (set-frame-size (selected-frame) 268 78))
+           (defun osx-w-lh ()
+             (interactive)
+             (set-frame-position (selected-frame) 40 22)
+             (set-frame-size (selected-frame) 100 56))
+           (defun osx-w-rh ()
+             (interactive)
+             (set-frame-position (selected-frame) 600 22)
+             (set-frame-size (selected-frame) 100 56))
+           (defun osx-w-h ()
+             (interactive)
+             (set-frame-size (selected-frame) (frame-width) (cond ((= 56 (frame-height)) 67)
+                                                                  ((= 67 (frame-height)) 78)
+                                                                  ((= 78 (frame-height)) 56))))
 
-         ;;(setq ipython-command "/opt/local/bin/ipython")
-         ;;(require 'ipython)
-         ;;(setq py-python-command-args '( "-colors" "Linux"))
-         ;;(require 'python-mode)
-         (setenv "PYTHONPATH" "/opt/local/bin/python")
+           ;;(setq ipython-command "/opt/local/bin/ipython")
+           ;;(require 'ipython)
+           ;;(setq py-python-command-args '( "-colors" "Linux"))
+           ;;(require 'python-mode)
+           (setenv "PYTHONPATH" "/opt/local/bin/python")
 
-         ;; w3m
-         ;;(add-to-list 'load-path "/opt/local/share/emacs/site-lisp/w3m")
-         ;;(setq w3m-command "/usr/bin/w3m")
-         ;;(require 'w3m-load)
-         ;;(require 'w3m-e21)
-         ;;(provide 'w3m-e23)
+           ;; w3m
+           ;;(add-to-list 'load-path "/opt/local/share/emacs/site-lisp/w3m")
+           ;;(setq w3m-command "/usr/bin/w3m")
+           ;;(require 'w3m-load)
+           ;;(require 'w3m-e21)
+           ;;(provide 'w3m-e23)
 
-         ;;(setenv "PATH" (format "%s:%s" (getenv "PATH") "/usr/texbin:/usr/local/bin"))
-         ;;(load "/usr/share/emacs/site-lisp/auctex.el" nil t t)
-         ;;(load "/usr/share/emacs/site-lisp/preview-latex.el" nil t t)
+           ;;(setenv "PATH" (format "%s:%s" (getenv "PATH") "/usr/texbin:/usr/local/bin"))
+           ;;(load "/usr/share/emacs/site-lisp/auctex.el" nil t t)
+           ;;(load "/usr/share/emacs/site-lisp/preview-latex.el" nil t t)
 
          ;;;;;; </OS X customizations> ;;;;;;
+           
+           )
 
          (message "using OS X")
          )
@@ -681,7 +683,13 @@ Also returns nil if pid is nil."
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#f8f8ff" :foreground "#000000" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :foundry "unknown" :family "Consolas"))))
+ '(default ((t (:inherit nil :stipple nil
+                :background "#f8f8ff" :foreground "#000000" :inverse-video nil
+                :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :foundry "unknown"
+                :family (if (featurep 'ns)
+                          "Monaco"
+                          "Consolas")
+                ))))
  '(font-lock-keyword-face ((t (:foreground "DarkOliveGreen" :weight bold))))
  '(org-level-1 ((t (:inherit outline-1 :weight bold :height 1.6 :family "Verdana"))))
  '(org-level-2 ((t (:inherit outline-2 :height 1.5 :family "Verdana"))))
@@ -689,7 +697,8 @@ Also returns nil if pid is nil."
  '(org-level-4 ((t (:inherit outline-4 :foreground "blue" :height 1.3 :family "Verdana"))))
  '(org-level-5 ((t (:inherit outline-5 :height 1.2 :family "Verdana"))))
  '(org-level-6 ((t (:inherit outline-6 :height 1.1 :family "Verdana"))))
- '(table-cell ((t (:background "#DD8" :foreground "gray50" :inverse-video nil)))))
+ '(table-cell ((t (:background "#DD8" :foreground "gray50" :inverse-video nil))))
+ '(table-cell-face ((((class color)) (:background "#AA3" :foreground "gray90")))))
 ;(set-cursor-color "orange")
 
 ;;(add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0/")
