@@ -39,6 +39,7 @@
          muse paredit autopair
          inf-ruby js2-mode json lua-mode markdown-mode ruby-mode rspec-mode yaml-mode zencoding-mode
          iedit frame-bufs ;; nxhtml
+         unbound
          )
        (mapcar 'el-get-source-name el-get-sources)))
 (el-get 'sync my-packages)
