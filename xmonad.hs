@@ -77,6 +77,7 @@ myManageHook = composeAll
     , className =? "SpiderOak" --> doFloat
     , className =? "CrashPlan" --> doFloat
     , className =? "Tk" --> doFloat
+    -- , className =? "Display" --> doFloat
     , fmap ("awt-X11" `isInfixOf`) title --> doFloat -- java awt windows
     , title     =? "Set Zoom" --> doFloat -- xournal's zoom box
     , title     =? "Run Application" --> doFloat
@@ -88,6 +89,9 @@ myManageHook = composeAll
     , className =? "Kalarm" --> doShift "0:swap"
     , className =? "Xournalpp" --> doShift "8:read"
     -- , ( role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
+    , className =? "Emacs" --> doFloat
+    -- doesn't work, because title is initialized after emacs window appears
+    -- , fmap (isInfixOf "Speedbar") title --> doFloat
     ]
 
 myKeys = [] ++
