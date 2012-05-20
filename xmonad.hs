@@ -13,6 +13,7 @@ import XMonad.Actions.SimpleDate
 import qualified XMonad.StackSet as W
 import XMonad.Actions.CycleWS
 import XMonad.Actions.CycleWindows
+import XMonad.Actions.FloatKeys
 
 import XMonad.Layout.ThreeColumns
 import XMonad.Layout.Tabbed
@@ -110,6 +111,16 @@ myKeys = [] ++
          , ((myModMask .|. shiftMask, xK_Right), shiftNextScreen)
          , ((myModMask .|. shiftMask, xK_Left),  shiftPrevScreen)
          , ((myModMask,               xK_z),     toggleWS)
+         ] ++
+         -- FloatKeys
+         [ ((myModMask,               xK_f   ), withFocused (keysMoveWindow (10, 0)))
+         , ((myModMask,               xK_s   ), withFocused (keysMoveWindow (-10, 0)))
+         , ((myModMask,               xK_d   ), withFocused (keysMoveWindow (0, -10)))
+         , ((myModMask,               xK_c   ), withFocused (keysMoveWindow (0, 10)))
+         , ((myModMask .|. shiftMask, xK_f   ), withFocused (keysResizeWindow (20, 0)  (0, 0)))
+         , ((myModMask .|. shiftMask, xK_s   ), withFocused (keysResizeWindow (-10, 0) (0, 0)))
+         , ((myModMask .|. shiftMask, xK_d   ), withFocused (keysResizeWindow (0, -10)  (0, 0)))
+         , ((myModMask .|. shiftMask, xK_c   ), withFocused (keysResizeWindow (0, 20) (0, 0)))
          ] ++
          [((m .|. mod3Mask, k), windows $ f i)
               | (i, k) <- zip myWorkspaces ([xK_1 .. xK_9] ++ [xK_0])
