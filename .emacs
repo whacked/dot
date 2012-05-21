@@ -30,7 +30,11 @@
                :url "https://github.com/capitaomorte/yasnippet.git"
                :features "yasnippet"
                :compile nil)
-        ))
+        (:name emacs-dirtree
+               :type git
+               :url "https://github.com/zkim/emacs-dirtree.git"
+               :features "dirtree"
+               :compile nil)))
 (setq my-packages
       (append
        '(el-get package
@@ -40,6 +44,7 @@
          inf-ruby js2-mode json lua-mode markdown-mode ruby-mode rspec-mode yaml-mode zencoding-mode
          iedit frame-bufs ;; nxhtml
          unbound
+         windata tree-mode ;; required for dirtree
          )
        (mapcar 'el-get-source-name el-get-sources)))
 (el-get 'sync my-packages)
@@ -74,6 +79,11 @@
 
 (require 'frame-bufs)
 (frame-bufs-mode t)
+
+(require 'windata)
+(require 'tree-mode)
+(require 'dirtree)
+(autoload 'dirtree "dirtree" "Add directory to tree view" t)
 
 ;; perspective mode
 ;; ref: http://emacsrookie.com/2011/09/25/workspaces/
