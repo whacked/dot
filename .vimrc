@@ -22,6 +22,7 @@ Bundle 'tmatilai/gitolite.vim'
 "" " vim-scripts repos
 Bundle 'matchit.zip'
 Bundle 'AutoClose'
+Bundle 'occur.vim'
 "" Bundle 'L9'
 "" Bundle 'FuzzyFinder'
 "" " non github repos
