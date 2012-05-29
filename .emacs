@@ -256,20 +256,11 @@ Also returns nil if pid is nil."
   ;; If there is more than one, they won't work right.
  '(column-number-mode t)
  '(desktop-save-mode t)
+ '(dirtree-windata (quote (frame left 0.15 delete)))
  '(exec-path (quote ("/opt/local/bin" "/usr/bin" "/usr/local/bin" "/usr/sbin" "/bin")))
  '(global-hl-line-mode t)
  '(hscroll-step 1)
- '(ibuffer-fontification-alist
-   (quote
-    ((10 buffer-read-only font-lock-constant-face)
-     (15 (and buffer-file-name (string-match ibuffer-compressed-file-name-regexp buffer-file-name)) font-lock-doc-face)
-     (20 (string-match "^*" (buffer-name)) font-lock-keyword-face)
-     (25 (and (string-match "^ " (buffer-name)) (null buffer-file-name)) italic)
-     (30 (memq major-mode ibuffer-help-buffer-modes) font-lock-comment-face)
-     (35 (eq major-mode (quote dired-mode)) font-lock-function-name-face)
-     (40 (string-match "\.py" (buffer-name)) font-lock-type-face)
-     (45 (string-match "\.rb" (buffer-name)) font-lock-string-face)
-     (50 (string-match "\.org" (buffer-name)) font-lock-preprocessor-face))))
+ '(ibuffer-fontification-alist (quote ((10 buffer-read-only font-lock-constant-face) (15 (and buffer-file-name (string-match ibuffer-compressed-file-name-regexp buffer-file-name)) font-lock-doc-face) (20 (string-match "^*" (buffer-name)) font-lock-keyword-face) (25 (and (string-match "^ " (buffer-name)) (null buffer-file-name)) italic) (30 (memq major-mode ibuffer-help-buffer-modes) font-lock-comment-face) (35 (eq major-mode (quote dired-mode)) font-lock-function-name-face) (40 (string-match ".py" (buffer-name)) font-lock-type-face) (45 (string-match ".rb" (buffer-name)) font-lock-string-face) (50 (string-match ".org" (buffer-name)) font-lock-preprocessor-face))))
  '(iswitchb-mode t)
  '(line-number-mode t)
  '(matlab-auto-fill nil)
@@ -550,6 +541,11 @@ Also returns nil if pid is nil."
          ;; (require 'ibus)
          ;; (add-hook 'after-init-hook 'ibus-mode-on)
          ;; (setq ibus-agent-file-name "/usr/lib/ibus-el/ibus-el-agent")
+
+         (when (display-graphic-p)
+           (add-to-list 'default-frame-alist '(width . 100))
+           (add-to-list 'default-frame-alist '(height . 60))
+           )
          )
        (message "using linux"))
       ((eq system-type 'darwin)
@@ -681,13 +677,7 @@ Also returns nil if pid is nil."
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil
-                :background "#f8f8ff" :foreground "#000000" :inverse-video nil
-                :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :foundry "unknown"
-                :family (if (featurep 'ns)
-                          "Monaco"
-                          "Consolas")
-                ))))
+ '(default ((t (:inherit nil :stipple nil :background "#f8f8ff" :foreground "#000000" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :foundry "unknown" :family (if (featurep (quote ns)) "Monaco" "Consolas")))))
  '(font-lock-keyword-face ((t (:foreground "DarkOliveGreen" :weight bold))))
  '(org-level-1 ((t (:inherit outline-1 :weight bold :height 1.6 :family "Verdana"))))
  '(org-level-2 ((t (:inherit outline-2 :height 1.5 :family "Verdana"))))
