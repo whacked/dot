@@ -45,6 +45,7 @@
          iedit frame-bufs ;; nxhtml
          unbound
          windata tree-mode ;; required for dirtree
+         auctex
          )
        (mapcar 'el-get-source-name el-get-sources)))
 (el-get 'sync my-packages)
@@ -285,10 +286,9 @@ Also returns nil if pid is nil."
     (functionp 'set-scroll-bar-mode)
   (set-scroll-bar-mode 'right))
 
-
-(when (file-exists-p "auctex.el")
-  (load "auctex.el" nil t t)
-  (add-hook 'LaTeX-mode-hook 'turn-on-reftex) 
+(when (load "auctex.el" t t t) ;; first t = don't throw error if not exist
+  (load "preview-latex.el" nil t t)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
   (setq TeX-command-master "latex")
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
@@ -542,7 +542,8 @@ Also returns nil if pid is nil."
          ;; (add-hook 'after-init-hook 'ibus-mode-on)
          ;; (setq ibus-agent-file-name "/usr/lib/ibus-el/ibus-el-agent")
 
-         (when (display-graphic-p)
+         (progn ;; when
+           (display-graphic-p)
            (add-to-list 'default-frame-alist '(width . 100))
            (add-to-list 'default-frame-alist '(height . 60))
            )
