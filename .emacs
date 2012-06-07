@@ -996,3 +996,14 @@ a sound to be played"
 
 ;; eliminate strange error with this for now
 (defvar warning-suppress-types nil)
+
+
+
+(defadvice balance-windows (around allow-interactive-prefix
+                                   (&optional selected-window-only))
+  "modify balance-windows so that if given C-u prefix, apply only to (selected-window)"
+  (interactive "P")
+  (when selected-window-only
+    (ad-set-arg 0 (selected-window)))
+  ad-do-it)
+(ad-activate 'balance-windows)
