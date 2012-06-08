@@ -119,7 +119,7 @@ if [[ -s "$HOME/.rvm/scripts/rvm" ]]  ; then source "$HOME/.rvm/scripts/rvm" ; f
 alias open='gnome-open 2>/dev/null'
 alias pbcopy='xsel --clipboard --input'
 alias pbpaste='xsel --clipboard --output'
-export PATH=$PATH:~/opt/leiningen:~/.config/thinkpad:/opt
+export PATH=$PATH:~/opt/leiningen:~/.config/thinkpad:/opt:~/.cabal/bin
 
 if [ $(which keychain) ] ; then
     keychain ~/.ssh/id_rsa
@@ -137,4 +137,14 @@ export HAXE_LIBRARY_PATH=/usr/local/haxe/std:. # the ':.' part is important
 export HAXE_HOME=/usr/local/haxe
 export NEKOPATH=/usr/local/neko
 PATH=$PATH:$HAXE_LIBRARY_PATH:$HAXE_HOME/bin
+# to renable in cli: set +C
 set -o noclobber # prevent > FILE from overwriting existing
+
+# pip virtualenv
+export WORKON_HOME="~/.virtualenv"
+source /usr/local/bin/virtualenvwrapper.sh
+
+# make bash save history across simultaneous terminal sessions
+export PROMPT_COMMAND='history -a'
+
+source ~/opt/z/z.sh
