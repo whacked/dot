@@ -19,6 +19,7 @@ Bundle 'docunext/closetag.vim'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'tmatilai/gitolite.vim'
+Bundle 'kikijump/tslime.vim'
 "" " vim-scripts repos
 Bundle 'matchit.zip'
 Bundle 'AutoClose'
@@ -69,3 +70,11 @@ let g:solarized_termcolors=256
 let g:solarized_contrast="high"
 let g:solarized_visibility="high"
 colorscheme solarized
+
+source ~/.vim/bundle/tslime.vim/tslime.vim
+function! To_Tmux()
+  let b:text = input("tmux:", "", "custom,")
+  call Send_to_Tmux(b:text . "\\r")
+endfunction
+
+cmap tt :call To_Tmux()<CR>
