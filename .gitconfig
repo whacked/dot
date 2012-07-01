@@ -1,0 +1,12 @@
+[core]
+	autocrlf = false
+	safecrlf = false
+[alias]
+    a = add
+    st = status -s
+    ci = commit
+    df = diff --color --color-words --abbrev
+    l = log --graph --pretty=oneline --abbrev-commit --decorate
+    lg   = log --pretty=oneline --abbrev-commit --graph --decorate --date=relative
+    lgt  = log --graph --pretty=format:'%Cred%h%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+    lgtt = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
