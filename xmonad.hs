@@ -90,13 +90,21 @@ myManageHook = composeAll
     , className =? "Kalarm" --> doShift "0:swap"
     , className =? "Xournalpp" --> doShift "8:read"
     -- , ( role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
-    , className =? "Emacs" --> doFloat
+    , className =? "Emacs23" --> doFloat
+    , className =? "Toplevel" --> doFloat
     -- doesn't work, because title is initialized after emacs window appears
     -- , fmap (isInfixOf "Speedbar") title --> doFloat
     ]
 
 myKeys = [] ++
          [ ((mod4Mask, xK_space    ), unsafeSpawn "$HOME/.config/thinkpad/dzen/popup_calendar.sh")] ++
+
+         -- application shortcuts
+         [ ((mod4Mask, xK_F9      ), unsafeSpawn "emacsclient -c -e '(switch-to-buffer (dolist (buf (buffer-list)) (if (or (equal (get-buffer \"*scratch*\") buf) (equal (get-buffer \" *Minibuf-1*\") buf)) nil  (return buf))))'")] ++
+         [ ((mod4Mask, xK_Return  ), unsafeSpawn "$HOME/.config/thinkpad/emacs-remember")] ++
+         [ ((mod4Mask .|. mod1Mask, xK_x      ), unsafeSpawn "xournal")] ++
+         [ ((mod4Mask .|. mod1Mask, xK_h      ), unsafeSpawn "nautilus")] ++
+
          -- cycle windows, emulate old-style alt-tab
          [ ((mod1Mask,               xK_Tab   ), windows W.focusDown)
          , ((mod1Mask .|. shiftMask, xK_Tab   ), windows W.focusUp)
