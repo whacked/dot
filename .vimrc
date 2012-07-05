@@ -77,4 +77,4 @@ function! To_Tmux()
   call Send_to_Tmux(b:text . "\\r")
 endfunction
 
-cmap tt :call To_Tmux()<CR>
+" cmap tt :call To_Tmux()<CR>
