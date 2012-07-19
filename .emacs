@@ -46,6 +46,7 @@
          unbound
          windata tree-mode ;; required for dirtree
          auctex
+         transpose-frame
          )
        (mapcar 'el-get-source-name el-get-sources)))
 (el-get 'sync my-packages)
@@ -648,18 +649,7 @@ Also returns nil if pid is nil."
  (set-window-start w1 s2)
  (set-window-start w2 s1)))))
 
-;;; http://github.com/banister/window-rotate-for-emacs/blob/master/window-rotate.el
-(defun rotate-windows-helper (x d)
-  (if (equal (cdr x) nil) (set-window-buffer (car x) d)
-    (set-window-buffer (car x) (window-buffer (cadr x))) (rotate-windows-helper (cdr x) d)))
- 
-(defun win-rotate ()
-  (interactive)
-  (rotate-windows-helper (window-list) (window-buffer (car (window-list))))
-  (select-window (car (last (window-list)))))
-
-
-
+(require 'transpose-frame)
 
 
 (load "~/.emacs.d/bundle/haskell-mode/haskell-site-file")
