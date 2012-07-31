@@ -48,3 +48,5 @@ else
     echo '.gitignore' >> $IGNOREFILE
     echo 'doc/tags' >> $IGNOREFILE
 fi
+
+ln -s ~/dot/.Rprofile ~/.Rprofile
