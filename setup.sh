@@ -50,3 +50,10 @@ else
 fi
 
 ln -s ~/dot/.Rprofile ~/.Rprofile
+ln -s ~/dot/.zshrc ~/.zshrc
+mkdir -p ~/.zsh/func
+for f in ~/opt/zsh-git/functions/*; do
+    ln -s $f ~/.zsh/func/`basename $f`
+done
+echo 'fpath=($fpath $HOME/.zsh/func)' >> ~/.zshenv
+echo 'typeset -U fpath' >> ~/.zshenv
