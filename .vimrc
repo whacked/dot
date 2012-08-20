@@ -14,16 +14,21 @@ Bundle 'gmarik/vundle'
 "
 "" " original repos on github
 Bundle 'scrooloose/nerdtree'
+Bundle 'scrooloose/syntastic'
+Bundle 'scrooloose/nerdcommenter'
 Bundle 'tpope/vim-fugitive'
 Bundle 'docunext/closetag.vim'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'tmatilai/gitolite.vim'
 Bundle 'kikijump/tslime.vim'
+Bundle 'wincent/Command-T'
+Bundle 'majutsushi/tagbar'
 "" " vim-scripts repos
 Bundle 'matchit.zip'
 Bundle 'AutoClose'
 Bundle 'occur.vim'
+Bundle 'snipMate'
 "" Bundle 'L9'
 "" Bundle 'FuzzyFinder'
 "" " non github repos
