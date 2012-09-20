@@ -20,6 +20,11 @@ import XMonad.Layout.Tabbed
 import XMonad.Layout.IndependentScreens -- provides countScreens function
 -- see http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Actions-CycleWS.html
 
+-- for fullscreen.
+-- ref: https://wiki.archlinux.org/index.php/Xmonad#Chromium.2FChrome_will_not_go_fullscreen
+import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.ManageHelpers
+
 -- check xmodmap -pm to see mod key mapping
 
 
@@ -39,6 +44,8 @@ main = do
         , manageHook = myManageHook <+> manageHook gnomeConfig
         , workspaces = myWorkspaces
         -- , logHook = myLogHook
+
+        , handleEventHook = fullscreenEventHook
         } `additionalKeys` myKeys
 
 -- myLogHook :: X ()
@@ -94,6 +101,10 @@ myManageHook = composeAll
     , className =? "Toplevel" --> doFloat
     -- doesn't work, because title is initialized after emacs window appears
     -- , fmap (isInfixOf "Speedbar") title --> doFloat
+    
+    -- for flash video
+    -- ref: http://comments.gmane.org/gmane.comp.lang.haskell.xmonad/10119
+    -- , isFullscreen --> doF W.focusDown <+> doFullFloat
     ]
 
 myKeys = [] ++
@@ -121,10 +132,18 @@ myKeys = [] ++
          , ((myModMask,               xK_z),     toggleWS)
          ] ++
          -- FloatKeys
-         [ ((myModMask,               xK_f   ), withFocused (keysMoveWindow (10, 0)))
-         , ((myModMask,               xK_s   ), withFocused (keysMoveWindow (-10, 0)))
-         , ((myModMask,               xK_d   ), withFocused (keysMoveWindow (0, -10)))
-         , ((myModMask,               xK_c   ), withFocused (keysMoveWindow (0, 10)))
+         [ ((myModMask,               xK_f   ), withFocused (keysMoveWindow (25, 0)))
+         , ((myModMask,               xK_s   ), withFocused (keysMoveWindow (-25, 0)))
+         , ((myModMask,               xK_d   ), withFocused (keysMoveWindow (0, -25)))
+         , ((myModMask,               xK_c   ), withFocused (keysMoveWindow (0, 25)))
+         , ((myModMask .|. shiftMask, xK_f   ), withFocused (keysMoveWindow (5, 0)))
+         , ((myModMask .|. shiftMask, xK_s   ), withFocused (keysMoveWindow (-5, 0)))
+         , ((myModMask .|. shiftMask, xK_d   ), withFocused (keysMoveWindow (0, -5)))
+         , ((myModMask .|. shiftMask, xK_c   ), withFocused (keysMoveWindow (0, 5)))
+
+         -- to fix the overwritten default of Mod+Shift+c
+         , ((mod1Mask               , xK_F4   ), kill)
+
          , ((myModMask .|. controlMask, xK_f   ), withFocused (keysResizeWindow (20, 0)  (0, 0)))
          , ((myModMask .|. controlMask, xK_s   ), withFocused (keysResizeWindow (-10, 0) (0, 0)))
          , ((myModMask .|. controlMask, xK_d   ), withFocused (keysResizeWindow (0, -10)  (0, 0)))
