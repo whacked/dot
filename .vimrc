@@ -29,10 +29,13 @@ Bundle 'matchit.zip'
 Bundle 'AutoClose'
 Bundle 'occur.vim'
 Bundle 'snipMate'
+Bundle 'gnupg.vim'
 "" Bundle 'L9'
 "" Bundle 'FuzzyFinder'
 "" " non github repos
 "" Bundle 'git://git.wincent.com/command-t.git'
+
+let g:Powerline_symbols = 'fancy'
 
 syntax on
 set number " to turn off use :set number! or :set nu!
