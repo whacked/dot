@@ -6,6 +6,7 @@
 (tool-bar-mode 0)
 (menu-bar-mode 0)
 (setq inhibit-splash-screen 1)
+(setq make-backup-files nil)
 ;(add-to-list 'load-path "/home/user/.emacs.d") ;(require 'real-auto-save)
 ;(add-hook 'muse-mode-hook 'turn-on-real-auto-save)
 ;(add-hook 'org-mode-hook 'turn-on-real-auto-save)
@@ -17,15 +18,21 @@
 (setq x-select-enable-clipboard t)
 (setq visual-line-mode t)
 
+(defun ime ()
+  (interactive) (toggle-input-method))
+(defun ime-jp ()
+  (interactive) (set-input-method "japanese"))
+(defun ime-zh ()
+  (interactive) (set-input-method "chinese-py-b5"))
 
 (defun note! ()
   (interactive)
-  (find-file "/media/mmc1/note/note.muse")
+  (find-file "/tmp/ramdisk/note/note.muse.gpg")
   (end-of-buffer))
 
 (defun jp! ()
   (interactive)
-  (find-file "/media/mmc1/note/jp.muse")
+  (find-file "/tmp/ramdisk/note/jp.muse.gpg")
   (set-input-method "japanese")
   (end-of-buffer))
 
@@ -59,6 +66,8 @@
   (interactive)
   (insert (now)))
 
+(defun gg () (interactive) (beginning-of-buffer))
+(defun G () (interactive) (end-of-buffer))
 
 
 (enlarge-window 6)
@@ -123,22 +132,25 @@
 
 ;;; org-mode with remember
 (org-remember-insinuate)
-(setq org-default-notes-file "/media/mmc1/note/todos.org")
+(setq org-default-notes-file "/tmp/ramdisk/note/index.org.gpg")
 (define-key global-map [(control kp-enter)] 'org-remember)
 (define-key global-map (kbd "C-p") 'org-time-stamp)
+(define-key global-map (kbd "<ESC> <up>") '(lambda () (interactive) (other-window -1)))
+(define-key global-map (kbd "<ESC> <down>") 'other-window)
 
 (setq org-remember-templates
- '(("Todo" ?t "* TODO %?\nAdded: %U" "/media/mmc1/note/todos.org" "N900")
-   ("Memo" ?m "* %?\nAdded: %U" "/media/mmc1/note/memo.org")
-   ("NK" ?n "* %U %?\n\n %i\n %a\n\n" "/media/mmc1/note/nikki.org" "ALL")
-   ("Idea" ?i "* %^{Title}\n%?\n  %a\n  %U" "/media/mmc1/note/idea.org" "N900")))
-(setq org-agenda-files (quote("/media/mmc1/note/idea.org"
-                              "/media/mmc1/note/todos.org")))
+ '(("Todo" ?t "* TODO %?\nAdded: %U" "/tmp/ramdisk/note/index.org.gpg" "N900")
+   ;("Memo" ?m "* %?\nAdded: %U" "/media/mmc1/note/memo.org")
+   ;("NK" ?n "* %U %?\n\n %i\n %a\n\n" "/media/mmc1/note/nikki.org" "ALL")
+   ;("Idea" ?i "* %^{Title}\n%?\n  %a\n  %U" "/media/mmc1/note/idea.org" "N900")
+   ))
+(setq org-agenda-files (quote(;"/media/mmc1/note/idea.org"
+                              "/tmp/ramdisk/note/index.org.gpg")))
 
 (global-set-key [(shift backspace)] 'advertised-undo)
 (global-set-key [(control z)] 'ignore)
-(global-set-key (kbd "<escape> <up>") '(lambda () (interactive) (other-window -1)))
-(global-set-key (kbd "<escape> <down>") 'other-window)
+;(global-set-key (kbd "<escape> <up>") '(lambda () (interactive) (other-window -1)))
+;(global-set-key (kbd "<escape> <down>") 'other-window)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -166,7 +178,11 @@
 		     (when (re-search-forward org-complex-heading-regexp nil t)
 		       (replace-regexp-in-string (concat "[[:space:]]*" org-ts-regexp "[[:space:]]*") "" (match-string 4))))))
 
-	(start-process "setcalendar-process" "*Messages*" "/home/user/setcal" 
+        ;; example call: ./setcal --cal N900 --name test --start  "2012-09-02 16:01:00" --alarm exact
+	(start-process "setcalendar-process" "*Messages*" "/home/user/setcal"
+		       "--cal"
+		       ;; "N900"
+		       "gcal"
 		       "--name"
 		       (format "%s" name)
 		       "--start"
@@ -187,4 +203,14 @@
   		       (newsticker--link item))))
 (add-hook 'newsticker-new-item-functions 'newsticker-mind-brain-try-fetch-article-hook)
 
-(find-file "/media/mmc1/DropN900/sync/rss/janitor.org")
+;(find-file "/media/mmc1/DropN900/sync/rss/janitor.org")
+
+;;; This was installed by package-install.el.
+;;; This provides support for the package system and
+;;; interfacing with ELPA, the package archive.
+;;; Move this code earlier if you want to reference
+;;; packages in your .emacs.
+(when
+    (load
+     (expand-file-name "~/.emacs.d/elpa/package.el"))
+  (package-initialize))
