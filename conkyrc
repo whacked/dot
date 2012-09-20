@@ -56,6 +56,7 @@ TEXT
 ${voffset 4}${font Droid Sans:style=Bold:size=8}TIME $stippled_hr${font}
 ${alignc}${font Droid Sans:size=9}${time %Y-%m-%d}
 ${voffset -10}${color2}${font Arial Black:size=30}${time %H:%M:%S}${font}${color}
+${color2}${font Arial Black:size=8}${execp acpi | cut -f 3- -d ' '}${font}${color}
 
 ################
 # - CALENDAR - #
