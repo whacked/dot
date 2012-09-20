@@ -40,6 +40,11 @@
                :url "https://github.com/m2ym/popup-el.git"
                :features "popup"
                :compile nil)
+        (:name multi-web-mode
+               :type git
+               :url "https://github.com/fgallina/multi-web-mode.git"
+               :features "multi-web-mode"
+               :compile nil)
         ;; https://bitbucket.org/tavisrudd/emacs.d/src/b00b30c330b2/dss-init-el-get.el
         (:name auto-complete
                :website "http://cx4a.org/software/auto-complete/"
@@ -765,7 +770,7 @@ Also returns nil if pid is nil."
 (define-key my-keys-minor-mode-map [M-down] 'windmove-down)
 (define-key my-keys-minor-mode-map (kbd "M-_") 'org-metaleft)
 (define-key my-keys-minor-mode-map (kbd "M-+") 'org-metaright)
-(define-key my-keys-minor-mode-map [tab] 'yas/expand-from-trigger-key)
+;;(define-key my-keys-minor-mode-map [tab] 'yas/expand-from-trigger-key)
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
   t " my-keys" 'my-keys-minor-mode-map)
@@ -1020,3 +1025,12 @@ a sound to be played"
     (ad-set-arg 0 (selected-window)))
   ad-do-it)
 (ad-activate 'balance-windows)
+
+
+(require 'multi-web-mode)
+(setq mweb-default-major-mode 'html-mode)
+(setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
+                  (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
+                  (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
+(setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
+(multi-web-global-mode 1)
