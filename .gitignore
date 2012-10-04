@@ -5,6 +5,7 @@
 .emacs.d/emacs-backup
 .emacs.d/.org-id-locations
 .vim/.netrwhist
+.emacs.d/ac-comphist.dat
 .emacs.d/url/cookies
 .emacs.d/image-dired
 .emacs.d/image-dired/*.png
