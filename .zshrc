@@ -63,6 +63,10 @@ bindkey -e
 ### Use the wunjo prompt theme
 ##prompt wunjo
 ##
+
+alias open='gnome-open 2>/dev/null'
+alias pbcopy='xsel --clipboard --input'
+alias pbpaste='xsel --clipboard --output'
 # http://askubuntu.com/questions/110922/climb-up-the-directory-tree-faster
 # Go up directory tree X number of directories
 function up() {
@@ -86,3 +90,8 @@ else
     return 1
 fi
 }
+
+setopt HIST_IGNORE_SPACE
+
+alias gits='git status -s'
+
