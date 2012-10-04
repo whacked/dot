@@ -72,7 +72,9 @@ myWorkspaces = [ "1"
                , "7"
                , "8:read"
                , "9"
-               , "0:swap"
+               , "0"
+               , "11"
+               , "12"
                ]
 role = stringProperty "WM_WINDOW_ROLE"
 
@@ -94,7 +96,7 @@ myManageHook = composeAll
     -- , className =? "Chromium-browser" --> doShift "2:web"
     , className =? "Thunderbird" --> doShift "4:mail"
     , className =? "Calibre" --> doShift "8:read"
-    , className =? "Kalarm" --> doShift "0:swap"
+    , className =? "Kalarm" --> doShift "0"
     , className =? "Xournalpp" --> doShift "8:read"
     -- , ( role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
     , className =? "Emacs23" --> doFloat
@@ -150,7 +152,7 @@ myKeys = [] ++
          , ((myModMask .|. controlMask, xK_c   ), withFocused (keysResizeWindow (0, 20) (0, 0)))
          ] ++
          [((m .|. mod3Mask, k), windows $ f i)
-              | (i, k) <- zip myWorkspaces ([xK_1 .. xK_9] ++ [xK_0])
+              | (i, k) <- zip myWorkspaces ([xK_1 .. xK_9] ++ [xK_0] ++ [xK_F11, xK_F12])
               , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
          ] ++
          -- http://www.haskell.org/haskellwiki/Xmonad/Frequently_asked_questions#Screens_are_in_wrong_order
