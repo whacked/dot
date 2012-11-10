@@ -79,13 +79,16 @@ echo "syncing git submodules..."
 git submodule init
 git submodule update
 
-IGNOREFILE=~/dot/.vim/bundle/vundle/.gitignore
-if [ -e $IGNOREFILE ]; then
-    echo "... vundle ignore file exists already"
-else
-    echo "generating hacky gitignore for vundle, because it generates tags..."
-    echo '.netrwhist' >> $IGNOREFILE
-    echo '.gitignore' >> $IGNOREFILE
-    echo 'doc/tags' >> $IGNOREFILE
+VUNDLEDIR=~/dot/.vim/bundle/vundle/
+IGNOREFILE=$VUNDLEDIR/.gitignore
+if [ -e $VUNDLEDIR ]; then
+    if [ -e $IGNOREFILE ]; then
+        echo "... vundle ignore file exists already"
+    else
+        echo "generating hacky gitignore for vundle, because it generates tags..."
+        echo '.netrwhist' >> $IGNOREFILE
+        echo '.gitignore' >> $IGNOREFILE
+        echo 'doc/tags' >> $IGNOREFILE
+    fi
 fi
 
