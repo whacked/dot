@@ -35,7 +35,7 @@ fi
 
 # LEIN ----------------------------------------------------------------
 echo "setting up leiningen"
-if [ `command -v lein | wc -l` -ge 0 ]; then
+if [ `command -v lein | wc -l` -ge 1 ]; then
     if [ ! -e ~/.lein ]; then
         mkdir ~/.lein
     fi
