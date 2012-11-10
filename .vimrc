@@ -24,11 +24,18 @@ Bundle 'tmatilai/gitolite.vim'
 Bundle 'kikijump/tslime.vim'
 Bundle 'wincent/Command-T'
 Bundle 'majutsushi/tagbar'
+
+"" snipMate
+"" ref: https://github.com/garbas/vim-snipmate#using-vundle
+Bundle "MarcWeber/vim-addon-mw-utils"
+Bundle "tomtom/tlib_vim"
+Bundle "honza/snipmate-snippets"
+Bundle "garbas/vim-snipmate"
+
 "" " vim-scripts repos
 Bundle 'matchit.zip'
 Bundle 'AutoClose'
 Bundle 'occur.vim'
-Bundle 'snipMate'
 Bundle 'gnupg.vim'
 "" Bundle 'L9'
 "" Bundle 'FuzzyFinder'
