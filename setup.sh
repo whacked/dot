@@ -12,6 +12,12 @@ if [ ! -e ~/opt ]; then
     mkdir ~/opt
 fi
 
+# rupa's z---------------------------------------------------------------
+if [ ! -e ~/opt/z ]; then
+    echo "adding rupa's z..."
+    git clone git://github.com/rupa/z.git ~/opt/z
+fi
+
 # EMACS ----------------------------------------------------------------
 echo "setting up emacs..."
 if [ ! -e ~/.emacs ]; then
