@@ -73,8 +73,10 @@ myWorkspaces = [ "1"
                , "8:read"
                , "9"
                , "0"
-               , "11"
-               , "12"
+               , "f9"
+               , "fa"
+               , "fb"
+               , "fc"
                ]
 role = stringProperty "WM_WINDOW_ROLE"
 
@@ -152,7 +154,7 @@ myKeys = [] ++
          , ((myModMask .|. controlMask, xK_c   ), withFocused (keysResizeWindow (0, 20) (0, 0)))
          ] ++
          [((m .|. mod3Mask, k), windows $ f i)
-              | (i, k) <- zip myWorkspaces ([xK_1 .. xK_9] ++ [xK_0] ++ [xK_F11, xK_F12])
+              | (i, k) <- zip myWorkspaces ([xK_1 .. xK_9] ++ [xK_0] ++ [xK_F9, xK_F10, xK_F11, xK_F12])
               , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
          ] ++
          -- http://www.haskell.org/haskellwiki/Xmonad/Frequently_asked_questions#Screens_are_in_wrong_order
