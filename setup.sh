@@ -15,6 +15,26 @@ for DOTFILE in .emacs .emacs.d .vimrc .vim .tmux.conf .bashrc .Rprofile .zshrc; 
     fi
 done
 
+# GIT -------------------------------------------------------------------
+if [ ! -e ~/.gitconfig ]; then
+    echo "setting up gitconfig..."
+    cat > ~/.gitconfig <<GITCONFIG
+[core]
+	autocrlf = false
+	safecrlf = false
+[alias]
+    P = push
+    a = add
+    st = status -s
+    ci = commit
+    df = diff --color --color-words --abbrev
+    l = log --graph --pretty=oneline --abbrev-commit --decorate
+    lg   = log --pretty=oneline --abbrev-commit --graph --decorate --date=relative
+    lgt  = log --graph --pretty=format:'%Cred%h%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+    lgtt = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+GITCONFIG
+fi
+
 # opt directory
 if [ ! -e ~/opt ]; then
     echo adding opt directory...
