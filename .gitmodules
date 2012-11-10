@@ -27,7 +27,7 @@
 	url = git://github.com/purcell/ibuffer-vc.git
 [submodule ".emacs.d/perspective"]
 	path = .emacs.d/perspective
-	url = https://github.com/nex3/perspective-el.git
+	url = git://github.com/nex3/perspective-el.git
 [submodule ".emacs.d/bundle/mozrepl"]
 	path = .emacs.d/bundle/mozrepl
 	url = git://github.com/bard/mozrepl.git
@@ -36,34 +36,34 @@
 	url = http://www.dr-qubit.org/git/predictive.git
 [submodule ".emacs.d/bundle/pabbrev"]
 	path = .emacs.d/bundle/pabbrev
-	url = https://github.com/emacsmirror/pabbrev.git
+	url = git://github.com/emacsmirror/pabbrev.git
 [submodule ".emacs.d/bundle/haskell-mode"]
 	path = .emacs.d/bundle/haskell-mode
-	url = https://github.com/emacsmirror/haskell-mode.git
+	url = git://github.com/emacsmirror/haskell-mode.git
 [submodule ".emacs.d/bundle/icicles"]
 	path = .emacs.d/bundle/icicles
-	url = http://github.com/emacsmirror/icicles.git
+	url = git://github.com/emacsmirror/icicles.git
 [submodule ".emacs.d/bundle/mmm-mode"]
 	path = .emacs.d/bundle/mmm-mode
-	url = https://github.com/purcell/mmm-mode.git
+	url = git://github.com/purcell/mmm-mode.git
 [submodule ".emacs.d/bundle/slime"]
 	path = .emacs.d/bundle/slime
 	url = git://sbcl.boinkor.net/slime.git
 [submodule ".emacs.d/bundle/mode-compile"]
 	path = .emacs.d/bundle/mode-compile
-	url = https://github.com/emacsmirror/mode-compile.git
+	url = git://github.com/emacsmirror/mode-compile.git
 [submodule ".emacs.d/bundle/gnuplot-mode"]
 	path = .emacs.d/bundle/gnuplot-mode
-	url = https://github.com/bruceravel/gnuplot-mode.git
+	url = git://github.com/bruceravel/gnuplot-mode.git
 [submodule ".emacs.d/snippets/org-mode"]
 	path = .emacs.d/snippets/org-mode
-	url = https://github.com/cofi/yasnippet-org-mode.git
+	url = git://github.com/cofi/yasnippet-org-mode.git
 [submodule ".emacs.d/bundle/ess"]
 	path = .emacs.d/bundle/ess
-	url = https://github.com/emacs-ess/ESS
+	url = git://github.com/emacs-ess/ESS
 #[submodule ".emacs.d/bundle/cedet"]
 #	path = .emacs.d/bundle/cedet
-#	url = https://github.com/emacsmirror/cedet.git
+#	url = git://github.com/emacsmirror/cedet.git
 #[submodule ".emacs.d/bundle/ecb"]
 #	path = .emacs.d/bundle/ecb
-#	url = https://github.com/emacsmirror/ecb.git
+#	url = git://github.com/emacsmirror/ecb.git
