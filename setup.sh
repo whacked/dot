@@ -30,7 +30,7 @@ echo "setting up vim..."
 if [ ! -e ~/.vimrc ]; then
     ln -s ~/dot/.vimrc ~/.vimrc
     ln -s ~/dot/.vim ~/.vim
-    echo "setting up vim-pathogen..."
+    echo "... setting up vim-pathogen"
     ln -s ~/dot/.vim/vim-pathogen/autoload/pathogen.vim ~/.vim/autoload/pathogen.vim
 fi
 
@@ -48,8 +48,15 @@ fi
 
 # ZSH -----------------------------------------------------------------
 echo "setting up ZSH..."
-if [ ! -e ~/.zshrc ]; then
-    ln -s ~/dot/.zshrc ~/.zshrc
+if [ `command -v zsh | wc -l` -ge 1 ]; then
+    if [ ! -e ~/.zshrc ]; then
+        ln -s ~/dot/.zshrc ~/.zshrc
+    fi
+    if [ ! -e ~/.oh-my-zsh ]; then
+        git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+    fi
+else
+    echo zsh not installed
 fi
 
 # LEIN ----------------------------------------------------------------
@@ -59,27 +66,25 @@ if [ `command -v lein | wc -l` -ge 1 ]; then
         mkdir ~/.lein
     fi
     if [ -e ~/.lein/init.clj ]; then
-        echo ".lein/init.clj exists..."
+        echo "... .lein/init.clj exists"
     else
         ln -s ~/dot/init.clj ~/.lein/init.clj
     fi
 else
-    echo leiningen not installed
+    echo ... leiningen not installed
 fi
 
 # submodule command sample
 # git submodule add http://github.com/scrooloose/nerdtree.git .vim/bundle/nerdtree
-
 echo "syncing git submodules..."
 git submodule init
 git submodule update
 
-echo "hacky gitignore for vundle, because it generates tags..."
 IGNOREFILE=~/dot/.vim/bundle/vundle/.gitignore
 if [ -e $IGNOREFILE ]; then
-    echo "ignore file exists already"
+    echo "... vundle ignore file exists already"
 else
-    echo "generating..."
+    echo "generating hacky gitignore for vundle, because it generates tags..."
     echo '.netrwhist' >> $IGNOREFILE
     echo '.gitignore' >> $IGNOREFILE
     echo 'doc/tags' >> $IGNOREFILE
