@@ -1,5 +1,5 @@
-for DOTFILE in .emacs .vim .tmux.conf .bashrc; do
-    if [ ! -h ~/$DOTFILE ]; then
+for DOTFILE in .emacs .vim .tmux.conf .bashrc .Rprofile; do
+    if [ -e ~/$DOTFILE && ! -h ~/$DOTFILE ]; then
         BAK=~/`date +%F`$DOTFILE
         echo -e "moving: $DOTFILE\\t->\\t$BAK"
         mv ~/.emacs $BAK
@@ -27,7 +27,13 @@ echo "setting up tmux..."
 if [ ! -e ~/.tmux.conf ]; then
     ln -s ~/dot/.tmux.conf ~/.tmux.conf
 fi
+# TMUX ----------------------------------------------------------------
+echo "setting up R..."
+if [ ! -e ~/.Rprofile ]; then
+    ln -s ~/dot/.Rprofile ~/.Rprofile
+fi
 
+# LEIN ----------------------------------------------------------------
 echo "setting up leiningen"
 if [ `command -v lein | wc -l` -ge 0 ]; then
     if [ ! -e ~/.lein ]; then
@@ -60,7 +66,6 @@ fi
 #    echo 'doc/tags' >> $IGNOREFILE
 #fi
 #
-#ln -s ~/dot/.Rprofile ~/.Rprofile
 #ln -s ~/dot/.zshrc ~/.zshrc
 #mkdir -p ~/.zsh/func
 #for f in ~/opt/zsh-git/functions/*; do
