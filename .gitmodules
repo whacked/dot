@@ -61,9 +61,9 @@
 [submodule ".emacs.d/bundle/ess"]
 	path = .emacs.d/bundle/ess
 	url = https://github.com/emacs-ess/ESS
-[submodule ".emacs.d/bundle/cedet"]
-	path = .emacs.d/bundle/cedet
-	url = https://github.com/emacsmirror/cedet.git
-[submodule ".emacs.d/bundle/ecb"]
-	path = .emacs.d/bundle/ecb
-	url = https://github.com/emacsmirror/ecb.git
+#[submodule ".emacs.d/bundle/cedet"]
+#	path = .emacs.d/bundle/cedet
+#	url = https://github.com/emacsmirror/cedet.git
+#[submodule ".emacs.d/bundle/ecb"]
+#	path = .emacs.d/bundle/ecb
+#	url = https://github.com/emacsmirror/ecb.git
