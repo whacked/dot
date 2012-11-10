@@ -55,7 +55,7 @@ if [ `command -v zsh | wc -l` -ge 1 ]; then
         git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
     fi
 else
-    echo zsh not installed
+    echo ... zsh not installed
 fi
 
 # LEIN ----------------------------------------------------------------
