@@ -357,6 +357,15 @@ Also returns nil if pid is nil."
    (latex . t)
    (ditaa . t)
    ))
+
+
+(require 'python-mode)
+(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+(add-to-list 'interpreter-mode-alist '("python" . python-mode))
+(when (executable-find "ipython")
+  (require 'ipython)
+  (setq org-babel-python-mode 'python-mode))
+
 (require 'org-drill)
 (setq org-ditaa-jar-path "~/.emacs.d/bundle/org-mode/contrib/scripts/ditaa.jar")
 
