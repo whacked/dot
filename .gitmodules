@@ -1,15 +1,9 @@
 [submodule ".vim/vim-pathogen"]
 	path = .vim/vim-pathogen
 	url = http://github.com/tpope/vim-pathogen.git
-[submodule ".vim/bundle/nerdtree"]
-	path = .vim/bundle/nerdtree
-	url = http://github.com/scrooloose/nerdtree.git
-[submodule ".vim/bundle/vim-fugitive"]
-	path = .vim/bundle/vim-fugitive
-	url = http://github.com/tpope/vim-fugitive.git
-[submodule ".emacs.d/bundle/org-mode"]
-	path = .emacs.d/bundle/org-mode
-	url = git://orgmode.org/org-mode.git
+#[submodule ".emacs.d/bundle/org-mode"]
+#	path = .emacs.d/bundle/org-mode
+#	url = git://orgmode.org/org-mode.git
 [submodule ".emacs.d/bundle/clojure-mode"]
 	path = .emacs.d/bundle/clojure-mode
 	url = git://github.com/technomancy/clojure-mode.git
@@ -55,15 +49,6 @@
 [submodule ".emacs.d/bundle/slime"]
 	path = .emacs.d/bundle/slime
 	url = git://sbcl.boinkor.net/slime.git
-[submodule ".vim/bundle/AutoClose"]
-	path = .vim/bundle/AutoClose
-	url = https://github.com/vim-scripts/AutoClose.git
-[submodule ".vim/bundle/closetag.vim"]
-	path = .vim/bundle/closetag.vim
-	url = https://github.com/docunext/closetag.vim.git
-[submodule ".vim/bundle/vim-colors-solarized"]
-	path = .vim/bundle/vim-colors-solarized
-	url = https://github.com/altercation/vim-colors-solarized.git
 [submodule ".emacs.d/bundle/mode-compile"]
 	path = .emacs.d/bundle/mode-compile
 	url = https://github.com/emacsmirror/mode-compile.git
