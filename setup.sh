@@ -6,6 +6,12 @@ for DOTFILE in .emacs .vim .tmux.conf .bashrc .Rprofile; do
     fi
 done
 
+# opt directory
+if [ ! -e ~/opt ]; then
+    echo adding opt directory...
+    mkdir ~/opt
+fi
+
 # EMACS ----------------------------------------------------------------
 echo "setting up emacs..."
 if [ ! -e ~/.emacs ]; then
