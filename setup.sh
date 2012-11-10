@@ -1,3 +1,11 @@
+for DOTFILE in .emacs .vim .tmux.conf .bashrc; do
+    if [ ! -h ~/$DOTFILE ]; then
+        BAK=~/`date +%F`$DOTFILE
+        echo -e "moving: $DOTFILE\\t->\\t$BAK"
+        mv ~/.emacs $BAK
+    fi
+done
+
 # EMACS ----------------------------------------------------------------
 echo "setting up emacs..."
 if [ ! -e ~/.emacs ]; then
@@ -21,39 +29,42 @@ if [ ! -e ~/.tmux.conf ]; then
 fi
 
 echo "setting up leiningen"
-if [ -e ~/.lein ]; then
+if [ `command -v lein | wc -l` -ge 0 ]; then
+    if [ ! -e ~/.lein ]; then
+        mkdir ~/.lein
+    fi
     if [ -e ~/.lein/init.clj ]; then
         echo ".lein/init.clj exists..."
     else
         ln -s ~/dot/init.clj ~/.lein/init.clj
     fi
 else
-    echo "lein not installed"
+    echo leiningen not installed
 fi
 
-# submodule command sample
-# git submodule add http://github.com/scrooloose/nerdtree.git .vim/bundle/nerdtree
-
-echo "syncing git submodules..."
-git submodule init
-git submodule update
-
-echo "hacky gitignore for vundle, because it generates tags..."
-IGNOREFILE=~/dot/.vim/bundle/vundle/.gitignore
-if [ -e $IGNOREFILE ]; then
-    echo "ignore file exists already"
-else
-    echo "generating..."
-    echo '.netrwhist' >> $IGNOREFILE
-    echo '.gitignore' >> $IGNOREFILE
-    echo 'doc/tags' >> $IGNOREFILE
-fi
-
-ln -s ~/dot/.Rprofile ~/.Rprofile
-ln -s ~/dot/.zshrc ~/.zshrc
-mkdir -p ~/.zsh/func
-for f in ~/opt/zsh-git/functions/*; do
-    ln -s $f ~/.zsh/func/`basename $f`
-done
-echo 'fpath=($fpath $HOME/.zsh/func)' >> ~/.zshenv
-echo 'typeset -U fpath' >> ~/.zshenv
+## submodule command sample
+## git submodule add http://github.com/scrooloose/nerdtree.git .vim/bundle/nerdtree
+#
+#echo "syncing git submodules..."
+#git submodule init
+#git submodule update
+#
+#echo "hacky gitignore for vundle, because it generates tags..."
+#IGNOREFILE=~/dot/.vim/bundle/vundle/.gitignore
+#if [ -e $IGNOREFILE ]; then
+#    echo "ignore file exists already"
+#else
+#    echo "generating..."
+#    echo '.netrwhist' >> $IGNOREFILE
+#    echo '.gitignore' >> $IGNOREFILE
+#    echo 'doc/tags' >> $IGNOREFILE
+#fi
+#
+#ln -s ~/dot/.Rprofile ~/.Rprofile
+#ln -s ~/dot/.zshrc ~/.zshrc
+#mkdir -p ~/.zsh/func
+#for f in ~/opt/zsh-git/functions/*; do
+#    ln -s $f ~/.zsh/func/`basename $f`
+#done
+#echo 'fpath=($fpath $HOME/.zsh/func)' >> ~/.zshenv
+#echo 'typeset -U fpath' >> ~/.zshenv
