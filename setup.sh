@@ -97,12 +97,6 @@ else
     echo ... leiningen not installed
 fi
 
-# submodule command sample
-# git submodule add http://github.com/scrooloose/nerdtree.git .vim/bundle/nerdtree
-echo "syncing git submodules..."
-git submodule init
-git submodule update
-
 VUNDLEDIR=~/dot/.vim/bundle/vundle/
 IGNOREFILE=$VUNDLEDIR/.gitignore
 if [ -e $VUNDLEDIR ]; then
@@ -114,5 +108,13 @@ if [ -e $VUNDLEDIR ]; then
         echo '.gitignore' >> $IGNOREFILE
         echo 'doc/tags' >> $IGNOREFILE
     fi
+else
+    echo 'run setup again after BundleInstall to add the vundle ignore file'
 fi
+
+# submodule command sample
+# git submodule add http://github.com/scrooloose/nerdtree.git .vim/bundle/nerdtree
+echo "syncing git submodules..."
+git submodule init
+git submodule update
 
