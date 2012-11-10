@@ -141,8 +141,10 @@ PATH=$PATH:$HAXE_LIBRARY_PATH:$HAXE_HOME/bin
 set -o noclobber # prevent > FILE from overwriting existing
 
 # pip virtualenv
-export WORKON_HOME="~/.virtualenv"
-source /usr/local/bin/virtualenvwrapper.sh
+if [ `command -v virtualenvwrapper.sh | wc -l` -ge 1 ]; then
+    export WORKON_HOME="~/.virtualenv"
+    source /usr/local/bin/virtualenvwrapper.sh
+fi
 
 # make bash save history across simultaneous terminal sessions
 export PROMPT_COMMAND='history -a'
