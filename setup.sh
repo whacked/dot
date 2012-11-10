@@ -5,49 +5,49 @@ for DOTFILE in .emacs .vim .tmux.conf .bashrc .Rprofile; do
         mv ~/.emacs $BAK
     fi
 done
-###
-#### EMACS ----------------------------------------------------------------
-###echo "setting up emacs..."
-###if [ ! -e ~/.emacs ]; then
-###    ln -s ~/dot/.emacs ~/.emacs
-###    ln -s ~/dot/.emacs.d ~/.emacs.d
-###fi
-###
-#### VIM ----------------------------------------------------------------
-###echo "setting up vim..."
-###if [ ! -e ~/.vimrc ]; then
-###    ln -s ~/dot/.vimrc ~/.vimrc
-###    ln -s ~/dot/.vim ~/.vim
-###    echo "setting up vim-pathogen..."
-###    ln -s ~/dot/.vim/vim-pathogen/autoload/pathogen.vim ~/.vim/autoload/pathogen.vim
-###fi
-###
-#### TMUX ----------------------------------------------------------------
-###echo "setting up tmux..."
-###if [ ! -e ~/.tmux.conf ]; then
-###    ln -s ~/dot/.tmux.conf ~/.tmux.conf
-###fi
-#### TMUX ----------------------------------------------------------------
-###echo "setting up R..."
-###if [ ! -e ~/.Rprofile ]; then
-###    ln -s ~/dot/.Rprofile ~/.Rprofile
-###fi
-###
-#### LEIN ----------------------------------------------------------------
-###echo "setting up leiningen"
-###if [ `command -v lein | wc -l` -ge 0 ]; then
-###    if [ ! -e ~/.lein ]; then
-###        mkdir ~/.lein
-###    fi
-###    if [ -e ~/.lein/init.clj ]; then
-###        echo ".lein/init.clj exists..."
-###    else
-###        ln -s ~/dot/init.clj ~/.lein/init.clj
-###    fi
-###else
-###    echo leiningen not installed
-###fi
-###
+
+# EMACS ----------------------------------------------------------------
+echo "setting up emacs..."
+if [ ! -e ~/.emacs ]; then
+    ln -s ~/dot/.emacs ~/.emacs
+    ln -s ~/dot/.emacs.d ~/.emacs.d
+fi
+
+# VIM ----------------------------------------------------------------
+echo "setting up vim..."
+if [ ! -e ~/.vimrc ]; then
+    ln -s ~/dot/.vimrc ~/.vimrc
+    ln -s ~/dot/.vim ~/.vim
+    echo "setting up vim-pathogen..."
+    ln -s ~/dot/.vim/vim-pathogen/autoload/pathogen.vim ~/.vim/autoload/pathogen.vim
+fi
+
+# TMUX ----------------------------------------------------------------
+echo "setting up tmux..."
+if [ ! -e ~/.tmux.conf ]; then
+    ln -s ~/dot/.tmux.conf ~/.tmux.conf
+fi
+# TMUX ----------------------------------------------------------------
+echo "setting up R..."
+if [ ! -e ~/.Rprofile ]; then
+    ln -s ~/dot/.Rprofile ~/.Rprofile
+fi
+
+# LEIN ----------------------------------------------------------------
+echo "setting up leiningen"
+if [ `command -v lein | wc -l` -ge 0 ]; then
+    if [ ! -e ~/.lein ]; then
+        mkdir ~/.lein
+    fi
+    if [ -e ~/.lein/init.clj ]; then
+        echo ".lein/init.clj exists..."
+    else
+        ln -s ~/dot/init.clj ~/.lein/init.clj
+    fi
+else
+    echo leiningen not installed
+fi
+
 ## submodule command sample
 ## git submodule add http://github.com/scrooloose/nerdtree.git .vim/bundle/nerdtree
 #
