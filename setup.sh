@@ -1,8 +1,13 @@
-for DOTFILE in .emacs .vim .tmux.conf .bashrc .Rprofile .zshrc; do
+for DOTFILE in .emacs .emacs.d .vimrc .vim .tmux.conf .bashrc .Rprofile .zshrc; do
+    echo processing $DOTFILE...
     if [ -e ~/$DOTFILE ] && [ ! -h ~/$DOTFILE ]; then
         BAK=~/`date +%F`$DOTFILE
         echo -e "moving: $DOTFILE\\t->\\t$BAK"
         mv ~/.emacs $BAK
+    fi
+
+    if [ ! -e ~/$DOTFILE ]; then
+        ln -s ~/dot/$DOTFILE ~/$DOTFILE
     fi
 done
 
@@ -19,39 +24,33 @@ if [ ! -e ~/opt/z ]; then
 fi
 
 # EMACS ----------------------------------------------------------------
-echo "setting up emacs..."
 if [ ! -e ~/.emacs ]; then
-    ln -s ~/dot/.emacs ~/.emacs
-    ln -s ~/dot/.emacs.d ~/.emacs.d
+    echo "setting up emacs..."
+    :
 fi
 
 # VIM ----------------------------------------------------------------
-echo "setting up vim..."
 if [ ! -e ~/.vimrc ]; then
-    ln -s ~/dot/.vimrc ~/.vimrc
-    ln -s ~/dot/.vim ~/.vim
+    echo "setting up vim..."
     echo "... setting up vim-pathogen"
     ln -s ~/dot/.vim/vim-pathogen/autoload/pathogen.vim ~/.vim/autoload/pathogen.vim
 fi
 
 # TMUX ----------------------------------------------------------------
-echo "setting up tmux..."
 if [ ! -e ~/.tmux.conf ]; then
-    ln -s ~/dot/.tmux.conf ~/.tmux.conf
+    echo "setting up tmux..."
+    :
 fi
 
 # R -------------------------------------------------------------------
-echo "setting up R..."
 if [ ! -e ~/.Rprofile ]; then
-    ln -s ~/dot/.Rprofile ~/.Rprofile
+    echo "setting up R..."
+    :
 fi
 
 # ZSH -----------------------------------------------------------------
-echo "setting up ZSH..."
 if [ `command -v zsh | wc -l` -ge 1 ]; then
-    if [ ! -e ~/.zshrc ]; then
-        ln -s ~/dot/.zshrc ~/.zshrc
-    fi
+    echo "setting up ZSH..."
     if [ ! -e ~/.oh-my-zsh ]; then
         git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
     fi
@@ -60,8 +59,8 @@ else
 fi
 
 # LEIN ----------------------------------------------------------------
-echo "setting up leiningen"
 if [ `command -v lein | wc -l` -ge 1 ]; then
+    echo "setting up leiningen"
     if [ ! -e ~/.lein ]; then
         mkdir ~/.lein
     fi
