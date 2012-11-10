@@ -1,3 +1,6 @@
+# to bypass github ssl verify:
+# export GIT_SSL_NO_VERIFY=true; bash setup.sh
+
 for DOTFILE in .emacs .emacs.d .vimrc .vim .tmux.conf .bashrc .Rprofile .zshrc; do
     echo processing $DOTFILE...
     if [ -e ~/$DOTFILE ] && [ ! -h ~/$DOTFILE ]; then
