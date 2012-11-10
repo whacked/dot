@@ -1,4 +1,17 @@
-set nocompatible
+" put this line first in ~/.vimrc
+set nocompatible | filetype indent plugin on | syn on
+
+fun SetupVAM()
+  let vam_install_path = expand('$HOME') . '/.vim/vim-addons'
+  exec 'set rtp+='.vam_install_path.'/vim-addon-manager'
+  " let g:vim_addon_manager = { your config here see "commented version" example and help
+  if !isdirectory(vam_install_path.'/vim-addon-manager/autoload')
+    execute '!git clone --depth=1 git://github.com/MarcWeber/vim-addon-manager '.shellescape(vam_install_path, 1).'/vim-addon-manager'
+  endif
+  call vam#ActivateAddons(['snipmate-snippets'], {'auto_install' : 0})
+endfun
+call SetupVAM()
+
 filetype off
 "call pathogen#runtime_append_all_bundles()
 "call pathogen#helptags()
@@ -24,13 +37,6 @@ Bundle 'tmatilai/gitolite.vim'
 Bundle 'kikijump/tslime.vim'
 Bundle 'wincent/Command-T'
 Bundle 'majutsushi/tagbar'
-
-"" snipMate
-"" ref: https://github.com/garbas/vim-snipmate#using-vundle
-Bundle "MarcWeber/vim-addon-mw-utils"
-Bundle "tomtom/tlib_vim"
-Bundle "honza/snipmate-snippets"
-Bundle "garbas/vim-snipmate"
 
 "" " vim-scripts repos
 Bundle 'matchit.zip'

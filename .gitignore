@@ -16,3 +16,4 @@ abbrev_defs
 .emacs.d/el-get
 .emacs.d/swank
 .vim/bundle
+.vim/vim-addons
