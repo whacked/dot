@@ -1,4 +1,5 @@
-;; <js mode customization>
+;; js mode customization
+
 ;;;;; ref: https://github.com/mitchellh/dotfiles/blob/master/emacs.d/modes.el
 ;; js-mode (espresso)
 ;; Espresso mode has sane indenting so we use that.
@@ -56,4 +57,8 @@
 
 ;; Add the hook so this is all loaded when JS2-mode is loaded
 (add-hook 'js2-mode-hook 'my-js2-mode-hook)
-;; </js mode customization>
+
+; javascript-mode override
+; 2009-06-13 18:45:02
+(setq javascript-indent-level 2)
+

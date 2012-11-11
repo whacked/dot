@@ -179,7 +179,6 @@
 
 (load-file "~/.emacs.d/filetype/javascript.el")
 
-
 (eval-after-load 'haxe-mode
   '(define-key haxe-mode-map (kbd "C-c C-c")
      (lambda () (interactive) (compile "make"))))
@@ -256,10 +255,6 @@ Also returns nil if pid is nil."
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
   (setq TeX-save-query t))
-
-; javascript-mode override
-; 2009-06-13 18:45:02
-(setq javascript-indent-level 2)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; <org mode config> ;;
