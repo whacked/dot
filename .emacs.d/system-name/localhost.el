@@ -1,4 +1,16 @@
 ;; default hostname "localhost" for Ubuntu on Android images
+(custom-set-variables
+ '(menu-bar-mode nil)
+ '(column-number-mode t)
+ '(line-number-mode t)
+ '(org-agenda-restore-windows-after-quit t)
+ '(org-agenda-window-setup (quote other-window))
+ '(org-src-fontify-natively t)
+ '(org-startup-folded (quote showeverything))
+ '(show-paren-mode t)
+ '(tool-bar-mode nil)
+ '(transient-mark-mode t))
+
 (setq make-backup-files nil)
 (setq auto-save-visited-file-name t)
 
