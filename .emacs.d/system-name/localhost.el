@@ -18,10 +18,6 @@
 (setq x-select-enable-clipboard t)
 (setq visual-line-mode t)
 
-(when (display-graphic-p)
-  (set-frame-size (selected-frame) 207 21)
-  (set-frame-position (selected-frame) 0 0))
-
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (load-file "~/.emacs.d/custom/package-management.el")
@@ -50,3 +46,8 @@
 (other-window 1)
 (jp!)
 (other-window 1)
+
+(when (display-graphic-p)
+  (set-frame-size (selected-frame) 207 21)
+  (set-frame-position (selected-frame) 0 0))
+
