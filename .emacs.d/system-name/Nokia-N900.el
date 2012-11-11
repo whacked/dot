@@ -11,8 +11,6 @@
 ;(add-hook 'org-mode-hook 'turn-on-real-auto-save)
 (setq auto-save-visited-file-name t)
 
-(set-default-coding-systems 'undecided-unix)
-
 (set-clipboard-coding-system 'utf-8)
 (setq x-select-enable-clipboard t)
 (setq visual-line-mode t)
