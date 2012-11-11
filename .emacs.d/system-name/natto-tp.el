@@ -424,9 +424,6 @@ Also returns nil if pid is nil."
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; <OS-specific command> ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Don't quit unless you mean it!
 (defun maybe-save-buffers-kill-emacs (really) 
   "If REALLY is 'yes', call save-buffers-kill-emacs."
@@ -452,146 +449,20 @@ Also returns nil if pid is nil."
     (goto-char beg)
     (insert "<" tag-name ">")))
 
-(defun now (&optional return-date-only) (interactive "P") (message (format-time-string (if return-date-only "%Y-%m-%d" "%Y-%m-%d %H:%M:%S"))))
-(defun insert-timestamp (&optional return-date-only)
-  "Insert date at current cursor position in current active buffer"
-  (interactive "P") (insert (now return-date-only)))
-
-(defun djcb-opacity-modify (&optional dec)
-  "modify the transparency of the emacs frame; if DEC is t,
-    decrease the transparency, otherwise increase it in 10%-steps"
-  (let* ((alpha-or-nil (frame-parameter nil 'alpha)) ; nil before setting
-          (oldalpha (if alpha-or-nil alpha-or-nil 100))
-          (newalpha (if dec (- oldalpha 10) (+ oldalpha 10))))
-    (when (and (>= newalpha frame-alpha-lower-limit) (<= newalpha 100))
-      (modify-frame-parameters nil (list (cons 'alpha newalpha))))))
-
- ;; C-8 will increase opacity (== decrease transparency)
- ;; C-9 will decrease opacity (== increase transparency
- ;; C-0 will returns the state to normal
-(global-set-key (kbd "C-8") '(lambda()(interactive)(djcb-opacity-modify)))
-(global-set-key (kbd "C-9") '(lambda()(interactive)(djcb-opacity-modify t)))
-(global-set-key (kbd "C-0") '(lambda()(interactive)
-                               (modify-frame-parameters nil `((alpha . 100)))))
-
-
-
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 (require 'ansi-color)
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; <OS-specific command> ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setenv "PATH" (concat "/opt:/opt/local/bin:" (getenv "PATH")))
-
 (cond ((eq system-type 'gnu/linux)
-       (progn ;; Linux
-         ;; <ubuntu-tp customizations> ;;;;;;
-         (defun win:to1 ()
-           (interactive)
-           (set-frame-size (selected-frame) 177 50))
-         (defun win:to2 ()
-           (interactive)
-           (set-frame-position (selected-frame) 1280 0)
-           (set-frame-size (selected-frame) 268 73))
-         (defun win:fullscreen ()
-           (interactive)
-           (let ((f (selected-frame)))
-             (modify-frame-parameters f `((fullscreen . ,(if (eq nil (frame-parameter f 'fullscreen)) 'fullboth nil))))))
-         ;; use x-clipboard
-         (setq x-select-enable-clipboard t)
-         ;; <ubuntu-tp customizations> ;;;;;;
-
-         ;; (server-start)
-
-         ;; ;; use anthy
-         ;; ;; http://www.emacswiki.org/emacs/IBusMode
-         ;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/ibus")
-         ;; (require 'ibus)
-         ;; (add-hook 'after-init-hook 'ibus-mode-on)
-         ;; (setq ibus-agent-file-name "/usr/lib/ibus-el/ibus-el-agent")
-
-         (progn ;; when
-           (display-graphic-p)
-           (add-to-list 'default-frame-alist '(width . 100))
-           (add-to-list 'default-frame-alist '(height . 60))
-           )
-         )
-       (message "using linux"))
+       (load-file "~/.emacs.d/system-type/gnu-linux.el"))
       ((eq system-type 'darwin)
-       (progn ;; OS X
-
-         (when (file-exists-p (expand-file-name "~/dot/cne.emacs"))
-           (load-file (expand-file-name "~/dot/cne.emacs")))
-         ;;;;;; <OS X customizations> ;;;;;;
-         ;;; turn apple key into Meta
-         (when (featurep 'ns)
-           (setq ns-command-modifier 'meta)
-           (if (eq window-system 'mac) (require 'carbon-font))
-           (setq ; xwl-default-font "Monaco-12"
-            xwl-japanese-font "Hiragino_Kaku_Gothic_ProN")
-           (let ((charset-font `((japanese-jisx0208 . ,xwl-japanese-font)
-                                 (japanese-jisx0208 . ,xwl-japanese-font)
-                                 ;; (japanese-jisx0212 . ,xwl-japanese-font)
-                                 )))
-                                        ; (set-default-font xwl-default-font)
-             (mapc (lambda (charset-font)
-                     (set-fontset-font (frame-parameter nil 'font)
-                                       (car charset-font)
-                                       (font-spec :family (cdr charset-font) :size
-                                                  12)))
-                   charset-font))
-           (defun osx-resize-current-window ()
-             (interactive)
-             (let* ((ncol (string-to-number (read-from-minibuffer "ncol? ")))
-                    (nrow (string-to-number (read-from-minibuffer "nrow? "))))
-               (set-frame-size (selected-frame) ncol nrow)))
-           (defun osx-move-current-window ()
-             (interactive)
-             (let* ((x (string-to-number (read-from-minibuffer "x? ")))
-                    (y (string-to-number (read-from-minibuffer "y? "))))
-               (set-frame-position (selected-frame) x y)))
-           (defun win:to1 ()
-             (interactive)
-             (set-frame-size (selected-frame) 200 56)
-             (set-frame-position (selected-frame) 0 20))
-           (defun win:to2 ()
-             (interactive)
-             (set-frame-position (selected-frame) 1440 -200)
-             (set-frame-size (selected-frame) 268 78))
-
-           ;;(setq ipython-command "/opt/local/bin/ipython")
-           ;;(require 'ipython)
-           ;;(setq py-python-command-args '( "-colors" "Linux"))
-           ;;(require 'python-mode)
-           (setenv "PYTHONPATH" "/opt/local/bin/python")
-
-           ;; w3m
-           ;;(add-to-list 'load-path "/opt/local/share/emacs/site-lisp/w3m")
-           ;;(setq w3m-command "/usr/bin/w3m")
-           ;;(require 'w3m-load)
-           ;;(require 'w3m-e21)
-           ;;(provide 'w3m-e23)
-
-           ;;(setenv "PATH" (format "%s:%s" (getenv "PATH") "/usr/texbin:/usr/local/bin"))
-           ;;(load "/usr/share/emacs/site-lisp/auctex.el" nil t t)
-           ;;(load "/usr/share/emacs/site-lisp/preview-latex.el" nil t t)
-
-         ;;;;;; </OS X customizations> ;;;;;;
-           
-           )
-
-         (message "using OS X")
-         )
-       )
+       (load-file "~/.emacs.d/system-type/darwin.el"))
       ((eq system-type 'windows-nt)
-       (progn ;; Windows
-         ;; windows only
-         ;; (load-file "~/.emacs.d/martin-w32-fullscreen.el")
-         
-         (message "windows")
-         )
-       )
-      )
-
+       (load-file "~/.emacs.d/system-type/windows-nt.el"))
+      (t (message "unknown system???")))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; </OS-specific command> ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
