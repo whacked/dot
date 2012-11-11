@@ -57,14 +57,6 @@
 (other-window 1)
 
 
-(defun now ()
-  (interactive)
-  (message (format-time-string "%Y-%m-%d %H:%M:%S")))
-(defun insert-timestamp ()
-  "Insert date at current cursor position in current active buffer"
-  (interactive)
-  (insert (now)))
-
 (defun gg () (interactive) (beginning-of-buffer))
 (defun G () (interactive) (end-of-buffer))
 
