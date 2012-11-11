@@ -295,7 +295,7 @@ Also returns nil if pid is nil."
   (require 'ipython)
   (setq org-babel-python-mode 'python-mode))
 
-(require 'org-drill)
+;; (require 'org-drill)
 (setq org-ditaa-jar-path "~/.emacs.d/bundle/org-mode/contrib/scripts/ditaa.jar")
 
 (defun ansi-unansify (beg end)
@@ -457,11 +457,11 @@ Also returns nil if pid is nil."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setenv "PATH" (concat "/opt:/opt/local/bin:" (getenv "PATH")))
 (cond ((eq system-type 'gnu/linux)
-       (load-file "~/.emacs.d/system-type/gnu-linux.el"))
+       (load-file "~/.emacs.d/custom/gnu-linux.el"))
       ((eq system-type 'darwin)
-       (load-file "~/.emacs.d/system-type/darwin.el"))
+       (load-file "~/.emacs.d/custom/darwin.el"))
       ((eq system-type 'windows-nt)
-       (load-file "~/.emacs.d/system-type/windows-nt.el"))
+       (load-file "~/.emacs.d/custom/windows-nt.el"))
       (t (message "unknown system???")))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; </OS-specific command> ;;
