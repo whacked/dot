@@ -5,7 +5,6 @@
 
 (tool-bar-mode 0)
 (menu-bar-mode 0)
-(setq inhibit-splash-screen 1)
 (setq make-backup-files nil)
 ;(add-to-list 'load-path "/home/user/.emacs.d") ;(require 'real-auto-save)
 ;(add-hook 'muse-mode-hook 'turn-on-real-auto-save)
