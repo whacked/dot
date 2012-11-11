@@ -499,11 +499,9 @@ Also returns nil if pid is nil."
  '(table-cell-face ((((class color)) (:background "#AA3" :foreground "gray90")))))
 ;(set-cursor-color "orange")
 
-;;(add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0/")
 (require 'color-theme)
 (eval-after-load "color-theme"
   '(progn
-     ;(load-file "~/.emacs.d/color-theme-6.6.0/themes/color-theme-featured.el")
      (color-theme-initialize)
      (color-theme-snow)
      ))
@@ -517,9 +515,7 @@ Also returns nil if pid is nil."
 
 (global-set-key "\C-x\C-b" 'ibuffer)
 (setq ibuffer-expert t)
-(add-hook 'ibuffer-mode-hook 
-          '(lambda ()
-             (ibuffer-auto-mode 1)))
+(add-hook 'ibuffer-mode-hook '(lambda () (ibuffer-auto-mode 1)))
 ;; (setq ibuffer-show-empty-filter-groups nil)
 (load-file "~/.emacs.d/bundle/ibuffer-vc/ibuffer-vc.el")
 (add-hook 'ibuffer-hook
