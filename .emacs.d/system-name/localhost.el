@@ -104,7 +104,7 @@
 
         ;; example call: ./setcal --cal N900 --name test --start  "2012-09-02 16:01:00" --alarm exact
         (start-process "setcalendar-process" "*Messages*" "google" "calendar" "add"
-                       (format "\"%s %s at %s %s\"" date name tm-start ampm)
+                       (format "\"%s %s at %s %s\"" name date tm-start ampm)
                        "--reminder"
                        (format "%s" alarm))))))
 (add-hook 'org-remember-mode-hook '(lambda () (visual-line-mode t)))
