@@ -94,7 +94,7 @@
                      ;; only contains date
                      nil))
              (tm-start (or time "00:00"))
-             (ampm (if (> 12 (string-to-int (substring "00:00" 0 2))) "AM" "PM"))
+             (ampm (if (> 12 (string-to-int (substring time 0 2))) "AM" "PM"))
              (alarm "5m")
              (name (save-excursion
                      (end-of-buffer)
