@@ -94,7 +94,7 @@
                      ;; only contains date
                      nil))
              (tm-start (or time "00:00"))
-             (ampm (if (> 12 (string-to-int (substring time 0 2))) "AM" "PM"))
+             (ampm (if (> 12 (string-to-int (substring tm-start 0 2))) "AM" "PM"))
              (alarm "5m")
              (name (save-excursion
                      (end-of-buffer)
@@ -104,10 +104,10 @@
                        (replace-regexp-in-string (concat "[[:space:]]*" org-ts-regexp "[[:space:]]*") "" (match-string 4))))))
 
         ;; example call: ./setcal --cal N900 --name test --start  "2012-09-02 16:01:00" --alarm exact
-        (start-process "setcalendar-process" "*Messages*" "google" "calendar" "add"
-                       (format "\"%s %s at %s %s\"" name date tm-start ampm)
+        (message (format "%s" (list "setcalendar-process" "*Messages*" "google" "calendar" "add"
+                       (format "%s %s at %s %s" name date tm-start ampm)
                        "--reminder"
-                       (format "%s" alarm))))))
+                       (format "%s" alarm))))))))
 (add-hook 'org-remember-mode-hook '(lambda () (visual-line-mode t)))
 (add-hook 'org-remember-before-finalize-hook 'set-calendar-appt)
 
