@@ -24,7 +24,7 @@
 (setq my-packages
       '(el-get package
                ;; put el-get bundled packages here
-               magit yaml-mode))
+               magit muse yaml-mode))
 (el-get 'sync my-packages)
 
 
