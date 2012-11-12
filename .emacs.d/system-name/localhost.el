@@ -56,3 +56,57 @@
 (setq *sync-note-timer* (run-with-timer 0 sync-interval-S 'sync-note))
 ;; to cancel:
 ;; (cancel-timer *sync-note-timer*)
+
+
+
+
+
+
+
+
+
+
+
+(org-remember-insinuate)
+(setq org-default-notes-file "/external_sd/note/index.org.gpg")
+
+(global-set-key [(shift backspace)] 'undo)
+(define-key global-map (kbd "C-.") 'org-remember)
+
+(setq org-remember-templates
+ '(("Todo" ?t "* TODO %?\nAdded: %U" org-default-notes-file "Main")))
+
+(org-remember-insinuate)
+(setq org-agenda-files (list org-default-notes-file))
+(setq org-default-notes-file org-default-notes-file)
+
+(defun set-calendar-appt ()
+  (save-excursion
+    (end-of-buffer)
+    (outline-previous-visible-heading 1)
+    (backward-char)
+    (when (re-search-forward org-ts-regexp nil t)
+      (let* ((spl-matched (split-string (match-string 1) " "))
+	     (date (first spl-matched))
+	     (time (if (= 3 (length spl-matched)) ;; contains time
+		       (third spl-matched)
+		     ;; only contains date
+		     nil))
+	     (tm-start (if time
+			   (concat time ":00")
+			 "00:00:00"))
+	     (alarm "5m")
+	     (name (save-excursion
+		     (end-of-buffer)
+		     (outline-previous-visible-heading 1)
+		     (backward-char)
+		     (when (re-search-forward org-complex-heading-regexp nil t)
+		       (replace-regexp-in-string (concat "[[:space:]]*" org-ts-regexp "[[:space:]]*") "" (match-string 4))))))
+
+        ;; example call: ./setcal --cal N900 --name test --start  "2012-09-02 16:01:00" --alarm exact
+        (message (concat "setcalendar-process" "*Messages*" "google" "calendar" "add"
+                         (format "\"%s\" at %s %s" name date tm-start)
+                         "--reminder"
+                         (format "%s" alarm)))))))
+(add-hook 'org-remember-mode-hook '(lambda () (visual-line-mode t)))
+(add-hook 'org-remember-before-finalize-hook 'set-calendar-appt)
