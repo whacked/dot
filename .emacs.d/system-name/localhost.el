@@ -51,6 +51,7 @@
   (other-window 1))
 
 (defun sync-note ()
+  (interactive)
   (start-process "sync" "*Messages*" "/bin/bash" (expand-file-name "~/sync.sh")))
 (setq sync-interval-S (* 60 10))
 (setq *sync-note-timer* (run-with-timer 0 sync-interval-S 'sync-note))
