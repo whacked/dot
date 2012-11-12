@@ -129,12 +129,8 @@
 
 (setq org-remember-templates
  '(("Todo" ?t "* TODO %?\nAdded: %U" "/tmp/ramdisk/note/index.org.gpg" "N900")
-   ;("Memo" ?m "* %?\nAdded: %U" "/media/mmc1/note/memo.org")
-   ;("NK" ?n "* %U %?\n\n %i\n %a\n\n" "/media/mmc1/note/nikki.org" "ALL")
-   ;("Idea" ?i "* %^{Title}\n%?\n  %a\n  %U" "/media/mmc1/note/idea.org" "N900")
    ))
-(setq org-agenda-files (quote(;"/media/mmc1/note/idea.org"
-                              "/tmp/ramdisk/note/index.org.gpg")))
+(setq org-agenda-files (quote ("/tmp/ramdisk/note/index.org.gpg")))
 
 (global-set-key [(shift backspace)] 'advertised-undo)
 (global-set-key [(control z)] 'ignore)
