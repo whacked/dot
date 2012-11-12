@@ -41,13 +41,12 @@
   ;;(set-input-method "japanese")
   (end-of-buffer))
 
-(split-window-horizontally)
-(note!)
-(other-window 1)
-(jp!)
-(other-window 1)
-
 (when (display-graphic-p)
   (set-frame-size (selected-frame) 207 21)
-  (set-frame-position (selected-frame) 0 0))
+  (set-frame-position (selected-frame) 0 0)
+  (split-window-horizontally)
+  (note!)
+  (other-window 1)
+  (jp!)
+  (other-window 1))
 
