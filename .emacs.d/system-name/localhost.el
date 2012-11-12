@@ -92,9 +92,8 @@
                        (third spl-matched)
                      ;; only contains date
                      nil))
-             (tm-start (if time
-                           (concat time ":00")
-                         "00:00:00"))
+             (tm-start (or time "00:00"))
+             (ampm (if (> 12 (string-to-int (substring "00:00" 0 2))) "AM" "PM"))
              (alarm "5m")
              (name (save-excursion
                      (end-of-buffer)
@@ -105,8 +104,9 @@
 
         ;; example call: ./setcal --cal N900 --name test --start  "2012-09-02 16:01:00" --alarm exact
         (start-process "setcalendar-process" "*Messages*" "google" "calendar" "add"
-                       (format "\"%s at %s %s\"" name date tm-start)
+                       (format "\"%s %s at %s %s\"" date name tm-start ampm)
                        "--reminder"
                        (format "%s" alarm))))))
 (add-hook 'org-remember-mode-hook '(lambda () (visual-line-mode t)))
 (add-hook 'org-remember-before-finalize-hook 'set-calendar-appt)
+
