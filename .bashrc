@@ -10,10 +10,6 @@
 # append to the history file, don't overwrite it
 shopt -s histappend
 
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000000
-HISTFILESIZE=1000000
-
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
@@ -30,7 +26,6 @@ fi
 case "$TERM" in
     xterm-color) color_prompt=yes;;
 esac
-export TERM="xterm-256color"
 
 # uncomment for a colored prompt, if the terminal has the capability; turned
 # off by default to not distract the user: the focus in a terminal window
@@ -76,11 +71,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -113,43 +103,21 @@ export CLICOLOR=1
 export LSCOLORS=ExFxCxDxBxegedabagacad
 PS1="\[\033[0m\][\[\033[32m\]\A\[\033[0m\]] \[\033[1;33m\]\u\[\033[0m\]@\h \[\033[36m\][\w]:\[\033[0m\] "
 
-if [[ -s "$HOME/.rvm/scripts/rvm" ]]  ; then source "$HOME/.rvm/scripts/rvm" ; fi
-
-# for UBUNTU
-alias open='gnome-open 2>/dev/null'
-alias pbcopy='xsel --clipboard --input'
-alias pbpaste='xsel --clipboard --output'
-export PATH=$PATH:~/opt/leiningen:~/.config/thinkpad:/opt:~/.cabal/bin
-
 if [ $(which keychain) ] ; then
     keychain ~/.ssh/id_rsa
     . ~/.keychain/`uname -n`-sh
 fi
 
-# ref http://d.hatena.ne.jp/dame-p/20110313/1299992080
-export JAVA_OPTS="-Dswank.encoding=utf-8-unix" # 日本語用？
-export JAVA_HOME=/usr
-export HISTIGNORE="[ ]*"
-export HISTCONTROL=ignoredups
-export HISTTIMEFORMAT="%F %T "
-
-export HAXE_LIBRARY_PATH=/usr/local/haxe/std:. # the ':.' part is important
-export HAXE_HOME=/usr/local/haxe
-export NEKOPATH=/usr/local/neko
-PATH=$PATH:$HAXE_LIBRARY_PATH:$HAXE_HOME/bin
 # to renable in cli: set +C
 set -o noclobber # prevent > FILE from overwriting existing
 
-# pip virtualenv
-if [ `command -v virtualenvwrapper.sh | wc -l` -ge 1 ]; then
-    export WORKON_HOME="~/.virtualenv"
-    source /usr/local/bin/virtualenvwrapper.sh
-fi
-
+export HISTIGNORE="[ ]*"
+export HISTCONTROL=ignoredups
+export HISTTIMEFORMAT="%F %T "
 # make bash save history across simultaneous terminal sessions
 export PROMPT_COMMAND='history -a'
 
-source ~/opt/z/z.sh
+source $HOME/dot/commonrc.1
 
 # http://askubuntu.com/questions/110922/climb-up-the-directory-tree-faster
 # Go up directory tree X number of directories

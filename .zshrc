@@ -34,14 +34,10 @@ plugins=(git)
 source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
-TERM="xterm-256color"
-source ~/opt/z/z.sh
-PATH=$PATH:~/opt/leiningen:~/.config/thinkpad:/opt:~/.cabal/bin
+
 
 # Lines configured by zsh-newuser-install
 # HISTFILE=~/.histfile
-HISTSIZE=1000000
-SAVEHIST=1000000
 setopt appendhistory beep nomatch
 bindkey -e
 # End of lines configured by zsh-newuser-install
@@ -52,9 +48,9 @@ bindkey -e
 ##compinit
 ### End of lines added by compinstall
 
-source $HOME/dot/commonrc/1
+source $HOME/dot/commonrc.1
 
 setopt HIST_IGNORE_SPACE
 
-alias gits='git status -s'
+
 
