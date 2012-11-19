@@ -76,6 +76,7 @@
 (setq x-alt-keysym 'meta) ;; fixes Alt key in VNC viewer
 (global-set-key [(shift backspace)] 'undo)
 (define-key global-map (kbd "C-.") 'org-remember)
+(define-key global-map (kbd "C-c m") 'org-remember)
 
 (setq org-remember-templates
  '(("Todo" ?t "* TODO %?\nAdded: %U" org-default-notes-file "Main")))
