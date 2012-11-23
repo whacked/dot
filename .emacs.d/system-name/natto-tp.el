@@ -13,7 +13,7 @@
                :type git
                :url "https://github.com/zkim/emacs-dirtree.git"
                :features "dirtree"
-               :compile t)
+               :compile "dirtree.el")
         (:name popup-el
                :type git
                :url "https://github.com/m2ym/popup-el.git"
