@@ -122,6 +122,9 @@
                                      ;; (left . ,(+ 40 (frame-parameter (selected-frame) 'left)))
                                      ;; (top . ,(+ 20 (frame-parameter (selected-frame) 'top)))
                                      )))
+(setq default-frame-alist
+      '((top . 0) (left . 0)
+        (width . 84) (height . 60)))
 
 (require 'dabbrev)
 (setq dabbrev-always-check-other-buffers t)
