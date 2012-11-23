@@ -54,7 +54,7 @@
          python-mode
          iedit frame-bufs ;; nxhtml
          unbound
-         rainbow-mode perspective
+         rainbow-mode graphviz-dot-mode perspective
          windata tree-mode ;; required for dirtree
          clojure-mode nrepl
          auctex
@@ -64,10 +64,9 @@
 (el-get 'sync my-packages)
 
 (dolist (path '("~/.emacs.d/revive.el"
-                "~/.emacs.d/bundle/mode/haxe-mode.el"
-                "~/.emacs.d/matlab.el"
                 "~/.emacs.d/windows.el"
-                "~/.emacs.d/bundle/mode/graphviz-dot-mode.el"
+                "~/.emacs.d/bundle/mode/haxe-mode.el"
+                "~/.emacs.d/bundle/mode/matlab.el"
                 ))
   (load-file path))
 

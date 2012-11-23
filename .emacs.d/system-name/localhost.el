@@ -41,6 +41,9 @@
   ;;(set-input-method "japanese")
   (end-of-buffer))
 
+(setq default-frame-alist
+      '((top . 0) (left . 0)
+        (width . 207) (height . 21)))
 (when (display-graphic-p)
   (set-frame-size (selected-frame) 207 21)
   (set-frame-position (selected-frame) 0 0)
