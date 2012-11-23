@@ -1,9 +1,10 @@
-;;; -*- Emacs-Lisp -*-
-;;; Window manager for GNU Emacs.
-;;; $Id: windows.el,v 2.47 2009/10/17 01:49:05 yuuji Exp $
-;;; (c) 1993-2009 by HIROSE Yuuji [yuuji@gentei.org]
-;;; Last modified Sat Oct 17 10:44:41 2009 on firestorm
+;;; windows.el --- Window manager for GNU Emacs. -*- coding: euc-jp -*-
+;;; $Id: windows.el,v 2.48 2010/05/23 12:33:40 yuuji Exp yuuji $
+;;; (c) 1993-2012 by HIROSE Yuuji [yuuji@gentei.org]
+;;; Last modified Tue Aug 14 07:44:15 2012 on firestorm
 
+;;; Commentary:
+;;;
 ;;;		Window manager for GNU Emacs
 ;;;
 ;;;[What is Windows?]
@@ -316,276 +317,276 @@
 ;;;
 ;;; Japanese Document follows:
 ;;;
-;;;		GNU Emacs 用編集画面マネージャ [windows]
+;;;		GNU Emacs ���Խ����̥ޥ͡����� [windows]
 ;;;
-;;;【できる事】
+;;;�ڤǤ������
 ;;;
-;;;	  GNU Emacs では縦横任意の数だけウィンドウを分割して作業をする事
-;;;	ができます。プログラムを開発する時などのウィンドウ分割は効率に大
-;;;	きく影響するので、人によって好みの分割形態を持っている事でしょう。
-;;;	しかしその途中で、メイルやニュースを読むとその分割形態を壊されて
-;;;	しまいます。正しい手順でメイルリーダモードを終われば良いのですが、
-;;;	それだとまたメイルが来た時に再びメイルリーダモードを起動しなけれ
-;;;	ばなりません。
-;;;	  windows.el をロードすると、好みのウィンドウ分割形態を複数持ち、
-;;;	それらを切替えながら Emacs を使う事ができます。さらに、その分割
-;;;	形態の全てをファイルにセーブし、いつでもそれらを復元することがで
-;;;	きます。
+;;;	  GNU Emacs �ǤϽĲ�Ǥ�դο�����������ɥ���ʬ�䤷�ƺ�Ȥ򤹤��
+;;;	���Ǥ��ޤ����ץ�������ȯ������ʤɤΥ�����ɥ�ʬ��ϸ�Ψ����
+;;;	�����ƶ�����Τǡ��ͤˤ�äƹ��ߤ�ʬ����֤���äƤ�����Ǥ��礦��
+;;;	��������������ǡ��ᥤ���˥塼�����ɤ�Ȥ���ʬ����֤�������
+;;;	���ޤ��ޤ������������ǥᥤ��꡼���⡼�ɤ򽪤����ɤ��ΤǤ�����
+;;;	������Ȥޤ��ᥤ�뤬�褿���˺Ƥӥᥤ��꡼���⡼�ɤ�ư���ʤ���
+;;;	�Фʤ�ޤ���
+;;;	  windows.el ������ɤ���ȡ����ߤΥ�����ɥ�ʬ����֤�ʣ��������
+;;;	���������ؤ��ʤ��� Emacs ��Ȥ������Ǥ��ޤ�������ˡ�����ʬ��
+;;;	���֤����Ƥ�ե�����˥����֤������ĤǤ⤽�����������뤳�Ȥ���
+;;;	���ޤ���
 ;;;
-;;;	  Emacs 19(Mule2) 以降では、同様の操作体系で frame を単位として
-;;;	ウィンドウ切替え操作を行います。さらに分割形態復元時にはフレーム
-;;;	のサイズと位置も忠実に再現します。フレームの嫌いな人は変数の設定
-;;;	によりフレームを使わないウィンドウの切り替えで利用することもでき
-;;;	ます。
+;;;	  Emacs 19(Mule2) �ʹߤǤϡ�Ʊ�ͤ�����ηϤ� frame ��ñ�̤Ȥ���
+;;;	������ɥ����ؤ�����Ԥ��ޤ��������ʬ������������ˤϥե졼��
+;;;	�Υ������Ȱ��֤���¤˺Ƹ����ޤ����ե졼��η����ʿͤ��ѿ�������
+;;;	�ˤ��ե졼���Ȥ�ʤ�������ɥ����ڤ��ؤ������Ѥ��뤳�Ȥ�Ǥ�
+;;;	�ޤ���
 ;;;
-;;;【準備】
+;;;�ڽ�����
 ;;;
-;;;	  windows.el を load-path の通ったディレクトリに入れてください。
-;;;	そして以下の行を .emacs に入れてください。
+;;;	  windows.el �� load-path ���̤ä��ǥ��쥯�ȥ������Ƥ���������
+;;;	�����ưʲ��ιԤ� .emacs ������Ƥ���������
 ;;;
 ;;;	   (require 'windows)
 ;;;	   (define-key global-map "\C-xC" 'see-you-again)
 ;;;	   (win:startup-with-window)
 ;;;
 ;;;
-;;;【キー定義】
+;;;�ڥ��������
 ;;;
-;;;	  デフォルトのプリフィクスキーは C-c C-w です。これでは不都合な
-;;;	場合は『キーカスタマイズ』の項を参照してください。標準状態のキー
-;;;	バインドは以下のようになっています。
+;;;	  �ǥե���ȤΥץ�ե����������� C-c C-w �Ǥ�������Ǥ����Թ��
+;;;	���ϡإ����������ޥ����٤ι�򻲾Ȥ��Ƥ���������ɸ����֤Υ���
+;;;	�Х���ɤϰʲ��Τ褦�ˤʤäƤ��ޤ���
 ;;;
-;;;		C-c C-w 1	分割状態 1 へ (Q)
-;;;		C-c C-w 2	分割状態 2 へ (Q)
+;;;		C-c C-w 1	ʬ����� 1 �� (Q)
+;;;		C-c C-w 2	ʬ����� 2 �� (Q)
 ;;;		   :
-;;;		C-c C-w 9	分割状態 9 へ (Q)
-;;;		C-c C-w 0	直前の分割状態へ(バッファ0と交換) (Q)
-;;;		C-c C-w SPC	分割状態1〜nのうち、直前用いたものへ (Q)
-;;;		C-c C-w n	次の分割状態へ(C-c SPC)
-;;;		C-c C-w p	前の分割状態へ
-;;;		C-c C-w !	現在のウィンドウを破棄 (Q)
-;;;		C-c C-w -	ちょっと前のウィンドウ状態を復活(Q)
-;;;		C-c C-w C-w	ウィンドウ操作メニュー
-;;;		C-c C-w C-r	リジュームメニュー
-;;;		C-c C-w C-l	ローカルリジュームメニュー
-;;;		C-c C-w C-s	タスク切替え
-;;;		C-c C-w =	分割状態保存バッファ一覧表示 (Q)
+;;;		C-c C-w 9	ʬ����� 9 �� (Q)
+;;;		C-c C-w 0	ľ����ʬ����֤�(�Хåե�0�ȸ�) (Q)
+;;;		C-c C-w SPC	ʬ�����1��n�Τ�����ľ���Ѥ�����Τ� (Q)
+;;;		C-c C-w n	����ʬ����֤�(C-c SPC)
+;;;		C-c C-w p	����ʬ����֤�
+;;;		C-c C-w !	���ߤΥ�����ɥ����˴� (Q)
+;;;		C-c C-w -	����ä����Υ�����ɥ����֤�����(Q)
+;;;		C-c C-w C-w	������ɥ�����˥塼
+;;;		C-c C-w C-r	�ꥸ�塼���˥塼
+;;;		C-c C-w C-l	��������ꥸ�塼���˥塼
+;;;		C-c C-w C-s	���������ؤ�
+;;;		C-c C-w =	ʬ�������¸�Хåե�����ɽ�� (Q)
 ;;;
-;;;	  1 番から 9 番までのウィンドウ選択は非常に頻繁に用いられるので、
-;;;	「C-c 番号」でも切り替えができるようになっています(その他Qマーク
-;;;	の付いているキーバインド全ては C-w を打たなくてもよい)。これを無
-;;;	効にするためには、~/.emacs などで変数 win:quick-selection を nil 
-;;;	にセットしてください。
+;;;	  1 �֤��� 9 �֤ޤǤΥ�����ɥ�������������ˤ��Ѥ�����Τǡ�
+;;;	��C-c �ֹ�פǤ��ڤ��ؤ����Ǥ���褦�ˤʤäƤ��ޤ�(����¾Q�ޡ���
+;;;	���դ��Ƥ��륭���Х�������Ƥ� C-w ���Ǥ��ʤ��Ƥ�褤)�������̵
+;;;	���ˤ��뤿��ˤϡ�~/.emacs �ʤɤ��ѿ� win:quick-selection �� nil 
+;;;	�˥��åȤ��Ƥ���������
 ;;;
-;;;【説明】
+;;;��������
 ;;;
-;;;	  windows.el には0から9までの10個のバッファが用意されています。
-;;;	このうちユーザが好みの分割状態を保存させるために使えるのは1〜9 
-;;;	で、0番は自動的に直前の分割状態をセーブするために使われます
-;;;	(Emacs-19以降ではwindowsに割り当てられていないframeへのジャンプ)。
+;;;	  windows.el �ˤ�0����9�ޤǤ�10�ĤΥХåե����Ѱդ���Ƥ��ޤ���
+;;;	���Τ����桼�������ߤ�ʬ����֤���¸�����뤿��˻Ȥ���Τ�1��9 
+;;;	�ǡ�0�֤ϼ�ưŪ��ľ����ʬ����֤򥻡��֤��뤿��˻Ȥ��ޤ�
+;;;	(Emacs-19�ʹߤǤ�windows�˳�����Ƥ��Ƥ��ʤ�frame�ؤΥ�����)��
 ;;;
-;;;	  win:startup-with-window を .emacs に書いている場合は起動時の編
-;;;	集状態がそのまま1番のバッファに格納されています。そうでない場合
-;;;	は何か C-c C-w 1 を押して最初の編集状態を1番のバッファに記憶させ
-;;;	ます。
+;;;	  win:startup-with-window �� .emacs �˽񤤤Ƥ�����ϵ�ư������
+;;;	�����֤����Τޤ�1�֤ΥХåե��˳�Ǽ����Ƥ��ޤ��������Ǥʤ����
+;;;	�ϲ��� C-c C-w 1 �򲡤��ƺǽ���Խ����֤�1�֤ΥХåե��˵�������
+;;;	�ޤ���
 ;;;
-;;;	  さて、1番に現状を保存した状態で、メイルを読みましょう。メイル
-;;;	は2番のウィンドウに割り当てます。C-c C-w 2 を押すと今度は
+;;;	  ���ơ�1�֤˸�������¸�������֤ǡ��ᥤ����ɤߤޤ��礦���ᥤ��
+;;;	��2�֤Υ�����ɥ��˳�����Ƥޤ���C-c C-w 2 �򲡤��Ⱥ��٤�
 ;;;
 ;;;		C)reate D)uplicate P)reserve F)indfile B)uff X)M-x N)o:
 ;;;
-;;;	と出て来ます(これをウィンドウ生成メニューと呼ぶことにします)。メ
-;;;	イルを読むためには現在の分割状態は必要ありませんから、Create の 
-;;;	c を押して新規ウィンドウを作成します。そこでメイルリーダを起動す
-;;;	ると、ウィンドウの分割状態がメイル専用になります(もちろんメニュー
-;;;	でxを押して直接メイルリーダを起動してもかまいません)。読み終わっ
-;;;	たら C-c C-w 1 を押すと、1番のバッファに保存されている、最初のプ
-;;;	ログラム編集状態に切り替わります。これでプログラム作成に直ちに戻
-;;;	れます。
+;;;	�ȽФ���ޤ�(����򥦥���ɥ�������˥塼�ȸƤ֤��Ȥˤ��ޤ�)����
+;;;	������ɤि��ˤϸ��ߤ�ʬ����֤�ɬ�פ���ޤ��󤫤顢Create �� 
+;;;	c �򲡤��ƿ���������ɥ���������ޤ��������ǥᥤ��꡼����ư��
+;;;	��ȡ�������ɥ���ʬ����֤��ᥤ�����Ѥˤʤ�ޤ�(��������˥塼
+;;;	��x�򲡤���ľ�ܥᥤ��꡼����ư���Ƥ⤫�ޤ��ޤ���)���ɤ߽����
+;;;	���� C-c C-w 1 �򲡤��ȡ�1�֤ΥХåե�����¸����Ƥ��롢�ǽ�Υ�
+;;;	��������Խ����֤��ڤ��ؤ��ޤ�������ǥץ�����������ľ������
+;;;	��ޤ���
 ;;;
-;;;	  今度はニュースを読みましょう。M-x gnus ・・・。はい読み終わり
-;;;	ました。いままでは q で終了していましたが、今日からは違います。 
-;;;	C-c C-w 1 で復帰できるのです。はい、C-c C-w 1。おっと、新規ウィ
-;;;	ンドウを作成するのを忘れていたので、まだ1番のウィンドウにいたの
-;;;	でした。このまま(%1)ではせっかく1番に保存したプログラム編集状態
-;;;	が消えてしまいます。そんな時は、C-c C-w 3 を押してウィンドウ生成
-;;;	メニューが出たところで、Preserve の p を押してください。1番のバッ
-;;;	ファの内容は更新せずに、現状のウィンドウ状態を3番のバッファに保
-;;;	存します。
-;;;   **Mule2ではリジューム(後述)ファイルに現在の状態がセーブされていな
-;;;	い限り、分割状態を復旧することができません。
+;;;	  ���٤ϥ˥塼�����ɤߤޤ��礦��M-x gnus ���������Ϥ��ɤ߽����
+;;;	�ޤ��������ޤޤǤ� q �ǽ�λ���Ƥ��ޤ���������������ϰ㤤�ޤ��� 
+;;;	C-c C-w 1 �������Ǥ���ΤǤ����Ϥ���C-c C-w 1�����äȡ���������
+;;;	��ɥ����������Τ�˺��Ƥ����Τǡ��ޤ�1�֤Υ�����ɥ��ˤ�����
+;;;	�Ǥ��������Τޤ�(%1)�ǤϤ��ä���1�֤���¸�����ץ�������Խ�����
+;;;	���ä��Ƥ��ޤ��ޤ�������ʻ��ϡ�C-c C-w 3 �򲡤��ƥ�����ɥ�����
+;;;	��˥塼���Ф��Ȥ����ǡ�Preserve �� p �򲡤��Ƥ���������1�֤ΥХ�
+;;;	�ե������ƤϹ��������ˡ������Υ�����ɥ����֤�3�֤ΥХåե�����
+;;;	¸���ޤ���
+;;;   **Mule2�Ǥϥꥸ�塼��(���)�ե�����˸��ߤξ��֤������֤���Ƥ���
+;;;	���¤ꡢʬ����֤����줹�뤳�Ȥ��Ǥ��ޤ���
 ;;;
-;;;	  あとはメイルが来たら C-c C-w 2 を、プログラムに飽きたら C-c
-;;;	C-w 3 を押して一日を過ごしましょう。メイルとニュースだけを読み続
-;;;	ける場合のように二つの状態を行ったり来たりする場合は C-c C-w SPC 
-;;;	が便利です。
+;;;	  ���Ȥϥᥤ�뤬�褿�� C-c C-w 2 �򡢥ץ�������˰������ C-c
+;;;	C-w 3 �򲡤��ư�����ᤴ���ޤ��礦���ᥤ��ȥ˥塼���������ɤ�³
+;;;	������Τ褦����Ĥξ��֤�Ԥä����褿�ꤹ����� C-c C-w SPC 
+;;;	�������Ǥ���
 ;;;
-;;;	  「あれ、メイルはいま何番のウィンドウだ?」と分からなくなったら、
-;;;	C-c C-w = を押しましょう。ミニバッファに番号と、対応するバッファ
-;;;	名がメニューバッファに表示されます。このうち、 バッファ名の頭に*
-;;;	が付いているものが現在選択しているバッファで、 +が付いているもの
-;;;	が直前に選択していたバッファです(つまり  C-c C-w SPC の行き先)。
-;;;	メニューバッファでは、 n や p を押して切替えたいウィンドウの位置
-;;;	まで移り、 SPC でそのウィンドウに切替えることができます。また d,
-;;;	k, s, l を押すと行頭に D, K,  S, L マークが付きます。ここで x を
-;;;	押すとマークを付けたバッファに対し、それぞれ「削除」、「表示され
-;;;	ているバッファも含めて削除(kill)」、「状態をファイルにセーブ」、
-;;;	「状態をファイルからロード」を行います。詳しくは、メニューバッファ
-;;;	で ? を押してください。
+;;;	  �֤��졢�ᥤ��Ϥ��޲��֤Υ�����ɥ���?�פ�ʬ����ʤ��ʤä��顢
+;;;	C-c C-w = �򲡤��ޤ��礦���ߥ˥Хåե����ֹ�ȡ��б�����Хåե�
+;;;	̾����˥塼�Хåե���ɽ������ޤ������Τ����� �Хåե�̾��Ƭ��*
+;;;	���դ��Ƥ����Τ��������򤷤Ƥ���Хåե��ǡ� +���դ��Ƥ�����
+;;;	��ľ�������򤷤Ƥ����Хåե��Ǥ�(�Ĥޤ�  C-c C-w SPC �ιԤ���)��
+;;;	��˥塼�Хåե��Ǥϡ� n �� p �򲡤������ؤ�����������ɥ��ΰ���
+;;;	�ޤǰܤꡢ SPC �Ǥ��Υ�����ɥ������ؤ��뤳�Ȥ��Ǥ��ޤ����ޤ� d,
+;;;	k, s, l �򲡤��ȹ�Ƭ�� D, K,  S, L �ޡ������դ��ޤ��������� x ��
+;;;	�����ȥޡ������դ����Хåե����Ф������줾��ֺ���ס���ɽ������
+;;;	�Ƥ���Хåե���ޤ�ƺ��(kill)�ס��־��֤�ե�����˥����֡ס�
+;;;	�־��֤�ե����뤫������ɡפ�Ԥ��ޤ����ܤ����ϡ���˥塼�Хåե�
+;;;	�� ? �򲡤��Ƥ���������
 ;;;
 ;;;	(%1)
-;;;	この状態ではバッファにプログラム編集状態が保存され、ウィンドウに
-;;;	GNUSの画面が表示されている。なお、Preserve は Emacs 19 でframeを
-;;;	切替え単位とする場合には利用できないので注意して下さい。
+;;;	���ξ��֤ǤϥХåե��˥ץ�������Խ����֤���¸���졢������ɥ���
+;;;	GNUS�β��̤�ɽ������Ƥ��롣�ʤ���Preserve �� Emacs 19 ��frame��
+;;;	���ؤ�ñ�̤Ȥ�����ˤ����ѤǤ��ʤ��Τ����դ��Ʋ�������
 ;;;
-;;;【その他細かい機能】
+;;;�ڤ���¾�٤�����ǽ��
 ;;;
-;;;	  C-c C-w C-w を押すと以下のようなメニューが出て来ます。
+;;;	  C-c C-w C-w �򲡤��Ȱʲ��Τ褦�ʥ�˥塼���Ф���ޤ���
 ;;;
 ;;;	N)ext P)rev R)ecent D)elete K)ill S)ave2buf L)oad-from-buf A)save-As
 ;;;
-;;;	n, p はそれぞれ一つ前/次のバッファの選択します。r はウィンドウ切
-;;;	り替えする直前に表示していた画面へ復帰します(%2)。d は現在選択し
-;;;	ている番号のバッファを消去します。k は d と同じですが、現在見え
-;;;	ているファイルも同時にクローズします。l は間違えて C-x 1 してし
-;;;	まった時などに、バッファにセーブされているウィンドウ状態を強制的
-;;;	に読み直す時に使います。s は現在見ている状態を強制的に対応するバッ
-;;;	ファにセーブする為に使い、a はセーブするバッファ番号を別途指定す
-;;;	る時に使います。
+;;;	n, p �Ϥ��줾������/���ΥХåե������򤷤ޤ���r �ϥ�����ɥ���
+;;;	���ؤ�����ľ����ɽ�����Ƥ������̤��������ޤ�(%2)��d �ϸ�������
+;;;	�Ƥ����ֹ�ΥХåե���õ�ޤ���k �� d ��Ʊ���Ǥ��������߸���
+;;;	�Ƥ���ե������Ʊ���˥����������ޤ���l �ϴְ㤨�� C-x 1 ���Ƥ�
+;;;	�ޤä����ʤɤˡ��Хåե��˥����֤���Ƥ��륦����ɥ����֤���Ū
+;;;	���ɤ�ľ�����˻Ȥ��ޤ���s �ϸ��߸��Ƥ�����֤���Ū���б�����Х�
+;;;	�ե��˥����֤���٤˻Ȥ���a �ϥ����֤���Хåե��ֹ�����ӻ��ꤹ
+;;;	����˻Ȥ��ޤ���
 ;;;
 ;;;	(%2)
-;;;	Emacs 19 の frame 機能でウィンドウ切替えを行う場合、直前の状態を
-;;;	保存する事はできないため、r を押した場合(関数win-recent-window)
-;;;	windows 用に割り当てられていない frame があればそれに表示を切替
-;;;	えます(C-c C-w 0 と同じ)。
+;;;	Emacs 19 �� frame ��ǽ�ǥ�����ɥ����ؤ���Ԥ���硢ľ���ξ��֤�
+;;;	��¸������ϤǤ��ʤ����ᡢr �򲡤������(�ؿ�win-recent-window)
+;;;	windows �Ѥ˳�����Ƥ��Ƥ��ʤ� frame ������Ф����ɽ��������
+;;;	���ޤ�(C-c C-w 0 ��Ʊ��)��
 ;;;
-;;;	  新規ウィンドウ作成時に、現在のバッファ内容の更新と、新ウィンド
-;;;	ウの状態を指示するためにウィンドウ生成メニューが出ます。これらの
-;;;	意味は以下のようになっています。
+;;;	  ����������ɥ��������ˡ����ߤΥХåե����Ƥι����ȡ����������
+;;;	���ξ��֤�ؼ����뤿��˥�����ɥ�������˥塼���Фޤ���������
+;;;	��̣�ϰʲ��Τ褦�ˤʤäƤ��ޤ���
 ;;;
-;;;		Create		現画面を現バッファに保存後、新規ウィンド
-;;;				ウを生成
-;;;		Duplicate	現画面を現バッファに保存後、現画面と同じ
-;;;				ウィンドウを生成
-;;;		Preserve	現バッファは更新せず、現画面を新規ウィン
-;;;				ドウとして登録
-;;;		Findfile	新規ウィンドウで find-file を行なう
-;;;		Buff		新規ウィンドウで switch-to-buffer を行なう
-;;;		M-x		新規ウィンドウでコマンド実行
-;;;		No		新規ウィンドウ生成を中止
+;;;		Create		�����̤򸽥Хåե�����¸�塢�����������
+;;;				��������
+;;;		Duplicate	�����̤򸽥Хåե�����¸�塢�����̤�Ʊ��
+;;;				������ɥ�������
+;;;		Preserve	���Хåե��Ϲ��������������̤򿷵�������
+;;;				�ɥ��Ȥ�����Ͽ
+;;;		Findfile	����������ɥ��� find-file ��Ԥʤ�
+;;;		Buff		����������ɥ��� switch-to-buffer ��Ԥʤ�
+;;;		M-x		����������ɥ��ǥ��ޥ�ɼ¹�
+;;;		No		����������ɥ����������
 ;;;
-;;;【リジューム】
+;;;�ڥꥸ�塼���
 ;;;
-;;;	  revive.el と組み合わせて使うことにより、リジューム機能が有効で
-;;;	す。C-c C-w C-r を押すと以下のメニューが現れます。
+;;;	  revive.el ���Ȥ߹�碌�ƻȤ����Ȥˤ�ꡢ�ꥸ�塼�ൡǽ��ͭ����
+;;;	����C-c C-w C-r �򲡤��Ȱʲ��Υ�˥塼������ޤ���
 ;;;
 ;;;	     A)save-all R)estore-all S)ave-this L)oad-this N)Load# ~)read-~
 ;;;
-;;;	ここで a を押すと現在の全てのウィンドウの情報をファイルにセーブ
-;;;	することができます。r を押すとファイルにセーブしたものをロードす
-;;;	ることができます。s,l を押すと現在選択しているウィンドウ状態をそ
-;;;	れぞれ セーブ/ロード します。n はファイルから数字で指定したウィ
-;;;	ンドウ状態をロードします。また Emacs 起動直後に r を押すところを
-;;;	間違えて a を押してしまった場合などは ~ を利用してください。
+;;;	������ a �򲡤��ȸ��ߤ����ƤΥ�����ɥ��ξ����ե�����˥�����
+;;;	���뤳�Ȥ��Ǥ��ޤ���r �򲡤��ȥե�����˥����֤�����Τ�����ɤ�
+;;;	�뤳�Ȥ��Ǥ��ޤ���s,l �򲡤��ȸ������򤷤Ƥ��륦����ɥ����֤�
+;;;	�줾�� ������/������ ���ޤ���n �ϥե����뤫������ǻ��ꤷ������
+;;;	��ɥ����֤�����ɤ��ޤ����ޤ� Emacs ��ưľ��� r �򲡤��Ȥ�����
+;;;	�ְ㤨�� a �򲡤��Ƥ��ޤä����ʤɤ� ~ �����Ѥ��Ƥ���������
 ;;;
-;;;	  このメニューからセーブするよりも「C-x C」で Emacs を終了し、次
-;;;	回 Emacs を起動した直後に resume-windows (または C-c C-w C-r r)
-;;;	を起動することで直ちに以前の状態に戻ることができるのでこちらの方
-;;;	が便利な使い方といえましょう。
+;;;	  ���Υ�˥塼���饻���֤�������C-x C�פ� Emacs ��λ������
+;;;	�� Emacs ��ư����ľ��� resume-windows (�ޤ��� C-c C-w C-r r)
+;;;	��ư���뤳�Ȥ�ľ���˰����ξ��֤���뤳�Ȥ��Ǥ���ΤǤ��������
+;;;	�������ʻȤ����Ȥ����ޤ��礦��
 ;;;
-;;;【ローカルリジューム】
+;;;�ڥ�������ꥸ�塼���
 ;;;
-;;;	  リジュームでは全てのウィンドウ情報をファイルにセーブしますが、
-;;;	そのファイルをさらに複数持ち、それぞれを切り替えて使うことができ
-;;;	ます。「C-c C-w C-l」をタイプし情報ファイルをセーブ/ロードするデ
-;;;	ィレクトリを入力した後、通常のリジュームメニューの操作を行ないま
-;;;	す。
+;;;	  �ꥸ�塼��Ǥ����ƤΥ�����ɥ������ե�����˥����֤��ޤ�����
+;;;	���Υե�����򤵤��ʣ�����������줾����ڤ��ؤ��ƻȤ����Ȥ��Ǥ�
+;;;	�ޤ�����C-c C-w C-l�פ򥿥��פ�����ե�����򥻡���/�����ɤ����
+;;;	���쥯�ȥ�����Ϥ����塢�̾�Υꥸ�塼���˥塼������Ԥʤ���
+;;;	����
 ;;;
-;;;	  ところで、多くの仕事はその仕事特有のディレクトリをベースに行わ
-;;;	れます。この性質を利用して、一度に複数個の仕事をこなす場合などに、
-;;;	関数 win-switch-task を使うと仕事の切替えをスムーズに行うことが
-;;;	できます。この関数を呼ぶと現在の環境を現在の情報ファイルに保存す
-;;;	るか確認後、次の仕事を行っているディレクトリの入力を促します。
+;;;	  �Ȥ����ǡ�¿���λŻ��Ϥ��λŻ���ͭ�Υǥ��쥯�ȥ��١����˹Ԥ�
+;;;	��ޤ����������������Ѥ��ơ����٤�ʣ���ĤλŻ��򤳤ʤ����ʤɤˡ�
+;;;	�ؿ� win-switch-task ��Ȥ��ȻŻ������ؤ��򥹥ࡼ���˹Ԥ����Ȥ�
+;;;	�Ǥ��ޤ������δؿ���Ƥ֤ȸ��ߤδĶ��򸽺ߤξ���ե��������¸��
+;;;	�뤫��ǧ�塢���λŻ���ԤäƤ���ǥ��쥯�ȥ�����Ϥ�¥���ޤ���
 ;;;
-;;;【カスタマイズ】
+;;;�ڥ������ޥ�����
 ;;;
-;;;	  プリフィクスキーを例えば C-c w に変更する時は .emacs に次のよ
-;;;	うな記述をいれます。
+;;;	  �ץ�ե������������㤨�� C-c w ���ѹ�������� .emacs �˼��Τ�
+;;;	���ʵ��Ҥ򤤤�ޤ���
 ;;;
 ;;;		(setq win:switch-prefix "\C-cw")
 ;;;		(define-key global-map win:switch-prefix nil)
 ;;;		(define-key global-map "\C-cw1" 'win-switch-to-window)
 ;;;
-;;;	  ウィンドウの選択を1〜9ではなくて、a〜zにすることもできます。
+;;;	  ������ɥ��������1��9�ǤϤʤ��ơ�a��z�ˤ��뤳�Ȥ�Ǥ��ޤ���
 ;;;
 ;;;		(setq win:switch-prefix "\C-cw")
 ;;;		(define-key global-map win:switch-prefix nil)
 ;;;		(define-key global-map "\C-cwa" 'win-switch-to-window)
-;;;		(setq win:base-key ?`)		;; ` は「直前の状態」
-;;;		(setq win:max-configs 27)	;; ` 〜 z は27文字
-;;;		(setq win:quick-selection nil)	;; C-c英字 に割り当てない
+;;;		(setq win:base-key ?`)		;; ` �ϡ�ľ���ξ��֡�
+;;;		(setq win:max-configs 27)	;; ` �� z ��27ʸ��
+;;;		(setq win:quick-selection nil)	;; C-c�ѻ� �˳�����Ƥʤ�
 ;;;
-;;;	ここで ` はアスキーコードで a の一つ前にあることに注意してくださ
-;;;	い。C-c C-w ` は直前状態保存用バッファと、カレントウィンドウの内
-;;;	容の交換に割り当てられます。
+;;;	������ ` �ϥ������������ɤ� a �ΰ�����ˤ��뤳�Ȥ����դ��Ƥ�����
+;;;	����C-c C-w ` ��ľ��������¸�ѥХåե��ȡ������ȥ�����ɥ�����
+;;;	�Ƥθ򴹤˳�����Ƥ��ޤ���
 ;;;
-;;;	  windows の動作を調整する以下の変数があります。
+;;;	  windows ��ư���Ĵ������ʲ����ѿ�������ޤ���
 ;;;
-;;;	win:switch-prefix	windows.el 操作用のprefixキー
-;;;	win:menu-key-stroke	window生成menuのキー(prefixキーに続けて)
-;;;	win:resume-key-stroke	resume menu のキー (〃)
-;;;	win:resume-local-key-stroke	local resume menu のキー (〃)
-;;;	win:switch-task-key-stroke	switch task menu のキー (〃)
-;;;	win:quick-selection	C-c 数字 などでwindow選択できる
-;;;	win:mode-line-format	window番号を示す mode-line format
-;;;	win:configuration-file	resume file のパス名
-;;;	win:make-backup-files	resume file のバックアップを取るか
-;;;	win:buffer-depth-per-win window毎にbuffer-listの上位何個を記憶するか
-;;;				nilの時はbuffer-list優先順位を保存しない
+;;;	win:switch-prefix	windows.el ����Ѥ�prefix����
+;;;	win:menu-key-stroke	window����menu�Υ���(prefix������³����)
+;;;	win:resume-key-stroke	resume menu �Υ��� (��)
+;;;	win:resume-local-key-stroke	local resume menu �Υ��� (��)
+;;;	win:switch-task-key-stroke	switch task menu �Υ��� (��)
+;;;	win:quick-selection	C-c ���� �ʤɤ�window����Ǥ���
+;;;	win:mode-line-format	window�ֹ�򼨤� mode-line format
+;;;	win:configuration-file	resume file �Υѥ�̾
+;;;	win:make-backup-files	resume file �ΥХå����åפ��뤫
+;;;	win:buffer-depth-per-win window���buffer-list�ξ�̲��Ĥ򵭲����뤫
+;;;				nil�λ���buffer-listͥ���̤���¸���ʤ�
 ;;;	win:inhibit-switch-in-minibuffer
-;;;				ミニバッファではwindow切り替えしない
+;;;				�ߥ˥Хåե��Ǥ�window�ڤ��ؤ����ʤ�
 ;;;	win:memorize-winconf-timing
-;;;				C-c C-w - で復帰すべきウィンドウ状態を保
-;;;				存するタイミングを指定する 'save (ファイ
-;;;				ル保存時)または 'change (バッファ修正時)
+;;;				C-c C-w - ���������٤�������ɥ����֤���
+;;;				¸���륿���ߥ󥰤���ꤹ�� 'save (�ե���
+;;;				����¸��)�ޤ��� 'change (�Хåե�������)
 ;;;
-;;;	-- 以下 mule2 以降でフレームを利用する場合のみ有効 --
-;;;	win:no-raise-at-save	全windowのセーブ時にフレームをraiseするか
+;;;	-- �ʲ� mule2 �ʹߤǥե졼������Ѥ�����Τ�ͭ�� --
+;;;	win:no-raise-at-save	��window�Υ����ֻ��˥ե졼���raise���뤫
 ;;;	win:frame-parameters-to-save-private
-;;;				frame parameter のうちセーブしたいパラメー
-;;;				タ(win:frame-parameters-to-save-default 
-;;;				の値以外のものを設定する)
-;;;	win:auto-position	フレーム新規作成時に
-;;;				nil なら手動で位置を確定
-;;;				'absolute なら絶対座標を計算して配置
-;;;				'relative なら現フレームとの相対位置で配置
-;;;	win:new-frame-offset-x	新規フレーム自動配置時のX座標のオフセット
-;;;	win:new-frame-offset-y	新規フレーム自動配置時のY座標のオフセット
-;;;	win:resumed-frame-offset-x フレームリジューム時のX座標のオフセット
-;;;				fvwmのデフォルトの BoundaryWidth を使う
-;;;				時はこの変数の値を3にしておくと良い。
-;;;	win:resumed-frame-offset-y フレームリジューム時のY座標のオフセット
-;;;	win:mouse-position	フレーム移動時のマウスカーソルの座標
-;;;				'(x y) というリストで指定
-;;;	win:frame-title-function 各フレームのタイトルを決定する関数
-;;;				フレーム番号が引数として渡される。
-;;;				この値をnilにするとタイトルはいじらない。
+;;;				frame parameter �Τ��������֤������ѥ�᡼
+;;;				��(win:frame-parameters-to-save-default 
+;;;				���Ͱʳ��Τ�Τ����ꤹ��)
+;;;	win:auto-position	�ե졼�࿷����������
+;;;				nil �ʤ��ư�ǰ��֤����
+;;;				'absolute �ʤ����к�ɸ��׻���������
+;;;				'relative �ʤ鸽�ե졼��Ȥ����а��֤�����
+;;;	win:new-frame-offset-x	�����ե졼�༫ư���ֻ���X��ɸ�Υ��ե��å�
+;;;	win:new-frame-offset-y	�����ե졼�༫ư���ֻ���Y��ɸ�Υ��ե��å�
+;;;	win:resumed-frame-offset-x �ե졼��ꥸ�塼�����X��ɸ�Υ��ե��å�
+;;;				fvwm�Υǥե���Ȥ� BoundaryWidth ��Ȥ�
+;;;				���Ϥ����ѿ����ͤ�3�ˤ��Ƥ������ɤ���
+;;;	win:resumed-frame-offset-y �ե졼��ꥸ�塼�����Y��ɸ�Υ��ե��å�
+;;;	win:mouse-position	�ե졼���ư���Υޥ�����������κ�ɸ
+;;;				'(x y) �Ȥ����ꥹ�Ȥǻ���
+;;;	win:frame-title-function �ƥե졼��Υ����ȥ����ꤹ��ؿ�
+;;;				�ե졼���ֹ椬�����Ȥ����Ϥ���롣
+;;;				�����ͤ�nil�ˤ���ȥ����ȥ�Ϥ�����ʤ���
 ;;;	win:title-with-buffer-name
-;;;				フレームタイトルにバッファ名を付加するか
+;;;				�ե졼�ॿ���ȥ�˥Хåե�̾���ղä��뤫
 ;;;
-;;;【バグ】
+;;;�ڥХ���
 ;;;
-;;;	  ウィンドウを切替えると言うアイデアは screen コマンドに基づいて
-;;;	いますが、操作体系はかなり違います。
+;;;	  ������ɥ������ؤ���ȸ��������ǥ��� screen ���ޥ�ɤ˴�Ť���
+;;;	���ޤ���������ηϤϤ��ʤ�㤤�ޤ���
 ;;;
-;;;【通な使い方】
+;;;���̤ʻȤ�����
 ;;;	
-;;;	windows.el 2.11 以降では、frameに
+;;;	windows.el 2.11 �ʹߤǤϡ�frame��
 ;;;
 ;;;		mule[1]:*scratch*
 ;;;	
-;;;	のようなタイトルを付けます。これを利用すると、ウィンドウマネージャ
-;;;	から一撃で目的のframeに飛ぶことが出来るようになります。fvwm2を使っ
-;;;	ているときは、
+;;;	�Τ褦�ʥ����ȥ���դ��ޤ�����������Ѥ���ȡ�������ɥ��ޥ͡�����
+;;;	���������Ū��frame�����֤��Ȥ������褦�ˤʤ�ޤ���fvwm2��Ȥ�
+;;;	�Ƥ���Ȥ��ϡ�
 ;;;	
 ;;;	AddToFunc DeiconifyFocusAndWarp "I" Iconify -1
 ;;;	+				"I" FocusAndWarp $0 $1
@@ -594,47 +595,45 @@
 ;;;	 :
 ;;;	Key 9 A C	Next [mule?9?:*] DeiconifyFocusAndWarp
 ;;;	
-;;;	のように ~/.fvwm2rc に書くことで、C-1 〜 C-9 を押すことで目的フ
-;;;	レームに飛ぶことが出来るようになります(詳しくはウィンドウマネー
-;;;	ジャのマニュアルを見てください)。
+;;;	�Τ褦�� ~/.fvwm2rc �˽񤯤��Ȥǡ�C-1 �� C-9 �򲡤����Ȥ���Ū��
+;;;	�졼������֤��Ȥ������褦�ˤʤ�ޤ�(�ܤ����ϥ�����ɥ��ޥ͡�
+;;;	����Υޥ˥奢��򸫤Ƥ�������)��
 ;;;	
-;;;【あとがき】
+;;;�ڤ��Ȥ�����
 ;;;
-;;;	  似たようなの他にもありそう。 とおもいつつ fj.editor.emacs に投
-;;;	稿したところ screens.el というまさに screen コマンド互換のものが
-;;;	ありました。 また wicos.el という後継版が出ているようですが…(多
-;;;	くは語るまい)…。windows.el では、 (全)ウィンドウ状態の保存/復元
-;;;	が可能なので、ただちに前回の編集環境を取り戻すことができます。そ
-;;;	れゆえ論文にインプリメントにと忙しい時期には欠かせないユーティリ
-;;;	ティとなるでしょう。
+;;;	  �����褦�ʤ�¾�ˤ⤢�ꤽ���� �Ȥ��⤤�Ĥ� fj.editor.emacs ����
+;;;	�Ƥ����Ȥ��� screens.el �Ȥ����ޤ��� screen ���ޥ�ɸߴ��Τ�Τ�
+;;;	����ޤ����� �ޤ� wicos.el �Ȥ�������Ǥ��ФƤ���褦�Ǥ�����(¿
+;;;	���ϸ��ޤ�)�ġ�windows.el �Ǥϡ� (��)������ɥ����֤���¸/����
+;;;	����ǽ�ʤΤǡ���������������Խ��Ķ������᤹���Ȥ��Ǥ��ޤ�����
+;;;	��椨��ʸ�˥���ץ���Ȥˤ�˻���������ˤϷ礫���ʤ��桼�ƥ���
+;;;	�ƥ��Ȥʤ�Ǥ��礦��
 ;;;
 ;;;
-;;;【謝辞】
+;;;�ڼռ���
 ;;;
-;;;	  このプログラムを作るきっかけと適切なコメントを下さった、ASCII-
-;;;	NETのたりゃー佐々木さん、 Emacs-19 でミニバッファを分離させている
-;;;	時の挙動に関するデバッグに協力下さったfujixerox.co.jpの廣瀬陽一さ
-;;;	ん、メニューによるウィンドウ切り替えを提案してくださった(株) 東芝
-;;;	の小林勉さん、XEmacs関係の動作報告などを下さった中島幹夫さん、各
-;;;	ウィンドウに名前をつける機能などのパッチを下さった早稲田大学の西
-;;;	本さん、Mew(5以降)を win:use-frame がnilで使うときの不具合に関す
-;;;	る助言を下さった増田さん、Emacs22以降 -nw のときに同一バッファを
-;;;	別ウィンドウに出している場合に current-window-configuration がポ
-;;;	イントを復帰できない問題の回避策と複数の *shell* バッファを復帰可
-;;;	能とするパッチを下さった千葉大学の桜井貴文さんに感謝致します。
+;;;	  ���Υץ��������뤭�ä�����Ŭ�ڤʥ����Ȥ򲼤��ä���ASCII-
+;;;	NET�Τ���㡼�����ڤ��� Emacs-19 �ǥߥ˥Хåե���ʬΥ�����Ƥ���
+;;;	���ε�ư�˴ؤ���ǥХå��˶��ϲ����ä�fujixerox.co.jp��ע���۰줵
+;;;	�󡢥�˥塼�ˤ�륦����ɥ��ڤ��ؤ�����Ƥ��Ƥ������ä�(��) ���
+;;;	�ξ����٤���XEmacs�ط���ư�����ʤɤ򲼤��ä����紴�פ��󡢳�
+;;;	������ɥ���̾����Ĥ��뵡ǽ�ʤɤΥѥå��򲼤��ä��������ؤ���
+;;;	�ܤ���Mew(5�ʹ�)�� win:use-frame ��nil�ǻȤ��Ȥ����Զ��˴ؤ�
+;;;	������򲼤��ä����Ĥ���Emacs22�ʹ� -nw �ΤȤ���Ʊ��Хåե���
+;;;	�̥�����ɥ��˽Ф��Ƥ������ current-window-configuration ����
+;;;	����Ȥ������Ǥ��ʤ�����β������ʣ���� *shell* �Хåե���������
+;;;	ǽ�Ȥ���ѥå��򲼤��ä�������ؤκ��浮ʸ����˴����פ��ޤ���
 ;;;
-;;;【取り扱い】
+;;;�ڼ�갷����
 ;;;
-;;;	  このプログラムは、フリーソフトウェアとして配布いたします。この
-;;;	プログラムを使用して生じたいかなる結果に対しても作者は一切の責任
-;;;	を負わないものといたしますが、コメントやバグレポートは大いに歓迎
-;;;	いたします。お気軽にご連絡下さい。連絡は以下のアドレスまでお願い
-;;;	いたします(2008/6現在)。
+;;;	  ���Υץ������ϡ��ե꡼���եȥ������Ȥ������ۤ������ޤ�������
+;;;	�ץ���������Ѥ��������������ʤ��̤��Ф��Ƥ��Ԥϰ��ڤ���Ǥ
+;;;	�����ʤ���ΤȤ������ޤ����������Ȥ�Х���ݡ��Ȥ��礤�˴���
+;;;	�������ޤ��������ڤˤ�Ϣ����������Ϣ���ϰʲ��Υ��ɥ쥹�ޤǤ��ꤤ
+;;;	�������ޤ�(2012/8����)��
 ;;;							yuuji@gentei.org
 
-;;;
-;; Code
-;;;
+;;; Code:
 
 ;; ---------- Customizable variables
 (defvar win:max-configs 10
@@ -1008,7 +1007,7 @@ make-frame function."
     (while (and (< d win:buffer-depth-per-win) bl)
       (or (eq (window-buffer (minibuffer-window)) (car bl))
           ;(string-match "\\*$" (buffer-name (car bl)))
-	  (progn			;buffer-listの順序保存
+	  (progn			;buffer-list�ν����¸
 	    (aset (aref win:buflists index) d (buffer-name (car bl)))
 	    (setq d (1+ d))))
       (setq bl (cdr bl)))))
@@ -1566,7 +1565,7 @@ Do not call this function."
 ;; Functions for resume.
 ;;;
 (defconst win:revision
-  "$Revision: 2.47 $"
+  "$Revision: 2.48 $"
   "Revision string of windows.el")
 (defvar win:revision-prefix ";win;")
 
@@ -1826,6 +1825,7 @@ Non-nil for optional argument PRESERVE keeps all current buffers."
 	(while (not (frame-visible-p goal)) (sit-for 0))
 	(raise-frame goal)
 	(select-frame goal)
+	(if (fboundp 'x-focus-frame) (x-focus-frame goal))
 	(if (not (eq (selected-frame) goal))
 	    nil
 	  (or win:xemacs-p (unfocus-frame))
@@ -2106,7 +2106,7 @@ CONF is the window configuration at the time.")
                  (re-search-forward "(\\([A-Za-z0-9:-@]\\))" nil t)
                  (- (char-after (match-beginning 1)) win:base-key))) 
          (prefix (read-string "Window name: " (aref win:names-prefix goal))))
-    (if (> (length prefix) win:names-maxl) ;日本語知らない…
+    (if (> (length prefix) win:names-maxl) ;���ܸ��Τ�ʤ���
 	(setq prefix (substring prefix 0 win:names-maxl)))
     (aset win:names-prefix goal prefix)
     (win:switch-menu-prepare-menu)
@@ -2292,6 +2292,10 @@ If interactive argument KILL is non-nil, kill menu buffer and no select."
 (run-hooks 'win-load-hook)
 
 ;; $Log: windows.el,v $
+;; Revision 2.48  2010/05/23 12:33:40  yuuji
+;; Workaround for frame focus on CarbonEmacs.
+;; Thanks to nabechan.
+;;
 ;; Revision 2.47  2009/10/17 01:49:05  yuuji
 ;; Fix for XEmacs and emacs-20.
 ;;
