@@ -1,9 +1,12 @@
 (load-file "~/.emacs.d/custom/package-management.el")
 (setq el-get-sources
-      '((:name clojure-mode
-	       :type git
-	       :url "https://github.com/technomancy/clojure-mode.git") 
-        (:name tex-math-preview :type elpa)
+      '(
+
+	;; (:name clojure-mode
+	;;        :type git
+	;;        :url "https://github.com/technomancy/clojure-mode.git")
+        ;; (:name nrepl :type elpa)
+        ;; (:name tex-math-preview :type elpa)
         (:name yasnippet
                :type git
                :url "https://github.com/capitaomorte/yasnippet.git"
@@ -16,9 +19,8 @@
                :compile "dirtree.el")
         (:name popup-el
                :type git
-               :url "https://github.com/m2ym/popup-el.git"
-               :features "popup"
-               :compile nil)
+               :url "https://github.com/auto-complete/popup-el.git"
+               :features "popup")
         (:name multi-web-mode
                :type git
                :url "https://github.com/fgallina/multi-web-mode.git"
@@ -29,7 +31,7 @@
                :website "http://cx4a.org/software/auto-complete/"
                :description "The most intelligent auto-completion extension."
                :type git
-               :url "http://github.com/m2ym/auto-complete.git"
+               :url "http://github.com/auto-complete/auto-complete.git"
                :load-path "."
                :post-init (lambda ()
                             (require 'auto-complete)
@@ -49,15 +51,16 @@
          magit color-theme deft
          muse paredit autopair
          inf-ruby js2-mode json lua-mode markdown-mode ruby-mode rspec-mode yaml-mode zencoding-mode
+         python-mode
          iedit frame-bufs ;; nxhtml
          unbound
          windata tree-mode ;; required for dirtree
+	 clojure-mode nrepl
          auctex
          transpose-frame
          )
        (mapcar 'el-get-source-name el-get-sources)))
 (el-get 'sync my-packages)
-
 
 (dolist (path '("~/.emacs.d/revive.el"
                 "~/.emacs.d/bundle/mode/haxe-mode.el"
@@ -94,37 +97,19 @@
 (require 'dirtree)
 (autoload 'dirtree "dirtree" "Add directory to tree view" t)
 
-;; perspective mode
-;; ref: http://emacsrookie.com/2011/09/25/workspaces/
-(persp-mode)
-(defmacro custom-persp (name &rest body)
-  `(let ((initialize (not (gethash ,name perspectives-hash)))
-         (current-perspective persp-curr))
-     (persp-switch ,name)
-     (when initialize ,@body)
-     (setq persp-last current-perspective)))
-(defun custom-persp/org ()
-  (interactive)
-  (custom-persp "@org"
-                (find-file (first org-agenda-files))))
-
-;; superceded by el-get?
-;;;;;;; This was installed by package-install.el.
-;;;;;;; This provides support for the package system and
-;;;;;;; interfacing with ELPA, the package archive.
-;;;;;;; Move this code earlier if you want to reference
-;;;;;;; packages in your .emacs.
-;;;;(when
-;;;;    (load
-;;;;     (expand-file-name "~/.emacs.d/elpa/package.el"))
-;;;;  ;; Add the original Emacs Lisp Package Archive
-;;;;  (add-to-list 'package-archives
-;;;;               '("elpa" . "http://tromey.com/elpa/"))
-;;;;  ;; Add the user-contributed repository
-;;;;  (add-to-list 'package-archives
-;;;;               '("marmalade" . "http://marmalade-repo.org/packages/"))
-;;;;  (package-initialize))
-
+;; ;; perspective mode
+;; ;; ref: http://emacsrookie.com/2011/09/25/workspaces/
+;; (persp-mode)
+;; (defmacro custom-persp (name &rest body)
+;;   `(let ((initialize (not (gethash ,name perspectives-hash)))
+;;          (current-perspective persp-curr))
+;;      (persp-switch ,name)
+;;      (when initialize ,@body)
+;;      (setq persp-last current-perspective)))
+;; (defun custom-persp/org ()
+;;   (interactive)
+;;   (custom-persp "@org"
+;;                 (find-file (first org-agenda-files))))
 
 
 ;; prevent special buffers from messing with the current layout
@@ -576,6 +561,16 @@ Also returns nil if pid is nil."
 (set-language-environment "UTF-8")
 (setq slime-net-coding-system 'utf-8-unix)
 
+;; nrepl
+;; ref: https://github.com/kingtim/nrepl.el
+(add-hook 'nrepl-interaction-mode-hook
+          'nrepl-turn-on-eldoc-mode)
+;; Stop the error buffer from popping up while working in the REPL buffer:
+(setq nrepl-popup-stacktraces nil)
+;; Make C-c C-z switch to the *nrepl* buffer in the current window:
+(add-to-list 'same-window-buffer-names "*nrepl*") 
+;; If you have paredit installed you can enabled it like this:
+(add-hook 'nrepl-interaction-mode 'paredit-mode)
 
 
 
