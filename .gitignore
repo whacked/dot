@@ -17,3 +17,4 @@ abbrev_defs
 .emacs.d/swank
 .vim/bundle
 .vim/vim-addons
+.emacs.d/url
