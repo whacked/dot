@@ -101,7 +101,7 @@ myManageHook = composeAll
     , className =? "Kalarm" --> doShift "0"
     , className =? "Xournalpp" --> doShift "8:read"
     -- , ( role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
-    , className =? "Emacs23" --> doFloat
+    , className =? "Emacs" --> doFloat
     , className =? "Toplevel" --> doFloat
     -- doesn't work, because title is initialized after emacs window appears
     -- , fmap (isInfixOf "Speedbar") title --> doFloat
