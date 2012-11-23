@@ -25,9 +25,6 @@
 [submodule ".emacs.d/bundle/ibuffer-vc"]
 	path = .emacs.d/bundle/ibuffer-vc
 	url = git://github.com/purcell/ibuffer-vc.git
-[submodule ".emacs.d/perspective"]
-	path = .emacs.d/perspective
-	url = git://github.com/nex3/perspective-el.git
 [submodule ".emacs.d/bundle/mozrepl"]
 	path = .emacs.d/bundle/mozrepl
 	url = git://github.com/bard/mozrepl.git

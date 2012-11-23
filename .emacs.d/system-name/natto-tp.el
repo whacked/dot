@@ -33,7 +33,7 @@
                :type git
                :url "http://github.com/auto-complete/auto-complete.git"
                :load-path "."
-               :post-init (lambda ()
+               :post-init (progn
                             (require 'auto-complete)
                             (add-to-list 'ac-dictionary-directories (expand-file-name "dict" pdir))
                             ;; the elc is buggy for some reason
@@ -54,8 +54,9 @@
          python-mode
          iedit frame-bufs ;; nxhtml
          unbound
+         rainbow-mode perspective
          windata tree-mode ;; required for dirtree
-	 clojure-mode nrepl
+         clojure-mode nrepl
          auctex
          transpose-frame
          )
@@ -67,8 +68,6 @@
                 "~/.emacs.d/matlab.el"
                 "~/.emacs.d/windows.el"
                 "~/.emacs.d/bundle/mode/graphviz-dot-mode.el"
-                "~/.emacs.d/perspective/perspective.el"
-                "~/.emacs.d/rainbow-mode.el"
                 ))
   (load-file path))
 
