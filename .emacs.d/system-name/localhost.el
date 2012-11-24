@@ -59,9 +59,14 @@
   (jp!)
   (other-window 1))
 
+(global-auto-revert-mode t)
 (defun sync-note ()
   (interactive)
-  (start-process "sync" "*Messages*" "/bin/bash" (expand-file-name "~/sync.sh")))
+  (let ((current-line (count-lines 1 (point))))
+    (start-process "sync" "*Messages*" "/bin/bash" (expand-file-name "~/sync.sh"))
+    (revert-buffer nil t)
+    (show-all)
+    (goto-line current-line)))
 (setq sync-interval-S (* 60 10))
 (setq *sync-note-timer* (run-with-timer 0 sync-interval-S 'sync-note))
 ;; to cancel:
