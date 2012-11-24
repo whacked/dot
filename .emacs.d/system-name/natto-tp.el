@@ -472,19 +472,12 @@ Also returns nil if pid is nil."
  '(table-cell-face ((((class color)) (:background "#AA3" :foreground "gray90")))))
 ;(set-cursor-color "orange")
 
-(require 'color-theme)
-(eval-after-load "color-theme"
-  '(progn
-     (color-theme-initialize)
-     (color-theme-snow)
-     ))
-; snow's hl-line seems to be same as paren-match color
-(set-face-background 'hl-line "PapayaWhip")
-
-
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
+(if (display-graphic-p)
+    (color-theme-solarized-light)
+  (color-theme-solarized-dark))
 
 (global-set-key "\C-x\C-b" 'ibuffer)
 (setq ibuffer-expert t)
