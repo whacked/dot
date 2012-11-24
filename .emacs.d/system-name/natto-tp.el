@@ -2,9 +2,9 @@
 (setq el-get-sources
       '(
 
-	;; (:name clojure-mode
-	;;        :type git
-	;;        :url "https://github.com/technomancy/clojure-mode.git")
+        ;; (:name clojure-mode
+        ;;        :type git
+        ;;        :url "https://github.com/technomancy/clojure-mode.git")
         ;; (:name nrepl :type elpa)
         ;; (:name tex-math-preview :type elpa)
         (:name yasnippet
@@ -460,24 +460,22 @@ Also returns nil if pid is nil."
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#f8f8ff" :foreground "#000000" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :foundry "unknown" :family (if (featurep (quote ns)) "Monaco" "Consolas")))))
- '(font-lock-keyword-face ((t (:foreground "DarkOliveGreen" :weight bold))))
- '(org-level-1 ((t (:inherit outline-1 :weight bold :height 1.6 :family "Verdana"))))
- '(org-level-2 ((t (:inherit outline-2 :height 1.5 :family "Verdana"))))
- '(org-level-3 ((t (:inherit outline-3 :height 1.4 :family "Verdana"))))
- '(org-level-4 ((t (:inherit outline-4 :foreground "blue" :height 1.3 :family "Verdana"))))
- '(org-level-5 ((t (:inherit outline-5 :height 1.2 :family "Verdana"))))
- '(org-level-6 ((t (:inherit outline-6 :height 1.1 :family "Verdana"))))
+ ;; '(default ((t (:inherit nil :stipple nil :background "#f8f8ff" :foreground "#000000" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :foundry "unknown" :family (if (featurep (quote ns)) "Monaco" "Consolas")))))
+ '(org-level-1 ((t (:inherit outline-1 :inverse-video t :weight bold :height 1.6 :family "Verdana"))))
+ '(org-level-2 ((t (:inherit outline-2 :inverse-video t :weight bold :height 1.5 :family "Verdana"))))
+ '(org-level-3 ((t (:inherit outline-3 :inverse-video t :weight bold :height 1.4 :family "Verdana"))))
+ '(org-level-4 ((t (:inherit outline-4 :inverse-video t :weight bold :height 1.3 :family "Verdana"))))
+ '(org-level-5 ((t (:inherit outline-5 :inverse-video t :weight bold :height 1.2 :family "Verdana"))))
+ '(org-level-6 ((t (:inherit outline-6 :inverse-video t :weight bold :height 1.1 :family "Verdana"))))
  '(table-cell ((t (:background "#DD8" :foreground "gray50" :inverse-video nil))))
- '(table-cell-face ((((class color)) (:background "#AA3" :foreground "gray90")))))
+ '(table-cell-face ((((class color)) (:background "#AA3" :foreground "gray90"))))
+ )
+
 ;(set-cursor-color "orange")
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
-(if (display-graphic-p)
-    (color-theme-solarized-light)
-  (color-theme-solarized-dark))
 
 (global-set-key "\C-x\C-b" 'ibuffer)
 (setq ibuffer-expert t)
@@ -637,7 +635,7 @@ a sound to be played"
       (org-agenda-to-appt)
     (setq appt-time-msg-list (kiwon/merge-appt-time-msg-list appt-time-msg-list))))
 
-(add-hook 'org-finalize-agenda-hook (function kiwon/org-agenda-to-appt))
+;; (add-hook 'org-finalize-agenda-hook (function kiwon/org-agenda-to-appt))
 
 
 
