@@ -29,6 +29,12 @@
 
 
 
+(defun ime ()
+  (interactive) (toggle-input-method))
+(defun ime-jp ()
+  (interactive) (set-input-method "japanese"))
+(defun ime-zh ()
+  (interactive) (set-input-method "chinese-py-b5"))
 
 (defun note! ()
   (interactive)
@@ -82,7 +88,7 @@
 (define-key global-map (kbd "C-c m") 'org-remember)
 
 (setq org-remember-templates
- '(("Todo" ?t "* TODO %?\nAdded: %U" org-default-notes-file "Main")))
+ '(("Todo" ?t "* TODO %?\nAdded: %U from mobile" org-default-notes-file "Main")))
 
 
 (defun set-calendar-appt ()
