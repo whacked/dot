@@ -750,3 +750,9 @@ a sound to be played"
                   (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
 (setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
 (multi-web-global-mode 1)
+
+;; not playing nice with daemon
+(when nil
+  (if (display-graphic-p)
+      (color-theme-solarized-light)
+    (color-theme-solarized-dark)))
