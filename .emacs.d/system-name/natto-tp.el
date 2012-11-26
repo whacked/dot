@@ -139,13 +139,16 @@
 
 
 
-(autopair-global-mode) ;; enable autopair in all buffers 
-(add-hook 'js2-mode-hook #'(lambda () (setq autopair-dont-activate t))) ; the #'(lambda ...) form is the same as just doing (lambda ...). leaving it here just as example
-;; fix autopair infinite loop in sldb
-(add-hook 'sldb-mode-hook #'(lambda () (setq autopair-dont-activate t)))
-(add-hook 'clojure-mode-hook #'(lambda ()
-                                 (setq autopair-dont-activate t)
-                                 (paredit-mode)))
+;; autopair mode
+;; (autopair-global-mode) ;; enable autopair in all buffers 
+;; (add-hook 'js2-mode-hook #'(lambda () (setq autopair-dont-activate t))) ; the #'(lambda ...) form is the same as just doing (lambda ...). leaving it here just as example
+;; ;; fix autopair infinite loop in sldb
+;; (add-hook 'sldb-mode-hook #'(lambda () (setq autopair-dont-activate t)))
+;; (add-hook 'clojure-mode-hook #'(lambda ()
+;;                                  (setq autopair-dont-activate t)
+;;                                  (paredit-mode)))
+
+
 ;; highlight cljs with clojure-mode
 (add-to-list 'auto-mode-alist '("\.cljs$" . clojure-mode))
 
@@ -424,22 +427,6 @@ Also returns nil if pid is nil."
 
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 (require 'ansi-color)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; <OS-specific command> ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setenv "PATH" (concat "/opt:/opt/local/bin:" (getenv "PATH")))
-(cond ((eq system-type 'gnu/linux)
-       (load-file "~/.emacs.d/custom/gnu-linux.el"))
-      ((eq system-type 'darwin)
-       (load-file "~/.emacs.d/custom/darwin.el"))
-      ((eq system-type 'windows-nt)
-       (load-file "~/.emacs.d/custom/windows-nt.el"))
-      (t (message "unknown system???")))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; </OS-specific command> ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 (require 'transpose-frame)
 
