@@ -57,7 +57,7 @@
          rainbow-mode graphviz-dot-mode perspective
          windata tree-mode ;; required for dirtree
          clojure-mode nrepl
-         auctex
+         auctex ess
          transpose-frame
          )
        (mapcar 'el-get-source-name el-get-sources)))
@@ -236,10 +236,11 @@ Also returns nil if pid is nil."
 ;; <org mode config> ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 ; below add-to-list not required if org-mode successfully built with =make= and =make-install=
-(add-to-list 'load-path "~/.emacs.d/bundle/org-mode/lisp")
-(add-to-list 'load-path "~/.emacs.d/bundle/org-mode/contrib/lisp")
+;;(add-to-list 'load-path "~/.emacs.d/bundle/org-mode/lisp")
+;;(add-to-list 'load-path "~/.emacs.d/bundle/org-mode/contrib/lisp")
 (add-to-list 'load-path "~/.emacs.d/dev")
-(require 'org-install)
+(require 'org)
+(setq org-src-window-setup 'current-window)
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((R . t)
