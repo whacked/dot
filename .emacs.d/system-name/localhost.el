@@ -63,12 +63,14 @@
 (defun sync-note ()
   (interactive)
   (let ((current-line (count-lines 1 (point))))
+    (save-buffer)
+    (message (format "syncing now: %s" (now))
     (start-process "sync" "*Messages*" "/bin/bash" (expand-file-name "~/sync.sh"))
     (revert-buffer nil t)
     (show-all)
     (goto-line current-line)))
 (setq sync-interval-S (* 60 10))
-(setq *sync-note-timer* (run-with-timer 0 sync-interval-S 'sync-note))
+(setq *sync-note-timer* (run-with-idle-timer 0 sync-interval-S 'sync-note))
 ;; to cancel:
 ;; (cancel-timer *sync-note-timer*)
 
