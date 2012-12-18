@@ -64,7 +64,7 @@
   (interactive)
   (let ((current-line (count-lines 1 (point))))
     (save-buffer)
-    (message (format "syncing now: %s" (now))
+    (message (format "syncing now: %s" (now)))
     (start-process "sync" "*Messages*" "/bin/bash" (expand-file-name "~/sync.sh"))
     (revert-buffer nil t)
     (show-all)
