@@ -62,12 +62,28 @@
 (global-auto-revert-mode t)
 (defun sync-note ()
   (interactive)
-  (let ((current-line (count-lines 1 (point))))
-    (save-buffer)
+  (let ((current-line (count-lines 1 (point)))
+        (cur-buf (current-buffer))
+        (file-list ("index.org.gpg" "jp.muse.gpg")))
+    (let ((presave-list file-list))
+      (while presave-list
+        (when (get-buffer (car presave-list))
+          (switch-to-buffer (car presave-list))
+          (save-buffer))
+        (setq save-list (cdr presave-list))))
+
     (message (format "syncing now: %s" (now)))
     (start-process "sync" "*Messages*" "/bin/bash" (expand-file-name "~/sync.sh"))
-    (revert-buffer nil t)
-    (show-all)
+    
+    (let ((postsave-list file-list))
+      (while postsave-list
+        (when (get-buffer (car postsave-list))
+          (switch-to-buffer (car postsave-list))
+          (revert-buffer nil t)
+          (show-all))
+        (setq save-list (cdr postsave-list))))
+    
+    (switch-to-buffer cur-buf)
     (goto-line current-line)))
 (setq sync-interval-S (* 60 10))
 (setq *sync-note-timer* (run-with-idle-timer 0 sync-interval-S 'sync-note))
