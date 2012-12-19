@@ -107,12 +107,19 @@ myManageHook = composeAll
     -- , ( role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
     , className =? "Emacs" --> doFloat
     , className =? "Toplevel" --> doFloat
+    -- Firefox download window
+    , fmap (isInfixOf "Downloads") title --> doFloat
     -- doesn't work, because title is initialized after emacs window appears
     -- , fmap (isInfixOf "Speedbar") title --> doFloat
+    --
+    -- for R plots
+    , className =? "" --> doFloat
+    -- , fmap ("R Graphics" `isInfixOf`) title --> doFloat
     
     -- for flash video
     -- ref: http://comments.gmane.org/gmane.comp.lang.haskell.xmonad/10119
     -- , isFullscreen --> doF W.focusDown <+> doFullFloat
+
     ]
 
 myKeys = [] ++
