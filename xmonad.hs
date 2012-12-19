@@ -25,6 +25,8 @@ import XMonad.Layout.IndependentScreens -- provides countScreens function
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageHelpers
 
+import XMonad.Hooks.SetWMName
+
 -- check xmodmap -pm to see mod key mapping
 
 
@@ -46,6 +48,8 @@ main = do
         -- , logHook = myLogHook
 
         , handleEventHook = fullscreenEventHook
+
+        , startupHook = setWMName "LG3D"
         } `additionalKeys` myKeys
 
 -- myLogHook :: X ()
