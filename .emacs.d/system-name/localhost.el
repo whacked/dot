@@ -64,7 +64,7 @@
   (interactive)
   (let ((current-line (count-lines 1 (point)))
         (cur-buf (current-buffer))
-        (file-list ("index.org.gpg" "jp.muse.gpg")))
+        (file-list (list "index.org.gpg" "jp.muse.gpg")))
     (let ((presave-list file-list))
       (while presave-list
         (when (get-buffer (car presave-list))
