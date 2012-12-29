@@ -60,6 +60,7 @@
   (other-window 1))
 
 (global-auto-revert-mode t)
+
 (defun sync-note ()
   (interactive)
   (let ((current-line (count-lines 1 (point)))
@@ -86,7 +87,10 @@
     (switch-to-buffer cur-buf)
     (goto-line current-line)))
 (setq sync-interval-S (* 60 10))
-(setq *sync-note-timer* (run-with-idle-timer 0 sync-interval-S 'sync-note))
+(defun *sync-note-repeater* ()
+ (sync-note)
+ (run-with-idle-timer (time-add (seconds-to-time sync-interval-S) (current-idle-time)) nil '*sync-note-repeater*))
+(setq *sync-note-timer* (run-with-idle-timer sync-interval-S t '*sync-note-repeater*))
 ;; to cancel:
 ;; (cancel-timer *sync-note-timer*)
 
