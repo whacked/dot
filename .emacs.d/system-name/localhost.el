@@ -70,7 +70,7 @@
         (when (get-buffer (car presave-list))
           (switch-to-buffer (car presave-list))
           (save-buffer))
-        (setq save-list (cdr presave-list))))
+        (setq presave-list (cdr presave-list))))
 
     (message (format "syncing now: %s" (now)))
     (start-process "sync" "*Messages*" "/bin/bash" (expand-file-name "~/sync.sh"))
@@ -81,7 +81,7 @@
           (switch-to-buffer (car postsave-list))
           (revert-buffer nil t)
           (show-all))
-        (setq save-list (cdr postsave-list))))
+        (setq postsave-list (cdr postsave-list))))
     
     (switch-to-buffer cur-buf)
     (goto-line current-line)))
