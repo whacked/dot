@@ -34,7 +34,7 @@
 
 (setq sync-interval-S (* 60 10))
 (defun *sync-note-repeater* ()
- (sync-note)
+ (sync-note!)
  (run-with-idle-timer (time-add (seconds-to-time sync-interval-S) (current-idle-time)) nil '*sync-note-repeater*))
 
 (defun start-sync ()
