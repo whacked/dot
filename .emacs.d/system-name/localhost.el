@@ -77,7 +77,7 @@
 (global-set-key [(shift backspace)] 'undo)
 (define-key global-map (kbd "C-.") 'org-remember)
 (define-key global-map (kbd "C-c m") 'org-remember)
-(define-key global-map (kbd "C-c G") (end-of-buffer))
+(define-key global-map (kbd "C-c G") 'end-of-buffer)
 
 (setq org-remember-templates
  '(("Todo" ?t "* TODO %?\nAdded: %U from mobile" org-default-notes-file "Main")))
