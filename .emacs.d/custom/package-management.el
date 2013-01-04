@@ -1,7 +1,9 @@
 ;; package management
-(setq package-archives '(("ELPA" . "http://tromey.com/elpa/") 
-			 ("gnu" . "http://elpa.gnu.org/packages/")
-			 ("marmalade" . "http://marmalade-repo.org/packages/")))
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+			 ;; ("ELPA" . "http://tromey.com/elpa/") 
+			 ("marmalade" . "http://marmalade-repo.org/packages/")
+			 ("melpa" . "http://melpa.milkbox.net/packages/")))
+
 ;; https://github.com/dimitri/el-get#readme
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 (unless (require 'el-get nil t)
@@ -20,5 +22,18 @@
 ;;       (append '(cssh el-get switch-window vkill google-maps nxhtml xcscope yasnippet)
 ;; 	      (mapcar 'el-get-source-name el-get-sources)))
 
+
+
+
+;;;;(when
+;;;;    (load
+;;;;     (expand-file-name "~/.emacs.d/elpa/package.el"))
+;;;;  ;; Add the original Emacs Lisp Package Archive
+;;;;  (add-to-list 'package-archives
+;;;;               '("elpa" . "http://tromey.com/elpa/"))
+;;;;  ;; Add the user-contributed repository
+;;;;  (add-to-list 'package-archives
+;;;;               '("marmalade" . "http://marmalade-repo.org/packages/"))
+;;;;  (package-initialize))
 
 
