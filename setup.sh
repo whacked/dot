@@ -93,6 +93,7 @@ if [ `command -v lein | wc -l` -ge 1 ]; then
     else
         ln -s ~/dot/init.clj ~/.lein/init.clj
     fi
+    ln -s ~/dot/leinrc ~/.lein/leinrc
 else
     echo ... leiningen not installed
 fi
