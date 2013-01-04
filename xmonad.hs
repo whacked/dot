@@ -25,6 +25,8 @@ import XMonad.Layout.IndependentScreens -- provides countScreens function
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageHelpers
 
+import XMonad.Hooks.SetWMName
+
 -- check xmodmap -pm to see mod key mapping
 
 
@@ -46,6 +48,8 @@ main = do
         -- , logHook = myLogHook
 
         , handleEventHook = fullscreenEventHook
+
+        , startupHook = setWMName "LG3D"
         } `additionalKeys` myKeys
 
 -- myLogHook :: X ()
@@ -101,14 +105,21 @@ myManageHook = composeAll
     , className =? "Kalarm" --> doShift "0"
     , className =? "Xournalpp" --> doShift "8:read"
     -- , ( role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
-    , className =? "Emacs23" --> doFloat
+    , className =? "Emacs" --> doFloat
     , className =? "Toplevel" --> doFloat
+    -- Firefox download window
+    , fmap (isInfixOf "Downloads") title --> doFloat
     -- doesn't work, because title is initialized after emacs window appears
     -- , fmap (isInfixOf "Speedbar") title --> doFloat
+    --
+    -- for R plots
+    , className =? "" --> doFloat
+    -- , fmap ("R Graphics" `isInfixOf`) title --> doFloat
     
     -- for flash video
     -- ref: http://comments.gmane.org/gmane.comp.lang.haskell.xmonad/10119
     -- , isFullscreen --> doF W.focusDown <+> doFullFloat
+
     ]
 
 myKeys = [] ++

@@ -29,6 +29,12 @@
 
 
 
+(defun ime ()
+  (interactive) (toggle-input-method))
+(defun ime-jp ()
+  (interactive) (set-input-method "japanese"))
+(defun ime-zh ()
+  (interactive) (set-input-method "chinese-py-b5"))
 
 (defun note! ()
   (interactive)
@@ -41,6 +47,9 @@
   ;;(set-input-method "japanese")
   (end-of-buffer))
 
+(setq default-frame-alist
+      '((top . 0) (left . 0)
+        (width . 207) (height . 21)))
 (when (display-graphic-p)
   (set-frame-size (selected-frame) 207 21)
   (set-frame-position (selected-frame) 0 0)
@@ -50,19 +59,10 @@
   (jp!)
   (other-window 1))
 
-(defun sync-note ()
-  (interactive)
-  (start-process "sync" "*Messages*" "/bin/bash" (expand-file-name "~/sync.sh")))
-(setq sync-interval-S (* 60 10))
-(setq *sync-note-timer* (run-with-timer 0 sync-interval-S 'sync-note))
-;; to cancel:
-;; (cancel-timer *sync-note-timer*)
+;; (global-auto-revert-mode t)
 
-
-
-
-
-
+(load-file "~/.emacs.d/custom/sync.el")
+(start-sync)
 
 
 
@@ -77,9 +77,10 @@
 (global-set-key [(shift backspace)] 'undo)
 (define-key global-map (kbd "C-.") 'org-remember)
 (define-key global-map (kbd "C-c m") 'org-remember)
+(define-key global-map (kbd "C-c G") 'end-of-buffer)
 
 (setq org-remember-templates
- '(("Todo" ?t "* TODO %?\nAdded: %U" org-default-notes-file "Main")))
+ '(("Todo" ?t "* TODO %?\nAdded: %U from mobile" org-default-notes-file "Main")))
 
 
 (defun set-calendar-appt ()

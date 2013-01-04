@@ -6,6 +6,21 @@
   "Insert date at current cursor position in current active buffer"
   (interactive "P") (insert (now return-date-only)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; <OS-specific command> ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setenv "PATH" (concat "/opt:/opt/local/bin:" (getenv "PATH")))
+(cond ((eq system-type 'gnu/linux)
+       (load-file "~/.emacs.d/custom/gnu-linux.el"))
+      ((eq system-type 'darwin)
+       (load-file "~/.emacs.d/custom/darwin.el"))
+      ((eq system-type 'windows-nt)
+       (load-file "~/.emacs.d/custom/windows-nt.el"))
+      (t (message "unknown system???")))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; </OS-specific command> ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (add-to-list 'load-path "~/.emacs.d")
 (let ((system-name-el (concat "~/.emacs.d/system-name/" system-name ".el")))
   (when (file-exists-p system-name-el)
