@@ -290,3 +290,5 @@ a sound to be played"
 (setq deft-text-mode 'org-mode)
 
 
+(load-file "~/.emacs.d/custom/sync.el")
+
