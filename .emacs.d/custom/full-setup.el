@@ -57,7 +57,7 @@
          rainbow-mode graphviz-dot-mode perspective
          windata tree-mode ;; required for dirtree
          clojure-mode nrepl
-         auctex ess
+         auctex ess htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
          transpose-frame
          )
        (mapcar 'el-get-source-name el-get-sources)))
@@ -207,7 +207,7 @@ Also returns nil if pid is nil."
  '(org-agenda-restore-windows-after-quit t)
  '(org-agenda-window-setup (quote other-window))
  '(org-drill-optimal-factor-matrix (quote ((2 (2.6 . 2.6) (2.7 . 2.691)) (1 (2.6 . 4.14) (2.36 . 3.86) (2.1799999999999997 . 3.72) (1.96 . 3.58) (1.7000000000000002 . 3.44) (2.5 . 4.0)))))
- '(org-export-blocks (quote ((src org-babel-exp-src-blocks nil) (comment org-export-blocks-format-comment t) (ditaa org-export-blocks-format-ditaa nil) (dot org-export-blocks-format-dot nil))))
+ ;; '(org-export-blocks (quote ((src org-babel-exp-src-blocks nil) (comment org-export-blocks-format-comment t) (ditaa org-export-blocks-format-ditaa nil) (dot org-export-blocks-format-dot nil))))
  '(org-file-apps (quote ((auto-mode . emacs) ("\\.mm\\'" . default) ("\\.x?html?\\'" . default) ("\\.xoj\\'" . "xournal %s") ("\\.pdf\\'" . "xournal %s"))))
  '(org-modules (quote (org-bbdb org-bibtex org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m org-drill)))
  '(org-src-fontify-natively t)
@@ -263,6 +263,9 @@ Also returns nil if pid is nil."
 
 
 (require 'python-mode)
+;; don't make python-mode launch a shell everytime a .py file is
+;; loaded
+(setq py-start-run-py-shell nil)
 ;; (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 ;; (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 ;; (when (executable-find "ipython")
