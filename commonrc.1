@@ -19,7 +19,7 @@ alias pbcopy='xsel --clipboard --input'
 alias pbpaste='xsel --clipboard --output'
 
 alias gits='git status -s'
-source ~/opt/z/z.sh
+. ~/opt/z/z.sh
 
 if [[ -s "$HOME/.rvm/scripts/rvm" ]]  ; then source "$HOME/.rvm/scripts/rvm" ; fi
 # pip virtualenv
@@ -33,10 +33,23 @@ fi
 export PATH=$PATH:~/opt:~/.config/thinkpad:/opt:~/.cabal/bin
 # ref http://d.hatena.ne.jp/dame-p/20110313/1299992080
 export JAVA_OPTS="-Dswank.encoding=utf-8-unix" # 日本語用？
-export JAVA_HOME=/usr
+export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
 
 export HAXE_LIBRARY_PATH=/usr/local/haxe/std:. # the ':.' part is important
 export HAXE_HOME=/usr/local/haxe
 export NEKOPATH=/usr/local/neko
 PATH=$PATH:$HAXE_LIBRARY_PATH:$HAXE_HOME/bin
 
+
+RUNLOG=rr.log
+function rr {
+    if [ $# -eq 0 ]; then
+        LASTCMD=$(fc -ln -1)
+        echo 'commit last command:'
+        echo $LASTCMD
+        echo $LASTCMD >> $RUNLOG
+    else
+        echo $@ >> $RUNLOG
+        $@
+    fi
+}
