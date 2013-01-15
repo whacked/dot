@@ -53,4 +53,5 @@ source $HOME/dot/commonrc.1
 setopt HIST_IGNORE_SPACE
 
 
+unsetopt correct_all
 
