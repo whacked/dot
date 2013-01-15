@@ -8,7 +8,7 @@ fun SetupVAM()
   if !isdirectory(vam_install_path.'/vim-addon-manager/autoload')
     execute '!git clone --depth=1 git://github.com/MarcWeber/vim-addon-manager '.shellescape(vam_install_path, 1).'/vim-addon-manager'
   endif
-  call vam#ActivateAddons(['snipmate-snippets'], {'auto_install' : 0})
+  call vam#ActivateAddons(['snipmate-snippets', 'github:jdonaldson/vaxe'], {'auto_install' : 0})
 endfun
 call SetupVAM()
 
@@ -59,6 +59,7 @@ set cindent
 set autoindent
 let g:slimv_lisp = '"java cp $HOME/dev/lisp/clojure/clojure.jar clojure.lang.Repl"'
 set nowrap
+set hlsearch
 set ic
 
 filetype plugin indent on
