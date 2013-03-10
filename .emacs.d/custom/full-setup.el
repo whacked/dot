@@ -1,4 +1,4 @@
-(load-file "~/.emacs.d/custom/package-management.el")
+(load-file "~/dot/.emacs.d/custom/package-management.el")
 (setq el-get-sources
       '(
 
@@ -37,7 +37,7 @@
                             (require 'auto-complete)
                             (add-to-list 'ac-dictionary-directories (expand-file-name "dict" pdir))
                             ;; the elc is buggy for some reason
-                            (let ((f "~/.emacs.d/el-get/auto-complete/auto-complete-config.elc"))
+                            (let ((f "~/dot/.emacs.d/el-get/auto-complete/auto-complete-config.elc"))
                               (if (file-exists-p f)
                                   (delete-file f)))
                             (require 'auto-complete-config)
@@ -63,16 +63,16 @@
        (mapcar 'el-get-source-name el-get-sources)))
 (el-get 'sync my-packages)
 
-(dolist (path '("~/.emacs.d/revive.el"
-                "~/.emacs.d/windows.el"
-                "~/.emacs.d/bundle/mode/haxe-mode.el"
-                "~/.emacs.d/bundle/mode/matlab.el"
+(dolist (path '("~/dot/.emacs.d/revive.el"
+                "~/dot/.emacs.d/windows.el"
+                "~/dot/.emacs.d/bundle/mode/haxe-mode.el"
+                "~/dot/.emacs.d/bundle/mode/matlab.el"
                 ))
   (load-file path))
 
 (setq auto-mode-alist (cons '("\\.m\\'" . matlab-mode) auto-mode-alist))
 
-(setq backup-directory-alist '(("" . "~/.emacs.d/emacs-backup")))
+(setq backup-directory-alist '(("" . "~/dot/.emacs.d/emacs-backup")))
 
  
 (autoload 'save-current-configuration "revive" "Save status" t)
@@ -153,7 +153,7 @@
 (add-to-list 'auto-mode-alist '("\.cljs$" . clojure-mode))
 
 
-(load-file "~/.emacs.d/filetype/javascript.el")
+(load-file "~/dot/.emacs.d/filetype/javascript.el")
 
 (eval-after-load 'haxe-mode
   '(define-key haxe-mode-map (kbd "C-c C-c")
@@ -232,9 +232,9 @@ Also returns nil if pid is nil."
 ;; <org mode config> ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 ; below add-to-list not required if org-mode successfully built with =make= and =make-install=
-;;(add-to-list 'load-path "~/.emacs.d/bundle/org-mode/lisp")
-;;(add-to-list 'load-path "~/.emacs.d/bundle/org-mode/contrib/lisp")
-(add-to-list 'load-path "~/.emacs.d/dev")
+;;(add-to-list 'load-path "~/dot/.emacs.d/bundle/org-mode/lisp")
+;;(add-to-list 'load-path "~/dot/.emacs.d/bundle/org-mode/contrib/lisp")
+(add-to-list 'load-path "~/dot/.emacs.d/dev")
 (require 'org)
 ;; force org-babel src edit to use same window instead of splitting
 (setq org-src-window-setup 'current-window)
@@ -272,7 +272,7 @@ Also returns nil if pid is nil."
 ;;   (require 'ipython)
 ;;   (setq org-babel-python-mode 'python-mode))
 
-(setq org-ditaa-jar-path "~/.emacs.d/bundle/org-mode/contrib/scripts/ditaa.jar")
+(setq org-ditaa-jar-path "~/dot/.emacs.d/bundle/org-mode/contrib/scripts/ditaa.jar")
 
 (defun ansi-unansify (beg end)
   "to help fix ansi- control sequences in babel-sh output"
@@ -326,12 +326,12 @@ Also returns nil if pid is nil."
 (require 'transpose-frame)
 
 
-(load "~/.emacs.d/bundle/haskell-mode/haskell-site-file")
+(load "~/dot/.emacs.d/bundle/haskell-mode/haskell-site-file")
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 
 
-;(add-to-list 'load-path "~/.emacs.d/bundle/icicles")
+;(add-to-list 'load-path "~/dot/.emacs.d/bundle/icicles")
 ;(require 'icicles)
 
 
@@ -363,7 +363,7 @@ Also returns nil if pid is nil."
 (setq ibuffer-expert t)
 (add-hook 'ibuffer-mode-hook '(lambda () (ibuffer-auto-mode 1)))
 ;; (setq ibuffer-show-empty-filter-groups nil)
-(load-file "~/.emacs.d/bundle/ibuffer-vc/ibuffer-vc.el")
+(load-file "~/dot/.emacs.d/bundle/ibuffer-vc/ibuffer-vc.el")
 (add-hook 'ibuffer-hook
   (lambda ()
     (ibuffer-vc-set-filter-groups-by-vc-root)
@@ -415,10 +415,10 @@ Also returns nil if pid is nil."
 ;; w3 should be loaded by ELPA
 ;NEW;(require 'w3-auto)
 
-(add-to-list 'load-path "~/.emacs.d/bundle/undo-tree")
+(add-to-list 'load-path "~/dot/.emacs.d/bundle/undo-tree")
 (require 'undo-tree)
 
-(add-to-list 'load-path "~/.emacs.d/bundle/minimap/")
+(add-to-list 'load-path "~/dot/.emacs.d/bundle/minimap/")
 (require 'minimap)
 
 
@@ -451,7 +451,7 @@ Also returns nil if pid is nil."
 (put 'narrow-to-region 'disabled nil)
 
 
-(load-file "~/.emacs.d/dev/sqlite.el")
+(load-file "~/dot/.emacs.d/dev/sqlite.el")
 
 
 

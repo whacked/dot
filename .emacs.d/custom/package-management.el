@@ -5,7 +5,7 @@
 			 ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 ;; https://github.com/dimitri/el-get#readme
-(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+(add-to-list 'load-path "~/dot/.emacs.d/el-get/el-get")
 (unless (require 'el-get nil t)
   (with-current-buffer
       (url-retrieve-synchronously "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
@@ -27,7 +27,7 @@
 
 ;;;;(when
 ;;;;    (load
-;;;;     (expand-file-name "~/.emacs.d/elpa/package.el"))
+;;;;     (expand-file-name "~/dot/.emacs.d/elpa/package.el"))
 ;;;;  ;; Add the original Emacs Lisp Package Archive
 ;;;;  (add-to-list 'package-archives
 ;;;;               '("elpa" . "http://tromey.com/elpa/"))

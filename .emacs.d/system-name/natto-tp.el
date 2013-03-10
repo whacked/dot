@@ -1,4 +1,4 @@
-(load-file "~/.emacs.d/custom/full-setup.el")
+(load-file "~/dot/.emacs.d/custom/full-setup.el")
 
 
 (when
@@ -221,7 +221,7 @@ a sound to be played"
 
 
 ;; pymacs see http://pymacs.progiciels-bpi.ca/pymacs.html#installation
-;; (load-file "~/.emacs.d/bundle/pymacs/pymacs.el")
+;; (load-file "~/dot/.emacs.d/bundle/pymacs/pymacs.el")
 (autoload 'pymacs-apply "pymacs")
 (autoload 'pymacs-call "pymacs")
 (autoload 'pymacs-eval "pymacs" nil t)
@@ -290,5 +290,5 @@ a sound to be played"
 (setq deft-text-mode 'org-mode)
 
 
-(load-file "~/.emacs.d/custom/sync.el")
+(load-file "~/dot/.emacs.d/custom/sync.el")
 

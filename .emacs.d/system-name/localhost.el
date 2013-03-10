@@ -20,7 +20,7 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-(load-file "~/.emacs.d/custom/package-management.el")
+(load-file "~/dot/.emacs.d/custom/package-management.el")
 (setq my-packages
       '(el-get package
                ;; put el-get bundled packages here
@@ -61,7 +61,7 @@
 
 ;; (global-auto-revert-mode t)
 
-(load-file "~/.emacs.d/custom/sync.el")
+(load-file "~/dot/.emacs.d/custom/sync.el")
 (start-sync)
 
 
