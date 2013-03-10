@@ -18,3 +18,5 @@ abbrev_defs
 .vim/bundle
 .vim/vim-addons
 .emacs.d/url
+.emacs.d/tramp
+.emacs.dsession*
