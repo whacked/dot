@@ -118,6 +118,7 @@ export HISTTIMEFORMAT="%F %T "
 export PROMPT_COMMAND='history -a'
 
 source $HOME/dot/commonrc.1
+if [ -f ~/$(hostname).bashrc ]; then . ~/$(hostname).bashrc; fi
 
 # http://askubuntu.com/questions/110922/climb-up-the-directory-tree-faster
 # Go up directory tree X number of directories
