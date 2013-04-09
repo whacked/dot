@@ -7,7 +7,7 @@ for DOTFILE in .emacs .emacs.d .vimrc .vim .tmux.conf .bashrc .Rprofile .zshrc; 
     if [ -e ~/$DOTFILE ] && [ ! -h ~/$DOTFILE ]; then
         BAK=~/`date +%F`$DOTFILE
         echo -e "moving: $DOTFILE\\t->\\t$BAK"
-        mv ~/.emacs $BAK
+        mv ~/$DOTFILE $BAK
     fi
 
     if [ ! -e ~/$DOTFILE ]; then
