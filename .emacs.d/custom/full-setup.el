@@ -48,7 +48,8 @@
       (append
        '(el-get package
          ;; put el-get bundled packages here
-         magit color-theme deft
+         magit color-theme color-theme-solarized
+         deft
          muse paredit autopair
          inf-ruby js2-mode json lua-mode markdown-mode ruby-mode rspec-mode yaml-mode zencoding-mode
          python-mode
@@ -57,7 +58,8 @@
          rainbow-mode graphviz-dot-mode perspective
          windata tree-mode ;; required for dirtree
          clojure-mode nrepl
-         auctex ess htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
+         ;; auctex ;; locale problem causing build to fail
+         ess htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
          transpose-frame
          )
        (mapcar 'el-get-source-name el-get-sources)))
