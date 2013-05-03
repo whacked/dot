@@ -204,6 +204,33 @@ EOF
     )
   )
 
+(defun replace-special-chars-region (start end)
+  "Replace special chars with normal chars"
+  (interactive "r")
+  (save-restriction 
+    (narrow-to-region start end)
+
+    (goto-char (point-min))
+    (while (search-forward "‘" nil t) (replace-match "'" nil t))
+
+    (goto-char (point-min))
+    (while (search-forward "’" nil t) (replace-match "'" nil t))
+
+    (goto-char (point-min))
+    (while (search-forward "“" nil t) (replace-match "\"" nil t))
+
+    (goto-char (point-min))
+    (while (search-forward "”" nil t) (replace-match "\"" nil t))
+
+    (goto-char (point-min))
+    (while (search-forward "−" nil t) (replace-match "-" nil t))
+
+    (goto-char (point-min))
+    (while (search-forward "–" nil t) (replace-match "-" nil t))
+
+    )
+  )
+
 
 ;; ref: http://emacsworld.blogspot.com/2011/05/automatic-screenshot-insertion-in-org.html
 (defun org-screenshot ()
