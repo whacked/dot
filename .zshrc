@@ -55,3 +55,9 @@ setopt HIST_IGNORE_SPACE
 
 unsetopt correct_all
 
+# http://stackoverflow.com/questions/10847255/how-to-make-zsh-forward-word-behaviour-same-as-in-bash-emacs
+# Bash-like navigation
+autoload -U select-word-style
+select-word-style bash
+# $HOME/.zsh/func was at the end of $FPATH, so the custom forward-word-match wasn't working
+export FPATH=~/.zsh/func:$FPATH
