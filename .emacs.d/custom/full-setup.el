@@ -61,6 +61,7 @@
          ;; auctex ;; locale problem causing build to fail
          ess htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
          transpose-frame
+         fic-mode ;; to highlight TODO FIXME BUG etc
          )
        (mapcar 'el-get-source-name el-get-sources)))
 (el-get 'sync my-packages)
