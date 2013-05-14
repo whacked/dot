@@ -27,7 +27,7 @@
                magit muse yaml-mode))
 (el-get 'sync my-packages)
 
-
+(setq note-file-dir "/sdcard/DCIM/Camera")
 
 (defun ime ()
   (interactive) (toggle-input-method))
@@ -38,12 +38,12 @@
 
 (defun note! ()
   (interactive)
-  (find-file "/external_sd/note/index.org.gpg")
+  (find-file (concat note-file-dir "/index.org.gpg"))
   (end-of-buffer))
 
 (defun jp! ()
   (interactive)
-  (find-file "/external_sd/note/jp.muse.gpg")
+  (find-file (concat note-file-dir "/jp.muse.gpg"))
   ;;(set-input-method "japanese")
   (end-of-buffer))
 
@@ -62,14 +62,14 @@
 ;; (global-auto-revert-mode t)
 
 (load-file "~/dot/.emacs.d/custom/sync.el")
-(start-sync)
+;; (start-sync)
 
 
 
 
 
 (org-remember-insinuate)
-(setq org-default-notes-file "/external_sd/note/index.org.gpg")
+(setq org-default-notes-file (concat note-file-dir "/index.org.gpg"))
 (setq org-agenda-files (list org-default-notes-file))
 
 ;; customize keymapp
