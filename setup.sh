@@ -2,8 +2,8 @@
 # export GIT_SSL_NO_VERIFY=true; bash setup.sh
 # git config --global http.sslVerify false
 
-for DOTFILE in .emacs .emacs.d .vimrc .vim .tmux.conf .bashrc .Rprofile .zshrc; do
-    echo processing $DOTFILE...
+for DOTFILE in .emacs .emacs.d .vimrc .vim .tmux.conf .bashrc .Rprofile .zshrc .zsh; do
+    echo [[ processing $DOTFILE... ]]
     if [ -e ~/$DOTFILE ] && [ ! -h ~/$DOTFILE ]; then
         BAK=~/`date +%F`$DOTFILE
         echo -e "moving: $DOTFILE\\t->\\t$BAK"
@@ -11,6 +11,7 @@ for DOTFILE in .emacs .emacs.d .vimrc .vim .tmux.conf .bashrc .Rprofile .zshrc; 
     fi
 
     if [ ! -e ~/$DOTFILE ]; then
+        echo symlinking ~/dot/$DOTFILE to ~/$DOTFILE...
         ln -s ~/dot/$DOTFILE ~/$DOTFILE
     fi
 done
