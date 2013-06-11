@@ -61,12 +61,5 @@
          frame-bufs
          ;; auctex ;; locale problem causing build to fail
 
-         ;; ESS
-         ess
-         
-         fic-mode ;; to highlight TODO FIXME BUG etc
-         
-         ;; htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
-         ;; iedit
          )
        (mapcar 'el-get-source-name el-get-sources)))
