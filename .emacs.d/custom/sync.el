@@ -14,7 +14,9 @@
 
     (cond ((string= system-name "natto-tp")
            ;; (start-process "sync-linode" "*Messages*" "/bin/bash" "sync-linode.sh")
-           (call-process "/bin/bash" "sync-linode.sh"))
+           ;; (start-process "sync" "*Messages*" "rsync" "-au" "--include" "*.gpg" "--exclude" "*" "linode:note/" (expand-file-name "~/note/org/"))
+           (start-process "sync-linode" "*Messages*" "/bin/bash" "sync-linode.sh")
+           )
           ((string= system-name "Nokia-N900")
            ;; (start-process "sync-linode" "*Messages*" "/bin/sh" "/media/mmc1/mod/syncnote.sh")
            (call-process "/bin/sh" "/media/mmc1/mod/syncnote.sh"))
