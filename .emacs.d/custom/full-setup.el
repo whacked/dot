@@ -3,6 +3,13 @@
 (setq my-packages
       (append
        '(el-get package
+
+         ;; provides describe-unbound-keys
+         unbound
+
+         deft
+         muse
+
          ;; ESS
          ess
          
@@ -10,6 +17,8 @@
          
          ;; htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
          ;; iedit
+         ;; auctex ;; locale problem causing build to fail
+
          )
        (mapcar 'el-get-source-name el-get-sources)))
 

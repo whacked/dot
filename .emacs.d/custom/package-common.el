@@ -51,15 +51,7 @@
          magit color-theme color-theme-solarized
          transpose-frame
          
-         deft
-         muse
-
-         ;; provides describe-unbound-keys
-         unbound
-
          ;; perspective
          frame-bufs
-         ;; auctex ;; locale problem causing build to fail
-
          )
        (mapcar 'el-get-source-name el-get-sources)))
