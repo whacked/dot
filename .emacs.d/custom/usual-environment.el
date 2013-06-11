@@ -1,3 +1,5 @@
+(el-get 'sync my-packages)
+
 (dolist (path '("~/dot/.emacs.d/revive.el"
                 "~/dot/.emacs.d/windows.el"
                 "~/dot/.emacs.d/bundle/mode/haxe-mode.el"
