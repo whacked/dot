@@ -58,7 +58,7 @@ main = do
 
 myLayout = tiled 
        ||| Mirror tiled 
-       ||| ThreeCol 1 (3/100) (1/3) -- ThreeColMid 1 (3/100) (1/3) 
+       ||| ThreeColMid 1 (3/100) (1/3)  -- ThreeCol 1 (3/100) (1/3)
        ||| simpleTabbed -- ||| Full ||| ThreeCol 1 (3/100) (1/2)
   where
     tiled   = Tall nmaster delta ratio
@@ -119,6 +119,12 @@ myManageHook = composeAll
     -- for flash video
     -- ref: http://comments.gmane.org/gmane.comp.lang.haskell.xmonad/10119
     -- , isFullscreen --> doF W.focusDown <+> doFullFloat
+    , className =? "flashplayerdebugger" --> doShift "3"
+    , className =? "Flashplayerdebugger" --> doShift "3"
+
+    -- gimp
+    , title =? "New Layer" --> doFloat
+    , title =? "Change Foreground Color" --> doFloat
 
     ]
 
