@@ -51,19 +51,10 @@
          windata tree-mode ;; required for dirtree
          magit color-theme color-theme-solarized
          transpose-frame
-         ;; lispy stuff
-         paredit
-         clojure-mode nrepl
          
          deft
          muse
          ;; autopair
-         ;; coding
-         inf-ruby js2-mode json lua-mode markdown-mode ruby-mode rspec-mode yaml-mode zencoding-mode
-         graphviz-dot-mode
-         python-mode
-         rainbow-mode
-         ;; nxhtml
 
          ;; provides describe-unbound-keys
          unbound
@@ -78,10 +69,11 @@
          fic-mode ;; to highlight TODO FIXME BUG etc
          
          ;; htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
-         
          ;; iedit
          )
        (mapcar 'el-get-source-name el-get-sources)))
+(load-file "~/dot/.emacs.d/custom/coding.el")
+(load-file "~/dot/.emacs.d/custom/lispy-stuff.el")
 (el-get 'sync my-packages)
 
 (dolist (path '("~/dot/.emacs.d/revive.el"
