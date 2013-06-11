@@ -199,15 +199,17 @@ Also returns nil if pid is nil."
    ))
 
 
-(require 'python-mode)
-;; don't make python-mode launch a shell everytime a .py file is
-;; loaded
-(setq py-start-run-py-shell nil)
-;; (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-;; (add-to-list 'interpreter-mode-alist '("python" . python-mode))
-;; (when (executable-find "ipython")
-;;   (require 'ipython)
-;;   (setq org-babel-python-mode 'python-mode))
+(when (locate-library "python-mode")
+  (require 'python-mode)
+  ;; don't make python-mode launch a shell everytime a .py file is
+  ;; loaded
+  (setq py-start-run-py-shell nil)
+  ;; (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+  ;; (add-to-list 'interpreter-mode-alist '("python" . python-mode))
+  ;; (when (executable-find "ipython")
+  ;;   (require 'ipython)
+  ;;   (setq org-babel-python-mode 'python-mode))
+  )
 
 (setq org-ditaa-jar-path "~/dot/.emacs.d/bundle/org-mode/contrib/scripts/ditaa.jar")
 
