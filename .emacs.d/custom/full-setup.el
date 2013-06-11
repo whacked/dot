@@ -54,7 +54,6 @@
          
          deft
          muse
-         ;; autopair
 
          ;; provides describe-unbound-keys
          unbound
