@@ -419,7 +419,9 @@ Also returns nil if pid is nil."
 (multi-web-global-mode 1)
 
 ;; not playing nice with daemon
-(when nil
-  (if (display-graphic-p)
-      (color-theme-solarized-light)
-    (color-theme-solarized-dark)))
+;; -- now launching with -q = bypass
+;; (when nil
+;;   (if (display-graphic-p)
+;;       (color-theme-solarized-light)
+;;     (color-theme-solarized-dark)))
+(color-theme-solarized-light)
