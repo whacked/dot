@@ -1,7 +1,7 @@
 (load-file "~/dot/.emacs.d/custom/package-management.el")
 (load-file "~/dot/.emacs.d/custom/package-common.el")
 (setq my-packages
-      (append
+      (append my-packages
        '(el-get package
 
          ;; provides describe-unbound-keys
