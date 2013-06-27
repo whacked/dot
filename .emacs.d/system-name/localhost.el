@@ -27,7 +27,7 @@
                magit muse yaml-mode))
 (el-get 'sync my-packages)
 
-(setq note-file-dir "/sdcard/DCIM/Camera")
+(setq note-file-dir "/sdcard/Download")
 
 (defun ime ()
   (interactive) (toggle-input-method))
