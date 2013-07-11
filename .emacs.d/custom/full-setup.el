@@ -27,3 +27,6 @@
 (load-file "~/dot/.emacs.d/custom/lispy-stuff.el")
 
 (load-file "~/dot/.emacs.d/custom/usual-environment.el")
+
+(desktop-change-dir "~/dot/.emacs.d")
+
