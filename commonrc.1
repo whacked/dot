@@ -30,7 +30,6 @@ if [ `command -v virtualenvwrapper.sh | wc -l` -ge 1 ]; then
     alias setupvenv="source /usr/local/bin/virtualenvwrapper.sh"
 fi
 
-export PATH=~/.config/thinkpad:$PATH:~/opt:/opt:~/.cabal/bin
 # ref http://d.hatena.ne.jp/dame-p/20110313/1299992080
 export JAVA_OPTS="-Dswank.encoding=utf-8-unix" # 日本語用？
 export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
@@ -55,4 +54,5 @@ function rr {
     fi
 }
 
+export PATH=~/.rvm/gems/ruby-1.9.3-p392/bin:~/.config/thinkpad:$PATH:~/opt:/opt:~/.cabal/bin
 rvm use ruby-1.9.3-p392
