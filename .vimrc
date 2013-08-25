@@ -8,7 +8,7 @@ fun SetupVAM()
   if !isdirectory(vam_install_path.'/vim-addon-manager/autoload')
     execute '!git clone --depth=1 git://github.com/MarcWeber/vim-addon-manager '.shellescape(vam_install_path, 1).'/vim-addon-manager'
   endif
-  call vam#ActivateAddons(['snipmate-snippets', 'github:jdonaldson/vaxe', 'git-time-lapse'], {'auto_install' : 0})
+  call vam#ActivateAddons(['vim-snippets', 'github:jdonaldson/vaxe', 'git-time-lapse', 'vim-ipython'], {'auto_install' : 0})
 endfun
 call SetupVAM()
 
