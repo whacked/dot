@@ -58,7 +58,7 @@ main = do
 
 myLayout = tiled 
        ||| Mirror tiled 
-       ||| ThreeColMid 1 (3/100) (1/3)  -- ThreeCol 1 (3/100) (1/3)
+       ||| ThreeCol 1 (3/100) (1/3)  -- ThreeColMid 1 (3/100) (1/3)
        ||| simpleTabbed -- ||| Full ||| ThreeCol 1 (3/100) (1/2)
   where
     tiled   = Tall nmaster delta ratio
@@ -104,6 +104,7 @@ myManageHook = composeAll
     , className =? "Calibre" --> doShift "8:read"
     , className =? "Kalarm" --> doShift "0"
     , className =? "Xournalpp" --> doShift "8:read"
+    , className =? "Calibre-gui" --> doShift "fa"
     -- , ( role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
     , className =? "Emacs" --> doFloat
     , className =? "Toplevel" --> doFloat
