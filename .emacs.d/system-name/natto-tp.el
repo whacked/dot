@@ -19,9 +19,10 @@
 
 ;;; org-mode with remember
 (org-remember-insinuate)
-(setq org-directory "~/org")
-(setq org-default-notes-file (concat org-directory "/todos.org"))
+(setq org-directory "~/note/org")
+(setq org-default-notes-file (concat (file-name-as-directory org-directory) "index.org.gpg"))
 ;(define-key global-map "\C-cr" 'org-remember)
+
 
 (define-key global-map "\M-\C-r" 'org-remember)
 (setq org-remember-templates
@@ -118,9 +119,9 @@
 ;;;         "* %?\n%U\n" :empty-lines 1)))
 
 (setq org-agenda-files (map 'list 'expand-file-name '("~/note/org/main.org"
-                                                      "~/note/cne/cne.org"
-                                                      "~/note/org/freex/index.org"
-                                                      "~/note/org/todos.org")))
+                                                      "~/note/org/index.org.gpg"
+                                                      ;; "~/note/cne/cne.org"
+                                                      )))
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; </org mode config> ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
