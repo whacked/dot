@@ -250,3 +250,41 @@ EOF
     (insert (concat "[[" png-filepath "]]"))
     ;;(org-display-inline-images)
   ))
+
+
+;; see http://nullprogram.com/blog/2013/02/06/
+;; also see http://stackoverflow.com/questions/12915528/easier-outline-navigation-in-emacs
+(define-minor-mode org-navigate-mode
+  "quick way to nagivate org files via indirect buffer"
+  :lighter "my-onav"
+  :keymap (let ((map (make-sparse-keymap)))
+            (define-key map (kbd "n") 'outline-next-visible-heading)
+            (define-key map (kbd "p") 'outline-previous-visible-heading)
+            (define-key map (kbd "l") '(lambda ()
+                                         (interactive)
+                                         (let* ((headline-at-point (nth 4 (org-heading-components)))
+                                                (target-line-number (line-number-at-pos (org-find-exact-headline-in-buffer headline-at-point))))
+                                           (other-window 1)
+                                           (goto-line target-line-number)
+                                           (recenter-top-bottom 1)
+                                           (other-window -1))))
+            map)
+  (set (make-local-variable 'base-buffer) (current-buffer))
+  (set (make-local-variable 'navigation-buffer-name) (concat (buffer-name) "--<nav>"))
+  (if org-navigate-mode
+      (progn
+        (set (make-local-variable 'navigation-buffer)
+             (make-indirect-buffer base-buffer navigation-buffer-name))
+        (split-window-horizontally)
+        (other-window 1)
+        (switch-to-buffer navigation-buffer)
+        (show-all)
+        (other-window -1)
+        (org-content 4)
+        (message "hello navigate mode"))
+    (progn
+      (kill-buffer (get-buffer navigation-buffer-name))
+      (delete-window)
+      (show-all)
+      (message "bye navigate mode"))))
+
