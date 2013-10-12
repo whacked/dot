@@ -48,6 +48,7 @@
        '(el-get package
          ;; put el-get bundled packages here
          windata tree-mode ;; required for dirtree
+         git-commit-mode
          magit color-theme color-theme-solarized
          transpose-frame
          
