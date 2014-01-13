@@ -26,6 +26,7 @@ import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageHelpers
 
 import XMonad.Hooks.SetWMName
+import XMonad.Hooks.Place -- for placing floating windows
 
 -- check xmodmap -pm to see mod key mapping
 
@@ -127,6 +128,9 @@ myManageHook = composeAll
     , title =? "New Layer" --> doFloat
     , title =? "Change Foreground Color" --> doFloat
 
+    -- for imagemagick `display`
+    , className =? "Display.im6" --> doCenterFloat
+    
     ]
 
 myKeys = [] ++
@@ -136,7 +140,7 @@ myKeys = [] ++
          [ ((mod4Mask, xK_F9      ), unsafeSpawn "emacsclient -c -e '(switch-to-buffer (dolist (buf (buffer-list)) (if (or (equal (get-buffer \"*scratch*\") buf) (equal (get-buffer \" *Minibuf-1*\") buf)) nil  (return buf))))'")] ++
          [ ((mod4Mask, xK_Return  ), unsafeSpawn "$HOME/.config/thinkpad/emacs-remember")] ++
          [ ((mod4Mask .|. mod1Mask, xK_x      ), unsafeSpawn "xournal")] ++
-         [ ((mod4Mask .|. mod1Mask, xK_h      ), unsafeSpawn "nautilus")] ++
+         [ ((mod4Mask .|. mod1Mask, xK_h      ), unsafeSpawn "nemo")] ++
 
          -- cycle windows, emulate old-style alt-tab
          [ ((mod1Mask,               xK_Tab   ), windows W.focusDown)
