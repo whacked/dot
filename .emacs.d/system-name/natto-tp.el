@@ -26,7 +26,7 @@
 
 (define-key global-map "\M-\C-r" 'org-remember)
 (setq org-remember-templates
- '(("Todo" ?t "* TODO %?\nAdded: %U" "~/note/org/todos.org" "Main")
+ '(("Todo" ?t "* TODO %?\nAdded: %U" "~/note/org/index.org.gpg" "Main")
    ("CNE" ?c "* TODO %?\nAdded: %U" "~/note/cne/cne.org" "All Todo")
    ("Nikki" ?n "* %U %?\n\n %i\n %a\n\n" "~/note/org/nikki.org" "ALL")
    ;; ("State" ?s "* %U %? " "~/note/org/state.org")
