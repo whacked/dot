@@ -288,3 +288,11 @@ EOF
       (show-all)
       (message "bye navigate mode"))))
 
+
+
+;; elscreen
+(require 'elscreen)
+(load "elscreen" "ElScreen" t)
+(global-set-key (kbd "s-_") 'elscreen-previous)
+(global-set-key (kbd "s-+") 'elscreen-next)
+(setq elscreen-display-tab nil)

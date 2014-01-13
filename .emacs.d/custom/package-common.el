@@ -52,6 +52,7 @@
          magit color-theme color-theme-solarized
          transpose-frame
          
+         elscreen
          ;; perspective
          frame-bufs
          )
