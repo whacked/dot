@@ -42,6 +42,12 @@
                             (require 'auto-complete-config)
                             (ac-config-default)
                             ))
+
+        (:name request
+               :type git
+               :url "https://github.com/tkf/emacs-request"
+               :features "request"
+               :compile "request.el")
         ))
 (setq my-packages
       (append
