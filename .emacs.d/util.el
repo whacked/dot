@@ -296,7 +296,57 @@ EOF
       (read-only-mode 0)
       (message "bye navigate mode"))))
 
+(defun org-resolve-citation (&optional input-query-string)
+  (interactive)
+  ;; (require 'json)
+  ;; (require 'request)
 
+  (if (null input-query-string)
+      (setq input-query-string
+            (if mark-active
+                (buffer-substring (region-beginning) (region-end))
+              (read-string (format "search string: ") nil nil nil))))
+  ;; (message (format "%s" input-query-string))
+
+  (let ((CROSSREF-URI "http://search.labs.crossref.org")
+        ;; http://stackoverflow.com/questions/27910/finding-a-doi-in-a-document-or-page
+        (re-doi     "\\b\\(10\\.[0-9]\\{3,\\}\\/[^[:space:]]+\\)\\b")
+        ;; see calibre-mode.el for re-citekey regexp logic
+        (re-citekey "\\b\\([^ :;,.]+?\\)\\(?:etal\\)?\\([[:digit:]]\\\{4\\\}\\)\\(.*?\\)\\b")
+        )
+
+    (destructuring-bind (key-to-retrieve postproc-fn query-string)
+        (cond ((string-match re-doi input-query-string)
+               (list 'fullCitation
+                     'identity
+                     (match-string 0 input-query-string)))
+              ((string-match re-citekey input-query-string)
+               (list 'doi
+                     'identity
+                     (mapconcat
+                      'identity
+                      (list
+                       (match-string 1 input-query-string)
+                       (match-string 2 input-query-string)
+                       (match-string 3 input-query-string))
+                      " ")))
+              (t
+               (list 'doi 'identity input-query-string)))
+      
+      ;; need to re-bind into lexical scope
+      (lexical-let* ((k2r key-to-retrieve)
+                     (pfn postproc-fn)
+                     (postfunc (function*
+                                (lambda (&key data &allow-other-keys)
+                                  ;; (message (format "%s" k2r))
+                                  (deactivate-mark)
+                                  (insert (format "\n%s\n" (funcall pfn (cdr (assoc k2r (elt data 0))))))))))
+        (request
+         (concat CROSSREF-URI "/dois" "?"
+                 (request--urlencode-alist
+                  `(("q" . ,query-string) ("page" . "1") ("rows" . "1"))))
+         :parser 'json-read ;; 'buffer-string
+         :success postfunc)))))
 
 ;; elscreen
 (require 'elscreen)
