@@ -305,28 +305,51 @@ EOF
   ;; (require 'json)
   ;; (require 'request)
 
-  (if (null input-query-string)
-      (setq input-query-string
-            (if mark-active
-                (buffer-substring (region-beginning) (region-end))
-              (read-string (format "search string: ") nil nil nil))))
-  ;; (message (format "%s" input-query-string))
-
   (let ((CROSSREF-URI "http://search.labs.crossref.org")
         ;; http://stackoverflow.com/questions/27910/finding-a-doi-in-a-document-or-page
         (re-doi     "\\b\\(10\\.[0-9]\\{3,\\}\\/[^[:space:]]+\\)\\b")
         ;; see calibre-mode.el for re-citekey regexp logic
         (re-citekey "\\b\\([^ :;,.]+?\\)\\(?:etal\\)?\\([[:digit:]]\\\{4\\\}\\)\\(.*?\\)\\b")
-        )
+        (default-query-string (sentence-at-point)))
+
+    (if (null input-query-string)
+        (setq input-query-string
+              (cond (mark-active
+                     (buffer-substring (region-beginning) (region-end)))
+                    ((string-match re-doi default-query-string)
+                     (match-string 1 default-query-string))
+                    (t
+                     (read-string (format "search string: ") nil nil nil)))))
+    ;; (message (format "%s" input-query-string))
+
+    (quote
+     ;; Match many free-form citations to DOIs.
+     ;; Resolve citations to DOIs by POSTing a JSON list of free-form citations to this route.
+     (request
+      (concat CROSSREF-URI "/links")
+      :type "POST"
+      :parser 'buffer-string
+      :data (json-encode (list
+                          "M. Henrion, D. J. Mortlock, D. J. Hand, and A. Gandy, \"A Bayesian approach to star-galaxy classification,\" Monthly Notices of the Royal Astronomical Society, vol. 412, no. 4, pp. 2286-2302, Apr. 2011."
+                          "Renear 2012"
+                          ))
+      ;; Be sure to mark the request's content type as JSON by specifying a Content-Type header in the request:
+      ;; Content-Type: application/json
+      :headers '(("Content-Type" . "application/json"))
+      ;; Citations must contain at least three words, those with less will not match. Citations with a low match score will be returned without a potential match. Here's a sample response:
+      :success (function*
+                (lambda (&key data &allow-other-keys)
+                  (insert (format "%s" data))))))
+
 
     (destructuring-bind (key-to-retrieve postproc-fn query-string)
         (cond ((string-match re-doi input-query-string)
-               (list 'fullCitation
-                     'identity
+               (list 'title ;; 'fullCitation
+                     (lambda (ttl) (concat "/" ttl "/"))
                      (match-string 0 input-query-string)))
               ((string-match re-citekey input-query-string)
                (list 'doi
-                     'identity
+                     'sconvert--dxdoi-to-org
                      (mapconcat
                       'identity
                       (list
@@ -335,7 +358,7 @@ EOF
                        (match-string 3 input-query-string))
                       " ")))
               (t
-               (list 'doi 'identity input-query-string)))
+               (list 'doi 'sconvert--dxdoi-to-org input-query-string)))
       
       ;; need to re-bind into lexical scope
       (lexical-let* ((k2r key-to-retrieve)
@@ -344,7 +367,11 @@ EOF
                                 (lambda (&key data &allow-other-keys)
                                   ;; (message (format "%s" k2r))
                                   (deactivate-mark)
-                                  (insert (format "\n%s\n" (funcall pfn (cdr (assoc k2r (elt data 0))))))))))
+                                  (let ((res (elt data 0)))
+                                    (message (format "%s\n%s\n\n'%s' copied to clipboard"
+                                                     (cdr (assoc 'title res))
+                                                     (cdr (assoc 'doi res))
+                                                     (kill-new (format "%s" (funcall pfn (cdr (assoc k2r res))))))))))))
         (request
          (concat CROSSREF-URI "/dois" "?"
                  (request--urlencode-alist
