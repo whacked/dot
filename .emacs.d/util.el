@@ -379,6 +379,46 @@ EOF
          :parser 'json-read ;; 'buffer-string
          :success postfunc)))))
 
+(global-set-key "\C-cR" 'org-resolve-citation)
+
+;; see "../api.el" and "org-isbn.el"
+(defun org-resolve-isbn (&optional input-query-string)
+  (interactive)
+  (let ((WORLDCAT-BASE-URL "http://www.worldcat.org/webservices/catalog/search/opensearch?"))
+    (if (null input-query-string)
+        (setq input-query-string
+              (cond (mark-active
+                     (buffer-substring (region-beginning) (region-end)))
+                    (t
+                     (read-string (format "search string: ") nil nil nil)))))
+    (lexical-let* ((query-string input-query-string))
+      ;; (concat WORLDCAT-BASE-URL
+      ;;         (request--urlencode-alist
+      ;;          `(("q" . ,query-string) ("count" . "1") ("wskey" . ,WORLDCAT-API-KEY))))
+      (request
+       (concat WORLDCAT-BASE-URL
+               (request--urlencode-alist
+                `(("q" . ,query-string) ("count" . "1") ("wskey" . ,WORLDCAT-API-KEY))))
+       :type "GET"
+       :parser (lambda () (libxml-parse-xml-region (point) (point-max)))
+       :success (function*
+                 (lambda (&key data &allow-other-keys)
+                   (let ((get (lambda (node &rest names)
+                                (if names
+                                    (apply get
+                                           (first (xml-get-children
+                                                   node (car names)))
+                                           (cdr names))
+                                  (first (xml-node-children node))))))
+                     (if (funcall get data 'entry 'identifier)
+                         (let ((res (format "isbn:%s /%s/\n"
+                                            (car (last (split-string (funcall get data 'entry 'identifier) ":")))
+                                            ;; (funcall get data 'entry 'author 'name)
+                                            (funcall get data 'entry 'title))))
+                           (message (kill-new res)))
+                       (message "no result")))))))))
+(global-set-key "\C-cI" 'org-resolve-isbn)
+
 ;; elscreen
 (require 'elscreen)
 (load "elscreen" "ElScreen" t)
