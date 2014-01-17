@@ -107,7 +107,7 @@ myManageHook = composeAll
     , className =? "Xournalpp" --> doShift "8:read"
     , className =? "Calibre-gui" --> doShift "fa"
     -- , ( role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
-    , className =? "Emacs" --> doFloat
+    , className =? "Emacs24" --> doFloat
     , className =? "Toplevel" --> doFloat
     -- Firefox download window
     , fmap (isInfixOf "Downloads") title --> doFloat
