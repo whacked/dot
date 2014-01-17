@@ -296,6 +296,10 @@ EOF
       (read-only-mode 0)
       (message "bye navigate mode"))))
 
+(defun sconvert--dxdoi-to-org (input-string)
+  "convert http://dx.doi.org/blah to org-style doi:blah"
+  (concat "doi:" (replace-regexp-in-string "http://dx.doi.org/" "" input-string)))
+
 (defun org-resolve-citation (&optional input-query-string)
   (interactive)
   ;; (require 'json)
