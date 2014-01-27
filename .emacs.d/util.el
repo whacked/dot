@@ -368,9 +368,10 @@ EOF
                                   ;; (message (format "%s" k2r))
                                   (deactivate-mark)
                                   (let ((res (elt data 0)))
-                                    (message (format "%s\n%s\n\n'%s' copied to clipboard"
-                                                     (cdr (assoc 'title res))
-                                                     (cdr (assoc 'doi res))
+                                    (message (format "%s\n\n'%s' copied to clipboard"
+                                                     (cdr (assoc 'fullCitation res))
+                                                     ;; (cdr (assoc 'title res))
+                                                     ;; (cdr (assoc 'doi res))
                                                      (kill-new (format "%s" (funcall pfn (cdr (assoc k2r res))))))))))))
         (request
          (concat CROSSREF-URI "/dois" "?"
@@ -425,3 +426,13 @@ EOF
 (global-set-key (kbd "s-_") 'elscreen-previous)
 (global-set-key (kbd "s-+") 'elscreen-next)
 (setq elscreen-display-tab nil)
+
+;; google-this
+;; (global-set-key (kbd "C-x g") 'google-this-mode-submap)
+(define-key google-this-mode-submap "c" 'google-scholar-search)
+(defun google-scholar-search (prefix)
+  "search in google scholar"
+  (interactive "P")
+  (google-search prefix "http://scholar.google.com/scholar?hl=en&btnG=&as_sdt=1%%2C22&q=%s"))
+
+
