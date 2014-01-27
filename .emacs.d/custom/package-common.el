@@ -48,6 +48,11 @@
                :url "https://github.com/tkf/emacs-request"
                :features "request"
                :compile "request.el")
+        (:name google-this
+               :type git
+               :url "https://github.com/Bruce-Connor/emacs-google-this"
+               :features "google-this"
+               :compile "google-this.el")
         ))
 (setq my-packages
       (append
