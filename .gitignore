@@ -20,3 +20,5 @@ abbrev_defs
 .emacs.d/url
 .emacs.d/tramp
 .emacs.dsession*
+.emacs.d/request/
+api-key.el
