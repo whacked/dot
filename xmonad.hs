@@ -117,6 +117,9 @@ myManageHook = composeAll
     -- for R plots
     , className =? "" --> doFloat
     -- , fmap ("R Graphics" `isInfixOf`) title --> doFloat
+    --
+    -- gloobus preview
+    , className =? "Gloobus-preview" --> doFloat
     
     -- for flash video
     -- ref: http://comments.gmane.org/gmane.comp.lang.haskell.xmonad/10119
