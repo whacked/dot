@@ -4,7 +4,7 @@
         ;; (:name clojure-mode
         ;;        :type git
         ;;        :url "https://github.com/technomancy/clojure-mode.git")
-        ;; (:name nrepl :type elpa)
+        (:name nrepl :type elpa)
         ;; (:name tex-math-preview :type elpa)
         (:name yasnippet
                :type git
