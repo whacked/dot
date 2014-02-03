@@ -24,9 +24,6 @@
 (win:startup-with-window)
 (recentf-mode 1)
 
-(require 'frame-bufs)
-(frame-bufs-mode t)
-
 (require 'windata)
 (require 'tree-mode)
 (require 'dirtree)
