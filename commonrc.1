@@ -13,8 +13,10 @@ export TERM="xterm-256color"
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
+if hash gnome-open 2>/dev/null; then
+    alias open='gnome-open 2>/dev/null'
+fi
 
-alias open='gnome-open 2>/dev/null'
 alias pbcopy='xsel --clipboard --input'
 alias pbpaste='xsel --clipboard --output'
 
