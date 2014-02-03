@@ -43,6 +43,10 @@
   ;;(require 'python-mode)
   (setenv "PYTHONPATH" "/opt/local/bin/python")
 
+  ;; wtf default path for tex installation...
+  (setenv "PATH" (concat "/usr/texbin:/usr/local/bin:" (getenv "PATH")))
+  (setq exec-path (append exec-path '("/usr/local/bin")))
+
   ;; w3m
   ;;(add-to-list 'load-path "/opt/local/share/emacs/site-lisp/w3m")
   ;;(setq w3m-command "/usr/bin/w3m")
