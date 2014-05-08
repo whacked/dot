@@ -27,30 +27,30 @@ filetype off
 "call pathogen#helptags()
 
 set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+call vundle#begin()
 
 " let Vundle manage Vundle
 " required! 
-Bundle 'gmarik/vundle'
+Plugin 'gmarik/vundle'
 
 " My Bundles here:
 "
 "" " original repos on github
-Bundle 'scrooloose/nerdtree'
-Bundle 'scrooloose/syntastic'
-Bundle 'scrooloose/nerdcommenter'
-Bundle 'tpope/vim-fugitive'
-Bundle 'docunext/closetag.vim'
-Bundle 'tmatilai/gitolite.vim'
-Bundle 'kikijump/tslime.vim'
-Bundle 'wincent/Command-T'
-Bundle 'majutsushi/tagbar'
+Plugin 'scrooloose/nerdtree'
+Plugin 'scrooloose/syntastic'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'tpope/vim-fugitive'
+Plugin 'docunext/closetag.vim'
+Plugin 'tmatilai/gitolite.vim'
+Plugin 'kikijump/tslime.vim'
+Plugin 'wincent/Command-T'
+Plugin 'majutsushi/tagbar'
 
 "" " vim-scripts repos
-Bundle 'matchit.zip'
-Bundle 'AutoClose'
-Bundle 'occur.vim'
-Bundle 'gnupg.vim'
+Plugin 'matchit.zip'
+Plugin 'AutoClose'
+Plugin 'occur.vim'
+Plugin 'gnupg.vim'
 "" Bundle 'L9'
 "" Bundle 'FuzzyFinder'
 "" " non github repos
