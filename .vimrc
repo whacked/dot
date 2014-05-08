@@ -19,6 +19,7 @@ fun SetupVAM()
               \ , 'vim-coffee-script'
               \ , 'github:kien/ctrlp.vim'
               \ ], {'auto_install' : 0})
+
 endfun
 call SetupVAM()
 
@@ -55,6 +56,7 @@ Plugin 'gnupg.vim'
 "" Bundle 'FuzzyFinder'
 "" " non github repos
 "" Bundle 'git://git.wincent.com/command-t.git'
+Plugin 'fatih/vim-go'
 
 let g:Powerline_symbols = 'fancy'
 
