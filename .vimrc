@@ -58,6 +58,9 @@ Plugin 'gnupg.vim'
 "" Bundle 'git://git.wincent.com/command-t.git'
 Plugin 'fatih/vim-go'
 
+call vundle#end()
+filetype plugin indent on
+
 let g:Powerline_symbols = 'fancy'
 
 syntax on
