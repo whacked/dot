@@ -113,3 +113,7 @@ function! To_Tmux()
 endfunction
 
 " cmap tt :call To_Tmux()<CR>
+
+
+" CtrlP options
+set wildignore+=*/venv/*,*/venv3/*
