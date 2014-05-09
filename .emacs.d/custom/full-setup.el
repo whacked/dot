@@ -327,5 +327,6 @@ a sound to be played"
 
 
 
+(setq desktop-save-mode nil)
 (desktop-change-dir "~/dot/.emacs.d")
 
