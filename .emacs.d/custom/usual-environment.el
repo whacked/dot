@@ -139,6 +139,7 @@ Also returns nil if pid is nil."
  '(matlab-auto-fill nil)
  '(menu-bar-mode nil)
  '(org-agenda-restore-windows-after-quit t)
+ '(org-catch-invisible-edits "show")
  '(org-agenda-window-setup (quote other-window))
  '(org-drill-optimal-factor-matrix (quote ((2 (2.6 . 2.6) (2.7 . 2.691)) (1 (2.6 . 4.14) (2.36 . 3.86) (2.1799999999999997 . 3.72) (1.96 . 3.58) (1.7000000000000002 . 3.44) (2.5 . 4.0)))))
  ;; '(org-export-blocks (quote ((src org-babel-exp-src-blocks nil) (comment org-export-blocks-format-comment t) (ditaa org-export-blocks-format-ditaa nil) (dot org-export-blocks-format-dot nil))))
