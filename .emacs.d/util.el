@@ -204,7 +204,7 @@ EOF
     )
   )
 
-(defun replace-special-chars-region (start end)
+(defun replace-entity-chars-region (start end)
   "Replace special chars with normal chars"
   (interactive "r")
   (save-restriction 
