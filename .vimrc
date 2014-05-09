@@ -88,7 +88,7 @@ set cursorline
 " set cwd to that of the current active buffer
 set autochdir
 
-
+set tags=tags;
 
 command! -nargs=* Wrap set wrap linebreak nolist
 
@@ -119,5 +119,7 @@ endfunction
 let g:ctrlp_show_hidden = 1
 let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/](\.git|\.hg|\.svn|venv|venv3)$',
+  \ 'file':  '\v(swp)$',
   \ }
 let g:ctrlp_working_path_mode = 'ra'
+
