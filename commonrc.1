@@ -11,13 +11,14 @@ export TERM="xterm-256color"
 
 # some more ls aliases
 alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
+alias la='ls -A' alias l='ls -CF'
 if hash gnome-open 2>/dev/null; then
     alias open='gnome-open 2>/dev/null'
     alias pbcopy='xsel --clipboard --input'
     alias pbpaste='xsel --clipboard --output'
 fi
+
+alias p='$(fc -ln -1)'
 
 alias gits='git status -s'
 . ~/opt/z/z.sh
