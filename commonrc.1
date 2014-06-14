@@ -59,5 +59,6 @@ function rr {
 rvm use ruby-2.1.1
 export PATH=~/.rvm/gems/ruby-2.1.1/bin:/usr/local/bin:~/.config/thinkpad:$PATH:~/opt:/opt:~/.cabal/bin
 export GOPATH=~/gopath
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 
 stty stop undef # unmap ctrl-s for vim-ipython
