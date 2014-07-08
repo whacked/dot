@@ -58,6 +58,7 @@
       (append
        '(el-get package
          ;; put el-get bundled packages here
+	 dash epl pkg-info
          windata tree-mode ;; required for dirtree
          git-commit-mode
          magit color-theme color-theme-solarized
@@ -67,5 +68,12 @@
          elscreen
          ;; perspective
          frame-bufs
+
+         htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
+         ;; iedit
+         ;; auctex ;; locale problem causing build to fail
+
+         ;; need MELPA working!
+         simple-httpd
          )
        (mapcar 'el-get-source-name el-get-sources)))
