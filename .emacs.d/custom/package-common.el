@@ -49,6 +49,10 @@
                :url "https://github.com/Bruce-Connor/emacs-google-this"
                :features "google-this"
                :compile "google-this.el")
+        (:name impatient-mode
+               :type git
+               :url "https://github.com/netguy204/imp.el"
+               :features "impatient-mode")
         ))
 (setq my-packages
       (append
@@ -58,6 +62,7 @@
          git-commit-mode
          magit color-theme color-theme-solarized
          transpose-frame
+         multiple-cursors
          
          elscreen
          ;; perspective

@@ -15,10 +15,13 @@
          
          fic-mode ;; to highlight TODO FIXME BUG etc
          
-         ;; htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
+         htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
          ;; iedit
          ;; auctex ;; locale problem causing build to fail
 
+         ;; need MELPA working!
+         simple-httpd
+         impatient-mode
          )
        (mapcar 'el-get-source-name el-get-sources)))
 
