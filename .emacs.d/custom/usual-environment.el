@@ -152,8 +152,8 @@ Also returns nil if pid is nil."
  '(transient-mark-mode t))
 
 ;; for smooth scrolling
-; (setq scroll-conservatively 10000)
-
+(setq scroll-step            1
+      scroll-conservatively  10000)
 
 (when (load "auctex.el" t t t) ;; first t = don't throw error if not exist
   (load "preview-latex.el" nil t t)
