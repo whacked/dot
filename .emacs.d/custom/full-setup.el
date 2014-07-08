@@ -167,16 +167,17 @@
 
 
 
-;; nrepl
-;; ref: https://github.com/kingtim/nrepl.el
-(add-hook 'nrepl-interaction-mode-hook
-          'nrepl-turn-on-eldoc-mode)
-;; Stop the error buffer from popping up while working in the REPL buffer:
-(setq nrepl-popup-stacktraces nil)
-;; Make C-c C-z switch to the *nrepl* buffer in the current window:
-(add-to-list 'same-window-buffer-names "*nrepl*") 
-;; If you have paredit installed you can enabled it like this:
-(add-hook 'nrepl-interaction-mode 'paredit-mode)
+;; ;; FIXME cider
+;; ;; nrepl
+;; ;; ref: https://github.com/kingtim/nrepl.el
+;; (add-hook 'nrepl-interaction-mode-hook
+;;           'nrepl-turn-on-eldoc-mode)
+;; ;; Stop the error buffer from popping up while working in the REPL buffer:
+;; (setq nrepl-popup-stacktraces nil)
+;; ;; Make C-c C-z switch to the *nrepl* buffer in the current window:
+;; (add-to-list 'same-window-buffer-names "*nrepl*") 
+;; ;; If you have paredit installed you can enabled it like this:
+;; (add-hook 'nrepl-interaction-mode 'paredit-mode)
 
 
 
