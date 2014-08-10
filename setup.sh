@@ -94,6 +94,11 @@ if [ `command -v lein | wc -l` -ge 1 ]; then
     else
         ln -s ~/dot/init.clj ~/.lein/init.clj
     fi
+    if [ -e ~/.lein/profiles.clj ]; then
+        echo "... .lein/profiles.clj exists"
+    else
+        ln -s ~/dot/lein/profiles.clj ~/.lein/profiles.clj
+    fi
     ln -s ~/dot/leinrc ~/.lein/leinrc
 else
     echo ... leiningen not installed
