@@ -75,7 +75,8 @@ set nowrap
 set hlsearch
 set ic
 
-filetype plugin indent on
+autocmd Filetype ruby setlocal ts=2 sts=2 sw=2
+
 let clj_highlight_builtins = 1
 let clj_paren_rainbow = 1
 let vimclojure#NailgunClient = "$HOME/.vim/vimclojure/ng"
