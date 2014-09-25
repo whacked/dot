@@ -63,3 +63,10 @@ export GOPATH=~/gopath
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 
 stty stop undef # unmap ctrl-s for vim-ipython
+
+if [[ $(hostname) == *mba* ]] then
+    export RUBYMOTION_ANDROID_SDK=~/android-rubymotion/sdk
+    export RUBYMOTION_ANDROID_NDK=~/android-rubymotion/ndk
+else
+    :
+fi
