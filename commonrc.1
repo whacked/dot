@@ -33,9 +33,9 @@ if [ `command -v virtualenvwrapper.sh | wc -l` -ge 1 ]; then
     alias setupvenv="source /usr/local/bin/virtualenvwrapper.sh"
 fi
 
-# ref http://d.hatena.ne.jp/dame-p/20110313/1299992080
+# # ref http://d.hatena.ne.jp/dame-p/20110313/1299992080
 export JAVA_OPTS="-Dswank.encoding=utf-8-unix" # 日本語用？
-export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
+# export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
 _JAVA_AWT_WM_NONREPARENTING=1; export _JAVA_AWT_WM_NONREPARENTING
 
 ### export HAXE_LIBRARY_PATH=/usr/lib/haxe/std:. # the ':.' part is important
@@ -60,6 +60,10 @@ function rr {
 rvm use ruby-2.1.1
 export PATH=~/.rvm/gems/ruby-2.1.1/bin:/usr/local/bin:~/.config/thinkpad:$PATH:~/opt:/opt:~/.cabal/bin
 export GOPATH=~/gopath
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+export PATH="$PATH:$HOME/.rvm/bin:$HOME/node_modules/bin" # Add RVM, node to PATH for scripting
+
+if [ -e /opt/android-sdk-linux/tools ]; then
+    export PATH=$PATH:/opt/android-sdk-linux/tools
+fi
 
 stty stop undef # unmap ctrl-s for vim-ipython
