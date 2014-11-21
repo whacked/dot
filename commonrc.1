@@ -67,3 +67,10 @@ if [ -e /opt/android-sdk-linux/tools ]; then
 fi
 
 stty stop undef # unmap ctrl-s for vim-ipython
+
+if [[ $(hostname) == *mba* ]] then
+    export RUBYMOTION_ANDROID_SDK=~/android-rubymotion/sdk
+    export RUBYMOTION_ANDROID_NDK=~/android-rubymotion/ndk
+else
+    :
+fi
