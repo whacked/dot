@@ -403,7 +403,7 @@ Also returns nil if pid is nil."
   "modify balance-windows so that if given C-u prefix, apply only to (selected-window)"
   (interactive "P")
   (when selected-window-only
-    (ad-set-arg 0 (selected-window)))
+    (ad-set-arg 0 (window-parent)))
   ad-do-it)
 (ad-activate 'balance-windows)
 
