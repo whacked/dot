@@ -42,11 +42,13 @@ Plugin 'jistr/vim-nerdtree-tabs'
 Plugin 'scrooloose/syntastic'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-unimpaired'
 Plugin 'docunext/closetag.vim'
 Plugin 'tmatilai/gitolite.vim'
 Plugin 'kikijump/tslime.vim'
 Plugin 'wincent/Command-T'
 Plugin 'majutsushi/tagbar'
+Plugin 'python-rope/ropevim'
 
 "" " vim-scripts repos
 Plugin 'matchit.zip'
