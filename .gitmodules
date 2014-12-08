@@ -13,9 +13,6 @@
 [submodule ".emacs.d/bundle/undo-tree"]
 	path = .emacs.d/bundle/undo-tree
 	url = http://www.dr-qubit.org/git/undo-tree.git
-[submodule ".emacs.d/bundle/minimap"]
-	path = .emacs.d/bundle/minimap
-	url = git://randomsample.de/minimap.git
 [submodule ".emacs.d/bundle/pymacs"]
 	path = .emacs.d/bundle/pymacs
 	url = git://github.com/pinard/Pymacs.git
