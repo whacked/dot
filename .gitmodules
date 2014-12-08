@@ -19,9 +19,6 @@
 [submodule ".emacs.d/bundle/pymacs"]
 	path = .emacs.d/bundle/pymacs
 	url = git://github.com/pinard/Pymacs.git
-[submodule ".vim/bundle/vundle"]
-	path = .vim/bundle/vundle
-	url = git://github.com/gmarik/vundle
 [submodule ".emacs.d/bundle/ibuffer-vc"]
 	path = .emacs.d/bundle/ibuffer-vc
 	url = git://github.com/purcell/ibuffer-vc.git
@@ -64,3 +61,6 @@
 #[submodule ".emacs.d/bundle/ecb"]
 #	path = .emacs.d/bundle/ecb
 #	url = git://github.com/emacsmirror/ecb.git
+[submodule ".vim/bundle/Vundle.vim"]
+	path = .vim/bundle/Vundle.vim
+	url = https://github.com/gmarik/Vundle.vim
