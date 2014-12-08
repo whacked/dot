@@ -58,6 +58,3 @@
 #[submodule ".emacs.d/bundle/ecb"]
 #	path = .emacs.d/bundle/ecb
 #	url = git://github.com/emacsmirror/ecb.git
-[submodule ".vim/bundle/Vundle.vim"]
-	path = .vim/bundle/Vundle.vim
-	url = https://github.com/gmarik/Vundle.vim
