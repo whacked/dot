@@ -27,7 +27,7 @@ filetype off
 "call pathogen#runtime_append_all_bundles()
 "call pathogen#helptags()
 
-set rtp+=~/.vim/bundle/vundle/
+set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 " let Vundle manage Vundle
