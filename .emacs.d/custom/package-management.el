@@ -1,8 +1,9 @@
 ;; package management
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-			 ;; ("ELPA" . "http://tromey.com/elpa/") 
-			 ("marmalade" . "http://marmalade-repo.org/packages/")
-			 ("melpa" . "http://melpa.milkbox.net/packages/")))
+(setq package-archives '(("gnu"       . "http://elpa.gnu.org/packages/")
+                         ("ELPA"      . "http://tromey.com/elpa/") 
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("melpa"     . "http://melpa.milkbox.net/packages/")
+                         ("SC"        . "http://joseito.republika.pl/sunrise-commander/")))
 
 ;; https://github.com/dimitri/el-get#readme
 (add-to-list 'load-path "~/dot/.emacs.d/el-get/el-get")
