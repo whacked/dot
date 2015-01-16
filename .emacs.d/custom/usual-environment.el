@@ -24,10 +24,10 @@
 (win:startup-with-window)
 (recentf-mode 1)
 
-(require 'windata)
-(require 'tree-mode)
-(require 'dirtree)
-(autoload 'dirtree "dirtree" "Add directory to tree view" t)
+;; (require 'windata)
+;; (require 'tree-mode)
+;; (require 'dirtree)
+;; (autoload 'dirtree "dirtree" "Add directory to tree view" t)
 
 ;; ;; perspective mode
 ;; ;; ref: http://emacsrookie.com/2011/09/25/workspaces/
@@ -129,7 +129,7 @@ Also returns nil if pid is nil."
   ;; If there is more than one, they won't work right.
  '(column-number-mode t)
  '(desktop-save-mode t)
- '(dirtree-windata (quote (frame left 0.15 delete)))
+ ;; '(dirtree-windata (quote (frame left 0.15 delete)))
  '(exec-path (quote ("/opt/local/bin" "/usr/bin" "/usr/local/bin" "/usr/sbin" "/bin")))
  '(global-hl-line-mode t)
  '(hscroll-step 1)
@@ -403,7 +403,7 @@ Also returns nil if pid is nil."
   "modify balance-windows so that if given C-u prefix, apply only to (selected-window)"
   (interactive "P")
   (when selected-window-only
-    (ad-set-arg 0 (selected-window)))
+    (ad-set-arg 0 (window-parent)))
   ad-do-it)
 (ad-activate 'balance-windows)
 

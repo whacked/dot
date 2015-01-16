@@ -1,26 +1,21 @@
 (setq el-get-sources
       '(
-
         ;; (:name tex-math-preview :type elpa)
-        (:name yasnippet
-               :type git
-               :url "https://github.com/capitaomorte/yasnippet.git"
-               :features "yasnippet"
-               :compile nil)
-        (:name emacs-dirtree
-               :type git
-               :url "https://github.com/zkim/emacs-dirtree.git"
-               :features "dirtree"
-               :compile "dirtree.el")
+        ;; (:name emacs-dirtree
+        ;;        :type git
+        ;;        :url "https://github.com/zkim/emacs-dirtree.git"
+        ;;        :features "dirtree"
+        ;;        :compile "dirtree.el")
         (:name popup-el
                :type git
                :url "https://github.com/auto-complete/popup-el.git"
                :features "popup")
-        (:name multi-web-mode
-               :type git
-               :url "https://github.com/fgallina/multi-web-mode.git"
-               :features "multi-web-mode"
-               :compile nil)
+        ;; (:name multi-web-mode
+        ;;        :type git
+        ;;        :url "https://github.com/fgallina/multi-web-mode.git"
+        ;;        :features "multi-web-mode"
+        ;;        :compile nil)
+        
         ;; https://bitbucket.org/tavisrudd/emacs.d/src/b00b30c330b2/dss-init-el-get.el
         (:name auto-complete
                :website "http://cx4a.org/software/auto-complete/"
@@ -38,42 +33,53 @@
                             (require 'auto-complete-config)
                             (ac-config-default)
                             ))
-
-        (:name request
-               :type git
-               :url "https://github.com/tkf/emacs-request"
-               :features "request"
-               :compile "request.el")
-        (:name google-this
-               :type git
-               :url "https://github.com/Bruce-Connor/emacs-google-this"
-               :features "google-this"
-               :compile "google-this.el")
-        (:name impatient-mode
-               :type git
-               :url "https://github.com/netguy204/imp.el"
-               :features "impatient-mode")
+        ;; (:name impatient-mode
+        ;;        :type git
+        ;;        :url "https://github.com/netguy204/imp.el"
+        ;;        :features "impatient-mode")
         ))
+
 (setq my-packages
       (append
-       '(el-get package
-         ;; put el-get bundled packages here
-	 dash epl pkg-info
-         windata tree-mode ;; required for dirtree
-         git-commit-mode
-         magit color-theme color-theme-solarized
-         transpose-frame
+       '(el-get
+         s
+         yasnippet
+         dash
+
+         ;; popup-el
+         multi-web-mode
+         
+         neotree
+         projectile
+         project-explorer
+         
+         ;; windata tree-mode ;; required for dirtree
+         ;; htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
+
          multiple-cursors
          
-         elscreen
          ;; perspective
-         frame-bufs
+         ;; elscreen
 
-         htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
-         ;; iedit
+         request
+         ;; google-this
+
+         helm
          ;; auctex ;; locale problem causing build to fail
 
          ;; need MELPA working!
          simple-httpd
+
+         virtualenvwrapper
+         ;; iedit
+
+         ;; frame-bufs
+
+         transpose-frame
+
+         magit
+         color-theme color-theme-solarized
+
+         skewer-mode ;; js live repl https://github.com/skeeto/skewer-mode
          )
        (mapcar 'el-get-source-name el-get-sources)))

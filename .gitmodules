@@ -13,15 +13,9 @@
 [submodule ".emacs.d/bundle/undo-tree"]
 	path = .emacs.d/bundle/undo-tree
 	url = http://www.dr-qubit.org/git/undo-tree.git
-[submodule ".emacs.d/bundle/minimap"]
-	path = .emacs.d/bundle/minimap
-	url = git://randomsample.de/minimap.git
 [submodule ".emacs.d/bundle/pymacs"]
 	path = .emacs.d/bundle/pymacs
 	url = git://github.com/pinard/Pymacs.git
-[submodule ".vim/bundle/vundle"]
-	path = .vim/bundle/vundle
-	url = git://github.com/gmarik/vundle
 [submodule ".emacs.d/bundle/ibuffer-vc"]
 	path = .emacs.d/bundle/ibuffer-vc
 	url = git://github.com/purcell/ibuffer-vc.git

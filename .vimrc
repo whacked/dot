@@ -18,47 +18,29 @@ fun SetupVAM()
               \ , 'csv'
               \ , 'vim-coffee-script'
               \ , 'github:kien/ctrlp.vim'
+              \ , 'github:scrooloose/nerdtree'
+              \ , 'github:jistr/vim-nerdtree-tabs'
+              \ , 'github:scrooloose/syntastic'
+              \ , 'github:scrooloose/nerdcommenter'
+              \ , 'github:tpope/vim-fugitive'
+              \ , 'github:tpope/vim-unimpaired'
+              \ , 'github:docunext/closetag.vim'
+              \ , 'github:tmatilai/gitolite.vim'
+              \ , 'github:kikijump/tslime.vim'
+              \ , 'github:wincent/Command-T'
+              \ , 'github:majutsushi/tagbar'
+              \ , 'github:python-rope/ropevim'
+              \ , 'matchit.zip'
+              \ , 'github:vim-scripts/AutoClose'
+              \ , 'occur'
+              \ , 'github:jamessan/vim-gnupg'
+              \ , 'github:fatih/vim-go'
               \ ], {'auto_install' : 0})
 
 endfun
 call SetupVAM()
 
 filetype off
-"call pathogen#runtime_append_all_bundles()
-"call pathogen#helptags()
-
-set rtp+=~/.vim/bundle/vundle/
-call vundle#begin()
-
-" let Vundle manage Vundle
-" required! 
-Plugin 'gmarik/vundle'
-
-" My Bundles here:
-"
-"" " original repos on github
-Plugin 'scrooloose/nerdtree'
-Plugin 'scrooloose/syntastic'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'tpope/vim-fugitive'
-Plugin 'docunext/closetag.vim'
-Plugin 'tmatilai/gitolite.vim'
-Plugin 'kikijump/tslime.vim'
-Plugin 'wincent/Command-T'
-Plugin 'majutsushi/tagbar'
-
-"" " vim-scripts repos
-Plugin 'matchit.zip'
-Plugin 'AutoClose'
-Plugin 'occur.vim'
-Plugin 'gnupg.vim'
-"" Bundle 'L9'
-"" Bundle 'FuzzyFinder'
-"" " non github repos
-"" Bundle 'git://git.wincent.com/command-t.git'
-Plugin 'fatih/vim-go'
-
-call vundle#end()
 filetype plugin indent on
 
 let g:Powerline_symbols = 'fancy'
@@ -107,7 +89,7 @@ let g:solarized_contrast="high"
 let g:solarized_visibility="high"
 colorscheme solarized
 
-source ~/.vim/bundle/tslime.vim/tslime.vim
+source ~/.vim/vim-addons/github-kikijump-tslime.vim/tslime.vim
 function! To_Tmux()
   let b:text = input("tmux:", "", "custom,")
   call Send_to_Tmux(b:text . "\\r")
@@ -124,3 +106,6 @@ let g:ctrlp_custom_ignore = {
   \ }
 let g:ctrlp_working_path_mode = 'ra'
 
+" NERDTree
+let NERDTreeTabsOpen=1
+let NERDTreeQuitOnOpen=0
