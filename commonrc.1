@@ -65,8 +65,11 @@ export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 stty stop undef # unmap ctrl-s for vim-ipython
 
 if [[ $(hostname) == *mba* ]] then
-    export RUBYMOTION_ANDROID_SDK=~/android-rubymotion/sdk
-    export RUBYMOTION_ANDROID_NDK=~/android-rubymotion/ndk
+    export RUBYMOTION_ANDROID_SDK=~/Development/adt-bundle-mac-x86_64-20140702/sdk
+    export RUBYMOTION_ANDROID_NDK=~/Development/android-ndk-r10b
+    export JAVA_HOME=$(/usr/libexec/java_home)
+    PATH=$PATH:"$HOME/Development/adt-bundle-mac-x86_64-20140702/sdk/tools:$HOME/Development/adt-bundle-mac-x86_64-20140702/sdk/platform-tools"
 else
     :
 fi
+
