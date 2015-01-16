@@ -1,5 +1,6 @@
 (setq my-packages (append my-packages '(
          ;; lispy stuff
+         queue
          paredit
          clojure-mode
          cider
