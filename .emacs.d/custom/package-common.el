@@ -81,5 +81,6 @@
          color-theme color-theme-solarized
 
          skewer-mode ;; js live repl https://github.com/skeeto/skewer-mode
+         git-timemachine
          )
        (mapcar 'el-get-source-name el-get-sources)))
