@@ -143,3 +143,5 @@ function up() {
         return 1
     fi
 }
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting

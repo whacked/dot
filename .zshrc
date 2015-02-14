@@ -61,3 +61,5 @@ autoload -U select-word-style
 select-word-style bash
 # $HOME/.zsh/func was at the end of $FPATH, so the custom forward-word-match wasn't working
 export FPATH=~/.zsh/func:$FPATH
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
