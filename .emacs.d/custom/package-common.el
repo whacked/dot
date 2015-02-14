@@ -37,6 +37,11 @@
         ;;        :type git
         ;;        :url "https://github.com/netguy204/imp.el"
         ;;        :features "impatient-mode")
+
+        ;; (:name git-playback
+        ;;        :type git
+        ;;        :url "https://github.com/jianli/git-playback"
+        ;;        :features "git-playback")
         ))
 
 (setq my-packages
@@ -82,5 +87,9 @@
 
          skewer-mode ;; js live repl https://github.com/skeeto/skewer-mode
          git-timemachine
+
+         navi-mode
+
+         minimap
          )
        (mapcar 'el-get-source-name el-get-sources)))
