@@ -364,11 +364,6 @@ Also returns nil if pid is nil."
   (message "C mode hook ran."))
 (add-hook 'c-mode-hook 'my-c-mode-hook)
 
-;;; (setq swank-clojure-binary (expand-file-name "~/.lein/bin/swank-clojure"))
-;;; (setq slime-protocol-version "20100404")
-;;; (setq swank-clojure-classpath (list
-;;;                                (expand-file-name "~/.m2/repository/swank-clojure/swank-clojure/1.3.0-SNAPSHOT/swank-clojure-1.3.0-SNAPSHOT.jar")
-;;;                                (expand-file-name "~/.m2/repository/org/clojure/clojure/1.2.0/clojure-1.2.0.jar")))
 (setq slime-multiprocessing t)
 (set-language-environment "UTF-8")
 (setq slime-net-coding-system 'utf-8-unix)
