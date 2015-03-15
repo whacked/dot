@@ -25,13 +25,6 @@ alias gits='git status -s'
 . ~/opt/z/z.sh
 
 if [[ -s "$HOME/.rvm/scripts/rvm" ]]  ; then source "$HOME/.rvm/scripts/rvm" ; fi
-# pip virtualenv
-if [ `command -v virtualenvwrapper.sh | wc -l` -ge 1 ]; then
-    export WORKON_HOME="~/.virtualenv"
-    ## this is slow
-    ## source /usr/local/bin/virtualenvwrapper.sh
-    alias setupvenv="source /usr/local/bin/virtualenvwrapper.sh"
-fi
 
 # # ref http://d.hatena.ne.jp/dame-p/20110313/1299992080
 export JAVA_OPTS="-Dswank.encoding=utf-8-unix" # 日本語用？
@@ -77,3 +70,6 @@ else
     :
 fi
 
+
+# BOOT option
+BOOT_JVM_OPTIONS="-XX:MaxPermSize=128m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled"
