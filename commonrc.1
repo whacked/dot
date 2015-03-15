@@ -20,6 +20,10 @@ if hash gnome-open 2>/dev/null; then
 fi
 
 alias p='$(fc -ln -1)'
+mkcd () {
+    mkdir "$1"
+    cd "$1"
+}
 
 alias gits='git status -s'
 . ~/opt/z/z.sh
