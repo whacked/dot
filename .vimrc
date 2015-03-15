@@ -35,6 +35,8 @@ fun SetupVAM()
               \ , 'occur'
               \ , 'github:jamessan/vim-gnupg'
               \ , 'github:fatih/vim-go'
+              \ , 'github:Glench/Vim-Jinja2-Syntax'
+              \ , 'vim-orgmode'
               \ ], {'auto_install' : 0})
 
 endfun
