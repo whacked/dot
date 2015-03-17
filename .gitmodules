@@ -1,5 +1,5 @@
-[submodule ".vim/vim-pathogen"]
-	path = .vim/vim-pathogen
+[submodule "vim/vim-pathogen"]
+	path = vim/vim-pathogen
 	url = http://github.com/tpope/vim-pathogen.git
 #[submodule ".emacs.d/bundle/org-mode"]
 #	path = .emacs.d/bundle/org-mode
