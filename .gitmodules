@@ -1,60 +1,60 @@
 [submodule "vim/vim-pathogen"]
 	path = vim/vim-pathogen
 	url = http://github.com/tpope/vim-pathogen.git
-#[submodule ".emacs.d/bundle/org-mode"]
-#	path = .emacs.d/bundle/org-mode
+#[submodule "emacs.d/bundle/org-mode"]
+#	path = emacs.d/bundle/org-mode
 #	url = git://orgmode.org/org-mode.git
-[submodule ".emacs.d/bundle/clojure-mode"]
-	path = .emacs.d/bundle/clojure-mode
+[submodule "emacs.d/bundle/clojure-mode"]
+	path = emacs.d/bundle/clojure-mode
 	url = git://github.com/technomancy/clojure-mode.git
-[submodule ".emacs.d/bundle/swank-clojure"]
-	path = .emacs.d/bundle/swank-clojure
+[submodule "emacs.d/bundle/swank-clojure"]
+	path = emacs.d/bundle/swank-clojure
 	url = git://github.com/technomancy/swank-clojure.git
-[submodule ".emacs.d/bundle/undo-tree"]
-	path = .emacs.d/bundle/undo-tree
+[submodule "emacs.d/bundle/undo-tree"]
+	path = emacs.d/bundle/undo-tree
 	url = http://www.dr-qubit.org/git/undo-tree.git
-[submodule ".emacs.d/bundle/pymacs"]
-	path = .emacs.d/bundle/pymacs
+[submodule "emacs.d/bundle/pymacs"]
+	path = emacs.d/bundle/pymacs
 	url = git://github.com/pinard/Pymacs.git
-[submodule ".emacs.d/bundle/ibuffer-vc"]
-	path = .emacs.d/bundle/ibuffer-vc
+[submodule "emacs.d/bundle/ibuffer-vc"]
+	path = emacs.d/bundle/ibuffer-vc
 	url = git://github.com/purcell/ibuffer-vc.git
-[submodule ".emacs.d/bundle/mozrepl"]
-	path = .emacs.d/bundle/mozrepl
+[submodule "emacs.d/bundle/mozrepl"]
+	path = emacs.d/bundle/mozrepl
 	url = git://github.com/bard/mozrepl.git
-[submodule ".emacs.d/bundle/predictive"]
-	path = .emacs.d/bundle/predictive
+[submodule "emacs.d/bundle/predictive"]
+	path = emacs.d/bundle/predictive
 	url = http://www.dr-qubit.org/git/predictive.git
-[submodule ".emacs.d/bundle/pabbrev"]
-	path = .emacs.d/bundle/pabbrev
+[submodule "emacs.d/bundle/pabbrev"]
+	path = emacs.d/bundle/pabbrev
 	url = git://github.com/emacsmirror/pabbrev.git
-[submodule ".emacs.d/bundle/haskell-mode"]
-	path = .emacs.d/bundle/haskell-mode
+[submodule "emacs.d/bundle/haskell-mode"]
+	path = emacs.d/bundle/haskell-mode
 	url = git://github.com/emacsmirror/haskell-mode.git
-[submodule ".emacs.d/bundle/icicles"]
-	path = .emacs.d/bundle/icicles
+[submodule "emacs.d/bundle/icicles"]
+	path = emacs.d/bundle/icicles
 	url = git://github.com/emacsmirror/icicles.git
-[submodule ".emacs.d/bundle/mmm-mode"]
-	path = .emacs.d/bundle/mmm-mode
+[submodule "emacs.d/bundle/mmm-mode"]
+	path = emacs.d/bundle/mmm-mode
 	url = git://github.com/purcell/mmm-mode.git
-[submodule ".emacs.d/bundle/slime"]
-	path = .emacs.d/bundle/slime
+[submodule "emacs.d/bundle/slime"]
+	path = emacs.d/bundle/slime
 	url = git://github.com/antifuchs/slime.git
-[submodule ".emacs.d/bundle/mode-compile"]
-	path = .emacs.d/bundle/mode-compile
+[submodule "emacs.d/bundle/mode-compile"]
+	path = emacs.d/bundle/mode-compile
 	url = git://github.com/emacsmirror/mode-compile.git
-[submodule ".emacs.d/bundle/gnuplot-mode"]
-	path = .emacs.d/bundle/gnuplot-mode
+[submodule "emacs.d/bundle/gnuplot-mode"]
+	path = emacs.d/bundle/gnuplot-mode
 	url = git://github.com/bruceravel/gnuplot-mode.git
-[submodule ".emacs.d/snippets/org-mode"]
-	path = .emacs.d/snippets/org-mode
+[submodule "emacs.d/snippets/org-mode"]
+	path = emacs.d/snippets/org-mode
 	url = git://github.com/cofi/yasnippet-org-mode.git
-[submodule ".emacs.d/bundle/ess"]
-	path = .emacs.d/bundle/ess
+[submodule "emacs.d/bundle/ess"]
+	path = emacs.d/bundle/ess
 	url = git://github.com/emacs-ess/ESS
-#[submodule ".emacs.d/bundle/cedet"]
-#	path = .emacs.d/bundle/cedet
+#[submodule "emacs.d/bundle/cedet"]
+#	path = emacs.d/bundle/cedet
 #	url = git://github.com/emacsmirror/cedet.git
-#[submodule ".emacs.d/bundle/ecb"]
-#	path = .emacs.d/bundle/ecb
+#[submodule "emacs.d/bundle/ecb"]
+#	path = emacs.d/bundle/ecb
 #	url = git://github.com/emacsmirror/ecb.git
