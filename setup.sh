@@ -2,17 +2,18 @@
 # export GIT_SSL_NO_VERIFY=true; bash setup.sh
 # git config --global http.sslVerify false
 
-for DOTFILE in .emacs .emacs.d .vimrc .vim .tmux.conf .bashrc .Rprofile .zshrc .zsh; do
-    echo [[ processing $DOTFILE... ]]
-    if [ -e ~/$DOTFILE ] && [ ! -h ~/$DOTFILE ]; then
-        BAK=~/`date +%F`$DOTFILE
-        echo -e "moving: $DOTFILE\\t->\\t$BAK"
-        mv ~/$DOTFILE $BAK
+for DOTFILENAME in emacs emacs.d vimrc vim tmux.conf bashrc Rprofile zshrc zsh boot.profile; do
+    echo [[ processing ]] $DOTFILENAME...
+    DOTTARGET=~/.$DOTFILENAME
+    if [ -e $DOTTARGET ] && [ ! -h $DOTTARGET ]; then
+        BAK=~/`date +%F`.$DOTFILENAME
+        echo -e "moving: .$DOTFILENAME\\t->\\t$BAK"
+        mv $DOTTARGET $BAK
     fi
 
-    if [ ! -e ~/$DOTFILE ]; then
-        echo symlinking ~/dot/$DOTFILE to ~/$DOTFILE...
-        ln -s ~/dot/$DOTFILE ~/$DOTFILE
+    if [ ! -e $DOTTARGET ]; then
+        echo symlinking ~/dot/$DOTFILENAME to $DOTTARGET...
+        ln -sf ~/dot/$DOTFILENAME $DOTTARGET
     fi
 done
 
