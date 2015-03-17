@@ -37,10 +37,13 @@ fun SetupVAM()
               \ , 'github:fatih/vim-go'
               \ , 'github:Glench/Vim-Jinja2-Syntax'
               \ , 'vim-orgmode'
+              \ , 'github:hylang/vim-hy'
               \ ], {'auto_install' : 0})
 
 endfun
 call SetupVAM()
+
+let g:AutoCloseExpandEnterOn = ""
 
 filetype off
 filetype plugin indent on
@@ -61,6 +64,7 @@ set ic
 
 autocmd Filetype ruby setlocal ts=2 sts=2 sw=2
 
+let g:syntastic_mode_map = { 'mode': 'passive' }
 let clj_highlight_builtins = 1
 let clj_paren_rainbow = 1
 let vimclojure#NailgunClient = "$HOME/.vim/vimclojure/ng"
