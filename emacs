@@ -11,18 +11,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setenv "PATH" (concat "/opt:/opt/local/bin:" (getenv "PATH")))
 (cond ((eq system-type 'gnu/linux)
-       (load-file "~/dot/.emacs.d/custom/gnu-linux.el"))
+       (load-file "~/dot/emacs.d/custom/gnu-linux.el"))
       ((eq system-type 'darwin)
-       (load-file "~/dot/.emacs.d/custom/darwin.el"))
+       (load-file "~/dot/emacs.d/custom/darwin.el"))
       ((eq system-type 'windows-nt)
-       (load-file "~/dot/.emacs.d/custom/windows-nt.el"))
+       (load-file "~/dot/emacs.d/custom/windows-nt.el"))
       (t (message "unknown system???")))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; </OS-specific command> ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(add-to-list 'load-path "~/dot/.emacs.d")
-(let ((system-name-el (concat "~/dot/.emacs.d/system-name/" system-name ".el")))
+(add-to-list 'load-path "~/dot/emacs.d")
+(let ((system-name-el (concat "~/dot/emacs.d/system-name/" system-name ".el")))
   (when (file-exists-p system-name-el)
     (load-file system-name-el)))
 

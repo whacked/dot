@@ -2,8 +2,8 @@
 (setq x-select-enable-clipboard t)
 ;; <ubuntu-tp customizations> ;;;;;;
 ;;
-(setq user-emacs-directory "~/dot/.emacs.d")
-(setq el-get-dir "~/dot/.emacs.d/el-get")
+(setq user-emacs-directory "~/dot/emacs.d")
+(setq el-get-dir "~/dot/emacs.d/el-get")
 
 ;; ;; use anthy
 ;; ;; http://www.emacswiki.org/emacs/IBusMode

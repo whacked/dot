@@ -27,7 +27,7 @@
                             (require 'auto-complete)
                             (add-to-list 'ac-dictionary-directories (expand-file-name "dict" pdir))
                             ;; the elc is buggy for some reason
-                            (let ((f "~/dot/.emacs.d/el-get/auto-complete/auto-complete-config.elc"))
+                            (let ((f "~/dot/emacs.d/el-get/auto-complete/auto-complete-config.elc"))
                               (if (file-exists-p f)
                                   (delete-file f)))
                             (require 'auto-complete-config)

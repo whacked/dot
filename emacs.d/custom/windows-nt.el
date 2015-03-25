@@ -1,2 +1,2 @@
 ;; windows only
-;; (load-file "~/.emacs.d/martin-w32-fullscreen.el")
+;; (load-file "~/emacs.d/martin-w32-fullscreen.el")

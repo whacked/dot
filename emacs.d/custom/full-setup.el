@@ -1,5 +1,5 @@
-(load-file "~/dot/.emacs.d/custom/package-management.el")
-(load-file "~/dot/.emacs.d/custom/package-common.el")
+(load-file "~/dot/emacs.d/custom/package-management.el")
+(load-file "~/dot/emacs.d/custom/package-common.el")
 (setq my-packages
       (append my-packages
        '(el-get package
@@ -17,10 +17,10 @@
          )))
 
 
-(load-file "~/dot/.emacs.d/custom/coding.el")
-(load-file "~/dot/.emacs.d/custom/lispy-stuff.el")
+(load-file "~/dot/emacs.d/custom/coding.el")
+(load-file "~/dot/emacs.d/custom/lispy-stuff.el")
 
-(load-file "~/dot/.emacs.d/custom/usual-environment.el")
+(load-file "~/dot/emacs.d/custom/usual-environment.el")
 
 
 
@@ -250,7 +250,7 @@ a sound to be played"
 
 
 ;; pymacs see http://pymacs.progiciels-bpi.ca/pymacs.html#installation
-;; (load-file "~/dot/.emacs.d/bundle/pymacs/pymacs.el")
+;; (load-file "~/dot/emacs.d/bundle/pymacs/pymacs.el")
 (autoload 'pymacs-apply "pymacs")
 (autoload 'pymacs-call "pymacs")
 (autoload 'pymacs-eval "pymacs" nil t)
@@ -318,10 +318,10 @@ a sound to be played"
 (setq deft-directory "~/note/org/")
 (setq deft-text-mode 'org-mode)
 
-(load-file "~/dot/.emacs.d/custom/sync.el")
+(load-file "~/dot/emacs.d/custom/sync.el")
 
 
 
 (setq desktop-save-mode nil)
-(desktop-change-dir "~/dot/.emacs.d")
+(desktop-change-dir "~/dot/emacs.d")
 
