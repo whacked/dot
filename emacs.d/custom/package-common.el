@@ -91,5 +91,8 @@
          navi-mode
 
          minimap
+         powerline
+
+         outorg outshine navi-mode
          )
        (mapcar 'el-get-source-name el-get-sources)))
