@@ -75,7 +75,7 @@
          ;; need MELPA working!
          simple-httpd
 
-         virtualenvwrapper
+         pyvenv
          ;; iedit
 
          ;; frame-bufs
