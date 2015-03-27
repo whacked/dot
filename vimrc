@@ -24,6 +24,7 @@ fun SetupVAM()
               \ , 'github:scrooloose/nerdcommenter'
               \ , 'github:tpope/vim-fugitive'
               \ , 'github:tpope/vim-unimpaired'
+              \ , 'github:tpope/vim-speeddating'
               \ , 'github:docunext/closetag.vim'
               \ , 'github:tmatilai/gitolite.vim'
               \ , 'github:kikijump/tslime.vim'
