@@ -445,7 +445,7 @@ EOF
                      ;; take regexp from org.el:org-edit-special
                      "\\(?:#\\+\\(?:setupfile\\|include\\):?[ \t]+\"?\\|[ \t]*<include\\>.*?file=\"\\)\\([^\"\n>]+\\)"
                      ;; sloppily match :lines ### portion
-                     ".+\\(?::lines[ \t]+\"\\)\\([0-9]*\\)-\\([0-9]*\\)")))
+                     ".+\\(?::lines\\)[ \t]+\\([0-9]*\\)[-~ ]\\([0-9]*\\)")))
     (let* ((file-to-visit (org-trim (match-string 1)))
            (line-to-visit (string-to-number (match-string 2)))
            (new-window-height (max
