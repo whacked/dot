@@ -436,39 +436,3 @@ EOF
   (google-search prefix "http://scholar.google.com/scholar?hl=en&btnG=&as_sdt=1%%2C22&q=%s"))
 
 
-(defun myembed ()
-  "prototype embed buffer fn for editing #+INCLUDE files 'in-place'"
-  (interactive)
-  (when (save-excursion
-        (beginning-of-line 1)
-        (looking-at (concat
-                     ;; take regexp from org.el:org-edit-special
-                     "\\(?:#\\+\\(?:setupfile\\|include\\):?[ \t]+\"?\\|[ \t]*<include\\>.*?file=\"\\)\\([^\"\n>]+\\)"
-                     ;; sloppily match :lines ### portion
-                     ".+\\(?::lines\\)[ \t]+\\([0-9]*\\)[-~ ]\\([0-9]*\\)")))
-    (let* ((file-to-visit (org-trim (match-string 1)))
-           (line-to-visit (string-to-number (match-string 2)))
-           (new-window-height (max
-                               (- (string-to-number (match-string 3))
-                                  line-to-visit)
-                               5))
-           (cur-line-num (line-number-at-pos))
-           (top-line-num (save-excursion
-                           (move-to-window-line-top-bottom 0)
-                           (line-number-at-pos)))
-          (cur-window-height (window-height))
-          )
-      
-      (split-window nil (+ 4 (- cur-line-num top-line-num)))
-      (recenter-top-bottom -1)
-      (other-window 1)
-      (split-window nil new-window-height)
-      (find-file file-to-visit)
-      (other-window 1)
-      (goto-line (+ cur-line-num 1))
-      (recenter-top-bottom 0)
-      (other-window -1)
-      (goto-line line-to-visit)
-      (recenter-top-bottom)
-      )))
-(global-set-key "\C-cE" 'myembed)
