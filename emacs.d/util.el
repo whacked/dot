@@ -447,3 +447,15 @@ EOF
                          (org-show-context)) 
                  (cdr (org-make-tags-matcher match)) todo-only))
 
+;; ref http://stackoverflow.com/questions/6050033/elegant-way-to-count-items
+;; least dependency and easiest to get working version (Eli Barzilay)
+(defun frequencies (list &optional test key)
+  (let* ((test (or test #'equal))
+         (h (make-hash-table :test test)))
+    (dolist (x list)
+      (let ((key (if key (funcall key x) x)))
+        (puthash key (1+ (gethash key h 0)) h)))
+    (let ((r nil))
+      (maphash #'(lambda (k v) (push (cons k v) r)) h)
+      (sort r #'(lambda (x y) (< (cdr x) (cdr y)))))))
+
