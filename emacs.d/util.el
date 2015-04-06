@@ -436,6 +436,19 @@ EOF
   (google-search prefix "http://scholar.google.com/scholar?hl=en&btnG=&as_sdt=1%%2C22&q=%s"))
 
 
+;; http://stackoverflow.com/questions/15328515/iso-transclusion-in-emacs-org-mode
+;; http://stackoverflow.com/a/15352203
+(defun org-dblock-write:transclusion (params)
+  (progn
+    (with-temp-buffer
+      (insert-file-contents (plist-get params :filename))
+      (let ((range-start (or (plist-get params :min) (line-number-at-pos (point-min))))
+            (range-end (or (plist-get params :max) (line-number-at-pos (point-max)))))
+        (copy-region-as-kill (line-beginning-position range-start)
+                             (line-end-position range-end))))
+    (yank)))
+
+
 ;; http://stackoverflow.com/questions/10729639/organizing-notes-with-tags-in-org-mode
 (defun org-tag-match-context (&optional todo-only match)
   "Identical search to `org-match-sparse-tree', but shows the content of the matches."
@@ -459,3 +472,30 @@ EOF
       (maphash #'(lambda (k v) (push (cons k v) r)) h)
       (sort r #'(lambda (x y) (< (cdr x) (cdr y)))))))
 
+;; ref http://stackoverflow.com/questions/24330980/enumerate-all-tags-in-org-mode
+(defun org-get-tag-histogram ()
+  (interactive)
+  (let ((all-tags '()))
+    (org-map-entries
+     (lambda ()
+       (let ((tag-string (car (last (org-heading-components)))))
+         (when tag-string   
+           (setq all-tags
+                 (append all-tags (split-string tag-string ":" t)))))))
+    (let ((histogram (frequencies all-tags)))
+      (when (called-interactively-p 'any)
+        (message
+         (let ((longest-keylen (apply 'max
+                                      (mapcar (function (lambda (pair)
+                                                          (length (car pair)))) histogram))))
+           (mapconcat
+            (function (lambda (pair)
+                        (format "%s  %s"
+                                (car pair)
+                                (format
+                                 (format "%%%dd" (1+ (- longest-keylen (length (car pair)))))
+                                 (cdr pair))
+                                )))
+            histogram
+            "\n"))))
+      histogram)))
