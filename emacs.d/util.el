@@ -436,3 +436,14 @@ EOF
   (google-search prefix "http://scholar.google.com/scholar?hl=en&btnG=&as_sdt=1%%2C22&q=%s"))
 
 
+;; http://stackoverflow.com/questions/10729639/organizing-notes-with-tags-in-org-mode
+(defun org-tag-match-context (&optional todo-only match)
+  "Identical search to `org-match-sparse-tree', but shows the content of the matches."
+  (interactive "P")
+  (org-agenda-prepare-buffers (list (current-buffer)))
+  (org-overview) 
+  (org-remove-occur-highlights) 
+  (org-scan-tags '(progn (org-show-entry) 
+                         (org-show-context)) 
+                 (cdr (org-make-tags-matcher match)) todo-only))
+
