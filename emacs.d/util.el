@@ -254,6 +254,8 @@ EOF
 
 ;; see http://nullprogram.com/blog/2013/02/06/
 ;; also see http://stackoverflow.com/questions/12915528/easier-outline-navigation-in-emacs
+(defun org-navigate-mode--get-nav-buffer-name ()
+  (concat (buffer-name) "--<nav>"))
 (define-minor-mode org-navigate-mode
   "quick way to nagivate org files via indirect buffer"
   :lighter "my-onav"
@@ -264,18 +266,24 @@ EOF
             (define-key map (kbd "k") 'outline-previous-visible-heading)
             (define-key map (kbd "l") '(lambda ()
                                          (interactive)
-                                         (let* (
+                                         (let* ((nowbuf (current-buffer))
                                                 ;; (headline-at-point (nth 4 (org-heading-components)))
                                                 ;; (target-line-number (line-number-at-pos (org-find-exact-headline-in-buffer headline-at-point)))
                                                 (target-line-number (line-number-at-pos))
                                                 )
-                                           (other-window 1)
+                                           (switch-to-buffer-other-window navigation-buffer)
                                            (goto-line target-line-number)
                                            (recenter-top-bottom 1)
-                                           (other-window -1))))
+                                           (switch-to-buffer-other-window nowbuf))))
+            (define-key map (kbd "RET") '(lambda ()
+                                           (interactive)
+                                           (let ((target-line-number (line-number-at-pos)))
+                                             (switch-to-buffer-other-window navigation-buffer)
+                                             (goto-line target-line-number)
+                                             (recenter-top-bottom 1))))
             map)
   (set (make-local-variable 'base-buffer) (current-buffer))
-  (set (make-local-variable 'navigation-buffer-name) (concat (buffer-name) "--<nav>"))
+  (set (make-local-variable 'navigation-buffer-name) (org-navigate-mode--get-nav-buffer-name))
   (if org-navigate-mode
       (progn
         (set (make-local-variable 'navigation-buffer)
