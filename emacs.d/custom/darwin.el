@@ -16,7 +16,7 @@
             (set-fontset-font (frame-parameter nil 'font)
                               (car charset-font)
                               (font-spec :family (cdr charset-font) :size
-                                         12)))
+                                         14)))
           charset-font))
   (defun osx-resize-current-window ()
     (interactive)
