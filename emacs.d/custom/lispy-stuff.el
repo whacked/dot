@@ -14,3 +14,7 @@
                                (require 'expand-region)
                                (global-set-key (kbd "C-=") 'er/expand-region)
                                (paredit-mode 1)))
+(add-hook 'emacs-lisp-mode-hook (lambda ()
+                                  (paredit-mode 1)))
+(add-hook 'hy-mode-hook (lambda ()
+                          (paredit-mode 1)))

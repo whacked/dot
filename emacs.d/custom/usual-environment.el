@@ -1,5 +1,7 @@
 (el-get 'sync my-packages)
 
+(package-initialize)
+
 (dolist (path '("~/dot/emacs.d/revive.el"
                 "~/dot/emacs.d/windows.el"
                 "~/dot/emacs.d/bundle/mode/haxe-mode.el"
@@ -152,8 +154,11 @@ Also returns nil if pid is nil."
  '(transient-mark-mode t))
 
 ;; for smooth scrolling
-(setq scroll-step            1
-      scroll-conservatively  10000)
+(setq redisplay-dont-pause t
+      scroll-margin 1
+      scroll-step 1
+      scroll-conservatively 10000
+      scroll-preserve-screen-position 1)
 
 (when (load "auctex.el" t t t) ;; first t = don't throw error if not exist
   (load "preview-latex.el" nil t t)
@@ -417,4 +422,4 @@ Also returns nil if pid is nil."
 ;;   (if (display-graphic-p)
 ;;       (color-theme-solarized-light)
 ;;     (color-theme-solarized-dark)))
-(color-theme-solarized-light)
+;; (color-theme-solarized-light)

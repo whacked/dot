@@ -30,7 +30,6 @@ fun SetupVAM()
               \ , 'github:kikijump/tslime.vim'
               \ , 'github:wincent/Command-T'
               \ , 'github:majutsushi/tagbar'
-              \ , 'github:python-rope/ropevim'
               \ , 'matchit.zip'
               \ , 'github:vim-scripts/AutoClose'
               \ , 'occur'
@@ -40,6 +39,7 @@ fun SetupVAM()
               \ , 'vim-orgmode'
               \ , 'github:hylang/vim-hy'
               \ ], {'auto_install' : 0})
+              ""\ , 'github:python-rope/ropevim'
 
 endfun
 call SetupVAM()

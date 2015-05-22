@@ -16,7 +16,6 @@
 ;; ref http://stackoverflow.com/questions/23165158/how-do-i-install-melpa-packages-via-el-get
 (require 'el-get-elpa)
 ;; then call el-get-elpa-build-local-recipes
-(package-initialize)
 
 ;; local sources
 ;; example:

@@ -66,7 +66,8 @@
          ;; perspective
          ;; elscreen
 
-         request
+         ;; request ;; already included by something else
+
          ;; google-this
 
          helm
@@ -94,5 +95,7 @@
          powerline
 
          outorg outshine navi-mode
+
+         epc
          )
        (mapcar 'el-get-source-name el-get-sources)))
