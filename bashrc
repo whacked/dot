@@ -145,3 +145,9 @@ function up() {
 }
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+
+
+if [ -e ~/.xsh ]; then
+    source ~/.xsh
+fi
+
