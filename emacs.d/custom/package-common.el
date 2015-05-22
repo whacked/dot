@@ -64,7 +64,7 @@
          multiple-cursors
          
          ;; perspective
-         ;; elscreen
+         elscreen
 
          request
          ;; google-this
@@ -93,6 +93,6 @@
          minimap
          powerline
 
-         outorg outshine navi-mode
+         outorg outshine
          )
        (mapcar 'el-get-source-name el-get-sources)))

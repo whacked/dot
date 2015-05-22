@@ -45,7 +45,7 @@
 ;; (require 'org-drill)
 
 ;;; org-mode with remember
-(org-remember-insinuate)
+;; (org-remember-insinuate)
 (setq org-directory "~/note/org")
 (setq org-default-notes-file (concat (file-name-as-directory org-directory) "index.org.gpg"))
 ;(define-key global-map "\C-cr" 'org-remember)
