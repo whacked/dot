@@ -1,0 +1,9 @@
+--ignore-dir=.ropeproject
+--ignore-dir=venv
+--ignore-dir=venv3
+--type-set=haxe=.hx
+--type-set=coffee=.coffee
+--type-set=org=.org
+--type-set=yaml=.yml
+--type-set=clojure=.clj,.cljs
+--type-set=cljx=.clj,.cljs
