@@ -2,7 +2,7 @@
 # export GIT_SSL_NO_VERIFY=true; bash setup.sh
 # git config --global http.sslVerify false
 
-for DOTFILENAME in emacs emacs.d vimrc vim tmux.conf bashrc Rprofile zshrc zsh boot.profile; do
+for DOTFILENAME in emacs emacs.d vimrc vim tmux.conf bashrc Rprofile zshrc zsh boot.profile lein; do
     echo [[ processing ]] $DOTFILENAME...
     DOTTARGET=~/.$DOTFILENAME
     if [ -e $DOTTARGET ] && [ ! -h $DOTTARGET ]; then
@@ -49,31 +49,6 @@ if [ ! -e ~/opt/z ]; then
     git clone git://github.com/rupa/z.git ~/opt/z
 fi
 
-# EMACS ----------------------------------------------------------------
-if [ ! -e ~/.emacs ]; then
-    echo "setting up emacs..."
-    :
-fi
-
-# VIM ----------------------------------------------------------------
-if [ ! -e ~/.vimrc ]; then
-    echo "setting up vim..."
-    echo "... setting up vim-pathogen"
-    ln -s ~/dot/.vim/vim-pathogen/autoload/pathogen.vim ~/.vim/autoload/pathogen.vim
-fi
-
-# TMUX ----------------------------------------------------------------
-if [ ! -e ~/.tmux.conf ]; then
-    echo "setting up tmux..."
-    :
-fi
-
-# R -------------------------------------------------------------------
-if [ ! -e ~/.Rprofile ]; then
-    echo "setting up R..."
-    :
-fi
-
 # ZSH -----------------------------------------------------------------
 if [ `command -v zsh | wc -l` -ge 1 ]; then
     echo "setting up ZSH..."
@@ -82,27 +57,6 @@ if [ `command -v zsh | wc -l` -ge 1 ]; then
     fi
 else
     echo ... zsh not installed
-fi
-
-# LEIN ----------------------------------------------------------------
-if [ `command -v lein | wc -l` -ge 1 ]; then
-    echo "setting up leiningen"
-    if [ ! -e ~/.lein ]; then
-        mkdir ~/.lein
-    fi
-    if [ -e ~/.lein/init.clj ]; then
-        echo "... .lein/init.clj exists"
-    else
-        ln -s ~/dot/init.clj ~/.lein/init.clj
-    fi
-    if [ -e ~/.lein/profiles.clj ]; then
-        echo "... .lein/profiles.clj exists"
-    else
-        ln -s ~/dot/lein/profiles.clj ~/.lein/profiles.clj
-    fi
-    ln -s ~/dot/leinrc ~/.lein/leinrc
-else
-    echo ... leiningen not installed
 fi
 
 # submodule command sample
