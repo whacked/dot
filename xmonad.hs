@@ -139,7 +139,7 @@ myManageHook = composeAll
     ]
 
 myKeys = [] ++
-         [ ((mod4Mask, xK_space    ), unsafeSpawn "$HOME/.config/thinkpad/dzen/popup_calendar.sh")] ++
+         [ ((mod4Mask, xK_space    ), unsafeSpawn "$HOME/opt/thinkpad/dzen/popup_calendar.sh")] ++
 
          -- application shortcuts
          [ ((mod4Mask, xK_F9      ), unsafeSpawn "emacsclient -c -e '(switch-to-buffer (dolist (buf (buffer-list)) (if (or (equal (get-buffer \"*scratch*\") buf) (equal (get-buffer \" *Minibuf-1*\") buf)) nil  (return buf))))'")] ++
