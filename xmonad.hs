@@ -147,6 +147,8 @@ myKeys = [] ++
          [ ((mod4Mask .|. mod1Mask, xK_x      ), unsafeSpawn "xournal")] ++
          [ ((mod4Mask .|. mod1Mask, xK_h      ), unsafeSpawn "nemo")] ++
 
+         [ ((mod4Mask             , xK_p      ), unsafeSpawn "gedit")] ++
+
          -- cycle windows, emulate old-style alt-tab
          [ ((mod1Mask,               xK_Tab   ), windows W.focusDown)
          , ((mod1Mask .|. shiftMask, xK_Tab   ), windows W.focusUp)
