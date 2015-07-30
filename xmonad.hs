@@ -31,6 +31,8 @@ import XMonad.Hooks.Place -- for placing floating windows
 -- check xmodmap -pm to see mod key mapping
 
 
+import XMonad.Layout.ShowWName
+
 devMode = False
 myFocusedBorderColor = if devMode == True then "green" else "red"
 
@@ -43,7 +45,7 @@ main = do
         , focusedBorderColor = myFocusedBorderColor
         -- , manageHook = manageDocks -- <+> manageHook gnomeConfig
         -- , layoutHook = avoidStruts $ layoutHook gnomeConfig
-        , layoutHook = myLayout -- avoidStruts $ layoutHook defaultConfig
+        , layoutHook = showWName myLayout -- avoidStruts $ layoutHook defaultConfig
         , manageHook = myManageHook <+> manageHook gnomeConfig
         , workspaces = myWorkspaces
         -- , logHook = myLogHook
