@@ -209,6 +209,9 @@ Also returns nil if pid is nil."
   ;;   (setq org-babel-python-mode 'python-mode))
   )
 
+;; (setq-default py-split-windows-on-execute-function 'split-window-horizontally)
+(setq-default py-keep-windows-configuration t)
+
 (setq org-ditaa-jar-path "~/dot/emacs.d/bundle/org-mode/contrib/scripts/ditaa.jar")
 
 (defun ansi-unansify (beg end)
@@ -338,9 +341,16 @@ Also returns nil if pid is nil."
 (define-key my-keys-minor-mode-map [M-right] 'windmove-right)
 (define-key my-keys-minor-mode-map [M-up] 'windmove-up)
 (define-key my-keys-minor-mode-map [M-down] 'windmove-down)
+
 (define-key my-keys-minor-mode-map (kbd "M-_") 'org-metaleft)
 (define-key my-keys-minor-mode-map (kbd "M-+") 'org-metaright)
 ;;(define-key my-keys-minor-mode-map [tab] 'yas/expand-from-trigger-key)
+
+(define-key my-keys-minor-mode-map [s-left] 'windmove-left)
+(define-key my-keys-minor-mode-map [s-right] 'windmove-right)
+(define-key my-keys-minor-mode-map [s-up] 'windmove-up)
+(define-key my-keys-minor-mode-map [s-down] 'windmove-down)
+
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
   t " my-keys" 'my-keys-minor-mode-map)
@@ -355,8 +365,8 @@ Also returns nil if pid is nil."
 (add-to-list 'load-path "~/dot/emacs.d/bundle/undo-tree")
 (require 'undo-tree)
 
-(add-to-list 'load-path "~/dot/emacs.d/bundle/minimap/")
-(require 'minimap)
+;; (add-to-list 'load-path "~/dot/emacs.d/bundle/minimap/")
+;; (require 'minimap)
 
 
 (defun my-c-mode-hook ()
@@ -418,3 +428,8 @@ Also returns nil if pid is nil."
 ;;       (color-theme-solarized-light)
 ;;     (color-theme-solarized-dark)))
 (color-theme-solarized-light)
+
+;; vim screen movement keys
+(global-set-key (kbd "C-` H") (lambda () (interactive) (move-to-window-line-top-bottom 0)))
+(global-set-key (kbd "C-` M") (lambda () (interactive) (move-to-window-line-top-bottom)))
+(global-set-key (kbd "C-` L") (lambda () (interactive) (move-to-window-line-top-bottom -1)))
