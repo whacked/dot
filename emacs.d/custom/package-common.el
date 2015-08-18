@@ -90,9 +90,10 @@
 
          navi-mode
 
-         minimap
+         ;; minimap
          powerline
 
          outorg outshine
+         workgroups2
          )
        (mapcar 'el-get-source-name el-get-sources)))
