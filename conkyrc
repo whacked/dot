@@ -32,7 +32,7 @@ own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
 
 alignment top_left
 gap_x 400
-gap_y 80
+gap_y 850
 minimum_size 200 0
 maximum_width 200
 
