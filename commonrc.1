@@ -28,7 +28,19 @@ mkcd () {
 alias gits='git status -s'
 . ~/opt/z/z.sh
 
-if [[ -s "$HOME/.rvm/scripts/rvm" ]]  ; then source "$HOME/.rvm/scripts/rvm" ; fi
+for includedir in /usr/local/bin $HOME/opt/thinkpad $HOME/opt /opt $HOME/.cabal/bin $HOME/node_modules/bin; do
+    break
+    if [ -e $includedir ]; then
+        export PATH=$PATH:$includedir
+    fi
+done
+
+RVM_VERSION=2.1.1
+if [[ -s "$HOME/.rvm/scripts/rvm" ]] ; then
+    source "$HOME/.rvm/scripts/rvm" ;
+    export PATH="$PATH:~/.rvm/gems/ruby-$RVM_VERSION/bin:$HOME/.rvm/bin"
+    rvm use ruby-$RVM_VERSION
+fi
 
 # # ref http://d.hatena.ne.jp/dame-p/20110313/1299992080
 export JAVA_OPTS="-Dswank.encoding=utf-8-unix" # 日本語用？
@@ -54,10 +66,7 @@ function rr {
     fi
 }
 
-rvm use ruby-2.1.1
-export PATH=~/.rvm/gems/ruby-2.1.1/bin:/usr/local/bin:~/opt/thinkpad:$PATH:~/opt:/opt:~/.cabal/bin
 export GOPATH=~/gopath
-export PATH="$PATH:$HOME/.rvm/bin:$HOME/node_modules/bin" # Add RVM, node to PATH for scripting
 
 if [ -e /opt/android-sdk-linux/tools ]; then
     export PATH=$PATH:/opt/android-sdk-linux/tools
