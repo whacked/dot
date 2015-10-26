@@ -68,6 +68,13 @@ function rr {
 
 export GOPATH=~/gopath
 
+if ! type "npm" > /dev/null; then
+    :
+else
+    export NODE_PATH=$(npm root -g)
+fi
+
+
 if [ -e /opt/android-sdk-linux/tools ]; then
     export PATH=$PATH:/opt/android-sdk-linux/tools
 fi
