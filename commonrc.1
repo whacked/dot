@@ -29,7 +29,6 @@ alias gits='git status -s'
 . ~/opt/z/z.sh
 
 for includedir in /usr/local/bin $HOME/opt/thinkpad $HOME/opt /opt $HOME/.cabal/bin $HOME/node_modules/bin; do
-    break
     if [ -e $includedir ]; then
         export PATH=$PATH:$includedir
     fi
