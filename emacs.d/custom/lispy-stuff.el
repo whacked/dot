@@ -3,6 +3,8 @@
          queue
          paredit
          clojure-mode
+	 popup
+         seq
          cider
          expand-region
          hy-mode
