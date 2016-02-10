@@ -3,7 +3,7 @@
          queue
          paredit
          clojure-mode
-	 popup
+         popup
          seq
          cider
          expand-region
