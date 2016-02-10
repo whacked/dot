@@ -118,3 +118,5 @@ let g:ctrlp_working_path_mode = 'ra'
 " NERDTree
 let NERDTreeTabsOpen=1
 let NERDTreeQuitOnOpen=0
+
+inoremap {{ {{  }}<Esc>hhi
