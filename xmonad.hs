@@ -39,7 +39,7 @@ myFocusedBorderColor = if devMode == True then "green" else "red"
 main = do
     xmonad $ gnomeConfig
         { terminal = "terminator" -- terminal = "gnome-terminal" 
-        , borderWidth = 2
+        , borderWidth = 1
         , modMask = myModMask
         --, focusedBorderColor = "red"
         , focusedBorderColor = myFocusedBorderColor
