@@ -48,7 +48,7 @@
       (append
        '(el-get
          s
-         spinner
+         spinner ;; spinner for ongoing operation
 
          yasnippet
          dash
@@ -99,8 +99,8 @@
          outorg outshine
          workgroups2
 
-         fiplr
+         fiplr ;; vim-like ctrl-p
 
-         sr-speedbar
+         sr-speedbar ;; file list view in buffer
          )
        (mapcar 'el-get-source-name el-get-sources)))
