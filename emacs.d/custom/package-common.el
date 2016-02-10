@@ -98,5 +98,8 @@
 
          outorg outshine
          workgroups2
+
+         fiplr
+
          )
        (mapcar 'el-get-source-name el-get-sources)))
