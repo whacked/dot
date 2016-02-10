@@ -382,7 +382,7 @@ xkb_symbols "pc+us+inet(evdev)+capslock(ctrl_modifier)" {
     modifier_map Mod5 { <LVL3> };
     modifier_map Control { <RCTL> };
     // IMPORTANT LINE!
-    modifier_map Mod4 { <RALT> };
+    modifier_map Mod3 { <RALT> };
     modifier_map Mod4 { <LWIN> };
     modifier_map Mod4 { <RWIN> };
     modifier_map Mod5 { <MDSW> };

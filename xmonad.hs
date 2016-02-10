@@ -70,6 +70,7 @@ myLayout = tiled
     delta   = 3/100
 
 myModMask = mod3Mask
+-- myModMask = mod4Mask
 myWorkspaces = [ "1"
                , "2:web"
                , "3"
