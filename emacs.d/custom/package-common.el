@@ -48,6 +48,8 @@
       (append
        '(el-get
          s
+         spinner
+
          yasnippet
          dash
 
