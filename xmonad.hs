@@ -189,5 +189,5 @@ myKeys = [] ++
          ] ++
          -- http://www.haskell.org/haskellwiki/Xmonad/Frequently_asked_questions#Screens_are_in_wrong_order
          [((m .|. myModMask, key), screenWorkspace sc >>= flip whenJust (windows . f)) -- Replace 'mod1Mask' with your mod key of choice.
-             | (key, sc) <- zip [xK_w, xK_e] [1,0] -- was [0..] *** change to match your screen order ***
+             | (key, sc) <- zip [xK_w, xK_e, xK_r] [2,1,0] -- was [0..] *** change to match your screen order ***
              , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
