@@ -101,5 +101,6 @@
 
          fiplr
 
+         sr-speedbar
          )
        (mapcar 'el-get-source-name el-get-sources)))
