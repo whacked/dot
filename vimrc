@@ -39,6 +39,7 @@ fun SetupVAM()
               \ , 'github:Glench/Vim-Jinja2-Syntax'
               \ , 'vim-orgmode'
               \ , 'github:hylang/vim-hy'
+              \ , 'github:airblade/vim-gitgutter'
               \ ], {'auto_install' : 0})
 
 endfun
