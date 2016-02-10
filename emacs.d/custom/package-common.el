@@ -82,6 +82,7 @@
 
          transpose-frame
 
+         with-editor ;; dependency for magit
          magit
          color-theme color-theme-solarized
 
