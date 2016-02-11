@@ -42,6 +42,11 @@
         ;;        :type git
         ;;        :url "https://github.com/jianli/git-playback"
         ;;        :features "git-playback")
+        
+        (:name sqlite-el
+               :type git
+               :url "https://github.com/cnngimenez/sqlite.el"
+               :features "sqlite")
         ))
 
 (setq my-packages
@@ -102,5 +107,6 @@
          fiplr ;; vim-like ctrl-p
 
          sr-speedbar ;; file list view in buffer
+
          )
        (mapcar 'el-get-source-name el-get-sources)))
