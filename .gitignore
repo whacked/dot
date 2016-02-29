@@ -1,6 +1,8 @@
 abbrev_defs
 api-key.el
 
+\#*#
+.#*
 .*.swp
 *.elc
 
