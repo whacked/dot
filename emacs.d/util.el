@@ -91,34 +91,7 @@
   )
 
 
-(if (eq system-type 'darwin)
-    (defun maximize-window () 
-      (interactive)
-      (shell-command "sh <<EOF
-osascript <<OSA 1> /dev/null 2> /dev/null &
-set display_info to (do shell script \"system_profiler -detailLevel mini | grep -a 'Main Display:' -B 4 | grep -a 'Resolution:'\")
 
-set ws to every word of display_info
-set wc to the count of ws
-set w2 to wc - 2
-
-set screen_height to item wc of ws
-set screen_width to item w2 of ws
-
-tell application \"System Events\"
-	set frontmostApplication to name of the first process whose frontmost is true
-	set frontmostApplication to frontmostApplication as string
-	tell process frontmostApplication
-		tell window 1
-			set position to {0, 20}
-			set size to {screen_width, screen_height}
-		end tell
-	end tell
-end tell
-OSA
-EOF
-"))
-  )
 
 
 
