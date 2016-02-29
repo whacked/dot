@@ -808,18 +808,6 @@
    (setq dabbrev-always-check-other-buffers t)
    (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
 
-
-
-   ;; autopair mode
-   ;; (autopair-global-mode) ;; enable autopair in all buffers 
-   ;; (add-hook 'js2-mode-hook #'(lambda () (setq autopair-dont-activate t))) ; the #'(lambda ...) form is the same as just doing (lambda ...). leaving it here just as example
-   ;; ;; fix autopair infinite loop in sldb
-   ;; (add-hook 'sldb-mode-hook #'(lambda () (setq autopair-dont-activate t)))
-   ;; (add-hook 'clojure-mode-hook #'(lambda ()
-   ;;                                  (setq autopair-dont-activate t)
-   ;;                                  (paredit-mode)))
-
-
    ;; highlight cljs with clojure-mode
    (add-to-list 'auto-mode-alist '("\.cljs$" . clojure-mode))
 
