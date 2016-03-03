@@ -31,19 +31,21 @@ import XMonad.Hooks.Place -- for placing floating windows
 -- check xmodmap -pm to see mod key mapping
 
 
+import XMonad.Layout.ShowWName
+
 devMode = False
 myFocusedBorderColor = if devMode == True then "green" else "red"
 
 main = do
     xmonad $ gnomeConfig
         { terminal = "terminator" -- terminal = "gnome-terminal" 
-        , borderWidth = 2
+        , borderWidth = 1
         , modMask = myModMask
         --, focusedBorderColor = "red"
         , focusedBorderColor = myFocusedBorderColor
         -- , manageHook = manageDocks -- <+> manageHook gnomeConfig
         -- , layoutHook = avoidStruts $ layoutHook gnomeConfig
-        , layoutHook = myLayout -- avoidStruts $ layoutHook defaultConfig
+        , layoutHook = showWName myLayout -- avoidStruts $ layoutHook defaultConfig
         , manageHook = myManageHook <+> manageHook gnomeConfig
         , workspaces = myWorkspaces
         -- , logHook = myLogHook
@@ -68,6 +70,7 @@ myLayout = tiled
     delta   = 3/100
 
 myModMask = mod3Mask
+-- myModMask = mod4Mask
 myWorkspaces = [ "1"
                , "2:web"
                , "3"
@@ -137,13 +140,15 @@ myManageHook = composeAll
     ]
 
 myKeys = [] ++
-         [ ((mod4Mask, xK_space    ), unsafeSpawn "$HOME/.config/thinkpad/dzen/popup_calendar.sh")] ++
+         [ ((mod4Mask, xK_space    ), unsafeSpawn "$HOME/opt/thinkpad/dzen/popup_calendar.sh")] ++
 
          -- application shortcuts
          [ ((mod4Mask, xK_F9      ), unsafeSpawn "emacsclient -c -e '(switch-to-buffer (dolist (buf (buffer-list)) (if (or (equal (get-buffer \"*scratch*\") buf) (equal (get-buffer \" *Minibuf-1*\") buf)) nil  (return buf))))'")] ++
          [ ((mod4Mask, xK_Return  ), unsafeSpawn "$HOME/.config/thinkpad/emacs-remember")] ++
          [ ((mod4Mask .|. mod1Mask, xK_x      ), unsafeSpawn "xournal")] ++
          [ ((mod4Mask .|. mod1Mask, xK_h      ), unsafeSpawn "nemo")] ++
+
+         [ ((mod4Mask             , xK_p      ), unsafeSpawn "gedit")] ++
 
          -- cycle windows, emulate old-style alt-tab
          [ ((mod1Mask,               xK_Tab   ), windows W.focusDown)
@@ -184,5 +189,5 @@ myKeys = [] ++
          ] ++
          -- http://www.haskell.org/haskellwiki/Xmonad/Frequently_asked_questions#Screens_are_in_wrong_order
          [((m .|. myModMask, key), screenWorkspace sc >>= flip whenJust (windows . f)) -- Replace 'mod1Mask' with your mod key of choice.
-             | (key, sc) <- zip [xK_w, xK_e] [1,0] -- was [0..] *** change to match your screen order ***
+             | (key, sc) <- zip [xK_w, xK_e, xK_r] [2,1,0] -- was [0..] *** change to match your screen order ***
              , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]

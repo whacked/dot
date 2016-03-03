@@ -1,4 +1,16 @@
 
 ! free up right alt for remapping
-remove mod1 = Alt_R
-add mod3 = Alt_R
+!keycode 108 = Alt_R Alt_R Alt_R Alt_R
+!remove mod1 = Alt_L
+
+!clear Mod1
+
+!clear mod1
+!clear mod2
+!clear mod3
+!keysym Alt_R = 0x6c
+clear Mod3
+add Mod3 = Super_L
+!clear mod4
+!
+!add mod1 = Control_L Control_L Control_L Control_L

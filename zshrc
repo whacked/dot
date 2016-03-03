@@ -69,3 +69,4 @@ if [ -e ~/.xsh ]; then
     source ~/.xsh
 fi
 
+alias venv='source venv/bin/activate'

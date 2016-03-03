@@ -1,6 +1,8 @@
 abbrev_defs
 api-key.el
 
+\#*#
+.#*
 .*.swp
 *.elc
 
@@ -8,6 +10,9 @@ vim/autoload/pathogen.vim
 vim/.netrwhist
 vim/bundle
 vim/vim-addons
+
+# the tangled output
+emacs.d/config.el
 
 emacs.d/.emacs.desktop*
 emacs.d/.org-id-locations

@@ -30,7 +30,6 @@ fun SetupVAM()
               \ , 'github:kikijump/tslime.vim'
               \ , 'github:wincent/Command-T'
               \ , 'github:majutsushi/tagbar'
-              \ , 'github:python-rope/ropevim'
               \ , 'matchit.zip'
               \ , 'github:vim-scripts/AutoClose'
               \ , 'occur'
@@ -39,10 +38,23 @@ fun SetupVAM()
               \ , 'github:Glench/Vim-Jinja2-Syntax'
               \ , 'vim-orgmode'
               \ , 'github:hylang/vim-hy'
+              \ , 'github:gkz/vim-ls'
+              \ , 'github:airblade/vim-gitgutter'
               \ ], {'auto_install' : 0})
 
 endfun
 call SetupVAM()
+
+" ref https://realpython.com/blog/python/vim-and-python-a-match-made-in-heaven/
+"python with virtualenv support
+py << EOF
+import os
+import sys
+if 'VIRTUAL_ENV' in os.environ:
+  project_base_dir = os.environ['VIRTUAL_ENV']
+  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+  execfile(activate_this, dict(__file__=activate_this))
+EOF
 
 let g:AutoCloseExpandEnterOn = ""
 
@@ -62,6 +74,7 @@ let g:slimv_lisp = '"java cp $HOME/dev/lisp/clojure/clojure.jar clojure.lang.Rep
 set nowrap
 set hlsearch
 set ic
+set foldlevel=100
 
 autocmd Filetype ruby setlocal ts=2 sts=2 sw=2
 
@@ -106,6 +119,7 @@ endfunction
 
 
 " CtrlP options
+set wildignore+=*.py\\,cover
 let g:ctrlp_show_hidden = 1
 let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/](\.git|\.hg|\.svn|venv|venv3)$',
@@ -116,3 +130,5 @@ let g:ctrlp_working_path_mode = 'ra'
 " NERDTree
 let NERDTreeTabsOpen=1
 let NERDTreeQuitOnOpen=0
+
+inoremap {{ {{  }}<Esc>hhi

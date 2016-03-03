@@ -32,7 +32,7 @@ own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
 
 alignment top_left
 gap_x 400
-gap_y 80
+gap_y 850
 minimum_size 200 0
 maximum_width 200
 
@@ -62,7 +62,7 @@ ${color2}${font Arial Black:size=8}${execp acpi | cut -f 3- -d ' '}${font}${colo
 # - CALENDAR - #
 ################
 ${color orange}CALENDAR ${hr 2}$color
-${voffset 10}${font Droid Sans Mono:size=11}${color bbf}${execpi 60 ~/.config/thinkpad/dzen/draw_calendar_conky.sh }
+${voffset 10}${font Droid Sans Mono:size=11}${color bbf}${execpi 60 ~/opt/thinkpad/dzen/draw_calendar_conky.sh }
 #${font Droid Sans Mono:size=11}${color 888}${execpi 60 DJS=`date +%_d`; cal | sed -r -e "s/_.//g" -e "s/(^| )($DJS)($| )/\1\${color orange}\2\${color 888}\3/"}
 ##
 ##
