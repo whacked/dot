@@ -74,6 +74,7 @@ let g:slimv_lisp = '"java cp $HOME/dev/lisp/clojure/clojure.jar clojure.lang.Rep
 set nowrap
 set hlsearch
 set ic
+set foldlevel=100
 
 autocmd Filetype ruby setlocal ts=2 sts=2 sw=2
 
