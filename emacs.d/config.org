@@ -242,7 +242,7 @@
 
    #+BEGIN_SRC emacs-lisp
      (when (string= "natto-tpy" system-name)
-       (setq package-list (append package-list (list :extra :code :lisp))))
+       (setq package-list (append package-list (list :extra :code :lisp :unportable))))
      ;; (require 'frame-bufs)
      ;; (frame-bufs-mode t)
    #+END_SRC
@@ -696,7 +696,6 @@
              fiplr ;; vim-like ctrl-p
 
              sr-speedbar ;; file list view in buffer
-
              )
            (mapcar 'el-get-source-name el-get-sources)))
       
@@ -766,6 +765,24 @@
                                     (require 'expand-region)
                                     (global-set-key (kbd "C-=") 'er/expand-region)
                                     (paredit-mode 1))))
+ #+END_SRC
+
+*** only run on main machine (:unportable)
+
+    - =win-switch= :: allows repeated =other-window= via =C-x o o o ...=
+
+ #+BEGIN_SRC emacs-lisp
+   (when (memq :untested package-list)
+     (setq my-packages (append my-packages '(org-pdfview
+                                             hydra
+                                             linkd ;; required for win-switch
+                                             win-switch
+                                             )))
+
+     (require 'win-switch)
+     (global-set-key "\C-xo" 'win-switch-dispatch)
+     )
+
  #+END_SRC
 
 *** usual-environment.el
