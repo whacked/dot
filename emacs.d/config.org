@@ -2189,3 +2189,52 @@
    http://ergoemacs.org/misc/emacs_bug_cant_paste_2015.html
 
    =(setq x-selection-timeout 300)=
+
+** org mode CJK table alignment
+
+   see http://coldnew.github.io/blog/2013/11-16_d2f3a/ 解決 org-mode 表格內中英文對齊的問題
+   
+   #+BEGIN_SRC emacs-lisp
+     (defvar emacs-english-font "Consolas"
+       "The font name of English.")
+
+     (defvar emacs-cjk-font "Hiragino Sans GB W3"
+       "The font name for CJK.")
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (defvar emacs-font-size-pair '(13 . 16)
+       "Default font size pair for (english . chinese)")
+
+     (defvar emacs-font-size-pair-list
+       '(( 5 .  6) (10 . 12)
+         (13 . 16) (15 . 18) (17 . 20)
+         (19 . 22) (20 . 24) (21 . 26)
+         (24 . 28) (26 . 32) (28 . 34)
+         (30 . 36) (34 . 40) (36 . 44))
+       "This list is used to store matching (englis . chinese) font-size.")
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (defun font-exist-p (fontname)
+       "Test if this font is exist or not."
+       (if (or (not fontname) (string= fontname ""))
+           nil
+         (if (not (x-list-fonts fontname)) nil t)))
+
+     (defun set-font (english chinese size-pair)
+       "Setup emacs English and Chinese font on x window-system."
+
+       (if (font-exist-p english)
+           (set-frame-font (format "%s:pixelsize=%d" english (car size-pair)) t))
+
+       (if (font-exist-p chinese)
+           (dolist (charset '(kana han symbol cjk-misc bopomofo))
+             (set-fontset-font (frame-parameter nil 'font) charset
+                               (font-spec :family chinese :size (cdr size-pair))))))
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     ;; Setup font size based on emacs-font-size-pair
+     (set-font emacs-english-font emacs-cjk-font emacs-font-size-pair)
+   #+END_SRC
