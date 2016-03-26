@@ -23,14 +23,20 @@
 
 ** package init (=package-management.el=)
 
+   remember if you update =package-archives= you must run
+   =M-x el-get-elpa-build-local-recipes= to refresh the list
+   
   #+BEGIN_SRC emacs-lisp
     ;; package management
     (setq package-archives '(("gnu"       . "http://elpa.gnu.org/packages/")
-                             ("ELPA"      . "http://tromey.com/elpa/") 
+                             ("ELPA"      . "http://tromey.com/elpa/")
+                             ("org"      . "http://orgmode.org/elpa/")
+                             ("melpa" . "https://melpa.org/packages/")
+                             ;; ("melpa"     . "http://melpa.milkbox.net/packages/")
                              ("marmalade" . "http://marmalade-repo.org/packages/")
-                             ("melpa"     . "http://melpa.milkbox.net/packages/")
-                             ("SC"        . "http://joseito.republika.pl/sunrise-commander/")))
-
+                             ("SC"        . "http://joseito.republika.pl/sunrise-commander/"))
+                             )
+    
     ;; https://github.com/dimitri/el-get#readme
     (add-to-list 'load-path "~/dot/emacs.d/el-get/el-get")
     (unless (require 'el-get nil t)
