@@ -757,6 +757,7 @@
                                              cider
                                              expand-region
                                              hy-mode
+                                             sibilant-mode
                                              )))
 
      (add-hook 'cider-repl-mode-hook (lambda ()
@@ -777,11 +778,8 @@
                                              hydra
                                              linkd ;; required for win-switch
                                              win-switch
-                                             )))
-
-     (require 'win-switch)
-     (global-set-key "\C-xo" 'win-switch-dispatch)
-     )
+                                             epc ;; https://github.com/kiwanami/emacs-epc
+                                             ))))
 
    ;; kill process hack
    ;; http://stackoverflow.com/questions/10627289/emacs-internal-process-killing-any-command
@@ -828,6 +826,9 @@
    (recentf-mode 1)
 
    (when (memq :unportable package-list)
+     (require 'win-switch)
+     (global-set-key "\C-xo" 'win-switch-dispatch))
+
    ;; (require 'windata)
    ;; (require 'tree-mode)
    ;; (require 'dirtree)
