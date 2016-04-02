@@ -2240,3 +2240,11 @@
      ;; Setup font size based on emacs-font-size-pair
      (set-font emacs-english-font emacs-cjk-font emacs-font-size-pair)
    #+END_SRC
+
+** fix emacsclient new windows having different font
+
+   #+BEGIN_SRC emacs-lisp
+   (setq default-frame-alist '((font . "Consolas 10")))
+   #+END_SRC
+
+
