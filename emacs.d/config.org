@@ -772,7 +772,7 @@
     - =win-switch= :: allows repeated =other-window= via =C-x o o o ...=
 
  #+BEGIN_SRC emacs-lisp
-   (when (memq :untested package-list)
+   (when (memq :unportable package-list)
      (setq my-packages (append my-packages '(org-pdfview
                                              hydra
                                              linkd ;; required for win-switch
@@ -827,6 +827,7 @@
    (win:startup-with-window)
    (recentf-mode 1)
 
+   (when (memq :unportable package-list)
    ;; (require 'windata)
    ;; (require 'tree-mode)
    ;; (require 'dirtree)
