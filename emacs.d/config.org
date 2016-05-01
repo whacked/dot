@@ -1244,43 +1244,6 @@
     ;;Match org file: links
     (add-to-list 'iimage-mode-image-regex-alist
                  (cons (concat "file:\\(~?[]\\[\\(\\),~+./_0-9a-zA-Z -]+\\.\\(GIF\\|JP\\(?:E?G\\)\\|P\\(?:BM\\|GM\\|N[GM]\\|PM\\)\\|SVG\\|TIFF?\\|X\\(?:[BP]M\\)\\|gif\\|jp\\(?:e?g\\)\\|p\\(?:bm\\|gm\\|n[gm]\\|pm\\)\\|svg\\|tiff?\\|x\\(?:[bp]m\\)\\)\\)")  1))
-
-
-
-
-
-
-
-
-
-
-    ;; (require 'org-drill)
-
-    ;;; org-mode with remember
-    ;; (org-remember-insinuate)
-    (setq org-directory "~/note/org")
-    (setq org-default-notes-file (concat (file-name-as-directory org-directory) "index.org.gpg"))
-    ;(define-key global-map "\C-cr" 'org-remember)
-
-
-    (define-key global-map "\M-\C-r" 'org-remember)
-    (setq org-remember-templates
-     '(("Todo" ?t "* TODO %?\nAdded: %U" "~/note/org/todos.org" "Main")
-       ("CNE" ?c "* TODO %?\nAdded: %U" "~/note/cne/cne.org" "All Todo")
-       ("Nikki" ?n "* %U %?\n\n %i\n %a\n\n" "~/note/org/nikki.org" "ALL")
-       ;; ("State" ?s "* %U %? " "~/note/org/state.org")
-       ("Scholar" ?s "* %?\nadded: %U" "~/note/org/scholar.org")
-       ("Vocab" ?v "* %U %^{Word}\n%?\n# -*- xkm-export -*-\n" "~/note/org/vocab.org")
-       ("Idea" ?i "* %^{Title}\n%?\n  %a\n  %U" "~/note/org/idea.org" "Main")
-       ;;("Music" ?m "- %? %U\n" "~/note/org/music.org" "good")
-       ("learn" ?l "omi%?" "~/note/org/learn.org" "captured")
-       ("mem" ?m "** %U    :drill:\n
-        :PROPERTIES:
-        :DATE_ADDED: %U
-        :SOURCE_URL: %a
-        :END:
-    \n%i%?" "~/note/org/learn.org" "captured")
-       ("Dump" ?d "%?\n" "~/note/org/dump.org")))
     (define-key global-map (kbd "<f12>") 'org-agenda)
     (defun set-calendar-appt ()
       (save-excursion
@@ -1539,6 +1502,84 @@
 
 
   #+END_SRC
+
+**** org capture
+
+     see http://pages.sachachua.com/.emacs.d/Sacha.html#orgheadline56
+     http://doc.norang.ca/org-mode.html#Capture
+     http://orgmode.org/manual/Template-elements.html
+     http://orgmode.org/manual/Capture-templates.html#Capture-templates
+
+
+     #+BEGIN_SRC emacs-lisp
+       ;; (require 'org-drill)
+
+       ;;; org-mode with remember
+       ;; (org-remember-insinuate)
+       (setq org-directory "~/note/org")
+       (setq org-default-notes-file (concat (file-name-as-directory org-directory) "index.org.gpg"))
+
+       ;;(define-key global-map "\C-cr" 'org-remember)
+       ;; (define-key global-map "\M-\C-r" 'org-remember)
+       (global-set-key (kbd "C-c c") 'org-capture)
+
+       ;; Capture templates for: TODO tasks, Notes, appointments, phone calls, meetings, and org-protocol
+       ;; (setq org-capture-templates
+       ;;       (quote (("t" "todo" entry (file "~/git/org/refile.org")
+       ;;                "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
+       ;;               ("r" "respond" entry (file "~/git/org/refile.org")
+       ;;                "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
+       ;;               ("n" "note" entry (file "~/git/org/refile.org")
+       ;;                "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
+       ;;               ("j" "Journal" entry (file+datetree "~/git/org/diary.org")
+       ;;                "* %?\n%U\n" :clock-in t :clock-resume t)
+       ;;               ("w" "org-protocol" entry (file "~/git/org/refile.org")
+       ;;                "* TODO Review %c\n%U\n" :immediate-finish t)
+       ;;               ("m" "Meeting" entry (file "~/git/org/refile.org")
+       ;;                "* MEETING with %? :MEETING:\n%U" :clock-in t :clock-resume t)
+       ;;               ("p" "Phone call" entry (file "~/git/org/refile.org")
+       ;;                "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
+       ;;               ("h" "Habit" entry (file "~/git/org/refile.org")
+       ;;                "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n"))))
+
+       ;; see http://orgmode.org/manual/Template-elements.html
+
+       (setq org-capture-templates
+             '(
+               ;; ("t" "Todo" entry
+               ;;  "~/note/org/todos.org"
+               ;;  "* TODO %?\nAdded: %U" "Main")
+               ;; ("c" "CNE" entry
+               ;;   "~/note/cne/cne.org"
+               ;;  "* TODO %?\nAdded: %U" "All Todo")
+               ;; ("n" "Nikki" entry
+               ;;   "~/note/org/nikki.org"
+               ;;  "* %U %?\n\n %i\n %a\n\n" "ALL")
+               ;; ;; ("State" ?s "* %U %? " "~/note/org/state.org")
+               ;; ("s" "Scholar" entry
+               ;;  "~/note/org/scholar.org"
+               ;;  "* %?\nadded: %U")
+               ;; ("v" "Vocab" entry
+               ;;   "~/note/org/vocab.org"
+               ;;  "* %U %^{Word}\n%?\n# -*- xkm-export -*-\n")
+               ;; ("i" "Idea" entry
+           ;;       "~/note/org/idea.org"
+           ;;      "* %^{Title}\n%?\n  %a\n  %U" "Main")
+           ;;     ;;("Music" ?m "- %? %U\n" "~/note/org/music.org" "good")
+           ;;     ("l" "learn" entry
+           ;;      "omi%?" "~/note/org/learn.org" "captured")
+           ;;     ("m" "mem" "** %U    :drill:\n
+           ;;     :PROPERTIES:
+           ;;     :DATE_ADDED: %U
+           ;;     :SOURCE_URL: %a
+           ;;     :END:
+           ;; \n%i%?" "~/note/org/learn.org" "captured")
+               ("d" "Dump" entry
+                (file+headline "~/note/org/dump.org" "test")
+                )
+               ))
+     #+END_SRC
+
 
 
 ** org-mode conf
