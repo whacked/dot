@@ -828,6 +828,7 @@
    (require 'windows)
    (win:startup-with-window)
    (recentf-mode 1)
+   (setq recentf-max-menu-items 100)
 
    (when (memq :unportable package-list)
      (require 'win-switch)
@@ -1205,6 +1206,8 @@
        (org . t)
        (latex . t)
        (ditaa . t)
+       (go . t)
+       (sqlite . t)
        ))
 
 
