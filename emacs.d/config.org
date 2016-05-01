@@ -779,6 +779,10 @@
                                              linkd ;; required for win-switch
                                              win-switch
                                              epc ;; https://github.com/kiwanami/emacs-epc
+                                             ob-ipython ;; https://github.com/gregsexton/ob-ipython/
+                                             ob-go ;; https://github.com/pope/ob-go
+                                             json-rpc ;; https://github.com/skeeto/elisp-json-rpc
+                                             helm-org-rifle ;; https://github.com/alphapapa/helm-org-rifle
                                              ))))
 
    ;; kill process hack
