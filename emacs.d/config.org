@@ -1523,9 +1523,12 @@
 
     ;; in case useful: http://jblevins.org/projects/deft/
     ;; Deft is an Emacs mode for quickly browsing, filtering, and editing directories of plain text notes, inspired by Notational Velocity.
-    (setq deft-extension "org")
+    (setq deft-extensions '("org" "tid"))
     (setq deft-directory "~/note/org/")
     (setq deft-text-mode 'org-mode)
+    (setq deft-recursive t)
+    (setq deft-use-filename-as-title t)
+    (setq deft-ignore-file-regexp "\\$.+") ;; for ignoring special tiddlers
 
 
     (setq desktop-save-mode nil)
