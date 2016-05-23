@@ -1324,10 +1324,25 @@
     ;;;        ("d" "Dump" entry (file+datetree "~/note/org/dump.org")
     ;;;         "* %?\n%U\n" :empty-lines 1)))
 
-    (setq org-agenda-files (map 'list 'expand-file-name '("~/note/org/main.org"
-                                                          "~/note/org/index.org.gpg"
-                                                          ;; "~/note/cne/cne.org"
-                                                          )))
+    (setq org-agenda-files 
+          (append (map 'list 'expand-file-name '("~/note/org/main.org"
+                                                 "~/note/org/index.org.gpg"
+                                                 "~/note/org/tw/tiddlers/todo.tid"
+                                                 ;; "~/note/cne/cne.org"
+                                                 ))
+                  ;; requires 'cl
+                  (let ((base-dir (expand-file-name "~/note/org/tw/tiddlers")))
+                    ;; filter out non-org type
+                    (remove-if-not
+                     (lambda (f)
+                       (with-temp-buffer
+                         (insert-file-contents f)
+                         (string-match "^type: text/org$"
+                                       (first (split-string (buffer-string) "\n\n" t)))))
+                     (mapcar
+                      (lambda (f) (concat base-dir "/" f))
+                      (directory-files base-dir
+                                       nil "^[^\\$].+\\.tid$"))))))
     ;;;;;;;;;;;;;;;;;;;;;;;;
     ;; </org mode config> ;;
     ;;;;;;;;;;;;;;;;;;;;;;;;
