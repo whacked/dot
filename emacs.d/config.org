@@ -649,6 +649,8 @@
 
              ;; popup-el
              multi-web-mode
+
+             json-mode
              
              neotree
              projectile
@@ -783,6 +785,7 @@
                                              ob-go ;; https://github.com/pope/ob-go
                                              json-rpc ;; https://github.com/skeeto/elisp-json-rpc
                                              helm-org-rifle ;; https://github.com/alphapapa/helm-org-rifle
+                                             swank-js
                                              ))))
 
    ;; kill process hack
@@ -1446,7 +1449,7 @@
     ;;;;(require 'freex-mode)
 
 
-    
+
 
 
 
@@ -1764,14 +1767,14 @@
             (end (string-to-number (read-from-minibuffer "to? ")))
             (pref (read-from-minibuffer "prefix? "))
             (post (read-from-minibuffer "postfix? "))
-            
+
             (cmp (if (< beg end)
                      (defun cmp (x y) (<= beg end))
                      (defun cmp (x y) (>= beg end))))
             (next (if (< beg end)
                      (defun next (x) (+ x 1))
                      (defun next (x) (- x 1)))))
-        
+
         (while (cmp beg end)
           (setq str_num (format "%s%d%s" pref beg post))
           (insert str_num)
@@ -1830,7 +1833,7 @@
                       )
                     (setq idx (+ idx 1))
                   )
-                  
+
                   (setq ls-str (cdr ls-str))
                   (setq ls-source-buffer (reverse ls-source-buffer))
                   )
@@ -1849,7 +1852,7 @@
           )
         )
       )
-    
+
     ;; probably obviated by align-regexp()
     (defun align-lines-to-expr (pbeg pend)
       "finds the first matching `expr` in the second to last lines in *region* and aligns them to the `expr` in the first line in the *region*"
