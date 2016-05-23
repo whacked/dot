@@ -1954,6 +1954,10 @@
 
         )
       )
+
+    (defun rev! ()
+      (interactive)
+      (revert-buffer nil t))
   #+END_SRC
 
 
