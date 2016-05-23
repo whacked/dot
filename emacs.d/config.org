@@ -832,6 +832,7 @@
    (win:startup-with-window)
    (recentf-mode 1)
    (setq recentf-max-menu-items 100)
+   (setq recentf-max-saved-items 200)
 
    (when (memq :unportable package-list)
      (require 'win-switch)
