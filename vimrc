@@ -40,6 +40,7 @@ fun SetupVAM()
               \ , 'github:hylang/vim-hy'
               \ , 'github:gkz/vim-ls'
               \ , 'github:airblade/vim-gitgutter'
+              \ , 'github:yegappan/mru'
               \ ], {'auto_install' : 0})
 
 endfun
@@ -57,6 +58,9 @@ if 'VIRTUAL_ENV' in os.environ:
 EOF
 
 let g:AutoCloseExpandEnterOn = ""
+
+" most recently visited files
+let MRU_Max_Entries = 200
 
 filetype off
 filetype plugin indent on
