@@ -546,7 +546,7 @@
     '(global-hl-line-mode t)
     '(hscroll-step 1)
     '(ibuffer-fontification-alist (quote ((10 buffer-read-only font-lock-constant-face) (15 (and buffer-file-name (string-match ibuffer-compressed-file-name-regexp buffer-file-name)) font-lock-doc-face) (20 (string-match "^*" (buffer-name)) font-lock-keyword-face) (25 (and (string-match "^ " (buffer-name)) (null buffer-file-name)) italic) (30 (memq major-mode ibuffer-help-buffer-modes) font-lock-comment-face) (35 (eq major-mode (quote dired-mode)) font-lock-function-name-face) (40 (string-match ".py" (buffer-name)) font-lock-type-face) (45 (string-match ".rb" (buffer-name)) font-lock-string-face) (50 (string-match ".org" (buffer-name)) font-lock-preprocessor-face))))
-    '(iswitchb-mode t)
+    ;; '(iswitchb-mode t) ;; causes conflict with helm-mode
     '(line-number-mode t)
     '(matlab-auto-fill nil)
     '(menu-bar-mode nil)
