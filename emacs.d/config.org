@@ -5,7 +5,6 @@
 
   - [ ] check if the tangle true header is necessary)
 
-
 * init
 
   #+BEGIN_SRC emacs-lisp
@@ -60,17 +59,6 @@
     ;; (setq my-packages
     ;;       (append '(cssh el-get switch-window vkill google-maps nxhtml xcscope yasnippet)
     ;;        (mapcar 'el-get-source-name el-get-sources)))
-
-    ;;;;(when
-    ;;;;    (load
-    ;;;;     (expand-file-name "~/dot/emacs.d/elpa/package.el"))
-    ;;;;  ;; Add the original Emacs Lisp Package Archive
-    ;;;;  (add-to-list 'package-archives
-    ;;;;               '("elpa" . "http://tromey.com/elpa/"))
-    ;;;;  ;; Add the user-contributed repository
-    ;;;;  (add-to-list 'package-archives
-    ;;;;               '("marmalade" . "http://marmalade-repo.org/packages/"))
-    ;;;;  (package-initialize))
 
     ;; specify package sets to load later
     (setq package-list (list))
@@ -127,11 +115,12 @@
 
   #+BEGIN_SRC emacs-lisp
     (when (eq system-type 'darwin)
-      (when (file-exists-p (expand-file-name "~/dot/cne.emacs"))
-        (load-file (expand-file-name "~/dot/cne.emacs")))
-             ;;;;;; <OS X customizations> ;;;;;;
-             ;;; turn apple key into Meta
       (when (featurep 'ns)
+        ;; for macports
+        (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH")))
+        (setq exec-path (append exec-path '("/opt/local/bin:/opt/local/sbin:")))
+
+        ;; turn apple key into Meta
         (setq ns-command-modifier 'meta)
         (if (eq window-system 'mac) (require 'carbon-font))
         (setq ; xwl-default-font "Monaco-12"
@@ -157,10 +146,7 @@
           (let* ((x (string-to-number (read-from-minibuffer "x? ")))
                  (y (string-to-number (read-from-minibuffer "y? "))))
             (set-frame-position (selected-frame) x y)))
-        (defun win:to1 ()
-          (interactive)
-          (set-frame-size (selected-frame) 200 56)
-          (set-frame-position (selected-frame) 0 20))
+        ;; old window mover
         (defun win:to2 ()
           (interactive)
           (set-frame-position (selected-frame) 1440 -200)
@@ -173,58 +159,10 @@
         (setenv "PYTHONPATH" "/opt/local/bin/python")
 
         ;; wtf default path for tex installation...
-        (setenv "PATH" (concat "/usr/texbin:/usr/local/bin:" (getenv "PATH")))
-        (setq exec-path (append exec-path '("/usr/local/bin")))
-
-        ;; w3m
-        ;;(add-to-list 'load-path "/opt/local/share/emacs/site-lisp/w3m")
-        ;;(setq w3m-command "/usr/bin/w3m")
-        ;;(require 'w3m-load)
-        ;;(require 'w3m-e21)
-        ;;(provide 'w3m-e23)
-
-        ;;(setenv "PATH" (format "%s:%s" (getenv "PATH") "/usr/texbin:/usr/local/bin"))
-        ;;(load "/usr/share/emacs/site-lisp/auctex.el" nil t t)
-        ;;(load "/usr/share/emacs/site-lisp/preview-latex.el" nil t t)
-
-             ;;;;;; </OS X customizations> ;;;;;;
-        
-        )
-
-      ;; old function from util.el circa 2011, don't know if still works
-      (defun maximize-window () 
-        (interactive)
-        (shell-command "sh <<EOF
-    osascript <<OSA 1> /dev/null 2> /dev/null &
-    set display_info to (do shell script \"system_profiler -detailLevel mini | grep -a 'Main Display:' -B 4 | grep -a 'Resolution:'\")
-
-    set ws to every word of display_info
-    set wc to the count of ws
-    set w2 to wc - 2
-
-    set screen_height to item wc of ws
-    set screen_width to item w2 of ws
-
-    tell application \"System Events\"
-      set frontmostApplication to name of the first process whose frontmost is true
-      set frontmostApplication to frontmostApplication as string
-      tell process frontmostApplication
-        tell window 1
-          set position to {0, 20}
-          set size to {screen_width, screen_height}
-        end tell
-      end tell
-    end tell
-    OSA
-    EOF
-    "))
-
+        (setenv "PATH" (concat "/usr/texbin:/usr/local/bin:" (getenv "PATH"))))
       (message "using OS X"))
 
   #+END_SRC
-
-
-
 
 ** windows-nt
 
@@ -284,23 +222,6 @@
             ;;        :features "multi-web-mode"
             ;;        :compile nil)
             
-            ;; https://bitbucket.org/tavisrudd/emacs.d/src/b00b30c330b2/dss-init-el-get.el
-            (:name auto-complete
-                   :website "http://cx4a.org/software/auto-complete/"
-                   :description "The most intelligent auto-completion extension."
-                   :type git
-                   :url "http://github.com/auto-complete/auto-complete.git"
-                   :load-path "."
-                   :post-init (progn
-                                (require 'auto-complete)
-                                (add-to-list 'ac-dictionary-directories (expand-file-name "dict" pdir))
-                                ;; the elc is buggy for some reason
-                                (let ((f "~/dot/emacs.d/el-get/auto-complete/auto-complete-config.elc"))
-                                  (if (file-exists-p f)
-                                      (delete-file f)))
-                                (require 'auto-complete-config)
-                                (ac-config-default)
-                                ))
             ;; (:name impatient-mode
             ;;        :type git
             ;;        :url "https://github.com/netguy204/imp.el"
@@ -322,6 +243,7 @@
            '(el-get
              s
              spinner ;; spinner for ongoing operation
+             auto-complete
 
              yasnippet
              dash
@@ -347,6 +269,8 @@
              ;; google-this
 
              helm
+             helm-org-rifle ;; https://github.com/alphapapa/helm-org-rifle
+             
              ;; auctex ;; locale problem causing build to fail
 
              ;; need MELPA working!
@@ -377,6 +301,11 @@
              fiplr ;; vim-like ctrl-p
 
              sr-speedbar ;; file list view in buffer
+             undo-tree
+
+             hydra
+             linkd ;; required for win-switch
+             win-switch
              )
            (mapcar 'el-get-source-name el-get-sources)))
       
@@ -420,8 +349,11 @@
                      graphviz-dot-mode
                      python-mode
                      rainbow-mode
+                     haskell-mode
                      ;; nxhtml
                      ))))
+   (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+   (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
  #+END_SRC
 
 *** lispy-stuff.el (:lisp)
@@ -456,30 +388,13 @@
  #+BEGIN_SRC emacs-lisp
    (when (memq :unportable package-list)
      (setq my-packages (append my-packages '(org-pdfview
-                                             hydra
-                                             linkd ;; required for win-switch
-                                             win-switch
                                              epc ;; https://github.com/kiwanami/emacs-epc
                                              ob-ipython ;; https://github.com/gregsexton/ob-ipython/
                                              ob-go ;; https://github.com/pope/ob-go
                                              json-rpc ;; https://github.com/skeeto/elisp-json-rpc
-                                             helm-org-rifle ;; https://github.com/alphapapa/helm-org-rifle
                                              swank-js
                                              ))))
 
-   ;; kill process hack
-   ;; http://stackoverflow.com/questions/10627289/emacs-internal-process-killing-any-command
-   (define-key process-menu-mode-map (kbd "C-k") 'joaot/delete-process-at-point)
-
-   (defun joaot/delete-process-at-point ()
-     (interactive)
-     (let ((process (get-text-property (point) 'tabulated-list-id)))
-       (cond ((and process
-                   (processp process))
-              (delete-process process)
-              (revert-buffer))
-             (t
-              (error "no process at point!")))))
  #+END_SRC
 
 *** usual-environment.el
@@ -513,9 +428,25 @@
    (setq recentf-max-menu-items 100)
    (setq recentf-max-saved-items 200)
 
-   (when (memq :unportable package-list)
-     (require 'win-switch)
-     (global-set-key "\C-xo" 'win-switch-dispatch))
+   (setq helm-exit-idle-delay 0) ;; fixes "display not ready" https://github.com/emacs-helm/helm/issues/550
+
+   (require 'win-switch)
+   (global-set-key "\C-xo" 'win-switch-dispatch)
+
+   ;; kill process hack
+   ;; http://stackoverflow.com/questions/10627289/emacs-internal-process-killing-any-command
+   (define-key process-menu-mode-map (kbd "C-k") 'joaot/delete-process-at-point)
+
+   (defun joaot/delete-process-at-point ()
+     (interactive)
+     (let ((process (get-text-property (point) 'tabulated-list-id)))
+       (cond ((and process
+                   (processp process))
+              (delete-process process)
+              (revert-buffer))
+             (t
+              (error "no process at point!")))))
+
 
    ;; (require 'windata)
    ;; (require 'tree-mode)
@@ -663,14 +594,6 @@
    (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
    (require 'ansi-color)
 
-   (require 'transpose-frame)
-
-
-   (load "~/dot/emacs.d/bundle/haskell-mode/haskell-site-file")
-   (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-   (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-
-
                                            ;(add-to-list 'load-path "~/dot/emacs.d/bundle/icicles")
                                            ;(require 'icicles)
 
@@ -762,9 +685,6 @@
    ;; w3 should be loaded by ELPA
                                            ;NEW;(require 'w3-auto)
 
-   (add-to-list 'load-path "~/dot/emacs.d/bundle/undo-tree")
-   (require 'undo-tree)
-
    ;; (add-to-list 'load-path "~/dot/emacs.d/bundle/minimap/")
    ;; (require 'minimap)
 
@@ -829,13 +749,18 @@
    ;;     (color-theme-solarized-dark)))
    (color-theme-solarized-light)
 
-   ;; vim screen movement keys
-   (global-set-key (kbd "C-` H") (lambda () (interactive) (move-to-window-line-top-bottom 0)))
-   (global-set-key (kbd "C-` M") (lambda () (interactive) (move-to-window-line-top-bottom)))
-   (global-set-key (kbd "C-` L") (lambda () (interactive) (move-to-window-line-top-bottom -1)))
-
+   (setq fiplr-ignored-globs '((directories (".git" ".svn"))
+                               (files ("*.jpg" "*.png" "*.zip" "*~"
+                                       "*.pyc" "*.min.js"))))
  #+END_SRC
 
+*** vim-inspired
+
+    #+BEGIN_SRC emacs-lisp
+      (global-set-key (kbd "C-` H") (lambda () (interactive) (move-to-window-line-top-bottom 0)))
+      (global-set-key (kbd "C-` M") (lambda () (interactive) (move-to-window-line-top-bottom)))
+      (global-set-key (kbd "C-` L") (lambda () (interactive) (move-to-window-line-top-bottom -1)))
+    #+END_SRC
 
 **** org mode
 
