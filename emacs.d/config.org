@@ -350,6 +350,8 @@
                      python-mode
                      rainbow-mode
                      haskell-mode
+                     ob-go ;; https://github.com/pope/ob-go
+                     json-rpc ;; https://github.com/skeeto/elisp-json-rpc
                      ;; nxhtml
                      ))))
    (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
@@ -390,8 +392,6 @@
      (setq my-packages (append my-packages '(org-pdfview
                                              epc ;; https://github.com/kiwanami/emacs-epc
                                              ob-ipython ;; https://github.com/gregsexton/ob-ipython/
-                                             ob-go ;; https://github.com/pope/ob-go
-                                             json-rpc ;; https://github.com/skeeto/elisp-json-rpc
                                              swank-js
                                              ))))
 
