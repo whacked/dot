@@ -180,7 +180,27 @@
 
    #+BEGIN_SRC emacs-lisp
      (when (string= "natto-tpy" system-name)
-       (setq package-list (append package-list (list :extra :code :lisp :unportable))))
+       (setq package-list (append package-list (list :extra :code :lisp :unportable)))
+
+       (setq org-agenda-files 
+             (append (map 'list 'expand-file-name '("~/note/org/main.org"
+                                                    "~/note/org/index.org.gpg"
+                                                    "~/note/org/tw/tiddlers/todo.tid"
+                                                    ;; "~/note/cne/cne.org"
+                                                    ))
+                     ;; requires 'cl
+                     (let ((base-dir (expand-file-name "~/note/org/tw/tiddlers")))
+                       ;; filter out non-org type
+                       (remove-if-not
+                        (lambda (f)
+                          (with-temp-buffer
+                            (insert-file-contents f)
+                            (string-match "^type: text/org$"
+                                          (first (split-string (buffer-string) "\n\n" t)))))
+                        (mapcar
+                         (lambda (f) (concat base-dir "/" f))
+                         (directory-files base-dir
+                                          nil "^[^\\$].+\\.tid$")))))))
      ;; (require 'frame-bufs)
      ;; (frame-bufs-mode t)
    #+END_SRC
@@ -927,26 +947,7 @@
     ;;;         "* %?\n  %a" :empty-lines 1)
     ;;;        ("d" "Dump" entry (file+datetree "~/note/org/dump.org")
     ;;;         "* %?\n%U\n" :empty-lines 1)))
-
-    (setq org-agenda-files 
-          (append (map 'list 'expand-file-name '("~/note/org/main.org"
-                                                 "~/note/org/index.org.gpg"
-                                                 "~/note/org/tw/tiddlers/todo.tid"
-                                                 ;; "~/note/cne/cne.org"
-                                                 ))
-                  ;; requires 'cl
-                  (let ((base-dir (expand-file-name "~/note/org/tw/tiddlers")))
-                    ;; filter out non-org type
-                    (remove-if-not
-                     (lambda (f)
-                       (with-temp-buffer
-                         (insert-file-contents f)
-                         (string-match "^type: text/org$"
-                                       (first (split-string (buffer-string) "\n\n" t)))))
-                     (mapcar
-                      (lambda (f) (concat base-dir "/" f))
-                      (directory-files base-dir
-                                       nil "^[^\\$].+\\.tid$"))))))
+    
     ;;;;;;;;;;;;;;;;;;;;;;;;
     ;; </org mode config> ;;
     ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -961,10 +962,6 @@
     ;; '(("file:.*/usr/share/doc/.*gtk.*-doc/.*" . w3m-browse-url)
     ;;   ("." . browse-url-firefox)))
 
-
-
-
-
     ;; ;; FIXME cider
     ;; ;; nrepl
     ;; ;; ref: https://github.com/kingtim/nrepl.el
@@ -976,10 +973,6 @@
     ;; (add-to-list 'same-window-buffer-names "*nrepl*") 
     ;; ;; If you have paredit installed you can enabled it like this:
     ;; (add-hook 'nrepl-interaction-mode 'paredit-mode)
-
-
-
-
 
     ;; ref: http://emacs-fu.blogspot.com/2009/11/showing-pop-ups.html
     (defun djcb-popup (title msg &optional icon sound)
