@@ -51,6 +51,7 @@ bindkey -e
 source $HOME/dot/commonrc.1
 
 setopt HIST_IGNORE_SPACE
+setopt hist_ignore_dups extended_history HIST_SAVE_NO_DUPS
 
 
 unsetopt correct_all
