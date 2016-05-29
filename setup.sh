@@ -53,7 +53,7 @@ fi
 if [ `command -v zsh | wc -l` -ge 1 ]; then
     echo "setting up ZSH..."
     if [ ! -e ~/.oh-my-zsh ]; then
-        git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+        git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
     fi
 else
     echo ... zsh not installed
