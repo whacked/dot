@@ -27,7 +27,7 @@ fun SetupVAM()
               \ , 'github:tpope/vim-speeddating'
               \ , 'github:docunext/closetag.vim'
               \ , 'github:tmatilai/gitolite.vim'
-              \ , 'github:kikijump/tslime.vim'
+              \ , 'github:sjl/tslime2.vim'
               \ , 'github:wincent/Command-T'
               \ , 'github:majutsushi/tagbar'
               \ , 'matchit.zip'
