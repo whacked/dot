@@ -256,6 +256,17 @@
                    :type git
                    :url "https://github.com/cnngimenez/sqlite.el"
                    :features "sqlite")
+
+            (:name tiddlywiki-org
+                   :type git
+                   :url "https://github.com/whacked/tiddlywiki-org"
+                   :features "tiddlywiki-org")
+
+            (:name ob-shstream
+                   :type git
+                   :url "https://github.com/whacked/ob-shstream"
+                   :features "ob-shstream")
+
             ))
 
     (setq my-packages
@@ -836,6 +847,7 @@
        (ditaa . t)
        (go . t)
        (sqlite . t)
+       (shstream . t)
        ))
 
 
