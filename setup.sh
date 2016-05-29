@@ -2,7 +2,7 @@
 # export GIT_SSL_NO_VERIFY=true; bash setup.sh
 # git config --global http.sslVerify false
 
-for DOTFILENAME in emacs emacs.d vimrc vim tmux.conf bashrc Rprofile zshrc zsh boot.profile lein; do
+for DOTFILENAME in emacs.d vimrc vim tmux.conf bashrc Rprofile zshrc zsh boot.profile lein; do
     echo [[ processing ]] $DOTFILENAME...
     DOTTARGET=~/.$DOTFILENAME
     if [ -e $DOTTARGET ] && [ ! -h $DOTTARGET ]; then
