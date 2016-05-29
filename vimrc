@@ -27,6 +27,7 @@ fun SetupVAM()
               \ , 'github:tpope/vim-speeddating'
               \ , 'github:docunext/closetag.vim'
               \ , 'github:tmatilai/gitolite.vim'
+              \ , 'github:tpope/timl'
               \ , 'github:sjl/tslime2.vim'
               \ , 'github:wincent/Command-T'
               \ , 'github:majutsushi/tagbar'
@@ -113,13 +114,14 @@ let g:solarized_contrast="high"
 let g:solarized_visibility="high"
 colorscheme solarized
 
-source ~/.vim/vim-addons/github-kikijump-tslime.vim/tslime.vim
-function! To_Tmux()
-  let b:text = input("tmux:", "", "custom,")
-  call Send_to_Tmux(b:text . "\\r")
-endfunction
-
-" cmap tt :call To_Tmux()<CR>
+" FIXME: old tmux interop (kikijump version is gone)
+" source ~/.vim/vim-addons/github-kikijump-tslime.vim/tslime.vim
+" function! To_Tmux()
+"   let b:text = input("tmux:", "", "custom,")
+"   call Send_to_Tmux(b:text . "\\r")
+" endfunction
+" 
+" " cmap tt :call To_Tmux()<CR>
 
 
 " CtrlP options
