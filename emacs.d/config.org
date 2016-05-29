@@ -260,7 +260,7 @@
             (:name tiddlywiki-org
                    :type git
                    :url "https://github.com/whacked/tiddlywiki-org"
-                   :features "tiddlywiki-org")
+                   :features "tiddlywiki-mode")
 
             (:name ob-shstream
                    :type git
