@@ -62,21 +62,5 @@ fi
 # submodule command sample
 # git submodule add http://github.com/scrooloose/nerdtree.git .vim/bundle/nerdtree
 echo "syncing git submodules..."
-git submodule init
-git submodule update
-
-VUNDLEDIR=~/dot/.vim/bundle/vundle/
-IGNOREFILE=$VUNDLEDIR/.gitignore
-if [ -e $VUNDLEDIR ]; then
-    if [ -e $IGNOREFILE ]; then
-        echo "... vundle ignore file exists already"
-    else
-        echo "generating hacky gitignore for vundle, because it generates tags..."
-        echo '.netrwhist' >> $IGNOREFILE
-        echo '.gitignore' >> $IGNOREFILE
-        echo 'doc/tags' >> $IGNOREFILE
-    fi
-else
-    echo 'run setup again after BundleInstall to add the vundle ignore file'
-fi
+git submodule init && git submodule update
 
