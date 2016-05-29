@@ -46,7 +46,7 @@ fi
 # rupa's z---------------------------------------------------------------
 if [ ! -e ~/opt/z ]; then
     echo "adding rupa's z..."
-    git clone git://github.com/rupa/z.git ~/opt/z
+    git clone https://github.com/rupa/z.git ~/opt/z
 fi
 
 # ZSH -----------------------------------------------------------------
