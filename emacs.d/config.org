@@ -337,6 +337,24 @@
              hydra
              linkd ;; required for win-switch
              win-switch
+             ;; moving in from git submodule
+             ;; swank-clojure ;; ?? (haven't touched since forever)
+             ;; pymacs ;; (installed by el-get somewhere already?)
+             ibuffer-vc ;; (this is installed + used in bundle)
+             ;; mozrepl
+             ;; predictive
+             ;; pabbrev
+             ;; icicles
+             ;; mmm-mode
+             ;; slime
+             ;; mode-compile
+             ;; gnuplot-mode
+             ;; ess
+             ;; cedet
+             ;; ecb
+
+             revive
+             windows
              )
            (mapcar 'el-get-source-name el-get-sources)))
       
@@ -384,6 +402,8 @@
                      ob-go ;; https://github.com/pope/ob-go
                      json-rpc ;; https://github.com/skeeto/elisp-json-rpc
                      ;; nxhtml
+                     haxe-mode
+                     ;; matlab-mode
                      ))))
    (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
    (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
@@ -433,17 +453,7 @@
  #+BEGIN_SRC emacs-lisp
    (el-get 'sync my-packages)
 
-   (dolist (path '("~/dot/emacs.d/revive.el"
-                   "~/dot/emacs.d/windows.el"
-                   "~/dot/emacs.d/bundle/mode/haxe-mode.el"
-                   "~/dot/emacs.d/bundle/mode/matlab.el"
-                   ))
-     (load-file path))
-
-   (setq auto-mode-alist (cons '("\\.m\\'" . matlab-mode) auto-mode-alist))
-
    (setq backup-directory-alist '(("" . "~/dot/emacs.d/emacs-backup")))
-
 
    (autoload 'save-current-configuration "revive" "Save status" t)
    (autoload 'resume "revive" "Resume Emacs" t)
@@ -529,8 +539,6 @@
    ;; highlight cljs with clojure-mode
    (add-to-list 'auto-mode-alist '("\.cljs$" . clojure-mode))
 
-
-   (load-file "~/dot/emacs.d/filetype/javascript.el")
 
    (eval-after-load 'haxe-mode
      '(define-key haxe-mode-map (kbd "C-c C-c")
@@ -657,7 +665,6 @@
    (setq ibuffer-expert t)
    (add-hook 'ibuffer-mode-hook '(lambda () (ibuffer-auto-mode 1)))
    ;; (setq ibuffer-show-empty-filter-groups nil)
-   (load-file "~/dot/emacs.d/bundle/ibuffer-vc/ibuffer-vc.el")
    (add-hook 'ibuffer-hook
              (lambda ()
                (ibuffer-vc-set-filter-groups-by-vc-root)
@@ -840,7 +847,7 @@
        (haskell . t)
        (dot . t)
        (perl . t)
-       (matlab . t)
+       ;; (matlab . t)
        (octave . t)
        (org . t)
        (latex . t)
