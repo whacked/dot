@@ -71,3 +71,8 @@ if [ -e ~/.xsh ]; then
 fi
 
 alias venv='source venv/bin/activate'
+
+
+# don't save failed commands to history
+# http://superuser.com/a/902508
+zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1 }
