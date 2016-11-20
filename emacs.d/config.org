@@ -1,9 +1,7 @@
 #+BABEL: :cache yes
 #+PROPERTY: header-args :tangle yes :comments org :results silent
 
-* [/] TODO
-
-  - [ ] check if the tangle true header is necessary)
+# =:tangle yes= not required for this to load correctly from init.el
 
 * init
 
