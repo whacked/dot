@@ -109,9 +109,11 @@
 * system-name specific
 
 #+BEGIN_SRC emacs-lisp
-  (org-babel-load-file 
-   (path-join EMACS.D-DIR "system-name"
-              (concat system-name ".org")))
+  (let ((system-name-org
+         (path-join EMACS.D-DIR "system-name"
+                    (concat system-name ".org"))))
+    (when (file-exists-p system-name-org)
+      (org-babel-load-file system-name-org)))
 #+END_SRC
 
 * package setup
