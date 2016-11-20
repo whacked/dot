@@ -1841,6 +1841,16 @@
    #+END_SRC
 
 
+* buffer
+
+#+BEGIN_SRC emacs-lisp
+  (defun display-prefix (arg)
+    "Display the value of the raw prefix arg."
+    (interactive "P")
+    (message "%s" arg))
+
+#+END_SRC
+
 * eval-in-repl
 
   #+BEGIN_SRC emacs-lisp :results silent
