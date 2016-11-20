@@ -27,12 +27,27 @@
     ;; package management
     (setq package-archives '(("gnu"       . "http://elpa.gnu.org/packages/")
                              ("ELPA"      . "http://tromey.com/elpa/")
-                             ("org"      . "http://orgmode.org/elpa/")
-                             ("melpa" . "https://melpa.org/packages/")
+                             ("org"       . "http://orgmode.org/elpa/")
+                             ("melpa"     . "https://melpa.org/packages/")
                              ("marmalade" . "http://marmalade-repo.org/packages/")
-                             ("SC"        . "http://joseito.republika.pl/sunrise-commander/"))
-                             )
-    
+                             ("SC"        . "http://joseito.republika.pl/sunrise-commander/")))
+    ;; activate all the packages (in particular autoloads)
+    (package-initialize)
+    ;; fetch the list of packages available 
+    (unless package-archive-contents
+      (package-refresh-contents))
+
+    ;; list the packages you want
+    (setq package-list '(
+                         helm 
+                         helm-org-rifle ;; https://github.com/alphapapa/helm-org-rifle
+                         ))
+
+    ;; install the missing packages
+    (dolist (package package-list)
+      (unless (package-installed-p package)
+        (package-install package)))
+
     ;; https://github.com/dimitri/el-get#readme
     (add-to-list 'load-path "~/dot/emacs.d/el-get/el-get")
     (unless (require 'el-get nil t)
@@ -59,7 +74,6 @@
 
     ;; specify package sets to load later
     (setq package-list (list))
-    
   #+END_SRC
 
 
@@ -129,7 +143,6 @@
   #+BEGIN_SRC emacs-lisp
     (setq el-get-sources
           '(
-            ;; (:name tex-math-preview :type elpa)
             ;; (:name emacs-dirtree
             ;;        :type git
             ;;        :url "https://github.com/zkim/emacs-dirtree.git"
@@ -226,7 +239,6 @@
              linkd ;; required for win-switch
              win-switch
              ;; moving in from git submodule
-             ;; swank-clojure ;; ?? (haven't touched since forever)
              ;; pymacs ;; (installed by el-get somewhere already?)
              ibuffer-vc ;; (this is installed + used in bundle)
              ;; mozrepl
@@ -237,7 +249,6 @@
              ;; slime
              ;; mode-compile
              ;; gnuplot-mode
-             ;; ess
              ;; cedet
              ;; ecb
 
