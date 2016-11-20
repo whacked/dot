@@ -40,8 +40,10 @@ fun SetupVAM()
               \ , 'vim-orgmode'
               \ , 'github:hylang/vim-hy'
               \ , 'github:gkz/vim-ls'
-              \ , 'github:airblade/vim-gitgutter'
+              \ , 'github:mhinz/vim-signify'
               \ , 'github:yegappan/mru'
+              \ , 'github:PProvost/vim-ps1'
+              \ , 'github:hashivim/vim-vagrant.git'
               \ ], {'auto_install' : 0})
 
 endfun
