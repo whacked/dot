@@ -176,48 +176,11 @@
 
 * system-name specific
 
-** tpy
-
-   #+BEGIN_SRC emacs-lisp
-     (when (string= "natto-tpy" system-name)
-       (setq package-list (append package-list (list :extra :code :lisp :unportable)))
-
-       (setq org-agenda-files 
-             (append (map 'list 'expand-file-name '("~/note/org/main.org"
-                                                    "~/note/org/index.org.gpg"
-                                                    "~/note/org/tw/tiddlers/todo.tid"
-                                                    ;; "~/note/cne/cne.org"
-                                                    ))
-                     ;; requires 'cl
-                     (let ((base-dir (expand-file-name "~/note/org/tw/tiddlers")))
-                       ;; filter out non-org type
-                       (remove-if-not
-                        (lambda (f)
-                          (with-temp-buffer
-                            (insert-file-contents f)
-                            (string-match "^type: text/org$"
-                                          (first (split-string (buffer-string) "\n\n" t)))))
-                        (mapcar
-                         (lambda (f) (concat base-dir "/" f))
-                         (directory-files base-dir
-                                          nil "^[^\\$].+\\.tid$")))))))
-     ;; (require 'frame-bufs)
-     ;; (frame-bufs-mode t)
-   #+END_SRC
-
-
-** mba
-   
-   #+BEGIN_SRC emacs-lisp
-     (when (string= "natto-mba" system-name)
-       (setq package-list (append package-list (list :extra :code :lisp)))
-       (custom-set-variables
-        '(org-file-apps (quote ((auto-mode . emacs)
-                                ("\\.mm\\'" . default)
-                                ("\\.x?html?\\'" . default)
-                                ("\\.xoj\\'" . "xournal %s")
-                                ("\\.pdf\\'" . "open -a Preview %s"))))))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (org-babel-load-file 
+   (path-join EMACS.D-DIR "system-name"
+              (concat system-name ".org")))
+#+END_SRC
 
 * package setup
 

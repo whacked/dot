@@ -1,0 +1,13 @@
+* mba
+
+#+BEGIN_SRC emacs-lisp
+  (when (string= "natto-mba" system-name)
+    (setq package-list (append package-list (list :extra :code :lisp)))
+    (custom-set-variables
+     '(org-file-apps (quote ((auto-mode . emacs)
+                             ("\\.mm\\'" . default)
+                             ("\\.x?html?\\'" . default)
+                             ("\\.xoj\\'" . "xournal %s")
+                             ("\\.pdf\\'" . "open -a Preview %s"))))))
+#+END_SRC
+
