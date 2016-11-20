@@ -306,6 +306,7 @@
                                              queue
                                              paredit
                                              clojure-mode
+                                             clojurescript-mode
                                              popup
                                              seq
                                              cider
@@ -313,13 +314,13 @@
                                              hy-mode
                                              sibilant-mode
                                              )))
-
-     (add-hook 'cider-repl-mode-hook (lambda ()
-                                       (paredit-mode 1)))
-     (add-hook 'clojure-mode-hook (lambda ()
-                                    (require 'expand-region)
-                                    (global-set-key (kbd "C-=") 'er/expand-region)
-                                    (paredit-mode 1))))
+     (global-set-key (kbd "C-=") 'er/expand-region)
+     (add-hook 'cider-repl-mode-hook (lambda () (paredit-mode 1)))
+     (add-hook 'emacs-lisp-mode-hook (lambda () (paredit-mode 1)))
+     (add-hook 'hy-mode-hook (lambda () (paredit-mode 1)))
+     (add-hook 'sibilant-mode-hook (lambda () (paredit-mode 1)))
+     (add-hook 'clojure-mode-hook (lambda () (paredit-mode 1)))
+     (add-hook 'clojurescript-mode-hook (lambda () (paredit-mode 1))))
  #+END_SRC
 
 *** only run on main machine (:unportable)
