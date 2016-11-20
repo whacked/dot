@@ -95,3 +95,10 @@ fi
 
 # BOOT option
 # BOOT_JVM_OPTIONS="-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xmx2g -XX:MaxPermSize=128m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -Xverify:none"
+alias ssh-nosave='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -C -X'
+alias scp-nosave='scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -C'
+alias mosh-nosave='mosh --ssh=-"o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -C -X"'
+
+NIX_SH_PATH=$HOME/.nix-profile/etc/profile.d/nix.sh
+if [ -e $NIX_SH_PATH ]; then . $NIX_SH_PATH; fi
+
