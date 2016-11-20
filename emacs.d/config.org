@@ -88,7 +88,7 @@
       (setq x-select-enable-clipboard t)
       (when (display-graphic-p)
         (add-to-list 'default-frame-alist '(width . 100))
-        (add-to-list 'default-frame-alist '(height . 60)))
+        (add-to-list 'default-frame-alist '(height . 60))))
   #+END_SRC
 
 ** darwin
@@ -167,7 +167,6 @@
                    :type git
                    :url "https://github.com/whacked/ob-shstream"
                    :features "ob-shstream")
-
             ))
 
     (setq my-packages
