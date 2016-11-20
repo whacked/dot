@@ -28,17 +28,6 @@
     (unless package-archive-contents
       (package-refresh-contents))
 
-    ;; list the packages you want
-    (setq package-list '(
-                         helm 
-                         helm-org-rifle ;; https://github.com/alphapapa/helm-org-rifle
-                         ))
-
-    ;; install the missing packages
-    (dolist (package package-list)
-      (unless (package-installed-p package)
-        (package-install package)))
-
     ;; https://github.com/dimitri/el-get#readme
     (add-to-list 'load-path "~/dot/emacs.d/el-get/el-get")
     (unless (require 'el-get nil t)
@@ -64,10 +53,8 @@
     ;;        (mapcar 'el-get-source-name el-get-sources)))
 
     ;; specify package sets to load later
-    (setq package-list (list))
+    (setq package-group-list (list))
   #+END_SRC
-
-
 
 * os-specific
 
@@ -132,6 +119,51 @@
 ** package-common.el
 
   #+BEGIN_SRC emacs-lisp
+    ;; for emacs package.el
+    ;; list the packages you want
+    (setq package-list '(
+                         async ;; https://github.com/jwiegley/emacs-async
+                         auto-complete
+                         
+                         dash
+                         deft
+                         diff-hl
+                         eval-in-repl
+                         fiplr ;; vim-like ctrl-p
+                         git-timemachine
+                         ;; google-this
+                         helm 
+                         helm-org-rifle ;; https://github.com/alphapapa/helm-org-rifle
+                         htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
+                         hydra
+                         json-mode
+                         magit
+                         multi-web-mode
+                         multiple-cursors
+                         muse
+                         navi-mode
+                         neotree
+                         outorg outshine
+                         powerline
+                         project-explorer
+                         projectile
+                         request
+                         revive
+                         s
+                         simple-httpd
+                         skewer-mode ;; js live repl https://github.com/skeeto/skewer-mode
+                         spinner ;; spinner for ongoing operation
+                         sr-speedbar ;; file list view in buffer
+                         transpose-frame
+                         unbound ;; provides describe-unbound-keys
+                         undo-tree
+                         ;; if win-switch works, remove this:
+                         ;; linkd ;; required for win-switch
+                         win-switch
+                         with-editor ;; dependency for magit
+                         yasnippet
+                         ))
+
     (setq el-get-sources
           '(
             ;; (:name emacs-dirtree
@@ -139,11 +171,6 @@
             ;;        :url "https://github.com/zkim/emacs-dirtree.git"
             ;;        :features "dirtree"
             ;;        :compile "dirtree.el")
-            (:name popup-el
-                   :type git
-                   :url "https://github.com/auto-complete/popup-el.git"
-                   :features "popup")
-            
             (:name sqlite-el
                    :type git
                    :url "https://github.com/cnngimenez/sqlite.el"
@@ -163,71 +190,15 @@
     (setq my-packages
           (append
            '(el-get
-             s
-             spinner ;; spinner for ongoing operation
-             auto-complete
-
-             yasnippet
-             dash
-
-             ;; popup-el
-             multi-web-mode
-
-             json-mode
-             
-             neotree
-             projectile
-             project-explorer
-             
              ;; windata tree-mode ;; required for dirtree
-             ;; htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
-
-             multiple-cursors
-             
              ;; perspective
              elscreen
-
-             request
-             ;; google-this
-
-             helm
-             helm-org-rifle ;; https://github.com/alphapapa/helm-org-rifle
-             
              ;; auctex ;; locale problem causing build to fail
-
              ;; need MELPA working!
-             simple-httpd
-
-             pyvenv
              ;; iedit
-
              ;; frame-bufs
-
-             transpose-frame
-
-             with-editor ;; dependency for magit
-             magit
-             color-theme color-theme-solarized
-
-             skewer-mode ;; js live repl https://github.com/skeeto/skewer-mode
-             git-timemachine
-
-             navi-mode
-
              ;; minimap
-             powerline
-
-             outorg outshine
-             workgroups2
-
-             fiplr ;; vim-like ctrl-p
-
-             sr-speedbar ;; file list view in buffer
-             undo-tree
-
-             hydra
-             linkd ;; required for win-switch
-             win-switch
+             ;; workgroups2
              ;; moving in from git submodule
              ;; pymacs ;; (installed by el-get somewhere already?)
              ibuffer-vc ;; (this is installed + used in bundle)
@@ -238,16 +209,12 @@
              ;; mmm-mode
              ;; slime
              ;; mode-compile
-             ;; gnuplot-mode
              ;; cedet
              ;; ecb
-
-             revive
              windows
-             eval-in-repl
              )
            (mapcar 'el-get-source-name el-get-sources)))
-      
+
   #+END_SRC
 
 ** color themes
@@ -259,6 +226,7 @@
               (append package-list
                       '(color-theme
                         color-theme-buffer-local
+                        load-theme-buffer-local
                         ;; color-theme-solarized
                         ;; color themes, see https://emacsthemes.com/charts/all-time.html
                         alect-themes
@@ -270,7 +238,7 @@
                         solarized-theme
                         ujelly-theme
                         zenburn-theme
-                        ))))
+                        )))))
    #+END_SRC
 
 ** additional packages (full-setup.el)
@@ -278,23 +246,13 @@
    #+BEGIN_SRC emacs-lisp
      ;; include package-management.el
      ;; include package-common.el
-     (when (memq :extra package-list)
-       (setq my-packages
-             (append my-packages
-                     '(el-get package
-
-                              ;; provides describe-unbound-keys
-                              unbound
-
-                              deft
-                              muse
-
-                              ;; ESS
-                              ess
-                              
-                              fic-mode ;; to highlight TODO FIXME BUG etc
-                              ))))
-
+     (when (memq :extra package-group-list)
+       (setq package-list
+             (delete-dups
+              (append package-list
+                      '(ess
+                        fic-mode ;; to highlight TODO FIXME BUG etc
+                        )))))
    #+END_SRC
 
 ** conditional package loaders
@@ -302,22 +260,38 @@
 *** coding.el (:code)
 
  #+BEGIN_SRC emacs-lisp
-   (when (memq :code package-list)
+   (when (memq :code package-group-list)
+     (setq package-list
+           (delete-dups
+            (append package-list
+                    '(
+                      gnuplot-mode
+                      graphviz-dot-mode
+                      haskell-mode
+                      haxe-mode
+                      js2-mode
+                      json-rpc ;; https://github.com/skeeto/elisp-json-rpc
+                      lua-mode
+                      markdown-mode
+                      matlab-mode
+                      ;; nxhtml
+                      ob-go ;; https://github.com/pope/ob-go
+                      ob-ipython ;; https://github.com/gregsexton/ob-ipython/
+                      python-mode
+                      pyvenv
+                      rainbow-mode
+                      rspec-mode
+                      ruby-mode
+                      yaml-mode
+                      zencoding-mode
+                      inf-ruby
+                      ))))
      (setq my-packages 
-           (append my-packages
-                   '(
-                     ;; coding
-                     inf-ruby js2-mode json lua-mode markdown-mode ruby-mode rspec-mode yaml-mode zencoding-mode
-                     graphviz-dot-mode
-                     python-mode
-                     rainbow-mode
-                     haskell-mode
-                     ob-go ;; https://github.com/pope/ob-go
-                     json-rpc ;; https://github.com/skeeto/elisp-json-rpc
-                     ;; nxhtml
-                     haxe-mode
-                     ;; matlab-mode
-                     ))))
+           (delete-dups
+            (append my-packages
+                    '(
+                      ;; nxhtml
+                      )))))
    (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
    (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
  #+END_SRC
@@ -325,27 +299,34 @@
 *** lispy-stuff.el (:lisp)
 
  #+BEGIN_SRC emacs-lisp
-   (when (memq :lisp package-list)
-     (setq my-packages (append my-packages '(
-                                             ;; lispy stuff
-                                             queue
-                                             paredit
-                                             clojure-mode
-                                             clojurescript-mode
-                                             popup
-                                             seq
-                                             cider
-                                             expand-region
-                                             hy-mode
-                                             sibilant-mode
-                                             )))
+   (when (memq :lisp package-group-list)
+     (setq package-list
+           (delete-dups
+            (append package-list
+                    '(cider
+                      clojure-mode
+                      expand-region
+                      hy-mode
+                      paredit
+                      popup
+                      queue
+                      sibilant-mode
+                      ))))
+     (setq my-packages 
+           (delete-dups
+            (append my-packages '(clojurescript-mode
+                                  seq))))
      (global-set-key (kbd "C-=") 'er/expand-region)
-     (add-hook 'cider-repl-mode-hook (lambda () (paredit-mode 1)))
-     (add-hook 'emacs-lisp-mode-hook (lambda () (paredit-mode 1)))
-     (add-hook 'hy-mode-hook (lambda () (paredit-mode 1)))
-     (add-hook 'sibilant-mode-hook (lambda () (paredit-mode 1)))
-     (add-hook 'clojure-mode-hook (lambda () (paredit-mode 1)))
-     (add-hook 'clojurescript-mode-hook (lambda () (paredit-mode 1))))
+
+     (autoload 'paredit-mode "paredit" "Minor mode for pseudo-structurally editing Lisp code." t)
+     (add-hook 'cider-repl-mode-hook #'enable-paredit-mode)
+     (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
+     (add-hook 'lisp-mode-hook       #'enable-paredit-mode)
+     (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+     (add-hook 'hy-mode-hook #'enable-paredit-mode)
+     (add-hook 'sibilant-mode-hook #'enable-paredit-mode)
+     (add-hook 'clojure-mode-hook #'enable-paredit-mode)
+     (add-hook 'clojurescript-mode-hook #'enable-paredit-mode))
  #+END_SRC
 
 *** only run on main machine (:unportable)
@@ -353,41 +334,69 @@
     - =win-switch= :: allows repeated =other-window= via =C-x o o o ...=
 
  #+BEGIN_SRC emacs-lisp
-   (when (memq :unportable package-list)
-     (setq my-packages (append my-packages '(org-pdfview
-                                             epc ;; https://github.com/kiwanami/emacs-epc
-                                             ob-ipython ;; https://github.com/gregsexton/ob-ipython/
-                                             swank-js
-                                             ))))
+   (when (memq :unportable package-group-list)
+     (setq my-packages
+           (delete-dups
+            (append my-packages '(org-pdfview
+                                  epc ;; https://github.com/kiwanami/emacs-epc
+                                  swank-js
+                                  )))))
 
  #+END_SRC
 
-*** usual-environment.el
+*** apply packages
+    
+ #+BEGIN_SRC emacs-lisp
+   ;; install the missing packages
+   (dolist (package package-list)
+     (unless (package-installed-p package)
+       (package-install package)))
+
+   (el-get 'sync my-packages)
+ #+END_SRC
+
+** usual-environment.el
+    
+*** default UI config
+
+    #+BEGIN_SRC emacs-lisp
+      (setq-default
+       truncate-lines t
+       tab-width 2
+       indent-tabs-mode nil
+       echo-keystrokes 0.1 ;; = delay for minibuffer display after pressing function key default is 1
+       )
+    #+END_SRC
+
+*** revive (resume)
+
+    #+BEGIN_SRC emacs-lisp
+      (autoload 'save-current-configuration "revive" "Save status" t)
+      (autoload 'resume "revive" "Resume Emacs" t)
+      (autoload 'wipe "revive" "Wipe Emacs" t)
+    #+END_SRC
+
+*** win-switch
+
+    #+BEGIN_SRC emacs-lisp
+      (require 'win-switch)
+      (global-set-key "\C-xo" 'win-switch-dispatch)
+      (setq win-switch-idle-time 0.3)
+    #+END_SRC
+
+*** remainder
 
  #+BEGIN_SRC emacs-lisp
-   (el-get 'sync my-packages)
-
    (setq backup-directory-alist '(("" . "~/dot/emacs.d/emacs-backup")))
 
-   (autoload 'save-current-configuration "revive" "Save status" t)
-   (autoload 'resume "revive" "Resume Emacs" t)
-   (autoload 'wipe "revive" "Wipe Emacs" t)
-   ;; (autoload 'paredit-mode "paredit"
-   ;;   "Minor mode for pseudo-structurally editing Lisp code." t)
-   ;; (add-hook 'emacs-lisp-mode-hook       (lambda () (paredit-mode +1)))
-   ;; (add-hook 'lisp-mode-hook             (lambda () (paredit-mode +1)))
-   ;; (add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode +1)))
    (require 'windows)
    (win:startup-with-window)
+
    (recentf-mode 1)
    (setq recentf-max-menu-items 100)
    (setq recentf-max-saved-items 200)
 
    (setq helm-exit-idle-delay 0) ;; fixes "display not ready" https://github.com/emacs-helm/helm/issues/550
-
-   (require 'win-switch)
-   (global-set-key "\C-xo" 'win-switch-dispatch)
-   (setq win-switch-idle-time 0.3)
 
    ;; kill process hack
    ;; http://stackoverflow.com/questions/10627289/emacs-internal-process-killing-any-command
@@ -423,15 +432,13 @@
    ;;   (custom-persp "@org"
    ;;                 (find-file (first org-agenda-files))))
 
-
    ;; prevent special buffers from messing with the current layout
    ;; see: http://www.gnu.org/software/emacs/manual/html_node/emacs/Special-Buffer-Frames.html
    (setq special-display-buffer-names
          '("*grep*" "*tex-shell*" "*Help*" "*Packages*" "*Capture*"))
    (setq special-display-function 'my-special-display-function)
-   ;; (defun my-special-display-function (buf &optional args)
-   ;;   (special-display-popup-frame buf))
    (defun my-special-display-function (buf &optional args)
+     ;; (special-display-popup-frame buf)
      (special-display-popup-frame buf `((height . 40)
                                         ;; (left . ,(+ 40 (frame-parameter (selected-frame) 'left)))
                                         ;; (top . ,(+ 20 (frame-parameter (selected-frame) 'top)))
@@ -455,14 +462,6 @@
      '(define-key haxe-mode-map (kbd "C-c C-c")
         (lambda () (interactive) (compile "make"))))
 
-
-
-   (setq-default truncate-lines t
-                 tab-width 2
-                 indent-tabs-mode nil
-                 echo-keystrokes 0.1 ;; = delay for minibuffer display after pressing function key default is 1
-                 )
-
    ;;; see http://www.emacswiki.org/emacs/DeskTop
    ;;; desktop-override-stale-locks.el begins here
    (defun emacs-process-p (pid)
@@ -483,7 +482,7 @@
        (setq ad-return-value nil)))
    ;;; desktop-override-stale-locks.el ends here
 
-                                           ; add more hooks here
+   ;; add more hooks here
    (custom-set-variables
     ;; custom-set-variables was added by Custom.
     ;; If you edit it by hand, you could mess it up, so be careful.
@@ -522,7 +521,7 @@
      (interactive "sAre you sure about this? ")
      (if (equal really "yes") 
          (progn
-                                           ;(win-save-all-configurations)
+           ;; (win-save-all-configurations)
            (save-buffers-kill-emacs))))
    (global-set-key [(control x)(control c)] 'maybe-save-buffers-kill-emacs)
    (defun kill-emacs-NOW-iikara ()
@@ -544,10 +543,8 @@
    (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
    (require 'ansi-color)
 
-                                           ;(add-to-list 'load-path "~/dot/emacs.d/bundle/icicles")
-                                           ;(require 'icicles)
-
-
+   ;;(add-to-list 'load-path "~/dot/emacs.d/bundle/icicles")
+   ;;(require 'icicles)
 
    (set-default-font "Consolas 10")
    (custom-set-faces
@@ -566,11 +563,10 @@
     '(table-cell-face ((((class color)) (:background "#AA3" :foreground "gray90"))))
     )
 
-                                           ;(set-cursor-color "orange")
+   ;;(set-cursor-color "orange")
 
    (require 'uniquify)
    (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
-
 
    (global-set-key "\C-x\C-b" 'ibuffer)
    (setq ibuffer-expert t)
@@ -629,14 +625,8 @@
    (my-keys-minor-mode 1)
    (winner-mode 1)
 
-
-
    ;; w3 should be loaded by ELPA
-                                           ;NEW;(require 'w3-auto)
-
-   ;; (add-to-list 'load-path "~/dot/emacs.d/bundle/minimap/")
-   ;; (require 'minimap)
-
+   ;;NEW;(require 'w3-auto)
 
    (defun my-c-mode-hook ()
      (define-key c-mode-map (kbd "C-<return>") 'gtk-lookup-symbol)
@@ -647,11 +637,8 @@
    (set-language-environment "UTF-8")
    (setq slime-net-coding-system 'utf-8-unix)
 
-
-
-
-                                           ; to clear shell in ESS mode
-                                           ; http://stackoverflow.com/questions/3447531/emacs-ess-version-of-clear-console
+   ;; to clear shell in ESS mode
+   ;; http://stackoverflow.com/questions/3447531/emacs-ess-version-of-clear-console
    (defun clear-shell ()
      (interactive)
      (let ((old-max comint-buffer-maximum-size))
@@ -661,16 +648,10 @@
    (put 'set-goal-column 'disabled nil)
    (put 'narrow-to-region 'disabled nil)
 
-
    (load-file "~/dot/emacs.d/dev/sqlite.el")
-
-
-
 
    ;; eliminate strange error with this for now
    (defvar warning-suppress-types nil)
-
-
 
    (defadvice balance-windows (around allow-interactive-prefix
                                       (&optional selected-window-only))
@@ -680,7 +661,6 @@
        (ad-set-arg 0 (window-parent)))
      ad-do-it)
    (ad-activate 'balance-windows)
-
 
    (require 'multi-web-mode)
    (setq mweb-default-major-mode 'html-mode)
@@ -703,428 +683,428 @@
                                        "*.pyc" "*.min.js"))))
  #+END_SRC
 
-*** vim-inspired
+** vim-inspired
+
+   #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "C-` H") (lambda () (interactive) (move-to-window-line-top-bottom 0)))
+     (global-set-key (kbd "C-` M") (lambda () (interactive) (move-to-window-line-top-bottom)))
+     (global-set-key (kbd "C-` L") (lambda () (interactive) (move-to-window-line-top-bottom -1)))
+   #+END_SRC
+
+*** org mode
+
+    if you are getting =Symbol's value as variable is void: org-babel-safe-header-args= errors
+    you can try =M-x org-reload= and re-init
+
+ #+BEGIN_SRC emacs-lisp
+
+   (when
+       (functionp 'set-scroll-bar-mode)
+     (set-scroll-bar-mode 'right))
+
+
+   (define-key global-map "\C-cl" 'org-store-link)
+   (define-key global-map "\C-ca" 'org-agenda)
+
+
+
+
+   ;;;;;;;;;;;;;;;;;;;;;;;
+   ;; <org mode config> ;;
+   ;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+					   ; below add-to-list not required if org-mode successfully built with =make= and =make-install=
+   ;;(add-to-list 'load-path "~/dot/emacs.d/bundle/org-mode/lisp")
+   ;;(add-to-list 'load-path "~/dot/emacs.d/bundle/org-mode/contrib/lisp")
+   (add-to-list 'load-path "~/dot/emacs.d/dev")
+   (require 'org)
+   ;; force org-babel src edit to use same window instead of splitting
+   (setq org-src-window-setup 'current-window)
+   (org-babel-do-load-languages
+    'org-babel-load-languages
+    '((R . t)
+      (python . t)
+      (ledger . t)
+      (C . t)
+      (lua . t)
+      (gnuplot . t)
+      (emacs-lisp . t)
+      (ruby . t)
+      (sh . t)
+      (clojure . t)
+      (lisp . t)
+      (haskell . t)
+      (dot . t)
+      (perl . t)
+      ;; (matlab . t)
+      (octave . t)
+      (org . t)
+      (latex . t)
+      (ditaa . t)
+      (go . t)
+      (sqlite . t)
+      (shstream . t)
+      ))
+
+
+   (when (locate-library "python-mode")
+     (require 'python-mode)
+     ;; don't make python-mode launch a shell everytime a .py file is
+     ;; loaded
+     (setq py-start-run-py-shell nil)
+     ;; (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+     ;; (add-to-list 'interpreter-mode-alist '("python" . python-mode))
+     ;; (when (executable-find "ipython")
+     ;;   (require 'ipython)
+     ;;   (setq org-babel-python-mode 'python-mode))
+     )
+
+   ;; (setq-default py-split-windows-on-execute-function 'split-window-horizontally)
+   (setq-default py-keep-windows-configuration t)
+
+   (setq org-ditaa-jar-path "~/dot/emacs.d/bundle/org-mode/contrib/scripts/ditaa.jar")
+
+   (defun ansi-unansify (beg end)
+     "to help fix ansi- control sequences in babel-sh output"
+     (interactive (list (point) (mark)))
+     (unless (and beg end)
+       (error "The mark is not set now, so there is no region"))
+     (insert (ansi-color-filter-apply (filter-buffer-substring beg end t))))
+
+   (setq org-log-done t)
+
+
+
+   (require 'iimage)
+					   ;(setq iimage-mode-image-search-path (expand-file-name "~/"))
+   ;;Match org file: links
+   (add-to-list 'iimage-mode-image-regex-alist
+		(cons (concat "file:\\(~?[]\\[\\(\\),~+./_0-9a-zA-Z -]+\\.\\(GIF\\|JP\\(?:E?G\\)\\|P\\(?:BM\\|GM\\|N[GM]\\|PM\\)\\|SVG\\|TIFF?\\|X\\(?:[BP]M\\)\\|gif\\|jp\\(?:e?g\\)\\|p\\(?:bm\\|gm\\|n[gm]\\|pm\\)\\|svg\\|tiff?\\|x\\(?:[bp]m\\)\\)\\)")  1))
+   (define-key global-map (kbd "<f12>") 'org-agenda)
+   (defun set-calendar-appt ()
+     (save-excursion
+       (end-of-buffer)
+       (outline-previous-visible-heading 1)
+       (backward-char)
+       (when (re-search-forward org-ts-regexp nil t)
+	 (let* ((spl-matched (split-string (match-string 1) " "))
+		(date (first spl-matched))
+		(time (if (= 3 (length spl-matched)) ;; contains time
+			  (third spl-matched)
+			;; only contains date
+			nil))
+		(tm-start (or time "00:00"))
+		(alarm "5min")
+		(name (save-excursion
+			(end-of-buffer)
+			(outline-previous-visible-heading 1)
+			(backward-char)
+			(when (re-search-forward org-complex-heading-regexp nil t)
+			  (replace-regexp-in-string (concat "[[:space:]]*" org-ts-regexp "[[:space:]]*") "" (match-string 4))))))
+	   (start-process
+	    "kalarm-process" "*Messages*" "/usr/bin/kalarm" 
+	    "--color"
+	    "0x00FF00"
+	    "--time"
+	    (format "%s-%s" date tm-start)
+	    "--reminder"
+	    "0H5M"
+	    ;; doesn't work :(
+	    ;; "--play" "/usr/share/sounds/KDE-Im-Sms.ogg"
+	    "--beep"
+	    (format "%s" name))))))
+   (add-hook 'org-remember-mode-hook '(lambda () (visual-line-mode t)))
+   (add-hook 'org-remember-before-finalize-hook 'set-calendar-appt)
+
+   ;;; attempt to use org-capture.
+   ;;; remember's work flow is actually more pleasant.
+   ;;; in single buffer visible phase, capture:
+   ;;; 1. creates split buffer, gets selection
+   ;;; 2. fills template in that buffer
+   ;;; 3. completes capture in that buffer
+   ;;; 4. restores original buffer
+   ;;; this is identical to remember
+   ;;; in split-buffer phase, capture:
+   ;;; 1. opens selection window in non-focused buffer (good)
+   ;;; 2. after get selection, fills template in focused buffer,
+   ;;; i.e. it switches away from the window where the selection took place (bad)
+   ;;; 3. when authoring buffer for capture is open, the previously
+   ;;; focused buffer is again put in the split where the template
+   ;;; selection screen came up (bad)
+   ;;; 4. when finished, layout is restored (expected)
+   ;;; the amount of attention shifting is pretty annoying
+   ;;;
+   ;;;;(define-key global-map "\M-\C-r" 'org-capture)
+   ;;;(setq org-capture-templates
+   ;;;      '(("t" "Todo" entry (file "~/note/org/todos.org" "Tasks")
+   ;;;         "* TODO %?\nAdded: %U" :empty-lines 1)
+   ;;;        ("c" "CNE-todo" entry ("~/note/cne/cne.org" "All Todo")
+   ;;;         "* TODO [#%^{IMPORTANCE|B}] [%^{URGENCY|5}] %?\nAdded: %U")
+   ;;;        ("n" "Nikki" entry (file+headline "~/note/org/nikki.org" "ALL")
+   ;;;         "* %U %?\n\n %i\n %a\n\n" :empty-lines 1)
+   ;;;        ("s" "State" entry (file "~/note/org/state.org")
+   ;;;         "* %U %? " :empty-lines 1)
+   ;;;        ("v" "Vocab" plain (file "~/note/org/vocab.org")
+   ;;;         "** %U %^{Word}\n%?\n# -*- xkm-export -*-\n" :empty-lines 1)
+   ;;;        ;; idea template used to be:
+   ;;;        ;; "* %^{Title}\n%?\n  %a"
+   ;;;        ;; but org-capture-fill-template calls (delete-other-windows)
+   ;;;        ;; and maximizes the template-filling buffer
+   ;;;        ;; which is pretty annoying. so simply stop using template prompts
+   ;;;        ("i" "Idea" entry (file "~/note/org/idea.org")
+   ;;;         "* %?\n  %a" :empty-lines 1)
+   ;;;        ("d" "Dump" entry (file+datetree "~/note/org/dump.org")
+   ;;;         "* %?\n%U\n" :empty-lines 1)))
+   
+   ;;;;;;;;;;;;;;;;;;;;;;;;
+   ;; </org mode config> ;;
+   ;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+   ;; thanks to http://kliketa.wordpress.com/2010/08/04/gtklook-browse-documentation-for-gtk-glib-and-gnome-inside-emacs/
+   ;NEW;(require 'gtk-look)
+   (setq browse-url-browser-function 'browse-url-generic
+	 browse-url-generic-program "chromium-browser")
+   ;;(setq browse-url-browser-function
+   ;; '(("file:.*/usr/share/doc/.*gtk.*-doc/.*" . w3m-browse-url)
+   ;;   ("." . browse-url-firefox)))
+
+   ;; ;; FIXME cider
+   ;; ;; nrepl
+   ;; ;; ref: https://github.com/kingtim/nrepl.el
+   ;; (add-hook 'nrepl-interaction-mode-hook
+   ;;           'nrepl-turn-on-eldoc-mode)
+   ;; ;; Stop the error buffer from popping up while working in the REPL buffer:
+   ;; (setq nrepl-popup-stacktraces nil)
+   ;; ;; Make C-c C-z switch to the *nrepl* buffer in the current window:
+   ;; (add-to-list 'same-window-buffer-names "*nrepl*") 
+   ;; ;; If you have paredit installed you can enabled it like this:
+   ;; (add-hook 'nrepl-interaction-mode 'paredit-mode)
+
+   ;; ref: http://emacs-fu.blogspot.com/2009/11/showing-pop-ups.html
+   (defun djcb-popup (title msg &optional icon sound)
+     "Show a popup if we're on X, or echo it otherwise; TITLE is the title
+   of the message, MSG is the context. Optionally, you can provide an ICON and
+   a sound to be played"
+
+     (interactive)
+     (if (eq window-system 'x)
+	 (shell-command (concat "notify-send "
+
+				(if icon (concat "-i " icon) "")
+				" '" title "' '" msg "'")))
+     (when sound (shell-command
+		  (concat "mplayer -really-quiet " sound " 2> /dev/null"))))
+
+   ;; the appointment notification facility
+   (setq
+    appt-message-warning-time 10 ;; warn 10 min in advance
+    appt-display-mode-line t     ;; show in the modeline
+    appt-display-format 'window) ;; use our func
+   (appt-activate 1)              ;; active appt (appointment notification)
+   (display-time)                 ;; time display is required for this...
+   (setq appt-audible t)
+
+   ;; our little façade-function for djcb-popup
+   (defun djcb-appt-display (min-to-app new-time msg)
+     (djcb-popup (format "Appointment in %s minute(s)" min-to-app) msg 
+		 "/usr/share/icons/gnome/32x32/status/appointment-soon.png"
+		 "/usr/share/sounds/ubuntu/stereo/phone-incoming-call.ogg"))
+   (setq appt-disp-window-function (function djcb-appt-display))
+
+   (defun org-add-appt-after-save-hook ()
+     (if ;(string= mode-name "Org")
+	 (member (buffer-file-name) org-agenda-files)
+	 (org-agenda-to-appt)))
+   (add-hook 'after-save-hook 'org-add-appt-after-save-hook)
+
+    ;; update appt each time agenda opened
+   (add-hook 'org-finalize-agenda-hook 'org-agenda-to-appt)
+
+   (defun kiwon/merge-appt-time-msg-list (time-msg-list)
+     "Merge time-msg-list's elements if they have the same time."
+     (let* ((merged-time-msg-list (list)))
+       (while time-msg-list
+	 (if (eq (car (caar time-msg-list)) (car (caar (cdr time-msg-list))))
+	     (setq time-msg-list
+		   (cons
+		    (append
+		     (list (car (car time-msg-list)) ; time
+			   (concat (car (cdr (car time-msg-list))) " / "(car (cdr (car (cdr time-msg-list)))))) ; combined msg
+		     (cdr (cdr (car time-msg-list)))) ; rest information
+		    (nthcdr 2 time-msg-list)))
+	   (progn (add-to-list 'merged-time-msg-list (car time-msg-list) t)
+		  (setq time-msg-list (cdr time-msg-list)))))
+       merged-time-msg-list))
+
+   (defun kiwon/org-agenda-to-appt ()
+     (prog2
+	 (setq appt-time-msg-list nil)
+	 (org-agenda-to-appt)
+       (setq appt-time-msg-list (kiwon/merge-appt-time-msg-list appt-time-msg-list))))
+
+   ;; (add-hook 'org-finalize-agenda-hook (function kiwon/org-agenda-to-appt))
+
+
+
+   ;; pymacs see http://pymacs.progiciels-bpi.ca/pymacs.html#installation
+   ;; (load-file "~/dot/emacs.d/bundle/pymacs/pymacs.el")
+   (autoload 'pymacs-apply "pymacs")
+   (autoload 'pymacs-call "pymacs")
+   (autoload 'pymacs-eval "pymacs" nil t)
+   (autoload 'pymacs-exec "pymacs" nil t)
+   (autoload 'pymacs-load "pymacs" nil t)
+   ;;(eval-after-load "pymacs"
+   ;;  '(add-to-list 'pymacs-load-path YOUR-PYMACS-DIRECTORY"))
+
+   ;;;; ledger
+   ;; (load "ledger")
+
+   ;;;; freex mode
+   ;;
+   ;;(setq pymacs-load-path '("~/dev/elisp/org-freex"))
+   ;;(add-to-list 'load-path (expand-file-name "~/dev/elisp/org-freex/"))
+   ;;(load-file "~/dev/elisp/org-freex/freex-conf.el")
+   ;;;;;;(load-file "~/dev/elisp/org-freex/freex-mode.el")
+   ;;;;(require 'freex-mode)
+
+
+
+
+
+
+   ;; ;; google calendar interaction
+   ;; ;; see http://article.gmane.org/gmane.emacs.orgmode/27214
+   ;; (defadvice org-agenda-add-entry-to-org-agenda-diary-file 
+   ;;   (after add-to-google-calendar)
+   ;;   "Add a new Google calendar entry that mirrors the diary entry just created by org-mode."
+   ;;   (let ((type (ad-get-arg 0))
+   ;;  (text (ad-get-arg 1))
+   ;;  (d1 (ad-get-arg 2))
+   ;;  (year1 (nth 2 d1))
+   ;;  (month1 (car d1))
+   ;;  (day1 (nth 1 d1))
+   ;;  (d2 (ad-get-arg 3))
+   ;;  entry dates)
+   ;;     (if (or (not (eq type 'block)) (not d2))
+   ;;  (setq dates (format "%d-%02d-%02d" year1 month1 day1))
+   ;;       (let ((year2 (nth 2 d2)) (month2 (car d2)) (day2 (nth 1 d2)) (repeats (-
+   ;; (calendar-absolute-from-gregorian d1)
+   ;;                         (calendar-absolute-from-gregorian d2))))
+   ;;  (if (> repeats 0)
+   ;;      (setq dates (format "%d-%02d-%02d every day for %d days" year1 month1 day1 (abs repeats)))
+   ;;    (setq dates (format "%d-%02d-%02d every day for %d days" year1 month1 day1 (abs repeats))))
+   ;;  ))
+   ;;     (setq entry  (format "/usr/local/bin/google calendar add --cal org \"%s on %s\"" text dates))
+   ;;     ;;(message entry)
+   ;;     (if (not (string= "MYLAPTOPCOMPUTER" mail-host-address))
+   ;;  (shell-command entry)
+   ;;       (let ((offline "~/note/org/org2google-buffer"))
+   ;;  (find-file offline)
+   ;;  (goto-char (point-max))
+   ;;  (insert (concat entry "\n"))
+   ;;  (save-buffer)
+   ;;  (kill-buffer (current-buffer))
+   ;;  (message "Plain text written to %s" offline)))))
+   ;; (ad-activate 'org-agenda-add-entry-to-org-agenda-diary-file)
+
+
+
+   ;; in case useful: http://jblevins.org/projects/deft/
+   ;; Deft is an Emacs mode for quickly browsing, filtering, and editing directories of plain text notes, inspired by Notational Velocity.
+   (setq deft-extensions '("org" "tid"))
+   (setq deft-directory "~/note/org/")
+   (setq deft-text-mode 'org-mode)
+   (setq deft-recursive t)
+   (setq deft-use-filename-as-title t)
+   (setq deft-ignore-file-regexp "\\$.+") ;; for ignoring special tiddlers
+
+
+   (setq desktop-save-mode nil)
+   (desktop-change-dir "~/dot/emacs.d")
+
+
+ #+END_SRC
+
+*** org capture
+
+    see http://pages.sachachua.com/.emacs.d/Sacha.html#orgheadline56
+    http://doc.norang.ca/org-mode.html#Capture
+    http://orgmode.org/manual/Template-elements.html
+    http://orgmode.org/manual/Capture-templates.html#Capture-templates
+
 
     #+BEGIN_SRC emacs-lisp
-      (global-set-key (kbd "C-` H") (lambda () (interactive) (move-to-window-line-top-bottom 0)))
-      (global-set-key (kbd "C-` M") (lambda () (interactive) (move-to-window-line-top-bottom)))
-      (global-set-key (kbd "C-` L") (lambda () (interactive) (move-to-window-line-top-bottom -1)))
+      ;; (require 'org-drill)
+
+      ;;; org-mode with remember
+      ;; (org-remember-insinuate)
+      (setq org-directory "~/note/org")
+      (setq org-default-notes-file (concat (file-name-as-directory org-directory) "index.org.gpg"))
+
+      ;;(define-key global-map "\C-cr" 'org-remember)
+      ;; (define-key global-map "\M-\C-r" 'org-remember)
+      (global-set-key (kbd "C-c c") 'org-capture)
+
+      ;; Capture templates for: TODO tasks, Notes, appointments, phone calls, meetings, and org-protocol
+      ;; (setq org-capture-templates
+      ;;       (quote (("t" "todo" entry (file "~/git/org/refile.org")
+      ;;                "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
+      ;;               ("r" "respond" entry (file "~/git/org/refile.org")
+      ;;                "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
+      ;;               ("n" "note" entry (file "~/git/org/refile.org")
+      ;;                "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
+      ;;               ("j" "Journal" entry (file+datetree "~/git/org/diary.org")
+      ;;                "* %?\n%U\n" :clock-in t :clock-resume t)
+      ;;               ("w" "org-protocol" entry (file "~/git/org/refile.org")
+      ;;                "* TODO Review %c\n%U\n" :immediate-finish t)
+      ;;               ("m" "Meeting" entry (file "~/git/org/refile.org")
+      ;;                "* MEETING with %? :MEETING:\n%U" :clock-in t :clock-resume t)
+      ;;               ("p" "Phone call" entry (file "~/git/org/refile.org")
+      ;;                "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
+      ;;               ("h" "Habit" entry (file "~/git/org/refile.org")
+      ;;                "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n"))))
+
+      ;; see http://orgmode.org/manual/Template-elements.html
+
+      (setq org-capture-templates
+	    '(
+	      ;; ("t" "Todo" entry
+	      ;;  "~/note/org/todos.org"
+	      ;;  "* TODO %?\nAdded: %U" "Main")
+	      ;; ("c" "CNE" entry
+	      ;;   "~/note/cne/cne.org"
+	      ;;  "* TODO %?\nAdded: %U" "All Todo")
+	      ;; ("n" "Nikki" entry
+	      ;;   "~/note/org/nikki.org"
+	      ;;  "* %U %?\n\n %i\n %a\n\n" "ALL")
+	      ;; ;; ("State" ?s "* %U %? " "~/note/org/state.org")
+	      ;; ("s" "Scholar" entry
+	      ;;  "~/note/org/scholar.org"
+	      ;;  "* %?\nadded: %U")
+	      ;; ("v" "Vocab" entry
+	      ;;   "~/note/org/vocab.org"
+	      ;;  "* %U %^{Word}\n%?\n# -*- xkm-export -*-\n")
+	      ;; ("i" "Idea" entry
+	  ;;       "~/note/org/idea.org"
+	  ;;      "* %^{Title}\n%?\n  %a\n  %U" "Main")
+	  ;;     ;;("Music" ?m "- %? %U\n" "~/note/org/music.org" "good")
+	  ;;     ("l" "learn" entry
+	  ;;      "omi%?" "~/note/org/learn.org" "captured")
+	  ;;     ("m" "mem" "** %U    :drill:\n
+	  ;;     :PROPERTIES:
+	  ;;     :DATE_ADDED: %U
+	  ;;     :SOURCE_URL: %a
+	  ;;     :END:
+	  ;; \n%i%?" "~/note/org/learn.org" "captured")
+	      ("d" "Dump" entry
+	       (file+headline "~/note/org/dump.org" "test")
+	       )
+	      ))
     #+END_SRC
-
-**** org mode
-
-     if you are getting =Symbol's value as variable is void: org-babel-safe-header-args= errors
-     you can try =M-x org-reload= and re-init
-
-  #+BEGIN_SRC emacs-lisp
-
-    (when
-        (functionp 'set-scroll-bar-mode)
-      (set-scroll-bar-mode 'right))
-
-
-    (define-key global-map "\C-cl" 'org-store-link)
-    (define-key global-map "\C-ca" 'org-agenda)
-
-
-
-
-    ;;;;;;;;;;;;;;;;;;;;;;;
-    ;; <org mode config> ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-                                            ; below add-to-list not required if org-mode successfully built with =make= and =make-install=
-    ;;(add-to-list 'load-path "~/dot/emacs.d/bundle/org-mode/lisp")
-    ;;(add-to-list 'load-path "~/dot/emacs.d/bundle/org-mode/contrib/lisp")
-    (add-to-list 'load-path "~/dot/emacs.d/dev")
-    (require 'org)
-    ;; force org-babel src edit to use same window instead of splitting
-    (setq org-src-window-setup 'current-window)
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((R . t)
-       (python . t)
-       (ledger . t)
-       (C . t)
-       (lua . t)
-       (gnuplot . t)
-       (emacs-lisp . t)
-       (ruby . t)
-       (sh . t)
-       (clojure . t)
-       (lisp . t)
-       (haskell . t)
-       (dot . t)
-       (perl . t)
-       ;; (matlab . t)
-       (octave . t)
-       (org . t)
-       (latex . t)
-       (ditaa . t)
-       (go . t)
-       (sqlite . t)
-       (shstream . t)
-       ))
-
-
-    (when (locate-library "python-mode")
-      (require 'python-mode)
-      ;; don't make python-mode launch a shell everytime a .py file is
-      ;; loaded
-      (setq py-start-run-py-shell nil)
-      ;; (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-      ;; (add-to-list 'interpreter-mode-alist '("python" . python-mode))
-      ;; (when (executable-find "ipython")
-      ;;   (require 'ipython)
-      ;;   (setq org-babel-python-mode 'python-mode))
-      )
-
-    ;; (setq-default py-split-windows-on-execute-function 'split-window-horizontally)
-    (setq-default py-keep-windows-configuration t)
-
-    (setq org-ditaa-jar-path "~/dot/emacs.d/bundle/org-mode/contrib/scripts/ditaa.jar")
-
-    (defun ansi-unansify (beg end)
-      "to help fix ansi- control sequences in babel-sh output"
-      (interactive (list (point) (mark)))
-      (unless (and beg end)
-        (error "The mark is not set now, so there is no region"))
-      (insert (ansi-color-filter-apply (filter-buffer-substring beg end t))))
-
-    (setq org-log-done t)
-
-
-
-    (require 'iimage)
-                                            ;(setq iimage-mode-image-search-path (expand-file-name "~/"))
-    ;;Match org file: links
-    (add-to-list 'iimage-mode-image-regex-alist
-                 (cons (concat "file:\\(~?[]\\[\\(\\),~+./_0-9a-zA-Z -]+\\.\\(GIF\\|JP\\(?:E?G\\)\\|P\\(?:BM\\|GM\\|N[GM]\\|PM\\)\\|SVG\\|TIFF?\\|X\\(?:[BP]M\\)\\|gif\\|jp\\(?:e?g\\)\\|p\\(?:bm\\|gm\\|n[gm]\\|pm\\)\\|svg\\|tiff?\\|x\\(?:[bp]m\\)\\)\\)")  1))
-    (define-key global-map (kbd "<f12>") 'org-agenda)
-    (defun set-calendar-appt ()
-      (save-excursion
-        (end-of-buffer)
-        (outline-previous-visible-heading 1)
-        (backward-char)
-        (when (re-search-forward org-ts-regexp nil t)
-          (let* ((spl-matched (split-string (match-string 1) " "))
-                 (date (first spl-matched))
-                 (time (if (= 3 (length spl-matched)) ;; contains time
-                           (third spl-matched)
-                         ;; only contains date
-                         nil))
-                 (tm-start (or time "00:00"))
-                 (alarm "5min")
-                 (name (save-excursion
-                         (end-of-buffer)
-                         (outline-previous-visible-heading 1)
-                         (backward-char)
-                         (when (re-search-forward org-complex-heading-regexp nil t)
-                           (replace-regexp-in-string (concat "[[:space:]]*" org-ts-regexp "[[:space:]]*") "" (match-string 4))))))
-            (start-process
-             "kalarm-process" "*Messages*" "/usr/bin/kalarm" 
-             "--color"
-             "0x00FF00"
-             "--time"
-             (format "%s-%s" date tm-start)
-             "--reminder"
-             "0H5M"
-             ;; doesn't work :(
-             ;; "--play" "/usr/share/sounds/KDE-Im-Sms.ogg"
-             "--beep"
-             (format "%s" name))))))
-    (add-hook 'org-remember-mode-hook '(lambda () (visual-line-mode t)))
-    (add-hook 'org-remember-before-finalize-hook 'set-calendar-appt)
-
-    ;;; attempt to use org-capture.
-    ;;; remember's work flow is actually more pleasant.
-    ;;; in single buffer visible phase, capture:
-    ;;; 1. creates split buffer, gets selection
-    ;;; 2. fills template in that buffer
-    ;;; 3. completes capture in that buffer
-    ;;; 4. restores original buffer
-    ;;; this is identical to remember
-    ;;; in split-buffer phase, capture:
-    ;;; 1. opens selection window in non-focused buffer (good)
-    ;;; 2. after get selection, fills template in focused buffer,
-    ;;; i.e. it switches away from the window where the selection took place (bad)
-    ;;; 3. when authoring buffer for capture is open, the previously
-    ;;; focused buffer is again put in the split where the template
-    ;;; selection screen came up (bad)
-    ;;; 4. when finished, layout is restored (expected)
-    ;;; the amount of attention shifting is pretty annoying
-    ;;;
-    ;;;;(define-key global-map "\M-\C-r" 'org-capture)
-    ;;;(setq org-capture-templates
-    ;;;      '(("t" "Todo" entry (file "~/note/org/todos.org" "Tasks")
-    ;;;         "* TODO %?\nAdded: %U" :empty-lines 1)
-    ;;;        ("c" "CNE-todo" entry ("~/note/cne/cne.org" "All Todo")
-    ;;;         "* TODO [#%^{IMPORTANCE|B}] [%^{URGENCY|5}] %?\nAdded: %U")
-    ;;;        ("n" "Nikki" entry (file+headline "~/note/org/nikki.org" "ALL")
-    ;;;         "* %U %?\n\n %i\n %a\n\n" :empty-lines 1)
-    ;;;        ("s" "State" entry (file "~/note/org/state.org")
-    ;;;         "* %U %? " :empty-lines 1)
-    ;;;        ("v" "Vocab" plain (file "~/note/org/vocab.org")
-    ;;;         "** %U %^{Word}\n%?\n# -*- xkm-export -*-\n" :empty-lines 1)
-    ;;;        ;; idea template used to be:
-    ;;;        ;; "* %^{Title}\n%?\n  %a"
-    ;;;        ;; but org-capture-fill-template calls (delete-other-windows)
-    ;;;        ;; and maximizes the template-filling buffer
-    ;;;        ;; which is pretty annoying. so simply stop using template prompts
-    ;;;        ("i" "Idea" entry (file "~/note/org/idea.org")
-    ;;;         "* %?\n  %a" :empty-lines 1)
-    ;;;        ("d" "Dump" entry (file+datetree "~/note/org/dump.org")
-    ;;;         "* %?\n%U\n" :empty-lines 1)))
-    
-    ;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; </org mode config> ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-    ;; thanks to http://kliketa.wordpress.com/2010/08/04/gtklook-browse-documentation-for-gtk-glib-and-gnome-inside-emacs/
-    ;NEW;(require 'gtk-look)
-    (setq browse-url-browser-function 'browse-url-generic
-          browse-url-generic-program "chromium-browser")
-    ;;(setq browse-url-browser-function
-    ;; '(("file:.*/usr/share/doc/.*gtk.*-doc/.*" . w3m-browse-url)
-    ;;   ("." . browse-url-firefox)))
-
-    ;; ;; FIXME cider
-    ;; ;; nrepl
-    ;; ;; ref: https://github.com/kingtim/nrepl.el
-    ;; (add-hook 'nrepl-interaction-mode-hook
-    ;;           'nrepl-turn-on-eldoc-mode)
-    ;; ;; Stop the error buffer from popping up while working in the REPL buffer:
-    ;; (setq nrepl-popup-stacktraces nil)
-    ;; ;; Make C-c C-z switch to the *nrepl* buffer in the current window:
-    ;; (add-to-list 'same-window-buffer-names "*nrepl*") 
-    ;; ;; If you have paredit installed you can enabled it like this:
-    ;; (add-hook 'nrepl-interaction-mode 'paredit-mode)
-
-    ;; ref: http://emacs-fu.blogspot.com/2009/11/showing-pop-ups.html
-    (defun djcb-popup (title msg &optional icon sound)
-      "Show a popup if we're on X, or echo it otherwise; TITLE is the title
-    of the message, MSG is the context. Optionally, you can provide an ICON and
-    a sound to be played"
-
-      (interactive)
-      (if (eq window-system 'x)
-          (shell-command (concat "notify-send "
-
-                                 (if icon (concat "-i " icon) "")
-                                 " '" title "' '" msg "'")))
-      (when sound (shell-command
-                   (concat "mplayer -really-quiet " sound " 2> /dev/null"))))
-
-    ;; the appointment notification facility
-    (setq
-     appt-message-warning-time 10 ;; warn 10 min in advance
-     appt-display-mode-line t     ;; show in the modeline
-     appt-display-format 'window) ;; use our func
-    (appt-activate 1)              ;; active appt (appointment notification)
-    (display-time)                 ;; time display is required for this...
-    (setq appt-audible t)
-
-    ;; our little façade-function for djcb-popup
-    (defun djcb-appt-display (min-to-app new-time msg)
-      (djcb-popup (format "Appointment in %s minute(s)" min-to-app) msg 
-                  "/usr/share/icons/gnome/32x32/status/appointment-soon.png"
-                  "/usr/share/sounds/ubuntu/stereo/phone-incoming-call.ogg"))
-    (setq appt-disp-window-function (function djcb-appt-display))
-
-    (defun org-add-appt-after-save-hook ()
-      (if ;(string= mode-name "Org")
-          (member (buffer-file-name) org-agenda-files)
-          (org-agenda-to-appt)))
-    (add-hook 'after-save-hook 'org-add-appt-after-save-hook)
-
-     ;; update appt each time agenda opened
-    (add-hook 'org-finalize-agenda-hook 'org-agenda-to-appt)
-
-    (defun kiwon/merge-appt-time-msg-list (time-msg-list)
-      "Merge time-msg-list's elements if they have the same time."
-      (let* ((merged-time-msg-list (list)))
-        (while time-msg-list
-          (if (eq (car (caar time-msg-list)) (car (caar (cdr time-msg-list))))
-              (setq time-msg-list
-                    (cons
-                     (append
-                      (list (car (car time-msg-list)) ; time
-                            (concat (car (cdr (car time-msg-list))) " / "(car (cdr (car (cdr time-msg-list)))))) ; combined msg
-                      (cdr (cdr (car time-msg-list)))) ; rest information
-                     (nthcdr 2 time-msg-list)))
-            (progn (add-to-list 'merged-time-msg-list (car time-msg-list) t)
-                   (setq time-msg-list (cdr time-msg-list)))))
-        merged-time-msg-list))
-
-    (defun kiwon/org-agenda-to-appt ()
-      (prog2
-          (setq appt-time-msg-list nil)
-          (org-agenda-to-appt)
-        (setq appt-time-msg-list (kiwon/merge-appt-time-msg-list appt-time-msg-list))))
-
-    ;; (add-hook 'org-finalize-agenda-hook (function kiwon/org-agenda-to-appt))
-
-
-
-    ;; pymacs see http://pymacs.progiciels-bpi.ca/pymacs.html#installation
-    ;; (load-file "~/dot/emacs.d/bundle/pymacs/pymacs.el")
-    (autoload 'pymacs-apply "pymacs")
-    (autoload 'pymacs-call "pymacs")
-    (autoload 'pymacs-eval "pymacs" nil t)
-    (autoload 'pymacs-exec "pymacs" nil t)
-    (autoload 'pymacs-load "pymacs" nil t)
-    ;;(eval-after-load "pymacs"
-    ;;  '(add-to-list 'pymacs-load-path YOUR-PYMACS-DIRECTORY"))
-
-    ;;;; ledger
-    ;; (load "ledger")
-
-    ;;;; freex mode
-    ;;
-    ;;(setq pymacs-load-path '("~/dev/elisp/org-freex"))
-    ;;(add-to-list 'load-path (expand-file-name "~/dev/elisp/org-freex/"))
-    ;;(load-file "~/dev/elisp/org-freex/freex-conf.el")
-    ;;;;;;(load-file "~/dev/elisp/org-freex/freex-mode.el")
-    ;;;;(require 'freex-mode)
-
-
-
-
-
-
-    ;; ;; google calendar interaction
-    ;; ;; see http://article.gmane.org/gmane.emacs.orgmode/27214
-    ;; (defadvice org-agenda-add-entry-to-org-agenda-diary-file 
-    ;;   (after add-to-google-calendar)
-    ;;   "Add a new Google calendar entry that mirrors the diary entry just created by org-mode."
-    ;;   (let ((type (ad-get-arg 0))
-    ;;  (text (ad-get-arg 1))
-    ;;  (d1 (ad-get-arg 2))
-    ;;  (year1 (nth 2 d1))
-    ;;  (month1 (car d1))
-    ;;  (day1 (nth 1 d1))
-    ;;  (d2 (ad-get-arg 3))
-    ;;  entry dates)
-    ;;     (if (or (not (eq type 'block)) (not d2))
-    ;;  (setq dates (format "%d-%02d-%02d" year1 month1 day1))
-    ;;       (let ((year2 (nth 2 d2)) (month2 (car d2)) (day2 (nth 1 d2)) (repeats (-
-    ;; (calendar-absolute-from-gregorian d1)
-    ;;                         (calendar-absolute-from-gregorian d2))))
-    ;;  (if (> repeats 0)
-    ;;      (setq dates (format "%d-%02d-%02d every day for %d days" year1 month1 day1 (abs repeats)))
-    ;;    (setq dates (format "%d-%02d-%02d every day for %d days" year1 month1 day1 (abs repeats))))
-    ;;  ))
-    ;;     (setq entry  (format "/usr/local/bin/google calendar add --cal org \"%s on %s\"" text dates))
-    ;;     ;;(message entry)
-    ;;     (if (not (string= "MYLAPTOPCOMPUTER" mail-host-address))
-    ;;  (shell-command entry)
-    ;;       (let ((offline "~/note/org/org2google-buffer"))
-    ;;  (find-file offline)
-    ;;  (goto-char (point-max))
-    ;;  (insert (concat entry "\n"))
-    ;;  (save-buffer)
-    ;;  (kill-buffer (current-buffer))
-    ;;  (message "Plain text written to %s" offline)))))
-    ;; (ad-activate 'org-agenda-add-entry-to-org-agenda-diary-file)
-
-
-
-    ;; in case useful: http://jblevins.org/projects/deft/
-    ;; Deft is an Emacs mode for quickly browsing, filtering, and editing directories of plain text notes, inspired by Notational Velocity.
-    (setq deft-extensions '("org" "tid"))
-    (setq deft-directory "~/note/org/")
-    (setq deft-text-mode 'org-mode)
-    (setq deft-recursive t)
-    (setq deft-use-filename-as-title t)
-    (setq deft-ignore-file-regexp "\\$.+") ;; for ignoring special tiddlers
-
-
-    (setq desktop-save-mode nil)
-    (desktop-change-dir "~/dot/emacs.d")
-
-
-  #+END_SRC
-
-**** org capture
-
-     see http://pages.sachachua.com/.emacs.d/Sacha.html#orgheadline56
-     http://doc.norang.ca/org-mode.html#Capture
-     http://orgmode.org/manual/Template-elements.html
-     http://orgmode.org/manual/Capture-templates.html#Capture-templates
-
-
-     #+BEGIN_SRC emacs-lisp
-       ;; (require 'org-drill)
-
-       ;;; org-mode with remember
-       ;; (org-remember-insinuate)
-       (setq org-directory "~/note/org")
-       (setq org-default-notes-file (concat (file-name-as-directory org-directory) "index.org.gpg"))
-
-       ;;(define-key global-map "\C-cr" 'org-remember)
-       ;; (define-key global-map "\M-\C-r" 'org-remember)
-       (global-set-key (kbd "C-c c") 'org-capture)
-
-       ;; Capture templates for: TODO tasks, Notes, appointments, phone calls, meetings, and org-protocol
-       ;; (setq org-capture-templates
-       ;;       (quote (("t" "todo" entry (file "~/git/org/refile.org")
-       ;;                "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
-       ;;               ("r" "respond" entry (file "~/git/org/refile.org")
-       ;;                "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
-       ;;               ("n" "note" entry (file "~/git/org/refile.org")
-       ;;                "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
-       ;;               ("j" "Journal" entry (file+datetree "~/git/org/diary.org")
-       ;;                "* %?\n%U\n" :clock-in t :clock-resume t)
-       ;;               ("w" "org-protocol" entry (file "~/git/org/refile.org")
-       ;;                "* TODO Review %c\n%U\n" :immediate-finish t)
-       ;;               ("m" "Meeting" entry (file "~/git/org/refile.org")
-       ;;                "* MEETING with %? :MEETING:\n%U" :clock-in t :clock-resume t)
-       ;;               ("p" "Phone call" entry (file "~/git/org/refile.org")
-       ;;                "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
-       ;;               ("h" "Habit" entry (file "~/git/org/refile.org")
-       ;;                "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n"))))
-
-       ;; see http://orgmode.org/manual/Template-elements.html
-
-       (setq org-capture-templates
-             '(
-               ;; ("t" "Todo" entry
-               ;;  "~/note/org/todos.org"
-               ;;  "* TODO %?\nAdded: %U" "Main")
-               ;; ("c" "CNE" entry
-               ;;   "~/note/cne/cne.org"
-               ;;  "* TODO %?\nAdded: %U" "All Todo")
-               ;; ("n" "Nikki" entry
-               ;;   "~/note/org/nikki.org"
-               ;;  "* %U %?\n\n %i\n %a\n\n" "ALL")
-               ;; ;; ("State" ?s "* %U %? " "~/note/org/state.org")
-               ;; ("s" "Scholar" entry
-               ;;  "~/note/org/scholar.org"
-               ;;  "* %?\nadded: %U")
-               ;; ("v" "Vocab" entry
-               ;;   "~/note/org/vocab.org"
-               ;;  "* %U %^{Word}\n%?\n# -*- xkm-export -*-\n")
-               ;; ("i" "Idea" entry
-           ;;       "~/note/org/idea.org"
-           ;;      "* %^{Title}\n%?\n  %a\n  %U" "Main")
-           ;;     ;;("Music" ?m "- %? %U\n" "~/note/org/music.org" "good")
-           ;;     ("l" "learn" entry
-           ;;      "omi%?" "~/note/org/learn.org" "captured")
-           ;;     ("m" "mem" "** %U    :drill:\n
-           ;;     :PROPERTIES:
-           ;;     :DATE_ADDED: %U
-           ;;     :SOURCE_URL: %a
-           ;;     :END:
-           ;; \n%i%?" "~/note/org/learn.org" "captured")
-               ("d" "Dump" entry
-                (file+headline "~/note/org/dump.org" "test")
-                )
-               ))
-     #+END_SRC
 
 
 
