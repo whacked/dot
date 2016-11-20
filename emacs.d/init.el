@@ -1,3 +1,13 @@
+;; package management
+(setq package-archives '(("gnu"       . "http://elpa.gnu.org/packages/")
+                         ("ELPA"      . "http://tromey.com/elpa/")
+                         ("org"       . "http://orgmode.org/elpa/")
+                         ("melpa"     . "https://melpa.org/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("SC"        . "http://joseito.republika.pl/sunrise-commander/")))
+;; activate all the packages (in particular autoloads)
+(package-initialize)
+
 (defun path-join (&rest path-seq)
   (concat (mapconcat 
 	   'file-name-as-directory
