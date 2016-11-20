@@ -2,7 +2,7 @@
 
 #+BEGIN_SRC emacs-lisp
   (when (string= "natto-tpy" system-name)
-    (setq package-list (append package-list (list :extra :code :lisp :unportable)))
+    (setq package-group-list (append package-group-list (list :extra :code :lisp :unportable)))
 
     (setq org-agenda-files 
           (append (map 'list 'expand-file-name '("~/note/org/main.org"

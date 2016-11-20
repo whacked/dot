@@ -2,7 +2,7 @@
 
 #+BEGIN_SRC emacs-lisp
   (when (string= "natto-mba" system-name)
-    (setq package-list (append package-list (list :extra :code :lisp)))
+    (setq package-group-list (append package-group-list (list :extra :code :lisp)))
     (custom-set-variables
      '(org-file-apps (quote ((auto-mode . emacs)
                              ("\\.mm\\'" . default)
