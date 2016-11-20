@@ -1,3 +1,4 @@
+--ignore-dir=eclipse
 --ignore-dir=_report
 --ignore-dir=.ropeproject
 --ignore-dir=venv
