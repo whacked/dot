@@ -438,10 +438,6 @@
    (setq dabbrev-always-check-other-buffers t)
    (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
 
-   ;; highlight cljs with clojure-mode
-   (add-to-list 'auto-mode-alist '("\.cljs$" . clojure-mode))
-
-
    (eval-after-load 'haxe-mode
      '(define-key haxe-mode-map (kbd "C-c C-c")
         (lambda () (interactive) (compile "make"))))
