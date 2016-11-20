@@ -29,7 +29,6 @@
                              ("ELPA"      . "http://tromey.com/elpa/")
                              ("org"      . "http://orgmode.org/elpa/")
                              ("melpa" . "https://melpa.org/packages/")
-                             ;; ("melpa"     . "http://melpa.milkbox.net/packages/")
                              ("marmalade" . "http://marmalade-repo.org/packages/")
                              ("SC"        . "http://joseito.republika.pl/sunrise-commander/"))
                              )
@@ -73,40 +72,9 @@
     (when (eq system-type 'gnu/linux)
       ;; use x-clipboard
       (setq x-select-enable-clipboard t)
-      ;; <ubuntu-tp customizations> ;;;;;;
-      ;;
-      (setq user-emacs-directory "~/dot/emacs.d")
-      (setq el-get-dir "~/dot/emacs.d/el-get")
-
-      ;; ;; use anthy
-      ;; ;; http://www.emacswiki.org/emacs/IBusMode
-      ;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/ibus")
-      ;; (require 'ibus)
-      ;; (add-hook 'after-init-hook 'ibus-mode-on)
-      ;; (setq ibus-agent-file-name "/usr/lib/ibus-el/ibus-el-agent")
-
       (when (display-graphic-p)
         (add-to-list 'default-frame-alist '(width . 100))
         (add-to-list 'default-frame-alist '(height . 60)))
-
-
-      (defun djcb-opacity-modify (&optional dec)
-        "modify the transparency of the emacs frame; if DEC is t,
-        decrease the transparency, otherwise increase it in 10%-steps"
-        (let* ((alpha-or-nil (frame-parameter nil 'alpha)) ; nil before setting
-               (oldalpha (if alpha-or-nil alpha-or-nil 100))
-               (newalpha (if dec (- oldalpha 10) (+ oldalpha 10))))
-          (when (and (>= newalpha frame-alpha-lower-limit) (<= newalpha 100))
-            (modify-frame-parameters nil (list (cons 'alpha newalpha))))))
-
-      ;; C-8 will increase opacity (== decrease transparency)
-      ;; C-9 will decrease opacity (== increase transparency
-      ;; C-0 will returns the state to normal
-      (global-set-key (kbd "C-8") '(lambda()(interactive)(djcb-opacity-modify)))
-      (global-set-key (kbd "C-9") '(lambda()(interactive)(djcb-opacity-modify t)))
-      (global-set-key (kbd "C-0") '(lambda()(interactive)
-                                     (modify-frame-parameters nil `((alpha . 100))))))
-
   #+END_SRC
 
 ** darwin
@@ -133,31 +101,7 @@
                                     (car charset-font)
                                     (font-spec :family (cdr charset-font) :size
                                                14)))
-                charset-font))
-        (defun osx-resize-current-window ()
-          (interactive)
-          (let* ((ncol (string-to-number (read-from-minibuffer "ncol? ")))
-                 (nrow (string-to-number (read-from-minibuffer "nrow? "))))
-            (set-frame-size (selected-frame) ncol nrow)))
-        (defun osx-move-current-window ()
-          (interactive)
-          (let* ((x (string-to-number (read-from-minibuffer "x? ")))
-                 (y (string-to-number (read-from-minibuffer "y? "))))
-            (set-frame-position (selected-frame) x y)))
-        ;; old window mover
-        (defun win:to2 ()
-          (interactive)
-          (set-frame-position (selected-frame) 1440 -200)
-          (set-frame-size (selected-frame) 268 78))
-
-        ;;(setq ipython-command "/opt/local/bin/ipython")
-        ;;(require 'ipython)
-        ;;(setq py-python-command-args '( "-colors" "Linux"))
-        ;;(require 'python-mode)
-        (setenv "PYTHONPATH" "/opt/local/bin/python")
-
-        ;; wtf default path for tex installation...
-        (setenv "PATH" (concat "/usr/texbin:/usr/local/bin:" (getenv "PATH"))))
+                charset-font)))
       (message "using OS X"))
 
   #+END_SRC
@@ -168,9 +112,7 @@
     (when (eq system-type 'windows-nt)
       ;; windows only
       (load-file "~/emacs.d/martin-w32-fullscreen.el"))
-
   #+END_SRC
-
 
 * system-name specific
 
@@ -197,21 +139,6 @@
                    :type git
                    :url "https://github.com/auto-complete/popup-el.git"
                    :features "popup")
-            ;; (:name multi-web-mode
-            ;;        :type git
-            ;;        :url "https://github.com/fgallina/multi-web-mode.git"
-            ;;        :features "multi-web-mode"
-            ;;        :compile nil)
-            
-            ;; (:name impatient-mode
-            ;;        :type git
-            ;;        :url "https://github.com/netguy204/imp.el"
-            ;;        :features "impatient-mode")
-
-            ;; (:name git-playback
-            ;;        :type git
-            ;;        :url "https://github.com/jianli/git-playback"
-            ;;        :features "git-playback")
             
             (:name sqlite-el
                    :type git
