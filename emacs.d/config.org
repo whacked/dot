@@ -227,7 +227,7 @@
                       '(color-theme
                         color-theme-buffer-local
                         load-theme-buffer-local
-                        ;; color-theme-solarized
+                        color-theme-solarized
                         ;; color themes, see https://emacsthemes.com/charts/all-time.html
                         alect-themes
                         ample-theme
@@ -264,7 +264,7 @@
      (setq package-list
            (delete-dups
             (append package-list
-                    '(
+                    '(f
                       gnuplot-mode
                       graphviz-dot-mode
                       haskell-mode
@@ -681,6 +681,7 @@
   ;;   (if (display-graphic-p)
   ;;       (color-theme-solarized-light)
   ;;     (color-theme-solarized-dark)))
+  (color-theme-initialize)
   (color-theme-solarized-light)
 
   (setq fiplr-ignored-globs '((directories (".git" ".svn"))
@@ -1027,11 +1028,9 @@
    (setq deft-use-filename-as-title t)
    (setq deft-ignore-file-regexp "\\$.+") ;; for ignoring special tiddlers
 
-
    (setq desktop-save-mode nil)
    (desktop-change-dir "~/dot/emacs.d")
-
-
+   (setq desktop-save-mode t)
  #+END_SRC
 
 *** org capture
