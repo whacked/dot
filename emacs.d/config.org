@@ -222,25 +222,24 @@
 ** color themes
 
    #+BEGIN_SRC emacs-lisp
-     (when (memq :lisp package-group-list)
-       (setq package-list
-             (delete-dups
-              (append package-list
-                      '(color-theme
-                        color-theme-buffer-local
-                        load-theme-buffer-local
-                        color-theme-solarized
-                        ;; color themes, see https://emacsthemes.com/charts/all-time.html
-                        alect-themes
-                        ample-theme
-                        cyberpunk-theme
-                        leuven-theme
-                        material-theme
-                        monokai-theme
-                        solarized-theme
-                        ujelly-theme
-                        zenburn-theme
-                        )))))
+     (setq package-list
+           (delete-dups
+            (append package-list
+                    '(color-theme
+                      color-theme-buffer-local
+                      load-theme-buffer-local
+                      color-theme-solarized
+                      ;; color themes, see https://emacsthemes.com/charts/all-time.html
+                      alect-themes
+                      ample-theme
+                      cyberpunk-theme
+                      leuven-theme
+                      material-theme
+                      monokai-theme
+                      solarized-theme
+                      ujelly-theme
+                      zenburn-theme
+                      ))))
    #+END_SRC
 
 ** additional packages (full-setup.el)
