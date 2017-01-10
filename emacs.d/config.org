@@ -1268,6 +1268,34 @@
   #+END_SRC
 
 
+** font
+
+   #+BEGIN_SRC emacs-lisp
+     (defun font-exist-p (fontname)
+       "Test if this font is exist or not."
+       (if (or (not fontname) (string= fontname ""))
+           nil
+         (if (not (x-list-fonts fontname)) nil t)))
+
+     (let ((font-pair (cond ((font-exist-p "Consolas")
+                             '("Consolas" . 10))
+                            ((font-exist-p "Monaco")
+                             '("Monaco" . 11))
+                            ((font-exist-p "Anonymous Pro")
+                             '("Anonymous Pro" . 10))
+                            ((font-exist-p "Droid Sans Mono")
+                             '("Droid Sans Mono" . 11))
+                            ((font-exist-p "Deja Vu Sans Mono")
+                             '("Deja Vu Sans Mono" . 10))
+                            ((font-exist-p "Inconsolata")
+                             '("Inconsolata" . 11)))))
+       (defvar emacs-english-font (car font-pair))
+       ;; (set-default-font (format "%s %s" emacs-english-font (cdr font-pair)))
+       (setq default-frame-alist '((font . (format "%s %s"
+                                                   emacs-english-font
+                                                   (cdr font-pair))))))
+   #+END_SRC
+
 * utility (from util.el)
 
 
@@ -1766,14 +1794,9 @@
    see http://coldnew.github.io/blog/2013/11-16_d2f3a/ 解決 org-mode 表格內中英文對齊的問題
    
    #+BEGIN_SRC emacs-lisp
-     (defvar emacs-english-font "Consolas"
-       "The font name of English.")
-
      (defvar emacs-cjk-font "Hiragino Sans GB W3"
        "The font name for CJK.")
-   #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp
+     
      (defvar emacs-font-size-pair '(13 . 16)
        "Default font size pair for (english . chinese)")
 
@@ -1787,12 +1810,6 @@
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
-     (defun font-exist-p (fontname)
-       "Test if this font is exist or not."
-       (if (or (not fontname) (string= fontname ""))
-           nil
-         (if (not (x-list-fonts fontname)) nil t)))
-
      (defun set-font (english chinese size-pair)
        "Setup emacs English and Chinese font on x window-system."
 
@@ -1810,11 +1827,6 @@
      (set-font emacs-english-font emacs-cjk-font emacs-font-size-pair)
    #+END_SRC
 
-** fix emacsclient new windows having different font
-
-   #+BEGIN_SRC emacs-lisp
-   (setq default-frame-alist '((font . "Consolas 10")))
-   #+END_SRC
 
 
 * buffer
