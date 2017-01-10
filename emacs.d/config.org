@@ -953,19 +953,6 @@
    ;;;; ledger
    ;; (load "ledger")
 
-   ;;;; freex mode
-   ;;
-   ;;(setq pymacs-load-path '("~/dev/elisp/org-freex"))
-   ;;(add-to-list 'load-path (expand-file-name "~/dev/elisp/org-freex/"))
-   ;;(load-file "~/dev/elisp/org-freex/freex-conf.el")
-   ;;;;;;(load-file "~/dev/elisp/org-freex/freex-mode.el")
-   ;;;;(require 'freex-mode)
-
-
-
-
-
-
    ;; ;; google calendar interaction
    ;; ;; see http://article.gmane.org/gmane.emacs.orgmode/27214
    ;; (defadvice org-agenda-add-entry-to-org-agenda-diary-file 
