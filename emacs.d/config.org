@@ -87,7 +87,7 @@
                               (japanese-jisx0208 . ,xwl-japanese-font)
                               ;; (japanese-jisx0212 . ,xwl-japanese-font)
                               )))
-                                            ; (set-default-font xwl-default-font)
+                              ;; (set-default-font xwl-default-font)
           (mapc (lambda (charset-font)
                   (set-fontset-font (frame-parameter nil 'font)
                                     (car charset-font)
@@ -551,23 +551,6 @@
 
   ;;(add-to-list 'load-path "~/dot/emacs.d/bundle/icicles")
   ;;(require 'icicles)
-
-  (set-default-font "Consolas 10")
-  (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   ;; '(default ((t (:inherit nil :stipple nil :background "#f8f8ff" :foreground "#000000" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :foundry "unknown" :family (if (featurep (quote ns)) "Monaco" "Consolas")))))
-   '(org-level-1 ((t (:inherit outline-1 :inverse-video t :weight bold :height 1.6 :family "Verdana"))))
-   '(org-level-2 ((t (:inherit outline-2 :inverse-video t :weight bold :height 1.5 :family "Verdana"))))
-   '(org-level-3 ((t (:inherit outline-3 :inverse-video t :weight bold :height 1.4 :family "Verdana"))))
-   '(org-level-4 ((t (:inherit outline-4 :inverse-video t :weight bold :height 1.3 :family "Verdana"))))
-   '(org-level-5 ((t (:inherit outline-5 :inverse-video t :weight bold :height 1.2 :family "Verdana"))))
-   '(org-level-6 ((t (:inherit outline-6 :inverse-video t :weight bold :height 1.1 :family "Verdana"))))
-   '(table-cell ((t (:background "#DD8" :foreground "gray50" :inverse-video nil))))
-   '(table-cell-face ((((class color)) (:background "#AA3" :foreground "gray90"))))
-   )
 
   ;;(set-cursor-color "orange")
 
@@ -1282,7 +1265,6 @@
      '(table-cell ((t (:background "#DD8" :foreground "gray50" :inverse-video nil))))
      '(table-cell-face ((((class color)) (:background "#AA3" :foreground "gray90")))))
     ;; (org-babel-load-file (expand-file-name "init.org" user-emacs-directory))
-  
   #+END_SRC
 
 
