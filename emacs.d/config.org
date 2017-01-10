@@ -703,11 +703,6 @@
    ;; <org mode config> ;;
    ;;;;;;;;;;;;;;;;;;;;;;;
 
-
-
-					   ; below add-to-list not required if org-mode successfully built with =make= and =make-install=
-   ;;(add-to-list 'load-path "~/dot/emacs.d/bundle/org-mode/lisp")
-   ;;(add-to-list 'load-path "~/dot/emacs.d/bundle/org-mode/contrib/lisp")
    (add-to-list 'load-path "~/dot/emacs.d/dev")
    (require 'org)
    ;; force org-babel src edit to use same window instead of splitting
@@ -768,7 +763,7 @@
 
 
    (require 'iimage)
-					   ;(setq iimage-mode-image-search-path (expand-file-name "~/"))
+   ;;(setq iimage-mode-image-search-path (expand-file-name "~/"))
    ;;Match org file: links
    (add-to-list 'iimage-mode-image-regex-alist
 		(cons (concat "file:\\(~?[]\\[\\(\\),~+./_0-9a-zA-Z -]+\\.\\(GIF\\|JP\\(?:E?G\\)\\|P\\(?:BM\\|GM\\|N[GM]\\|PM\\)\\|SVG\\|TIFF?\\|X\\(?:[BP]M\\)\\|gif\\|jp\\(?:e?g\\)\\|p\\(?:bm\\|gm\\|n[gm]\\|pm\\)\\|svg\\|tiff?\\|x\\(?:[bp]m\\)\\)\\)")  1))
@@ -852,12 +847,11 @@
    ;; </org mode config> ;;
    ;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-
+   
    ;; thanks to http://kliketa.wordpress.com/2010/08/04/gtklook-browse-documentation-for-gtk-glib-and-gnome-inside-emacs/
    ;NEW;(require 'gtk-look)
    (setq browse-url-browser-function 'browse-url-generic
-	 browse-url-generic-program "chromium-browser")
+         browse-url-generic-program "chromium-browser")
    ;;(setq browse-url-browser-function
    ;; '(("file:.*/usr/share/doc/.*gtk.*-doc/.*" . w3m-browse-url)
    ;;   ("." . browse-url-firefox)))
