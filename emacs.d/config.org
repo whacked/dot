@@ -261,7 +261,7 @@
 *** coding.el (:code)
 
  #+BEGIN_SRC emacs-lisp
-   (when (memq :code package-group-list)
+   (when t ;; (memq :code package-group-list)
      (setq package-list
            (delete-dups
             (append package-list
