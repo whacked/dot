@@ -1272,9 +1272,9 @@
                              '("Inconsolata" . 11)))))
        (defvar emacs-english-font (car font-pair))
        ;; (set-default-font (format "%s %s" emacs-english-font (cdr font-pair)))
-       (setq default-frame-alist '((font . (format "%s %s"
-                                                   emacs-english-font
-                                                   (cdr font-pair))))))
+       (add-to-list 'default-frame-alist '((font . (format "%s %s"
+                                                           emacs-english-font
+                                                           (cdr font-pair))))))
    #+END_SRC
 
 * utility (from util.el)
