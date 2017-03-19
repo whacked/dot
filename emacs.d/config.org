@@ -998,6 +998,25 @@
    (setq desktop-save-mode t)
  #+END_SRC
 
+ #+BEGIN_SRC emacs-lisp :results silent
+   (defvar *default-anonymous-tiddler-directory*
+     (expand-file-name "~/note/org/tw/tiddlers/warehouse"))
+   (defun new-anonymous-tiddler (&optional reserve-for-future-use)
+         "create a new uniquely named tiddler inside designated directory"
+         (interactive "P")
+         (let* ((title (format-time-string "anonymous tiddler %Y-%m-%d %H:%M:%S"))
+                (file-path (concat
+                            (file-name-as-directory
+                             ,*default-anonymous-tiddler-directory*)
+                            (format-time-string "%Y-%m-%d_%H-%M-%S.tid"))))
+           (find-file-literally file-path)
+           (insert
+            (tiddlywiki-org-mode-tiddler-preamble title)
+            "\n\n")
+           (tiddlywiki-mode)
+           (kill-new (concat "[[file:" file-path "]]"))))
+ #+END_SRC
+
 *** org capture
 
     see http://pages.sachachua.com/.emacs.d/Sacha.html#orgheadline56
