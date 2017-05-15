@@ -1017,6 +1017,7 @@
             "\n\n")
            (tiddlywiki-mode)
            (kill-new (concat "[[file:" file-path "]]"))))
+   (defalias 'jog 'new-anonymous-tiddler)
  #+END_SRC
 
 *** org capture
@@ -1911,3 +1912,9 @@
   ;; (local-set-key (kbd "C-<return>") 'send-current-line-to-term)
 #+END_SRC
 
+* quickfix
+
+  #+BEGIN_SRC emacs-lisp
+    (setenv "PATH" (concat (getenv "HOME") "/.nix-profile/bin" (getenv "PATH")))
+    (setq exec-path (split-string (getenv "PATH") path-separator))
+  #+END_SRC
