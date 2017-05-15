@@ -1225,7 +1225,7 @@
             (when (get-buffer (car postsave-list))
               (switch-to-buffer (car postsave-list))
               (revert-buffer nil t)
-              (show-all))
+              (outline-show-all))
             (setq postsave-list (cdr postsave-list))))
         
         (switch-to-buffer cur-buf)
@@ -1550,7 +1550,7 @@
             (other-window 1)
             (switch-to-buffer navigation-buffer)
             (org-mode)
-            (show-all)
+            (outline-show-all)
             (other-window -1)
             (org-content 4)
             (read-only-mode 1)
@@ -1558,7 +1558,7 @@
         (progn
           (kill-buffer (get-buffer navigation-buffer-name))
           (delete-window)
-          (show-all)
+          (outline-show-all)
           (read-only-mode 0)
           (message "bye navigate mode"))))
 
