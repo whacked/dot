@@ -131,6 +131,7 @@
                          deft
                          diff-hl
                          eval-in-repl
+                         find-file-in-project
                          fiplr ;; vim-like ctrl-p
                          git-timemachine
                          ;; google-this
@@ -312,6 +313,7 @@
                       popup
                       queue
                       sibilant-mode
+                      inf-clojure
                       ))))
      (setq my-packages 
            (delete-dups
