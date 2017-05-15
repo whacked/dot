@@ -3,6 +3,11 @@
 
 # =:tangle yes= not required for this to load correctly from init.el
 
+* stuff to get familiarized with
+
+  - [[https://github.com/technomancy/find-file-in-project][find-file-in-project]]
+  - [[https://github.com/alphapapa/helm-org-rifle][helm-org-rifle]]
+
 * init
 
   #+BEGIN_SRC emacs-lisp
