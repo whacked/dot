@@ -100,5 +100,10 @@ alias scp-nosave='scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=n
 alias mosh-nosave='mosh --ssh=-"o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -C -X"'
 
 NIX_SH_PATH=$HOME/.nix-profile/etc/profile.d/nix.sh
-if [ -e $NIX_SH_PATH ]; then . $NIX_SH_PATH; fi
+if [ -e $NIX_SH_PATH ]; then
+    . $NIX_SH_PATH;
+fi
 
+
+## keychain
+keychain --eval id_rsa
