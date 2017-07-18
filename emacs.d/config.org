@@ -152,6 +152,7 @@
                          navi-mode
                          neotree
                          outorg outshine
+                         ov ;; overlay
                          powerline
                          project-explorer
                          projectile
@@ -312,6 +313,7 @@
             (append package-list
                     '(cider
                       clojure-mode
+                      clj-refactor
                       expand-region
                       hy-mode
                       paredit
