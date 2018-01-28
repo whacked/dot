@@ -1,5 +1,6 @@
 #+BABEL: :cache yes
 #+PROPERTY: header-args :tangle yes :comments org :results silent
+#+STARTUP: showeverything
 
 # =:tangle yes= not required for this to load correctly from init.el
 
@@ -8,11 +9,18 @@
   - [[https://github.com/technomancy/find-file-in-project][find-file-in-project]]
   - [[https://github.com/alphapapa/helm-org-rifle][helm-org-rifle]]
 
-* init
+* init + base UI default
 
   #+BEGIN_SRC emacs-lisp
     (setq inhibit-splash-screen t)
-    (set-default-coding-systems 'undecided-unix)
+    (setq-default
+     truncate-lines t
+     tab-width 2
+     indent-tabs-mode nil
+     echo-keystrokes 0.1 ;; = delay for minibuffer display after pressing function key default is 1
+     )
+
+    (set-default-coding-systems 'utf-8)
 
     (defun now (&optional return-date-only) (interactive "P") (message (format-time-string (if return-date-only "%Y-%m-%d" "%Y-%m-%d %H:%M:%S"))))
     (defun insert-timestamp (&optional return-date-only)
@@ -29,22 +37,38 @@
    =M-x el-get-elpa-build-local-recipes= to refresh the list
    
   #+BEGIN_SRC emacs-lisp
-    ;; fetch the list of packages available 
-    (unless package-archive-contents
-      (package-refresh-contents))
-
     ;; https://github.com/dimitri/el-get#readme
+    ;; FIXME: OBSOLETE?
     (add-to-list 'load-path "~/dot/emacs.d/el-get/el-get")
-    (unless (require 'el-get nil t)
-      (with-current-buffer
-          (url-retrieve-synchronously "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-        (end-of-buffer) (eval-print-last-sexp)))
+
+    (defun local--init-emacs-package ()
+      (require 'package)
+      (add-to-list 'package-archives
+                   '("melpa" . "http://melpa.org/packages/"))
+      (package-refresh-contents)
+      (package-initialize))
+
+    ;; use MELPA's el-get
+    (unless (require 'el-get nil 'noerror)
+      (local--init-emacs-package)
+      (package-install 'el-get)
+      (require 'el-get))
+
+    (unless (package-installed-p 'use-package)
+      (local--init-emacs-package)
+      (package-install 'use-package))
+
+    (eval-when-compile (require 'use-package))
+
+    ;; (add-to-list 'el-get-recipe-path "~/dot/emacs.d/el-get-user/recipes")
 
     ;; for MELPA packages
     ;; ref http://stackoverflow.com/questions/23165158/how-do-i-install-melpa-packages-via-el-get
-    (require 'el-get-elpa)
+    ;; likely no longer needed as of 2018-01-28
+    ;; (require 'el-get-elpa)
     ;; then call el-get-elpa-build-local-recipes
-    (package-initialize)
+
+    ;;(package-initialize)
 
     ;; local sources
     ;; example:
@@ -59,6 +83,15 @@
 
     ;; specify package sets to load later
     (setq package-group-list (list))
+
+    (defmacro local--load-packages (&rest package-list)
+      (cons
+       'progn
+       (mapcar
+        (lambda (package-name)
+          (list 'use-package package-name :ensure t :defer t))
+        package-list)))
+
   #+END_SRC
 
 * os-specific
