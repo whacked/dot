@@ -21,6 +21,7 @@
      )
 
     (set-default-coding-systems 'utf-8)
+    (set-language-environment "UTF-8")
 
     (defun now (&optional return-date-only) (interactive "P") (message (format-time-string (if return-date-only "%Y-%m-%d" "%Y-%m-%d %H:%M:%S"))))
     (defun insert-timestamp (&optional return-date-only)
@@ -53,6 +54,7 @@
       (local--init-emacs-package)
       (package-install 'el-get)
       (require 'el-get))
+    (setq package-list (list))
 
     (unless (package-installed-p 'use-package)
       (local--init-emacs-package)
@@ -170,10 +172,8 @@
    diff-hl
    dirtree
    elscreen
-   eval-in-repl
    fic-mode ;; to highlight TODO FIXME BUG etc
    find-file-in-project
-   fiplr ;; vim-like ctrl-p
    git-timemachine
    ;; google-this
 
@@ -188,7 +188,6 @@
    
    json-mode
    magit
-   multi-web-mode
    multiple-cursors
    muse
    navi-mode
@@ -218,6 +217,108 @@
    yasnippet
    )
 #+END_SRC
+
+*** eval-in-repl
+
+* eval-in-repl
+
+  #+BEGIN_SRC emacs-lisp :results silent
+    (use-package eval-in-repl
+      :ensure t
+      :config (progn
+                ;; Shell support
+                (require 'eval-in-repl-shell)
+
+                ;; Version with opposite behavior to eir-jump-after-eval configuration
+                (defun eir-eval-in-shell2 ()
+                  "eval-in-repl for shell script (opposite behavior)
+         
+                   This version has the opposite behavior to the eir-jump-after-eval
+                   configuration when invoked to evaluate a line."
+                  (interactive)
+                  (let ((eir-jump-after-eval (not eir-jump-after-eval)))
+                    (eir-eval-in-shell)))
+                ;; (add-hook 'sh-mode-hook
+                ;;           '(lambda()
+                ;;              (local-set-key (kbd "C-M-<return>") 'eir-eval-in-shell2)))
+
+                (add-hook 'sh-mode-hook
+                          '(lambda()
+                             (local-set-key (kbd "C-<return>") 'eir-eval-in-shell)))))
+
+
+  #+END_SRC
+
+**** eval-in-repl-like for ansi-term
+
+    will only work if ansi-term is in line mode (=C-c C-j=)
+    switch back to char mode with =C-c C-k=
+
+#+BEGIN_SRC emacs-lisp
+  (setq local--term-buffer-maximum-size 0)
+  (defun local--send-current-line-to-term (prefix)
+    ;; prefix to insert output below current line
+    (interactive "P")
+    (let* ((cur-line (thing-at-point 'line t))
+           ;; (process-name "*ansi-term*")
+           (process-name "*shell*")
+           ;; (cur-line "ls -l\n")
+           (cur-buf (current-buffer))
+           (shell-buf (get-buffer process-name))
+           (cur-point-in-process (let ((rtn (progn (switch-to-buffer shell-buf)
+                                                   (point))))
+                                   (switch-to-buffer cur-buf)
+                                   rtn)))
+      (process-send-string
+       process-name 
+       (if (string-match "[ \t\n]*$" cur-line)
+           (concat (replace-match "" nil nil cur-line) "\n")
+         cur-line))
+      (if prefix
+          (save-excursion
+            ;; hack
+            (sleep-for 1)
+            (let ((new-point-max (progn (switch-to-buffer shell-buf)
+                                        (point-max)))
+                  (new-content (progn
+                                 (switch-to-buffer shell-buf)
+                                 (buffer-substring cur-point-in-process (point-max)))))
+              (switch-to-buffer cur-buf)
+              (end-of-line)
+              (newline)
+              (insert new-content)
+              (insert (format "point: %s\nnew max: %s\nstring: %s\n" cur-point-in-process new-point-max new-content))))
+        (progn
+          (message "NO PREFIX")
+         (next-line)))))
+  ;; (local-set-key (kbd "C-<return>") 'local--send-current-line-to-term)
+#+END_SRC
+
+*** fiplr (vim-like ctrl-p)
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package fiplr
+        :ensure t
+        :config (setq fiplr-ignored-globs
+                      '((directories (".git" ".svn"))
+                        (files ("*.jpg" "*.png" "*.zip" "*~"
+                                "*.pyc" "*.min.js")))))
+    #+END_SRC
+
+*** multi-web-mode
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package multi-web-mode
+        :ensure t
+        :defer t
+        :config (progn
+                  (setq mweb-default-major-mode 'html-mode)
+                  (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
+                                    (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
+                                    (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
+                  (setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
+                  (multi-web-global-mode 1)))
+    #+END_SRC
 
 *** win-switch
 
@@ -378,8 +479,6 @@
 
 *** only run on main machine (:unportable)
 
-    - =win-switch= :: allows repeated =other-window= via =C-x o o o ...=
-
  #+BEGIN_SRC emacs-lisp
    (when (memq :unportable package-group-list)
      (setq my-packages
@@ -419,31 +518,12 @@
        (add-hook 'clojurescript-mode-hook #'enable-paredit-mode))
    #+END_SRC
     
-** default UI config
-
-   #+BEGIN_SRC emacs-lisp
-     (setq-default
-      truncate-lines t
-      tab-width 2
-      indent-tabs-mode nil
-      echo-keystrokes 0.1 ;; = delay for minibuffer display after pressing function key default is 1
-      )
-   #+END_SRC
-
 ** revive (resume)
 
    #+BEGIN_SRC emacs-lisp
      (autoload 'save-current-configuration "revive" "Save status" t)
      (autoload 'resume "revive" "Resume Emacs" t)
      (autoload 'wipe "revive" "Wipe Emacs" t)
-   #+END_SRC
-
-** win-switch
-
-   #+BEGIN_SRC emacs-lisp
-     (require 'win-switch)
-     (global-set-key "\C-xo" 'win-switch-dispatch)
-     (setq win-switch-idle-time 0.3)
    #+END_SRC
 
 ** remainder
@@ -475,9 +555,6 @@
              (error "no process at point!")))))
 
 
-  ;; (require 'windata)
-  ;; (require 'tree-mode)
-  ;; (require 'dirtree)
   ;; (autoload 'dirtree "dirtree" "Add directory to tree view" t)
 
   ;; ;; perspective mode
@@ -591,7 +668,6 @@
     (setq kill-emacs-hook nil)
     (kill-emacs))
 
-  (defalias 'wsm 'win-switch-menu)
   (defalias 'visu 'visual-line-mode)
 
   (defun surround-region-with-tag (tag-name beg end)
@@ -604,11 +680,6 @@
 
   (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
   (require 'ansi-color)
-
-  ;;(add-to-list 'load-path "~/dot/emacs.d/bundle/icicles")
-  ;;(require 'icicles)
-
-  ;;(set-cursor-color "orange")
 
   (require 'uniquify)
   (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
@@ -670,16 +741,7 @@
   (my-keys-minor-mode 1)
   (winner-mode 1)
 
-  ;; w3 should be loaded by ELPA
-  ;;NEW;(require 'w3-auto)
-
-  (defun my-c-mode-hook ()
-    (define-key c-mode-map (kbd "C-<return>") 'gtk-lookup-symbol)
-    (message "C mode hook ran."))
-  (add-hook 'c-mode-hook 'my-c-mode-hook)
-
   (setq slime-multiprocessing t)
-  (set-language-environment "UTF-8")
   (setq slime-net-coding-system 'utf-8-unix)
 
   ;; to clear shell in ESS mode
@@ -707,14 +769,6 @@
     ad-do-it)
   (ad-activate 'balance-windows)
 
-  (require 'multi-web-mode)
-  (setq mweb-default-major-mode 'html-mode)
-  (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
-                    (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
-                    (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
-  (setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
-  (multi-web-global-mode 1)
-
   ;; not playing nice with daemon
   ;; -- now launching with -q = bypass
   ;; (when nil
@@ -722,11 +776,7 @@
   ;;       (color-theme-solarized-light)
   ;;     (color-theme-solarized-dark)))
   (color-theme-initialize)
-  (color-theme-solarized-light)
 
-  (setq fiplr-ignored-globs '((directories (".git" ".svn"))
-                              (files ("*.jpg" "*.png" "*.zip" "*~"
-                                      "*.pyc" "*.min.js"))))
 #+END_SRC
 
 ** vim-inspired
@@ -816,11 +866,8 @@
 
    (setq org-log-done t)
 
-
-
-   (require 'iimage)
-   ;;(setq iimage-mode-image-search-path (expand-file-name "~/"))
    ;;Match org file: links
+   ;; old, for iimage-minor-mode
    (add-to-list 'iimage-mode-image-regex-alist
 		(cons (concat "file:\\(~?[]\\[\\(\\),~+./_0-9a-zA-Z -]+\\.\\(GIF\\|JP\\(?:E?G\\)\\|P\\(?:BM\\|GM\\|N[GM]\\|PM\\)\\|SVG\\|TIFF?\\|X\\(?:[BP]M\\)\\|gif\\|jp\\(?:e?g\\)\\|p\\(?:bm\\|gm\\|n[gm]\\|pm\\)\\|svg\\|tiff?\\|x\\(?:[bp]m\\)\\)\\)")  1))
    (define-key global-map (kbd "<f12>") 'org-agenda)
@@ -1003,42 +1050,9 @@
    ;;;; ledger
    ;; (load "ledger")
 
-   ;; ;; google calendar interaction
-   ;; ;; see http://article.gmane.org/gmane.emacs.orgmode/27214
-   ;; (defadvice org-agenda-add-entry-to-org-agenda-diary-file 
-   ;;   (after add-to-google-calendar)
-   ;;   "Add a new Google calendar entry that mirrors the diary entry just created by org-mode."
-   ;;   (let ((type (ad-get-arg 0))
-   ;;  (text (ad-get-arg 1))
-   ;;  (d1 (ad-get-arg 2))
-   ;;  (year1 (nth 2 d1))
-   ;;  (month1 (car d1))
-   ;;  (day1 (nth 1 d1))
-   ;;  (d2 (ad-get-arg 3))
-   ;;  entry dates)
-   ;;     (if (or (not (eq type 'block)) (not d2))
-   ;;  (setq dates (format "%d-%02d-%02d" year1 month1 day1))
-   ;;       (let ((year2 (nth 2 d2)) (month2 (car d2)) (day2 (nth 1 d2)) (repeats (-
-   ;; (calendar-absolute-from-gregorian d1)
-   ;;                         (calendar-absolute-from-gregorian d2))))
-   ;;  (if (> repeats 0)
-   ;;      (setq dates (format "%d-%02d-%02d every day for %d days" year1 month1 day1 (abs repeats)))
-   ;;    (setq dates (format "%d-%02d-%02d every day for %d days" year1 month1 day1 (abs repeats))))
-   ;;  ))
-   ;;     (setq entry  (format "/usr/local/bin/google calendar add --cal org \"%s on %s\"" text dates))
-   ;;     ;;(message entry)
-   ;;     (if (not (string= "MYLAPTOPCOMPUTER" mail-host-address))
-   ;;  (shell-command entry)
-   ;;       (let ((offline "~/note/org/org2google-buffer"))
-   ;;  (find-file offline)
-   ;;  (goto-char (point-max))
-   ;;  (insert (concat entry "\n"))
-   ;;  (save-buffer)
-   ;;  (kill-buffer (current-buffer))
-   ;;  (message "Plain text written to %s" offline)))))
-   ;; (ad-activate 'org-agenda-add-entry-to-org-agenda-diary-file)
-
-
+   ;; see earlier commits for google calendar interaction
+   ;; ref http://article.gmane.org/gmane.emacs.orgmode/27214
+   ;; "defadvice org-agenda-add-entry-to-org-agenda-diary-file"
 
    ;; in case useful: http://jblevins.org/projects/deft/
    ;; Deft is an Emacs mode for quickly browsing, filtering, and editing directories of plain text notes, inspired by Notational Velocity.
@@ -1054,25 +1068,28 @@
    (setq desktop-save-mode t)
  #+END_SRC
 
- #+BEGIN_SRC emacs-lisp :results silent
-   (defvar *default-anonymous-tiddler-directory*
-     (expand-file-name "~/note/org/tw/tiddlers/warehouse"))
-   (defun new-anonymous-tiddler (&optional reserve-for-future-use)
-         "create a new uniquely named tiddler inside designated directory"
-         (interactive "P")
-         (let* ((title (format-time-string "anonymous tiddler %Y-%m-%d %H:%M:%S"))
-                (file-path (concat
-                            (file-name-as-directory
-                             ,*default-anonymous-tiddler-directory*)
-                            (format-time-string "%Y-%m-%d_%H-%M-%S.tid"))))
-           (find-file-literally file-path)
-           (insert
-            (tiddlywiki-org-mode-tiddler-preamble title)
-            "\n\n")
-           (tiddlywiki-mode)
-           (kill-new (concat "[[file:" file-path "]]"))))
-   (defalias 'jog 'new-anonymous-tiddler)
- #+END_SRC
+
+*** tiddlywiki
+
+#+BEGIN_SRC emacs-lisp :results silent
+  (defvar *default-anonymous-tiddler-directory*
+    (expand-file-name "~/note/org/tw/tiddlers/warehouse"))
+  (defun new-anonymous-tiddler (&optional reserve-for-future-use)
+        "create a new uniquely named tiddler inside designated directory"
+        (interactive "P")
+        (let* ((title (format-time-string "anonymous tiddler %Y-%m-%d %H:%M:%S"))
+               (file-path (concat
+                           (file-name-as-directory
+                            ,*default-anonymous-tiddler-directory*)
+                           (format-time-string "%Y-%m-%d_%H-%M-%S.tid"))))
+          (find-file-literally file-path)
+          (insert
+           (tiddlywiki-org-mode-tiddler-preamble title)
+           "\n\n")
+          (tiddlywiki-mode)
+          (kill-new (concat "[[file:" file-path "]]"))))
+  (defalias 'jog 'new-anonymous-tiddler)
+#+END_SRC
 
 *** org capture
 
@@ -1246,6 +1263,7 @@
         )
 
     #+END_SRC
+
 
 * filesync (sync.el)
 
@@ -1886,85 +1904,6 @@
 
 
 
-* buffer
-
-#+BEGIN_SRC emacs-lisp
-  (defun display-prefix (arg)
-    "Display the value of the raw prefix arg."
-    (interactive "P")
-    (message "%s" arg))
-
-#+END_SRC
-
-* eval-in-repl
-
-  #+BEGIN_SRC emacs-lisp :results silent
-    (require 'eval-in-repl)
-    ;; Shell support
-    (require 'eval-in-repl-shell)
-
-    ;; Version with opposite behavior to eir-jump-after-eval configuration
-    (defun eir-eval-in-shell2 ()
-      "eval-in-repl for shell script (opposite behavior)
-         
-         This version has the opposite behavior to the eir-jump-after-eval
-         configuration when invoked to evaluate a line."
-      (interactive)
-      (let ((eir-jump-after-eval (not eir-jump-after-eval)))
-        (eir-eval-in-shell)))
-    ;; (add-hook 'sh-mode-hook
-    ;;           '(lambda()
-    ;;              (local-set-key (kbd "C-M-<return>") 'eir-eval-in-shell2)))
-
-    (add-hook 'sh-mode-hook
-              '(lambda()
-                 (local-set-key (kbd "C-<return>") 'eir-eval-in-shell)))
-  #+END_SRC
-
-*** eval-in-repl-like for ansi-term
-
-    will only work if ansi-term is in line mode (=C-c C-j=)
-    switch back to char mode with =C-c C-k=
-
-#+BEGIN_SRC emacs-lisp
-  (setq term-buffer-maximum-size 0)
-  (defun send-current-line-to-term (prefix)
-    ;; prefix to insert output below current line
-    (interactive "P")
-    (let* ((cur-line (thing-at-point 'line t))
-           ;; (process-name "*ansi-term*")
-           (process-name "*shell*")
-           ;; (cur-line "ls -l\n")
-           (cur-buf (current-buffer))
-           (shell-buf (get-buffer process-name))
-           (cur-point-in-process (let ((rtn (progn (switch-to-buffer shell-buf)
-                                                   (point))))
-                                   (switch-to-buffer cur-buf)
-                                   rtn)))
-      (process-send-string
-       process-name 
-       (if (string-match "[ \t\n]*$" cur-line)
-           (concat (replace-match "" nil nil cur-line) "\n")
-         cur-line))
-      (if prefix
-          (save-excursion
-            ;; hack
-            (sleep-for 1)
-            (let ((new-point-max (progn (switch-to-buffer shell-buf)
-                                        (point-max)))
-                  (new-content (progn
-                                 (switch-to-buffer shell-buf)
-                                 (buffer-substring cur-point-in-process (point-max)))))
-              (switch-to-buffer cur-buf)
-              (end-of-line)
-              (newline)
-              (insert new-content)
-              (insert (format "point: %s\nnew max: %s\nstring: %s\n" cur-point-in-process new-point-max new-content))))
-        (progn
-          (message "NO PREFIX")
-         (next-line)))))
-  ;; (local-set-key (kbd "C-<return>") 'send-current-line-to-term)
-#+END_SRC
 
 * quickfix
 
