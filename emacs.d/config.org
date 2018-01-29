@@ -133,7 +133,6 @@
                                                14)))
                 charset-font)))
       (message "using OS X"))
-
   #+END_SRC
 
 ** windows-nt
@@ -156,69 +155,86 @@
 
 * package setup
 
+** common
+
+#+BEGIN_SRC emacs-lisp
+  (local--load-packages
+   async ;; https://github.com/jwiegley/emacs-async
+   auto-complete
+   
+   color-theme
+
+   csv-mode ;; in elpa, not melpa
+   dash
+   deft
+   diff-hl
+   dirtree
+   elscreen
+   eval-in-repl
+   fic-mode ;; to highlight TODO FIXME BUG etc
+   find-file-in-project
+   fiplr ;; vim-like ctrl-p
+   git-timemachine
+   ;; google-this
+
+   helm 
+   helm-org-rifle ;; https://github.com/alphapapa/helm-org-rifle
+   helm-projectile
+   
+   htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
+   hydra
+   ibuffer-vc
+   iedit
+   
+   json-mode
+   magit
+   multi-web-mode
+   multiple-cursors
+   muse
+   navi-mode
+   neotree
+   outorg outshine
+   ov ;; overlay
+
+   paredit
+   powerline
+   project-explorer
+   projectile
+   request
+   revive
+   s
+   simple-httpd
+   skewer-mode ;; js live repl https://github.com/skeeto/skewer-mode
+   spinner ;; spinner for ongoing operation
+   sqlite
+   sr-speedbar ;; file list view in buffer
+   transpose-frame
+   try
+   unbound ;; provides describe-unbound-keys
+   undo-tree
+   ;; if win-switch works, remove this:
+   ;; linkd ;; required for win-switch
+   with-editor ;; dependency for magit
+   yasnippet
+   )
+#+END_SRC
+
+*** win-switch
+
+    allows repeated =other-window= via =C-x o o o ...=
+    
+    #+BEGIN_SRC emacs-lisp
+      (use-package win-switch
+        :ensure t
+        :bind ("C-x o" . win-switch-dispatch)
+        :config (setq win-switch-idle-time 0.3))
+    #+END_SRC
+
 ** package-common.el
 
   #+BEGIN_SRC emacs-lisp
-    ;; for emacs package.el
-    ;; list the packages you want
-    (setq package-list '(
-                         async ;; https://github.com/jwiegley/emacs-async
-                         auto-complete
-                         
-                         dash
-                         deft
-                         diff-hl
-                         eval-in-repl
-                         find-file-in-project
-                         fiplr ;; vim-like ctrl-p
-                         git-timemachine
-                         ;; google-this
-                         helm 
-                         helm-org-rifle ;; https://github.com/alphapapa/helm-org-rifle
-                         htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
-                         hydra
-                         json-mode
-                         magit
-                         multi-web-mode
-                         multiple-cursors
-                         muse
-                         navi-mode
-                         neotree
-                         outorg outshine
-                         ov ;; overlay
-                         powerline
-                         project-explorer
-                         projectile
-                         request
-                         revive
-                         s
-                         simple-httpd
-                         skewer-mode ;; js live repl https://github.com/skeeto/skewer-mode
-                         spinner ;; spinner for ongoing operation
-                         sr-speedbar ;; file list view in buffer
-                         transpose-frame
-                         unbound ;; provides describe-unbound-keys
-                         undo-tree
-                         ;; if win-switch works, remove this:
-                         ;; linkd ;; required for win-switch
-                         win-switch
-                         with-editor ;; dependency for magit
-                         yasnippet
-                         ))
-
     (setq el-get-sources
-          '(
-            ;; (:name emacs-dirtree
-            ;;        :type git
-            ;;        :url "https://github.com/zkim/emacs-dirtree.git"
-            ;;        :features "dirtree"
-            ;;        :compile "dirtree.el")
-            (:name sqlite-el
-                   :type git
-                   :url "https://github.com/cnngimenez/sqlite.el"
-                   :features "sqlite")
-
-            (:name tiddlywiki-org
+          '((:name tiddlywiki-org
                    :type git
                    :url "https://github.com/whacked/tiddlywiki-org"
                    :features "tiddlywiki-mode")
@@ -226,8 +242,7 @@
             (:name ob-shstream
                    :type git
                    :url "https://github.com/whacked/ob-shstream"
-                   :features "ob-shstream")
-            ))
+                   :features "ob-shstream")))
 
     (setq my-packages
           (append
@@ -265,8 +280,7 @@
      (setq package-list
            (delete-dups
             (append package-list
-                    '(color-theme
-                      color-theme-buffer-local
+                    '(color-theme-buffer-local
                       load-theme-buffer-local
                       color-theme-solarized
                       ;; color themes, see https://emacsthemes.com/charts/all-time.html
