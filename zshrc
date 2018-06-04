@@ -48,7 +48,11 @@ bindkey -e
 ##compinit
 ### End of lines added by compinstall
 
-source $HOME/dot/commonrc.1
+trycount=1
+while [ -e $HOME/dot/commonrc.$trycount ]; do
+    source $HOME/dot/commonrc.$trycount
+    trycount=$(($trycount+1))
+done
 
 setopt HIST_IGNORE_SPACE
 setopt hist_ignore_dups extended_history HIST_SAVE_NO_DUPS

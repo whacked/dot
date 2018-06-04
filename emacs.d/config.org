@@ -1,13 +1,27 @@
 #+BABEL: :cache yes
 #+PROPERTY: header-args :tangle yes :comments org :results silent
+#+STARTUP: showeverything
 
 # =:tangle yes= not required for this to load correctly from init.el
 
-* init
+* stuff to get familiarized with
+
+  - [[https://github.com/technomancy/find-file-in-project][find-file-in-project]]
+  - [[https://github.com/alphapapa/helm-org-rifle][helm-org-rifle]]
+
+* init + base UI default
 
   #+BEGIN_SRC emacs-lisp
     (setq inhibit-splash-screen t)
-    (set-default-coding-systems 'undecided-unix)
+    (setq-default
+     truncate-lines t
+     tab-width 2
+     indent-tabs-mode nil
+     echo-keystrokes 0.1 ;; = delay for minibuffer display after pressing function key default is 1
+     )
+
+    (set-default-coding-systems 'utf-8)
+    (set-language-environment "UTF-8")
 
     (defun now (&optional return-date-only) (interactive "P") (message (format-time-string (if return-date-only "%Y-%m-%d" "%Y-%m-%d %H:%M:%S"))))
     (defun insert-timestamp (&optional return-date-only)
@@ -24,22 +38,39 @@
    =M-x el-get-elpa-build-local-recipes= to refresh the list
    
   #+BEGIN_SRC emacs-lisp
-    ;; fetch the list of packages available 
-    (unless package-archive-contents
-      (package-refresh-contents))
-
     ;; https://github.com/dimitri/el-get#readme
+    ;; FIXME: OBSOLETE?
     (add-to-list 'load-path "~/dot/emacs.d/el-get/el-get")
-    (unless (require 'el-get nil t)
-      (with-current-buffer
-          (url-retrieve-synchronously "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-        (end-of-buffer) (eval-print-last-sexp)))
+
+    (defun local--init-emacs-package ()
+      (require 'package)
+      (add-to-list 'package-archives
+                   '("melpa" . "http://melpa.org/packages/"))
+      (package-refresh-contents)
+      (package-initialize))
+
+    ;; use MELPA's el-get
+    (unless (require 'el-get nil 'noerror)
+      (local--init-emacs-package)
+      (package-install 'el-get)
+      (require 'el-get))
+    (setq package-list (list))
+
+    (unless (package-installed-p 'use-package)
+      (local--init-emacs-package)
+      (package-install 'use-package))
+
+    (eval-when-compile (require 'use-package))
+
+    ;; (add-to-list 'el-get-recipe-path "~/dot/emacs.d/el-get-user/recipes")
 
     ;; for MELPA packages
     ;; ref http://stackoverflow.com/questions/23165158/how-do-i-install-melpa-packages-via-el-get
-    (require 'el-get-elpa)
+    ;; likely no longer needed as of 2018-01-28
+    ;; (require 'el-get-elpa)
     ;; then call el-get-elpa-build-local-recipes
-    (package-initialize)
+
+    ;;(package-initialize)
 
     ;; local sources
     ;; example:
@@ -54,6 +85,15 @@
 
     ;; specify package sets to load later
     (setq package-group-list (list))
+
+    (defmacro local--load-packages (&rest package-list)
+      (cons
+       'progn
+       (mapcar
+        (lambda (package-name)
+          (list 'use-package package-name :ensure t :defer t))
+        package-list)))
+
   #+END_SRC
 
 * os-specific
@@ -87,7 +127,7 @@
                               (japanese-jisx0208 . ,xwl-japanese-font)
                               ;; (japanese-jisx0212 . ,xwl-japanese-font)
                               )))
-                                            ; (set-default-font xwl-default-font)
+                              ;; (set-default-font xwl-default-font)
           (mapc (lambda (charset-font)
                   (set-fontset-font (frame-parameter nil 'font)
                                     (car charset-font)
@@ -95,7 +135,6 @@
                                                14)))
                 charset-font)))
       (message "using OS X"))
-
   #+END_SRC
 
 ** windows-nt
@@ -118,67 +157,187 @@
 
 * package setup
 
+** common
+
+#+BEGIN_SRC emacs-lisp
+  (local--load-packages
+   async ;; https://github.com/jwiegley/emacs-async
+   auto-complete
+   
+   color-theme
+
+   csv-mode ;; in elpa, not melpa
+   dash
+   deft
+   diff-hl
+   dirtree
+   elscreen
+   fic-mode ;; to highlight TODO FIXME BUG etc
+   find-file-in-project
+   git-timemachine
+   ;; google-this
+
+   helm 
+   helm-org-rifle ;; https://github.com/alphapapa/helm-org-rifle
+   helm-projectile
+   helm-swoop
+   
+   htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
+   hydra
+   ibuffer-vc
+   iedit
+   
+   json-mode
+   magit
+   multiple-cursors
+   muse
+   navi-mode
+   neotree
+   outorg outshine
+   ov ;; overlay
+
+   paredit
+   powerline
+   project-explorer
+   projectile
+   request
+   revive
+   s
+   simple-httpd
+   skewer-mode ;; js live repl https://github.com/skeeto/skewer-mode
+   spinner ;; spinner for ongoing operation
+   sqlite
+   sr-speedbar ;; file list view in buffer
+   swiper
+   transpose-frame
+   try
+   unbound ;; provides describe-unbound-keys
+   undo-tree
+   ;; if win-switch works, remove this:
+   ;; linkd ;; required for win-switch
+   with-editor ;; dependency for magit
+   yasnippet
+   )
+#+END_SRC
+
+*** eval-in-repl
+
+* eval-in-repl
+
+  #+BEGIN_SRC emacs-lisp :results silent
+    (use-package eval-in-repl
+      :ensure t
+      :config (progn
+                ;; Shell support
+                (require 'eval-in-repl-shell)
+
+                ;; Version with opposite behavior to eir-jump-after-eval configuration
+                (defun eir-eval-in-shell2 ()
+                  "eval-in-repl for shell script (opposite behavior)
+         
+                   This version has the opposite behavior to the eir-jump-after-eval
+                   configuration when invoked to evaluate a line."
+                  (interactive)
+                  (let ((eir-jump-after-eval (not eir-jump-after-eval)))
+                    (eir-eval-in-shell)))
+                ;; (add-hook 'sh-mode-hook
+                ;;           '(lambda()
+                ;;              (local-set-key (kbd "C-M-<return>") 'eir-eval-in-shell2)))
+
+                (add-hook 'sh-mode-hook
+                          '(lambda()
+                             (local-set-key (kbd "C-<return>") 'eir-eval-in-shell)))))
+
+
+  #+END_SRC
+
+**** eval-in-repl-like for ansi-term
+
+    will only work if ansi-term is in line mode (=C-c C-j=)
+    switch back to char mode with =C-c C-k=
+
+#+BEGIN_SRC emacs-lisp
+  (setq local--term-buffer-maximum-size 0)
+  (defun local--send-current-line-to-term (prefix)
+    ;; prefix to insert output below current line
+    (interactive "P")
+    (let* ((cur-line (thing-at-point 'line t))
+           ;; (process-name "*ansi-term*")
+           (process-name "*shell*")
+           ;; (cur-line "ls -l\n")
+           (cur-buf (current-buffer))
+           (shell-buf (get-buffer process-name))
+           (cur-point-in-process (let ((rtn (progn (switch-to-buffer shell-buf)
+                                                   (point))))
+                                   (switch-to-buffer cur-buf)
+                                   rtn)))
+      (process-send-string
+       process-name 
+       (if (string-match "[ \t\n]*$" cur-line)
+           (concat (replace-match "" nil nil cur-line) "\n")
+         cur-line))
+      (if prefix
+          (save-excursion
+            ;; hack
+            (sleep-for 1)
+            (let ((new-point-max (progn (switch-to-buffer shell-buf)
+                                        (point-max)))
+                  (new-content (progn
+                                 (switch-to-buffer shell-buf)
+                                 (buffer-substring cur-point-in-process (point-max)))))
+              (switch-to-buffer cur-buf)
+              (end-of-line)
+              (newline)
+              (insert new-content)
+              (insert (format "point: %s\nnew max: %s\nstring: %s\n" cur-point-in-process new-point-max new-content))))
+        (progn
+          (message "NO PREFIX")
+         (next-line)))))
+  ;; (local-set-key (kbd "C-<return>") 'local--send-current-line-to-term)
+#+END_SRC
+
+*** fiplr (vim-like ctrl-p)
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package fiplr
+        :ensure t
+        :config (setq fiplr-ignored-globs
+                      '((directories (".git" ".svn"))
+                        (files ("*.jpg" "*.png" "*.zip" "*~"
+                                "*.pyc" "*.min.js")))))
+    #+END_SRC
+
+*** multi-web-mode
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package multi-web-mode
+        :ensure t
+        :defer t
+        :config (progn
+                  (setq mweb-default-major-mode 'html-mode)
+                  (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
+                                    (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
+                                    (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
+                  (setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
+                  (multi-web-global-mode 1)))
+    #+END_SRC
+
+*** win-switch
+
+    allows repeated =other-window= via =C-x o o o ...=
+    
+    #+BEGIN_SRC emacs-lisp
+      (use-package win-switch
+        :ensure t
+        :bind ("C-x o" . win-switch-dispatch)
+        :config (setq win-switch-idle-time 0.3))
+    #+END_SRC
+
 ** package-common.el
 
   #+BEGIN_SRC emacs-lisp
-    ;; for emacs package.el
-    ;; list the packages you want
-    (setq package-list '(
-                         async ;; https://github.com/jwiegley/emacs-async
-                         auto-complete
-                         
-                         dash
-                         deft
-                         diff-hl
-                         eval-in-repl
-                         fiplr ;; vim-like ctrl-p
-                         git-timemachine
-                         ;; google-this
-                         helm 
-                         helm-org-rifle ;; https://github.com/alphapapa/helm-org-rifle
-                         htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
-                         hydra
-                         json-mode
-                         magit
-                         multi-web-mode
-                         multiple-cursors
-                         muse
-                         navi-mode
-                         neotree
-                         outorg outshine
-                         powerline
-                         project-explorer
-                         projectile
-                         request
-                         revive
-                         s
-                         simple-httpd
-                         skewer-mode ;; js live repl https://github.com/skeeto/skewer-mode
-                         spinner ;; spinner for ongoing operation
-                         sr-speedbar ;; file list view in buffer
-                         transpose-frame
-                         unbound ;; provides describe-unbound-keys
-                         undo-tree
-                         ;; if win-switch works, remove this:
-                         ;; linkd ;; required for win-switch
-                         win-switch
-                         with-editor ;; dependency for magit
-                         yasnippet
-                         ))
-
     (setq el-get-sources
-          '(
-            ;; (:name emacs-dirtree
-            ;;        :type git
-            ;;        :url "https://github.com/zkim/emacs-dirtree.git"
-            ;;        :features "dirtree"
-            ;;        :compile "dirtree.el")
-            (:name sqlite-el
-                   :type git
-                   :url "https://github.com/cnngimenez/sqlite.el"
-                   :features "sqlite")
-
-            (:name tiddlywiki-org
+          '((:name tiddlywiki-org
                    :type git
                    :url "https://github.com/whacked/tiddlywiki-org"
                    :features "tiddlywiki-mode")
@@ -186,34 +345,12 @@
             (:name ob-shstream
                    :type git
                    :url "https://github.com/whacked/ob-shstream"
-                   :features "ob-shstream")
-            ))
+                   :features "ob-shstream")))
 
     (setq my-packages
           (append
            '(el-get
-             ;; windata tree-mode ;; required for dirtree
-             ;; perspective
-             elscreen
-             ;; auctex ;; locale problem causing build to fail
-             ;; need MELPA working!
-             ;; iedit
-             ;; frame-bufs
-             ;; minimap
-             ;; workgroups2
-             ;; moving in from git submodule
-             ;; pymacs ;; (installed by el-get somewhere already?)
-             ibuffer-vc ;; (this is installed + used in bundle)
-             ;; mozrepl
-             ;; predictive
-             ;; pabbrev
-             ;; icicles
-             ;; mmm-mode
-             ;; slime
-             ;; mode-compile
-             ;; cedet
-             ;; ecb
-             windows
+             ;; NOTE: packages moved to use-package macro
              )
            (mapcar 'el-get-source-name el-get-sources)))
 
@@ -222,39 +359,23 @@
 ** color themes
 
    #+BEGIN_SRC emacs-lisp
-     (when (memq :lisp package-group-list)
-       (setq package-list
-             (delete-dups
-              (append package-list
-                      '(color-theme
-                        color-theme-buffer-local
-                        load-theme-buffer-local
-                        color-theme-solarized
-                        ;; color themes, see https://emacsthemes.com/charts/all-time.html
-                        alect-themes
-                        ample-theme
-                        cyberpunk-theme
-                        leuven-theme
-                        material-theme
-                        monokai-theme
-                        solarized-theme
-                        ujelly-theme
-                        zenburn-theme
-                        )))))
-   #+END_SRC
-
-** additional packages (full-setup.el)
-
-   #+BEGIN_SRC emacs-lisp
-     ;; include package-management.el
-     ;; include package-common.el
-     (when (memq :extra package-group-list)
-       (setq package-list
-             (delete-dups
-              (append package-list
-                      '(ess
-                        fic-mode ;; to highlight TODO FIXME BUG etc
-                        )))))
+     (setq package-list
+           (delete-dups
+            (append package-list
+                    '(color-theme-buffer-local
+                      load-theme-buffer-local
+                      color-theme-solarized
+                      ;; color themes, see https://emacsthemes.com/charts/all-time.html
+                      alect-themes
+                      ample-theme
+                      cyberpunk-theme
+                      leuven-theme
+                      material-theme
+                      monokai-theme
+                      solarized-theme
+                      ujelly-theme
+                      zenburn-theme
+                      ))))
    #+END_SRC
 
 ** conditional package loaders
@@ -262,11 +383,12 @@
 *** coding.el (:code)
 
  #+BEGIN_SRC emacs-lisp
-   (when (memq :code package-group-list)
+   (when t ;; (memq :code package-group-list)
      (setq package-list
            (delete-dups
             (append package-list
                     '(f
+                      ess
                       gnuplot-mode
                       graphviz-dot-mode
                       haskell-mode
@@ -307,32 +429,30 @@
             (append package-list
                     '(cider
                       clojure-mode
+                      clj-refactor
                       expand-region
                       hy-mode
-                      paredit
                       popup
                       queue
                       sibilant-mode
+                      inf-clojure
+                      seq
                       ))))
      (setq my-packages 
-           (delete-dups
-            (append my-packages '(clojurescript-mode
-                                  seq))))
+           (delete-dups my-packages))
      (global-set-key (kbd "C-=") 'er/expand-region))
  #+END_SRC
 
 *** only run on main machine (:unportable)
 
-    - =win-switch= :: allows repeated =other-window= via =C-x o o o ...=
-
  #+BEGIN_SRC emacs-lisp
    (when (memq :unportable package-group-list)
-     (setq my-packages
-           (delete-dups
-            (append my-packages '(org-pdfview
-                                  epc ;; https://github.com/kiwanami/emacs-epc
-                                  swank-js
-                                  )))))
+     (local--load-packages
+      pdf-tools
+      ;; org-pdfview
+      epc ;; https://github.com/kiwanami/emacs-epc
+      ;; swank-js ;; move to el-get?
+      ))
 
  #+END_SRC
 
@@ -364,17 +484,6 @@
        (add-hook 'clojurescript-mode-hook #'enable-paredit-mode))
    #+END_SRC
     
-** default UI config
-
-   #+BEGIN_SRC emacs-lisp
-     (setq-default
-      truncate-lines t
-      tab-width 2
-      indent-tabs-mode nil
-      echo-keystrokes 0.1 ;; = delay for minibuffer display after pressing function key default is 1
-      )
-   #+END_SRC
-
 ** revive (resume)
 
    #+BEGIN_SRC emacs-lisp
@@ -383,21 +492,10 @@
      (autoload 'wipe "revive" "Wipe Emacs" t)
    #+END_SRC
 
-** win-switch
-
-   #+BEGIN_SRC emacs-lisp
-     (require 'win-switch)
-     (global-set-key "\C-xo" 'win-switch-dispatch)
-     (setq win-switch-idle-time 0.3)
-   #+END_SRC
-
 ** remainder
 
 #+BEGIN_SRC emacs-lisp
   (setq backup-directory-alist '(("" . "~/dot/emacs.d/emacs-backup")))
-
-  (require 'windows)
-  (win:startup-with-window)
 
   (recentf-mode 1)
   (setq recentf-max-menu-items 100)
@@ -420,9 +518,6 @@
              (error "no process at point!")))))
 
 
-  ;; (require 'windata)
-  ;; (require 'tree-mode)
-  ;; (require 'dirtree)
   ;; (autoload 'dirtree "dirtree" "Add directory to tree view" t)
 
   ;; ;; perspective mode
@@ -536,7 +631,6 @@
     (setq kill-emacs-hook nil)
     (kill-emacs))
 
-  (defalias 'wsm 'win-switch-menu)
   (defalias 'visu 'visual-line-mode)
 
   (defun surround-region-with-tag (tag-name beg end)
@@ -549,28 +643,6 @@
 
   (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
   (require 'ansi-color)
-
-  ;;(add-to-list 'load-path "~/dot/emacs.d/bundle/icicles")
-  ;;(require 'icicles)
-
-  (set-default-font "Consolas 10")
-  (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   ;; '(default ((t (:inherit nil :stipple nil :background "#f8f8ff" :foreground "#000000" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :foundry "unknown" :family (if (featurep (quote ns)) "Monaco" "Consolas")))))
-   '(org-level-1 ((t (:inherit outline-1 :inverse-video t :weight bold :height 1.6 :family "Verdana"))))
-   '(org-level-2 ((t (:inherit outline-2 :inverse-video t :weight bold :height 1.5 :family "Verdana"))))
-   '(org-level-3 ((t (:inherit outline-3 :inverse-video t :weight bold :height 1.4 :family "Verdana"))))
-   '(org-level-4 ((t (:inherit outline-4 :inverse-video t :weight bold :height 1.3 :family "Verdana"))))
-   '(org-level-5 ((t (:inherit outline-5 :inverse-video t :weight bold :height 1.2 :family "Verdana"))))
-   '(org-level-6 ((t (:inherit outline-6 :inverse-video t :weight bold :height 1.1 :family "Verdana"))))
-   '(table-cell ((t (:background "#DD8" :foreground "gray50" :inverse-video nil))))
-   '(table-cell-face ((((class color)) (:background "#AA3" :foreground "gray90"))))
-   )
-
-  ;;(set-cursor-color "orange")
 
   (require 'uniquify)
   (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
@@ -632,16 +704,7 @@
   (my-keys-minor-mode 1)
   (winner-mode 1)
 
-  ;; w3 should be loaded by ELPA
-  ;;NEW;(require 'w3-auto)
-
-  (defun my-c-mode-hook ()
-    (define-key c-mode-map (kbd "C-<return>") 'gtk-lookup-symbol)
-    (message "C mode hook ran."))
-  (add-hook 'c-mode-hook 'my-c-mode-hook)
-
   (setq slime-multiprocessing t)
-  (set-language-environment "UTF-8")
   (setq slime-net-coding-system 'utf-8-unix)
 
   ;; to clear shell in ESS mode
@@ -669,14 +732,6 @@
     ad-do-it)
   (ad-activate 'balance-windows)
 
-  (require 'multi-web-mode)
-  (setq mweb-default-major-mode 'html-mode)
-  (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
-                    (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
-                    (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
-  (setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
-  (multi-web-global-mode 1)
-
   ;; not playing nice with daemon
   ;; -- now launching with -q = bypass
   ;; (when nil
@@ -684,11 +739,7 @@
   ;;       (color-theme-solarized-light)
   ;;     (color-theme-solarized-dark)))
   (color-theme-initialize)
-  (color-theme-solarized-light)
 
-  (setq fiplr-ignored-globs '((directories (".git" ".svn"))
-                              (files ("*.jpg" "*.png" "*.zip" "*~"
-                                      "*.pyc" "*.min.js"))))
 #+END_SRC
 
 ** vim-inspired
@@ -721,11 +772,6 @@
    ;; <org mode config> ;;
    ;;;;;;;;;;;;;;;;;;;;;;;
 
-
-
-					   ; below add-to-list not required if org-mode successfully built with =make= and =make-install=
-   ;;(add-to-list 'load-path "~/dot/emacs.d/bundle/org-mode/lisp")
-   ;;(add-to-list 'load-path "~/dot/emacs.d/bundle/org-mode/contrib/lisp")
    (add-to-list 'load-path "~/dot/emacs.d/dev")
    (require 'org)
    ;; force org-babel src edit to use same window instead of splitting
@@ -772,7 +818,8 @@
    ;; (setq-default py-split-windows-on-execute-function 'split-window-horizontally)
    (setq-default py-keep-windows-configuration t)
 
-   (setq org-ditaa-jar-path "~/dot/emacs.d/bundle/org-mode/contrib/scripts/ditaa.jar")
+   ;; FIXME
+   ;; (setq org-ditaa-jar-path "~/dot/emacs.d/bundle/org-mode/contrib/scripts/ditaa.jar")
 
    (defun ansi-unansify (beg end)
      "to help fix ansi- control sequences in babel-sh output"
@@ -783,13 +830,10 @@
 
    (setq org-log-done t)
 
-
-
-   (require 'iimage)
-					   ;(setq iimage-mode-image-search-path (expand-file-name "~/"))
    ;;Match org file: links
-   (add-to-list 'iimage-mode-image-regex-alist
-		(cons (concat "file:\\(~?[]\\[\\(\\),~+./_0-9a-zA-Z -]+\\.\\(GIF\\|JP\\(?:E?G\\)\\|P\\(?:BM\\|GM\\|N[GM]\\|PM\\)\\|SVG\\|TIFF?\\|X\\(?:[BP]M\\)\\|gif\\|jp\\(?:e?g\\)\\|p\\(?:bm\\|gm\\|n[gm]\\|pm\\)\\|svg\\|tiff?\\|x\\(?:[bp]m\\)\\)\\)")  1))
+   ;; old, for iimage-minor-mode
+   ;; (add-to-list 'iimage-mode-image-regex-alist
+   ;;              (cons (concat "file:\\(~?[]\\[\\(\\),~+./_0-9a-zA-Z -]+\\.\\(GIF\\|JP\\(?:E?G\\)\\|P\\(?:BM\\|GM\\|N[GM]\\|PM\\)\\|SVG\\|TIFF?\\|X\\(?:[BP]M\\)\\|gif\\|jp\\(?:e?g\\)\\|p\\(?:bm\\|gm\\|n[gm]\\|pm\\)\\|svg\\|tiff?\\|x\\(?:[bp]m\\)\\)\\)")  1))
    (define-key global-map (kbd "<f12>") 'org-agenda)
    (defun set-calendar-appt ()
      (save-excursion
@@ -797,32 +841,32 @@
        (outline-previous-visible-heading 1)
        (backward-char)
        (when (re-search-forward org-ts-regexp nil t)
-	 (let* ((spl-matched (split-string (match-string 1) " "))
-		(date (first spl-matched))
-		(time (if (= 3 (length spl-matched)) ;; contains time
-			  (third spl-matched)
-			;; only contains date
-			nil))
-		(tm-start (or time "00:00"))
-		(alarm "5min")
-		(name (save-excursion
-			(end-of-buffer)
-			(outline-previous-visible-heading 1)
-			(backward-char)
-			(when (re-search-forward org-complex-heading-regexp nil t)
-			  (replace-regexp-in-string (concat "[[:space:]]*" org-ts-regexp "[[:space:]]*") "" (match-string 4))))))
-	   (start-process
-	    "kalarm-process" "*Messages*" "/usr/bin/kalarm" 
-	    "--color"
-	    "0x00FF00"
-	    "--time"
-	    (format "%s-%s" date tm-start)
-	    "--reminder"
-	    "0H5M"
-	    ;; doesn't work :(
-	    ;; "--play" "/usr/share/sounds/KDE-Im-Sms.ogg"
-	    "--beep"
-	    (format "%s" name))))))
+         (let* ((spl-matched (split-string (match-string 1) " "))
+                (date (first spl-matched))
+                (time (if (= 3 (length spl-matched)) ;; contains time
+                          (third spl-matched)
+                        ;; only contains date
+                        nil))
+                (tm-start (or time "00:00"))
+                (alarm "5min")
+                (name (save-excursion
+                        (end-of-buffer)
+                        (outline-previous-visible-heading 1)
+                        (backward-char)
+                        (when (re-search-forward org-complex-heading-regexp nil t)
+                          (replace-regexp-in-string (concat "[[:space:]]*" org-ts-regexp "[[:space:]]*") "" (match-string 4))))))
+           (start-process
+            "kalarm-process" "*Messages*" "/usr/bin/kalarm" 
+            "--color"
+            "0x00FF00"
+            "--time"
+            (format "%s-%s" date tm-start)
+            "--reminder"
+            "0H5M"
+            ;; doesn't work :(
+            ;; "--play" "/usr/share/sounds/KDE-Im-Sms.ogg"
+            "--beep"
+            (format "%s" name))))))
    (add-hook 'org-remember-mode-hook '(lambda () (visual-line-mode t)))
    (add-hook 'org-remember-before-finalize-hook 'set-calendar-appt)
 
@@ -865,32 +909,19 @@
    ;;;         "* %?\n  %a" :empty-lines 1)
    ;;;        ("d" "Dump" entry (file+datetree "~/note/org/dump.org")
    ;;;         "* %?\n%U\n" :empty-lines 1)))
-   
+
    ;;;;;;;;;;;;;;;;;;;;;;;;
    ;; </org mode config> ;;
    ;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-
    ;; thanks to http://kliketa.wordpress.com/2010/08/04/gtklook-browse-documentation-for-gtk-glib-and-gnome-inside-emacs/
    ;NEW;(require 'gtk-look)
    (setq browse-url-browser-function 'browse-url-generic
-	 browse-url-generic-program "chromium-browser")
+         browse-url-generic-program "chromium-browser")
    ;;(setq browse-url-browser-function
    ;; '(("file:.*/usr/share/doc/.*gtk.*-doc/.*" . w3m-browse-url)
    ;;   ("." . browse-url-firefox)))
-
-   ;; ;; FIXME cider
-   ;; ;; nrepl
-   ;; ;; ref: https://github.com/kingtim/nrepl.el
-   ;; (add-hook 'nrepl-interaction-mode-hook
-   ;;           'nrepl-turn-on-eldoc-mode)
-   ;; ;; Stop the error buffer from popping up while working in the REPL buffer:
-   ;; (setq nrepl-popup-stacktraces nil)
-   ;; ;; Make C-c C-z switch to the *nrepl* buffer in the current window:
-   ;; (add-to-list 'same-window-buffer-names "*nrepl*") 
-   ;; ;; If you have paredit installed you can enabled it like this:
-   ;; (add-hook 'nrepl-interaction-mode 'paredit-mode)
 
    ;; ref: http://emacs-fu.blogspot.com/2009/11/showing-pop-ups.html
    (defun djcb-popup (title msg &optional icon sound)
@@ -900,12 +931,12 @@
 
      (interactive)
      (if (eq window-system 'x)
-	 (shell-command (concat "notify-send "
+         (shell-command (concat "notify-send "
 
-				(if icon (concat "-i " icon) "")
-				" '" title "' '" msg "'")))
+                                (if icon (concat "-i " icon) "")
+                                " '" title "' '" msg "'")))
      (when sound (shell-command
-		  (concat "mplayer -really-quiet " sound " 2> /dev/null"))))
+                  (concat "mplayer -really-quiet " sound " 2> /dev/null"))))
 
    ;; the appointment notification facility
    (setq
@@ -919,14 +950,14 @@
    ;; our little façade-function for djcb-popup
    (defun djcb-appt-display (min-to-app new-time msg)
      (djcb-popup (format "Appointment in %s minute(s)" min-to-app) msg 
-		 "/usr/share/icons/gnome/32x32/status/appointment-soon.png"
-		 "/usr/share/sounds/ubuntu/stereo/phone-incoming-call.ogg"))
+                 "/usr/share/icons/gnome/32x32/status/appointment-soon.png"
+                 "/usr/share/sounds/ubuntu/stereo/phone-incoming-call.ogg"))
    (setq appt-disp-window-function (function djcb-appt-display))
 
    (defun org-add-appt-after-save-hook ()
      (if ;(string= mode-name "Org")
-	 (member (buffer-file-name) org-agenda-files)
-	 (org-agenda-to-appt)))
+         (member (buffer-file-name) org-agenda-files)
+         (org-agenda-to-appt)))
    (add-hook 'after-save-hook 'org-add-appt-after-save-hook)
 
     ;; update appt each time agenda opened
@@ -936,90 +967,34 @@
      "Merge time-msg-list's elements if they have the same time."
      (let* ((merged-time-msg-list (list)))
        (while time-msg-list
-	 (if (eq (car (caar time-msg-list)) (car (caar (cdr time-msg-list))))
-	     (setq time-msg-list
-		   (cons
-		    (append
-		     (list (car (car time-msg-list)) ; time
-			   (concat (car (cdr (car time-msg-list))) " / "(car (cdr (car (cdr time-msg-list)))))) ; combined msg
-		     (cdr (cdr (car time-msg-list)))) ; rest information
-		    (nthcdr 2 time-msg-list)))
-	   (progn (add-to-list 'merged-time-msg-list (car time-msg-list) t)
-		  (setq time-msg-list (cdr time-msg-list)))))
+         (if (eq (car (caar time-msg-list)) (car (caar (cdr time-msg-list))))
+             (setq time-msg-list
+                   (cons
+                    (append
+                     (list (car (car time-msg-list)) ; time
+                           (concat (car (cdr (car time-msg-list))) " / "(car (cdr (car (cdr time-msg-list)))))) ; combined msg
+                     (cdr (cdr (car time-msg-list)))) ; rest information
+                    (nthcdr 2 time-msg-list)))
+           (progn (add-to-list 'merged-time-msg-list (car time-msg-list) t)
+                  (setq time-msg-list (cdr time-msg-list)))))
        merged-time-msg-list))
 
    (defun kiwon/org-agenda-to-appt ()
      (prog2
-	 (setq appt-time-msg-list nil)
-	 (org-agenda-to-appt)
+         (setq appt-time-msg-list nil)
+         (org-agenda-to-appt)
        (setq appt-time-msg-list (kiwon/merge-appt-time-msg-list appt-time-msg-list))))
 
    ;; (add-hook 'org-finalize-agenda-hook (function kiwon/org-agenda-to-appt))
 
 
 
-   ;; pymacs see http://pymacs.progiciels-bpi.ca/pymacs.html#installation
-   ;; (load-file "~/dot/emacs.d/bundle/pymacs/pymacs.el")
-   (autoload 'pymacs-apply "pymacs")
-   (autoload 'pymacs-call "pymacs")
-   (autoload 'pymacs-eval "pymacs" nil t)
-   (autoload 'pymacs-exec "pymacs" nil t)
-   (autoload 'pymacs-load "pymacs" nil t)
-   ;;(eval-after-load "pymacs"
-   ;;  '(add-to-list 'pymacs-load-path YOUR-PYMACS-DIRECTORY"))
-
    ;;;; ledger
    ;; (load "ledger")
 
-   ;;;; freex mode
-   ;;
-   ;;(setq pymacs-load-path '("~/dev/elisp/org-freex"))
-   ;;(add-to-list 'load-path (expand-file-name "~/dev/elisp/org-freex/"))
-   ;;(load-file "~/dev/elisp/org-freex/freex-conf.el")
-   ;;;;;;(load-file "~/dev/elisp/org-freex/freex-mode.el")
-   ;;;;(require 'freex-mode)
-
-
-
-
-
-
-   ;; ;; google calendar interaction
-   ;; ;; see http://article.gmane.org/gmane.emacs.orgmode/27214
-   ;; (defadvice org-agenda-add-entry-to-org-agenda-diary-file 
-   ;;   (after add-to-google-calendar)
-   ;;   "Add a new Google calendar entry that mirrors the diary entry just created by org-mode."
-   ;;   (let ((type (ad-get-arg 0))
-   ;;  (text (ad-get-arg 1))
-   ;;  (d1 (ad-get-arg 2))
-   ;;  (year1 (nth 2 d1))
-   ;;  (month1 (car d1))
-   ;;  (day1 (nth 1 d1))
-   ;;  (d2 (ad-get-arg 3))
-   ;;  entry dates)
-   ;;     (if (or (not (eq type 'block)) (not d2))
-   ;;  (setq dates (format "%d-%02d-%02d" year1 month1 day1))
-   ;;       (let ((year2 (nth 2 d2)) (month2 (car d2)) (day2 (nth 1 d2)) (repeats (-
-   ;; (calendar-absolute-from-gregorian d1)
-   ;;                         (calendar-absolute-from-gregorian d2))))
-   ;;  (if (> repeats 0)
-   ;;      (setq dates (format "%d-%02d-%02d every day for %d days" year1 month1 day1 (abs repeats)))
-   ;;    (setq dates (format "%d-%02d-%02d every day for %d days" year1 month1 day1 (abs repeats))))
-   ;;  ))
-   ;;     (setq entry  (format "/usr/local/bin/google calendar add --cal org \"%s on %s\"" text dates))
-   ;;     ;;(message entry)
-   ;;     (if (not (string= "MYLAPTOPCOMPUTER" mail-host-address))
-   ;;  (shell-command entry)
-   ;;       (let ((offline "~/note/org/org2google-buffer"))
-   ;;  (find-file offline)
-   ;;  (goto-char (point-max))
-   ;;  (insert (concat entry "\n"))
-   ;;  (save-buffer)
-   ;;  (kill-buffer (current-buffer))
-   ;;  (message "Plain text written to %s" offline)))))
-   ;; (ad-activate 'org-agenda-add-entry-to-org-agenda-diary-file)
-
-
+   ;; see earlier commits for google calendar interaction
+   ;; ref http://article.gmane.org/gmane.emacs.orgmode/27214
+   ;; "defadvice org-agenda-add-entry-to-org-agenda-diary-file"
 
    ;; in case useful: http://jblevins.org/projects/deft/
    ;; Deft is an Emacs mode for quickly browsing, filtering, and editing directories of plain text notes, inspired by Notational Velocity.
@@ -1034,6 +1009,29 @@
    (desktop-change-dir "~/dot/emacs.d")
    (setq desktop-save-mode t)
  #+END_SRC
+
+
+*** tiddlywiki
+
+#+BEGIN_SRC emacs-lisp :results silent
+  (defvar *default-anonymous-tiddler-directory*
+    (expand-file-name "~/note/org/tw/tiddlers/warehouse"))
+  (defun new-anonymous-tiddler (&optional reserve-for-future-use)
+        "create a new uniquely named tiddler inside designated directory"
+        (interactive "P")
+        (let* ((title (format-time-string "anonymous tiddler %Y-%m-%d %H:%M:%S"))
+               (file-path (concat
+                           (file-name-as-directory
+                            ,*default-anonymous-tiddler-directory*)
+                           (format-time-string "%Y-%m-%d_%H-%M-%S.tid"))))
+          (find-file-literally file-path)
+          (insert
+           (tiddlywiki-org-mode-tiddler-preamble title)
+           "\n\n")
+          (tiddlywiki-mode)
+          (kill-new (concat "[[file:" file-path "]]"))))
+  (defalias 'jog 'new-anonymous-tiddler)
+#+END_SRC
 
 *** org capture
 
@@ -1125,10 +1123,19 @@
       '(org-drill-optimal-factor-matrix (quote ((2 (2.6 . 2.6) (2.7 . 2.691)) (1 (2.6 . 4.14) (2.36 . 3.86) (2.1799999999999997 . 3.72) (1.96 . 3.58) (1.7000000000000002 . 3.44) (2.5 . 4.0)))))
       ;; '(org-export-blocks (quote ((src org-babel-exp-src-blocks nil) (comment org-export-blocks-format-comment t) (ditaa org-export-blocks-format-ditaa nil) (dot org-export-blocks-format-dot nil))))
       '(org-file-apps (quote ((auto-mode . emacs) ("\\.mm\\'" . default) ("\\.x?html?\\'" . default) ("\\.xoj\\'" . "xournal %s") ("\\.pdf\\'" . "evince %s"))))
-      '(org-modules (quote (org-bbdb org-bibtex org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m org-drill org-docview)))
+      '(org-modules (quote (org-bbdb org-bibtex org-gnus org-info
+                                     ;; deprecate, causes problems now
+                                     ;; org-jsinfo
+                                     org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m
+                                     ;; inclusion of this seems to cause problems with using
+                                     ;; load-theme-buffer-local (but! not color-theme-buffer-local)
+                                     ;; org-drill
+                                     org-docview)))
       '(org-src-fontify-natively t)
       '(org-startup-folded (quote showeverything))
       '(org-ellipsis "⤵")
+      ;; FIXME this probably doesn't work as expected
+      '(org-startup-folded nil)
       )
      (setq org-export-coding-system 'utf-8)
    #+END_SRC
@@ -1192,7 +1199,7 @@
                           (height (nth 1 real-edges)) ;; distance down the page
                           ;; use pdfview link directly to page number
                           (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
-                                            "++" (number-to-string height) "][" title  "]]" ))
+                                            "++" (number-to-string height) "][" title "]]" ))
                           )
                      (setq outputstring (concat outputstring text " ("
                                                 linktext ", " (number-to-string page) ")\n\n"))
@@ -1203,15 +1210,16 @@
           )
         
         (eval-after-load 'pdf-view 
-          '(define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation))
-        )
+          '(define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation)))
 
     #+END_SRC
 
+
 * filesync (sync.el)
 
-  #+BEGIN_SRC emacs-lisp
-    (defun sync-note! ()
+  #+BEGIN_SRC emacs-lisp :tangle no
+
+    (defun local--sync-note! ()
       (interactive)
       (let ((current-line (count-lines 1 (point)))
             (cur-buf (current-buffer))
@@ -1241,28 +1249,27 @@
             (when (get-buffer (car postsave-list))
               (switch-to-buffer (car postsave-list))
               (revert-buffer nil t)
-              (show-all))
+              (outline-show-all))
             (setq postsave-list (cdr postsave-list))))
         
         (switch-to-buffer cur-buf)
         (goto-line current-line)))
 
-    (setq sync-interval-S (* 60 10))
-    (defun *sync-note-repeater* ()
+    (setq local--sync-interval-S (* 60 10))
+    (defun *local--sync-note-repeater* ()
       (sync-note!)
       (run-with-idle-timer (time-add (seconds-to-time sync-interval-S) (current-idle-time)) nil '*sync-note-repeater*))
 
-    (defun start-sync ()
+    (defun local--start-sync ()
       (interactive)
       (setq *sync-note-timer* (run-with-idle-timer sync-interval-S t '*sync-note-repeater*)))
 
     ;; to cancel:
-    (defun stop-sync ()
+    (defun local--stop-sync ()
       (interactive)
       (cancel-timer *sync-note-timer*))
 
-    ;; (start-sync)
-
+    ;; (local--start-sync)
   #+END_SRC
 
 
@@ -1283,9 +1290,71 @@
      '(table-cell ((t (:background "#DD8" :foreground "gray50" :inverse-video nil))))
      '(table-cell-face ((((class color)) (:background "#AA3" :foreground "gray90")))))
     ;; (org-babel-load-file (expand-file-name "init.org" user-emacs-directory))
-  
   #+END_SRC
 
+
+** font
+
+   #+BEGIN_SRC emacs-lisp
+     (defun font-exist-p (fontname)
+       "Test if this font is exist or not."
+       (if (or (not fontname) (string= fontname ""))
+           nil
+         (if (not (x-list-fonts fontname)) nil t)))
+
+     (let ((font-pair (cond ((font-exist-p "Consolas")
+                             '("Consolas" . 10))
+                            ((font-exist-p "Monaco")
+                             '("Monaco" . 11))
+                            ((font-exist-p "Anonymous Pro")
+                             '("Anonymous Pro" . 10))
+                            ((font-exist-p "Droid Sans Mono")
+                             '("Droid Sans Mono" . 11))
+                            ((font-exist-p "Deja Vu Sans Mono")
+                             '("Deja Vu Sans Mono" . 10))
+                            ((font-exist-p "Inconsolata")
+                             '("Inconsolata" . 11)))))
+       (defvar emacs-english-font (car font-pair))
+       (let ((font-string (format "%s %s" emacs-english-font (cdr font-pair))))
+         (set-frame-font font-string nil t))
+
+       (add-to-list 'default-frame-alist '((font . (format "%s %s"
+                                                           emacs-english-font
+                                                           (cdr font-pair))))))
+   #+END_SRC
+
+** highlight line
+
+   not working
+
+   #+BEGIN_SRC emacs-lisp
+     ;; http://stackoverflow.com/a/10239361
+     ;; see C-h-f defface for source of this
+     (defun set-buffer-local-hl-color ()
+       (interactive)
+       (custom-declare-face (make-local-variable 'buffer-local-hl-face)
+                            '((t :inherit hl-line))
+                            "store default global hl-line face"
+                            :background "blue"
+                            :group 'hl-line)
+       (set (make-local-variable 'hl-line-face) 'buffer-local-hl-face))
+
+
+     ;; see http://stackoverflow.com/questions/17628985/how-to-set-a-buffer-locally-face-attribute-for-a-particular-buffer
+     ;; First create new face which is a copy of hl-line-face
+     (copy-face 'hl-line 'hl-line-light-face)
+
+     ;; Change what you want in this new face 
+     (set-face-attribute 'hl-line-light-face nil
+                         :box '(:color "papayawhip"))
+
+     ;; The function to use the new face
+     (defun set-buffer-local-hl-color ()
+       (interactive)
+       (set (make-local-variable 'hl-line-face) ; This is how to make it local
+            'hl-line-light-face)
+       (hl-line-mode))
+   #+END_SRC
 
 * utility (from util.el)
 
@@ -1539,7 +1608,7 @@
             (other-window 1)
             (switch-to-buffer navigation-buffer)
             (org-mode)
-            (show-all)
+            (outline-show-all)
             (other-window -1)
             (org-content 4)
             (read-only-mode 1)
@@ -1547,7 +1616,7 @@
         (progn
           (kill-buffer (get-buffer navigation-buffer-name))
           (delete-window)
-          (show-all)
+          (outline-show-all)
           (read-only-mode 0)
           (message "bye navigate mode"))))
 
@@ -1743,6 +1812,67 @@
 
   #+END_SRC
 
+** helm org
+
+   #+BEGIN_SRC emacs-lisp :results silent
+     (require 'subr-x)
+
+     (setq helm-note--base-directory
+           (concat
+            (file-name-as-directory (getenv "HOME"))
+            "note/org"))
+
+     (defun helm-note--get-matches ()
+       (cons '()
+             (list :title "foo title"
+                   :text "foo text")))
+
+     (defun helm-dummy
+         (choice)
+       (message (format "dummy function: %s" choice)))
+
+     (defun helm-note--test ()
+       (interactive)
+       (helm
+        :sources (list
+                  '((name . "matches")
+                    (candidates . helm-note--get-matches)
+                    (action . (("dummy" . helm-dummy)
+                               
+                               ))))
+        :buffer "*helm-note-search*"))
+
+
+     (defun helm-projectile-ag (&optional options)
+       "Helm version of projectile-ag."
+       (interactive (if current-prefix-arg (list (helm-read-string "option: " "" 'helm-ag--extra-options-history))))
+       (if (require 'helm-ag nil t)
+           (if (projectile-project-p)
+               (let* ((grep-find-ignored-files (cl-union (projectile-ignored-files-rel) grep-find-ignored-files))
+                      (grep-find-ignored-directories (cl-union (projectile-ignored-directories-rel) grep-find-ignored-directories))
+                      (ignored (mapconcat (lambda (i)
+                                            (concat "--ignore " i))
+                                          (append grep-find-ignored-files grep-find-ignored-directories (cadr (projectile-parse-dirconfig-file)))
+                                          " "))
+                      (helm-ag-command-option options)
+                      (helm-ag-base-command (concat helm-ag-base-command " " ignored))
+                      (current-prefix-arg nil))
+                 (helm-do-ag (projectile-project-root) (car (projectile-parse-dirconfig-file))))
+             (error "You're not in a project"))
+         (when (yes-or-no-p "`helm-ag' is not installed. Install? ")
+           (condition-case nil
+               (progn
+                 (package-install 'helm-ag)
+                 (helm-projectile-ag options))
+             (error (error "`helm-ag' is not available. Is MELPA in your `package-archives'?"))))))
+
+     (defun helm-note ()
+       (interactive)
+       ()
+
+
+       )
+   #+END_SRC
 
 * other from util.el
 
@@ -1757,7 +1887,6 @@
     (global-set-key (kbd "s-_") 'elscreen-previous)
     (global-set-key (kbd "s-+") 'elscreen-next)
     (setq elscreen-display-tab nil)
-  
   #+END_SRC
 
   #+BEGIN_SRC emacs-lisp :tangle no
@@ -1768,8 +1897,6 @@
       "search in google scholar"
       (interactive "P")
       (google-search prefix "http://scholar.google.com/scholar?hl=en&btnG=&as_sdt=1%%2C22&q=%s"))
-
-      
   #+END_SRC
 
 * assorted fix
@@ -1785,14 +1912,9 @@
    see http://coldnew.github.io/blog/2013/11-16_d2f3a/ 解決 org-mode 表格內中英文對齊的問題
    
    #+BEGIN_SRC emacs-lisp
-     (defvar emacs-english-font "Consolas"
-       "The font name of English.")
-
      (defvar emacs-cjk-font "Hiragino Sans GB W3"
        "The font name for CJK.")
-   #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp
+     
      (defvar emacs-font-size-pair '(13 . 16)
        "Default font size pair for (english . chinese)")
 
@@ -1806,12 +1928,6 @@
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
-     (defun font-exist-p (fontname)
-       "Test if this font is exist or not."
-       (if (or (not fontname) (string= fontname ""))
-           nil
-         (if (not (x-list-fonts fontname)) nil t)))
-
      (defun set-font (english chinese size-pair)
        "Setup emacs English and Chinese font on x window-system."
 
@@ -1826,93 +1942,18 @@
 
    #+BEGIN_SRC emacs-lisp
      ;; Setup font size based on emacs-font-size-pair
-     (set-font emacs-english-font emacs-cjk-font emacs-font-size-pair)
+     ;; (set-font emacs-english-font emacs-cjk-font emacs-font-size-pair)
    #+END_SRC
 
-** fix emacsclient new windows having different font
+* experimental
 
-   #+BEGIN_SRC emacs-lisp
-   (setq default-frame-alist '((font . "Consolas 10")))
-   #+END_SRC
+  file:experimental.el
 
 
-* buffer
+* quickfix
 
-#+BEGIN_SRC emacs-lisp
-  (defun display-prefix (arg)
-    "Display the value of the raw prefix arg."
-    (interactive "P")
-    (message "%s" arg))
-
-#+END_SRC
-
-* eval-in-repl
-
-  #+BEGIN_SRC emacs-lisp :results silent
-    (require 'eval-in-repl)
-    ;; Shell support
-    (require 'eval-in-repl-shell)
-
-    ;; Version with opposite behavior to eir-jump-after-eval configuration
-    (defun eir-eval-in-shell2 ()
-      "eval-in-repl for shell script (opposite behavior)
-         
-         This version has the opposite behavior to the eir-jump-after-eval
-         configuration when invoked to evaluate a line."
-      (interactive)
-      (let ((eir-jump-after-eval (not eir-jump-after-eval)))
-        (eir-eval-in-shell)))
-    ;; (add-hook 'sh-mode-hook
-    ;;           '(lambda()
-    ;;              (local-set-key (kbd "C-M-<return>") 'eir-eval-in-shell2)))
-
-    (add-hook 'sh-mode-hook
-              '(lambda()
-                 (local-set-key (kbd "C-<return>") 'eir-eval-in-shell)))
+  #+BEGIN_SRC emacs-lisp
+    (setenv "PATH" (concat (getenv "HOME") "/.nix-profile/bin" (getenv "PATH")))
+    (setq exec-path (split-string (getenv "PATH") path-separator))
   #+END_SRC
-
-*** eval-in-repl-like for ansi-term
-
-    will only work if ansi-term is in line mode (=C-c C-j=)
-    switch back to char mode with =C-c C-k=
-
-#+BEGIN_SRC emacs-lisp
-  (setq term-buffer-maximum-size 0)
-  (defun send-current-line-to-term (prefix)
-    ;; prefix to insert output below current line
-    (interactive "P")
-    (let* ((cur-line (thing-at-point 'line t))
-           ;; (process-name "*ansi-term*")
-           (process-name "*shell*")
-           ;; (cur-line "ls -l\n")
-           (cur-buf (current-buffer))
-           (shell-buf (get-buffer process-name))
-           (cur-point-in-process (let ((rtn (progn (switch-to-buffer shell-buf)
-                                                   (point))))
-                                   (switch-to-buffer cur-buf)
-                                   rtn)))
-      (process-send-string
-       process-name 
-       (if (string-match "[ \t\n]*$" cur-line)
-           (concat (replace-match "" nil nil cur-line) "\n")
-         cur-line))
-      (if prefix
-          (save-excursion
-            ;; hack
-            (sleep-for 1)
-            (let ((new-point-max (progn (switch-to-buffer shell-buf)
-                                        (point-max)))
-                  (new-content (progn
-                                 (switch-to-buffer shell-buf)
-                                 (buffer-substring cur-point-in-process (point-max)))))
-              (switch-to-buffer cur-buf)
-              (end-of-line)
-              (newline)
-              (insert new-content)
-              (insert (format "point: %s\nnew max: %s\nstring: %s\n" cur-point-in-process new-point-max new-content))))
-        (progn
-          (message "NO PREFIX")
-         (next-line)))))
-  ;; (local-set-key (kbd "C-<return>") 'send-current-line-to-term)
-#+END_SRC
 
