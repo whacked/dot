@@ -3,8 +3,7 @@
                          ("ELPA"      . "http://tromey.com/elpa/")
                          ("org"       . "http://orgmode.org/elpa/")
                          ("melpa"     . "https://melpa.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("SC"        . "http://joseito.republika.pl/sunrise-commander/")))
+                         ("marmalade" . "http://marmalade-repo.org/packages/")))
 ;; activate all the packages (in particular autoloads)
 (package-initialize)
 
