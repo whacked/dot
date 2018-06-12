@@ -786,7 +786,7 @@
       (gnuplot . t)
       (emacs-lisp . t)
       (ruby . t)
-      (sh . t)
+      (shell . t)
       (clojure . t)
       (lisp . t)
       (haskell . t)
