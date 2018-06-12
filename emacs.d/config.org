@@ -194,6 +194,7 @@
    navi-mode
    neotree
    outorg outshine
+   org-depends
    ov ;; overlay
 
    paredit
