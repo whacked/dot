@@ -194,7 +194,6 @@
    navi-mode
    neotree
    outorg outshine
-   org-depends
    ov ;; overlay
 
    paredit
@@ -203,6 +202,7 @@
    projectile
    request
    revive
+   quelpa
    s
    simple-httpd
    skewer-mode ;; js live repl https://github.com/skeeto/skewer-mode
