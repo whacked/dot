@@ -44,21 +44,25 @@ fun SetupVAM()
               \ , 'github:yegappan/mru'
               \ , 'github:PProvost/vim-ps1'
               \ , 'github:hashivim/vim-vagrant.git'
-              \ ], {'auto_install' : 0})
-
+              \ ], {
+              \'auto_install': 1,
+              \'shell_commands_run_method': 'system',
+              \'log_to_buf': 1,
+              \'log_buffer_name': '/tmp/vam_install.log',
+              \})
 endfun
 call SetupVAM()
 
 " ref https://realpython.com/blog/python/vim-and-python-a-match-made-in-heaven/
 "python with virtualenv support
-py << EOF
-import os
-import sys
-if 'VIRTUAL_ENV' in os.environ:
-  project_base_dir = os.environ['VIRTUAL_ENV']
-  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-  execfile(activate_this, dict(__file__=activate_this))
-EOF
+" py << EOF
+" import os
+" import sys
+" if 'VIRTUAL_ENV' in os.environ:
+"   project_base_dir = os.environ['VIRTUAL_ENV']
+"   activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+"   execfile(activate_this, dict(__file__=activate_this))
+" EOF
 
 let g:AutoCloseExpandEnterOn = ""
 
