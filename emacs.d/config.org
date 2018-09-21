@@ -350,17 +350,17 @@
     (setq el-get-sources
           '((:name tiddlywiki-org
                    :type git
-                   :url "https://github.com/whacked/tiddlywiki-org"
+                   :url "git://github.com/whacked/tiddlywiki-org.git"
                    :features "tiddlywiki-mode")
 
             (:name ob-shstream
                    :type git
-                   :url "https://github.com/whacked/ob-shstream"
+                   :url "git://github.com/whacked/ob-shstream.git"
                    :features "ob-shstream")
 
             (:name clojure-utils
                    :type git
-                   :url "https://github.com/plexus/emacs-clojure-utils"
+                   :url "https://github.com/plexus/emacs-clojure-utils.git"
                    :features "clojure-utils")))
 
     (setq my-packages
