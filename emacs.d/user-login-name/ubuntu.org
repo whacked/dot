@@ -1,0 +1,5 @@
+* ubuntu
+
+#+BEGIN_SRC emacs-lisp
+(setq package-group-list (append package-group-list (list :code :lisp)))
+#+END_SRC
