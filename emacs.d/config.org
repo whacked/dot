@@ -155,6 +155,16 @@
       (org-babel-load-file system-name-org)))
 #+END_SRC
 
+* user-login-name specific
+
+#+BEGIN_SRC emacs-lisp
+  (let ((user-login-name-org
+         (path-join EMACS.D-DIR "user-login-name"
+                    (concat user-login-name ".org"))))
+    (when (file-exists-p user-login-name-org)
+      (org-babel-load-file user-login-name-org)))
+#+END_SRC
+
 * package setup
 
 ** common
