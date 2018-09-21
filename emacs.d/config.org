@@ -1322,21 +1322,21 @@
                              '("Consolas" . 10))
                             ((font-exist-p "Monaco")
                              '("Monaco" . 11))
-                            ((font-exist-p "Anonymous Pro")
-                             '("Anonymous Pro" . 10))
                             ((font-exist-p "Droid Sans Mono")
                              '("Droid Sans Mono" . 11))
                             ((font-exist-p "Deja Vu Sans Mono")
-                             '("Deja Vu Sans Mono" . 10))
+                             '("Deja Vu Sans Mono" . 9))
                             ((font-exist-p "Inconsolata")
-                             '("Inconsolata" . 11)))))
-       (defvar emacs-english-font (car font-pair))
-       (let ((font-string (format "%s %s" emacs-english-font (cdr font-pair))))
-         (set-frame-font font-string nil t))
-
-       (add-to-list 'default-frame-alist '((font . (format "%s %s"
-                                                           emacs-english-font
-                                                           (cdr font-pair))))))
+                             '("Inconsolata" . 9))
+                            ((font-exist-p "Anonymous Pro")
+                             '("Anonymous Pro" . 8)))))
+       (when font-pair
+         (defvar emacs-english-font (car font-pair))
+         (let ((font-string (format "%s-%s" emacs-english-font (cdr font-pair))))
+           (set-frame-font font-string nil t))
+         (add-to-list
+          'default-frame-alist
+          `(font . ,(format "%s-%s" emacs-english-font (cdr font-pair))))))
    #+END_SRC
 
 ** highlight line
