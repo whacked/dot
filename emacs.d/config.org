@@ -563,7 +563,7 @@
                                        )))
   (setq default-frame-alist
         '((top . 0) (left . 0)
-          (width . 84) (height . 60)))
+          (width . 84) (height . 40)))
 
   ;; new behavior in emacs 24?
   ;; http://superuser.com/questions/397806/emacs-modify-quit-window-to-delete-buffer-not-just-bury-it
