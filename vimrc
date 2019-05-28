@@ -140,6 +140,7 @@ let g:ctrlp_custom_ignore = {
 let g:ctrlp_working_path_mode = 'ra'
 
 " NERDTree
+let NERDTreeDirArrows=0
 let NERDTreeTabsOpen=1
 let NERDTreeQuitOnOpen=0
 
