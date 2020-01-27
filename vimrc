@@ -35,7 +35,7 @@ fun SetupVAM()
               \ , 'github:vim-scripts/AutoClose'
               \ , 'occur'
               \ , 'github:jamessan/vim-gnupg'
-              \ , 'github:fatih/vim-go'
+              "\ , 'github:fatih/vim-go'
               \ , 'github:Glench/Vim-Jinja2-Syntax'
               \ , 'vim-orgmode'
               \ , 'github:hylang/vim-hy'
@@ -44,6 +44,8 @@ fun SetupVAM()
               \ , 'github:yegappan/mru'
               \ , 'github:PProvost/vim-ps1'
               \ , 'github:hashivim/vim-vagrant.git'
+              \ , 'github:LnL7/vim-nix'
+              \ , 'github:hashivim/vim-hashicorp-tools'
               \ ], {
               \'auto_install': 1,
               \'shell_commands_run_method': 'system',

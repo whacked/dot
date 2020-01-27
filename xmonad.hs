@@ -7,7 +7,8 @@ import XMonad.Util.EZConfig
 import System.IO
 import Data.List
 
-import XMonad.Config.Gnome
+-- import XMonad.Config.Gnome
+import XMonad.Config.Xfce
 import XMonad.Actions.SimpleDate
 
 import qualified XMonad.StackSet as W
@@ -37,7 +38,7 @@ devMode = False
 myFocusedBorderColor = if devMode == True then "green" else "red"
 
 main = do
-    xmonad $ gnomeConfig
+    xmonad $ xfceConfig
         { terminal = "terminator" -- terminal = "gnome-terminal" 
         , borderWidth = 1
         , modMask = myModMask
@@ -46,7 +47,7 @@ main = do
         -- , manageHook = manageDocks -- <+> manageHook gnomeConfig
         -- , layoutHook = avoidStruts $ layoutHook gnomeConfig
         , layoutHook = showWName myLayout -- avoidStruts $ layoutHook defaultConfig
-        , manageHook = myManageHook <+> manageHook gnomeConfig
+        , manageHook = myManageHook <+> manageHook xfceConfig
         , workspaces = myWorkspaces
         -- , logHook = myLogHook
 
@@ -134,13 +135,15 @@ myManageHook = composeAll
     , title =? "New Layer" --> doFloat
     , title =? "Change Foreground Color" --> doFloat
 
+    , resource =? "Do" --> doFloat
+
     -- for imagemagick `display`
     , className =? "Display.im6" --> doCenterFloat
     
     ]
 
 myKeys = [] ++
-         [ ((mod4Mask, xK_space    ), unsafeSpawn "$HOME/opt/thinkpad/dzen/popup_calendar.sh")] ++
+         [ ((mod4Mask, xK_space    ), unsafeSpawn "/Users/$USER/linux/opt/thinkpad/dzen/popup_calendar.sh")] ++
 
          -- application shortcuts
          [ ((mod4Mask, xK_F9      ), unsafeSpawn "emacsclient -c -e '(switch-to-buffer (dolist (buf (buffer-list)) (if (or (equal (get-buffer \"*scratch*\") buf) (equal (get-buffer \" *Minibuf-1*\") buf)) nil  (return buf))))'")] ++
@@ -154,6 +157,9 @@ myKeys = [] ++
          [ ((mod1Mask,               xK_Tab   ), windows W.focusDown)
          , ((mod1Mask .|. shiftMask, xK_Tab   ), windows W.focusUp)
          ] ++
+
+         -- [ ((myModMask,               xK_p),  unsafeSpawn "gnome-do") ] ++
+
          -- a basic CycleWS setup
          [ ((myModMask,               xK_Down),  nextWS)
          , ((myModMask,               xK_Up),    prevWS)
@@ -189,5 +195,5 @@ myKeys = [] ++
          ] ++
          -- http://www.haskell.org/haskellwiki/Xmonad/Frequently_asked_questions#Screens_are_in_wrong_order
          [((m .|. myModMask, key), screenWorkspace sc >>= flip whenJust (windows . f)) -- Replace 'mod1Mask' with your mod key of choice.
-             | (key, sc) <- zip [xK_w, xK_e, xK_r] [2,1,0] -- was [0..] *** change to match your screen order ***
+             | (key, sc) <- zip [xK_w, xK_e, xK_r] [0,2,1] -- was [0..] *** change to match your screen order ***
              , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
