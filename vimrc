@@ -46,41 +46,6 @@ call plug#end()
 " </vim-plug>
 
 
-
-fun SetupVAM()
-  let vam_install_path = expand('$HOME') . '/.vim/vim-addons'
-  exec 'set rtp+='.vam_install_path.'/vim-addon-manager'
-  " let g:vim_addon_manager = { your config here see "commented version" example and help
-  if !isdirectory(vam_install_path.'/vim-addon-manager/autoload')
-    execute '!git clone --depth=1 git://github.com/MarcWeber/vim-addon-manager '.shellescape(vam_install_path, 1).'/vim-addon-manager'
-  endif
-  call vam#ActivateAddons([
-              \ , 'git-time-lapse'
-              \ , 'vim-ipython'
-              \ , 'csv'
-              \ , 'matchit.zip'
-              \ , 'occur'
-              \ , 'vim-orgmode'
-              \ ], {
-              \'auto_install': 1,
-              \'shell_commands_run_method': 'system',
-              \'log_to_buf': 1,
-              \'log_buffer_name': '/tmp/vam_install.log',
-              \})
-endfun
-call SetupVAM()
-
-" ref https://realpython.com/blog/python/vim-and-python-a-match-made-in-heaven/
-"python with virtualenv support
-" py << EOF
-" import os
-" import sys
-" if 'VIRTUAL_ENV' in os.environ:
-"   project_base_dir = os.environ['VIRTUAL_ENV']
-"   activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-"   execfile(activate_this, dict(__file__=activate_this))
-" EOF
-
 let g:AutoCloseExpandEnterOn = ""
 
 " most recently visited files
