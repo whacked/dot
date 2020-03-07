@@ -203,7 +203,8 @@
    muse
    navi-mode
    neotree
-   outorg outshine
+   org-brain
+   outorg outshine  ;; retire?
    ov ;; overlay
 
    paredit
@@ -219,7 +220,9 @@
    spinner ;; spinner for ongoing operation
    sqlite
    sr-speedbar ;; file list view in buffer
+   string-inflection ;; underscore -> UPCASE -> CapitalCase -> camelCase -> kebab-case
    swiper
+   terraform-mode
    transpose-frame
    try
    unbound ;; provides describe-unbound-keys
@@ -754,7 +757,7 @@
   ;;   (if (display-graphic-p)
   ;;       (color-theme-solarized-light)
   ;;     (color-theme-solarized-dark)))
-  (color-theme-initialize)
+  ;; (color-theme-initialize)
 
 #+END_SRC
 
@@ -1042,21 +1045,22 @@
 
 #+BEGIN_SRC emacs-lisp :results silent
   (defvar *default-anonymous-tiddler-directory*
-    (expand-file-name "~/note/org/tw/tiddlers/warehouse"))
+    (expand-file-name "/Users/natto/cloudsync/main/note/org/tw/tiddlers/warehouse"))
   (defun new-anonymous-tiddler (&optional reserve-for-future-use)
         "create a new uniquely named tiddler inside designated directory"
         (interactive "P")
         (let* ((title (format-time-string "anonymous tiddler %Y-%m-%d %H:%M:%S"))
                (file-path (concat
                            (file-name-as-directory
-                            ,*default-anonymous-tiddler-directory*)
+                            *default-anonymous-tiddler-directory*)
                            (format-time-string "%Y-%m-%d_%H-%M-%S.tid"))))
           (find-file-literally file-path)
           (insert
            (tiddlywiki-org-mode-tiddler-preamble title)
            "\n\n")
           (tiddlywiki-mode)
-          (kill-new (concat "[[file:" file-path "]]"))))
+          ;; (kill-new (concat "[[file:" file-path "]]"))
+          ))
   (defalias 'jog 'new-anonymous-tiddler)
 #+END_SRC
 

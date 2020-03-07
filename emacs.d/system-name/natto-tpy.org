@@ -4,25 +4,26 @@
   (when (string= "natto-tpy" system-name)
     (setq package-group-list (append package-group-list (list :extra :code :lisp :unportable)))
 
-    (setq org-agenda-files 
-          (append (map 'list 'expand-file-name '("~/note/org/main.org"
-                                                 "~/note/org/index.org.gpg"
-                                                 "~/note/org/tw/tiddlers/todo.tid"
+    (setq org-agenda-files
+          (append (map 'list 'expand-file-name '("/Users/natto/cloudsync/main/note/org/main.org"
+                                                 "/Users/natto/cloudsync/main/note/org/index.org.gpg"
+                                                 "/Users/natto/cloudsync/main/note/org/tw/tiddlers/todo.tid"
                                                  ;; "~/note/cne/cne.org"
                                                  ))
-                  ;; requires 'cl
-                  (let ((base-dir (expand-file-name "~/note/org/tw/tiddlers")))
-                    ;; filter out non-org type
-                    (remove-if-not
-                     (lambda (f)
-                       (with-temp-buffer
-                         (insert-file-contents f)
-                         (string-match "^type: text/org$"
-                                       (first (split-string (buffer-string) "\n\n" t)))))
-                     (mapcar
-                      (lambda (f) (concat base-dir "/" f))
-                      (directory-files base-dir
-                                       nil "^[^\\$].+\\.tid$")))))))
+                  ;; ;; requires 'cl
+                  ;; (let ((base-dir (expand-file-name "/Users/natto/cloudsync/main/note/org/tw/tiddlers")))
+                  ;;   ;; filter out non-org type
+                  ;;   (remove-if-not
+                  ;;    (lambda (f)
+                  ;;      (with-temp-buffer
+                  ;;        (insert-file-contents f)
+                  ;;        (string-match "^type: text/org$"
+                  ;;                      (first (split-string (buffer-string) "\n\n" t)))))
+                  ;;    (mapcar
+                  ;;     (lambda (f) (concat base-dir "/" f))
+                  ;;     (directory-files base-dir
+                  ;;                      nil "^[^\\$].+\\.tid$"))))
+                  )))
   ;; (require 'frame-bufs)
   ;; (frame-bufs-mode t)
 
