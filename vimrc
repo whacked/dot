@@ -38,6 +38,9 @@ Plug 'mhinz/vim-signify'
 Plug 'yegappan/mru'
 Plug 'PProvost/vim-ps1'
 Plug 'hashivim/vim-vagrant'
+Plug 'jceb/vim-orgmode'
+Plug 'jremmen/vim-ripgrep'
+Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
 
 call plug#end()
 " </vim-plug>
