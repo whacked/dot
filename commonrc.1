@@ -101,12 +101,15 @@ alias mosh-nosave='mosh --ssh=-"o UserKnownHostsFile=/dev/null -o StrictHostKeyC
 
 NIX_SH_PATH=$HOME/.nix-profile/etc/profile.d/nix.sh
 if [ -e $NIX_SH_PATH ]; then
+    unset LD_LIBRARY_PATH
+    unset LD_PRELOAD
     . $NIX_SH_PATH;
+    alias nsh=nix-shell
 fi
 
 
 ## keychain
-if [ $(which keychain) ] ; then
+if type keychain >/dev/null ; then
     # this from commonrc.1
     # keychain --eval id_rsa
     # this from original bashrc
@@ -115,3 +118,7 @@ if [ $(which keychain) ] ; then
     . ~/.keychain/`uname -n`-sh
 fi
 
+
+if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
+    source /etc/profile.d/vte.sh
+fi
