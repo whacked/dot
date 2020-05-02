@@ -37,13 +37,6 @@ for includedir in /usr/local/bin $HOME/opt/thinkpad $HOME/opt /opt $HOME/.cabal/
     fi
 done
 
-RVM_VERSION=2.1.1
-if [[ -s "$HOME/.rvm/scripts/rvm" ]] ; then
-    source "$HOME/.rvm/scripts/rvm" ;
-    export PATH="$PATH:~/.rvm/gems/ruby-$RVM_VERSION/bin:$HOME/.rvm/bin"
-    rvm use ruby-$RVM_VERSION
-fi
-
 # # ref http://d.hatena.ne.jp/dame-p/20110313/1299992080
 export JAVA_OPTS="-Dswank.encoding=utf-8-unix" # 日本語用？
 # export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
