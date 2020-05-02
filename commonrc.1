@@ -63,6 +63,10 @@ function rr {
 
 export GOPATH=~/gopath
 
+if [ -e /usr/local/cache ]; then
+    export USERCACHE=/usr/local/cache
+fi
+
 if ! type "npm" > /dev/null; then
     :
 else
