@@ -74,3 +74,17 @@ pushd $_SCRIPT_DIRECTORY >/dev/null
     git submodule init && git submodule update
 popd >/dev/null
 
+_CHEMACS_DIRECTORY=$(realpath $_SCRIPT_DIRECTORY)/submodules/chemacs
+if [ $(realpath ~/.emacs) == "$_CHEMACS_DIRECTORY/.emacs" ]; then
+    echo chemacs is installed
+else
+    if [[ -e ~/.emacs && ! -L ~/.emacs ]]; then
+        BAK=~/emacs.`date +%F`
+        echo "~/.emacs already exists; backing up to $BAK"
+        mv ~/.emacs $BAK
+    fi
+    pushd $_CHEMACS_DIRECTORY >/dev/null
+        ./install.sh
+    popd >/dev/null
+fi
+
