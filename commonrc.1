@@ -83,16 +83,6 @@ fi
 
 stty stop undef # unmap ctrl-s for vim-ipython
 
-if [[ $(hostname) == "mba" ]]; then
-    export RUBYMOTION_ANDROID_SDK=~/Development/adt-bundle-mac-x86_64-20140702/sdk
-    export RUBYMOTION_ANDROID_NDK=~/Development/android-ndk-r10b
-    export JAVA_HOME=$(/usr/libexec/java_home)
-    PATH=$PATH:"$HOME/Development/adt-bundle-mac-x86_64-20140702/sdk/tools:$HOME/Development/adt-bundle-mac-x86_64-20140702/sdk/platform-tools"
-else
-    :
-fi
-
-
 # BOOT option
 # BOOT_JVM_OPTIONS="-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xmx2g -XX:MaxPermSize=128m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -Xverify:none"
 alias ssh-nosave='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -C -X'
