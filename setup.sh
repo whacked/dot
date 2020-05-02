@@ -2,11 +2,13 @@
 # export GIT_SSL_NO_VERIFY=true; bash setup.sh
 # git config --global http.sslVerify false
 
+_SCRIPT_DIRECTORY=$(dirname ${BASH_SOURCE[0]})
+
 for DOTFILENAME in emacs.d vimrc vim tmux.conf bashrc Rprofile zshrc zsh boot.profile lein subversion; do
     echo [[ processing ]] $DOTFILENAME...
     DOTTARGET=~/.$DOTFILENAME
     if [ -e $DOTTARGET ] && [ ! -h $DOTTARGET ]; then
-        BAK=~/`date +%F`.$DOTFILENAME
+        BAK=~/$DOTFILENAME.`date +%F`
         echo -e "moving: .$DOTFILENAME\\t->\\t$BAK"
         mv $DOTTARGET $BAK
     fi
@@ -34,6 +36,12 @@ if [ ! -e ~/.gitconfig ]; then
     lg   = log --pretty=oneline --abbrev-commit --graph --decorate --date=relative
     lgt  = log --graph --pretty=format:'%Cred%h%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
     lgtt = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+    b = for-each-ref --sort=-committerdate refs/heads/ --format='%(authordate:short) %(color:red)%(objectname:short) %(color:yellow)%(refname:short)%(color:reset) (%(color:green)%(committerdate:relative)%(color:reset))'
+[user]
+    name = $USER
+    email = $USER@fixme.example.com
+[cola]
+    spellcheck = false
 GITCONFIG
 fi
 
@@ -62,5 +70,7 @@ fi
 # submodule command sample
 # git submodule add http://github.com/scrooloose/nerdtree.git .vim/bundle/nerdtree
 echo "syncing git submodules..."
-git submodule init && git submodule update
+pushd $_SCRIPT_DIRECTORY >/dev/null
+    git submodule init && git submodule update
+popd >/dev/null
 

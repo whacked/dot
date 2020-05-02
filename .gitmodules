@@ -1,0 +1,3 @@
+[submodule "submodules/chemacs"]
+	path = submodules/chemacs
+	url = https://github.com/plexus/chemacs
