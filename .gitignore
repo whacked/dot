@@ -10,6 +10,7 @@ vim/autoload/pathogen.vim
 vim/.netrwhist
 vim/bundle
 vim/vim-addons
+vim/plugged
 
 # the tangled output
 emacs.d/config.el
@@ -32,4 +33,7 @@ emacs.d/swank
 emacs.d/tramp
 emacs.d/url
 emacs.d/url/cookies
-emacs.dsession*
+emacs.d/session*
+emacs.d/.cache
+emacs.d/.cask
+emacs.d/quelpa
