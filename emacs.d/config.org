@@ -1147,6 +1147,8 @@
 
 
    #+BEGIN_SRC emacs-lisp
+     ;; org mode 9.2+ stops auto-loading =org-structure-template-alist=
+     (require 'org-tempo)
      (custom-set-variables
       '(org-agenda-restore-windows-after-quit t)
       '(org-catch-invisible-edits "show")
@@ -1977,4 +1979,3 @@
     (setenv "PATH" (concat (getenv "HOME") "/.nix-profile/bin" (getenv "PATH")))
     (setq exec-path (split-string (getenv "PATH") path-separator))
   #+END_SRC
-
