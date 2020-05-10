@@ -41,6 +41,7 @@ Plug 'hashivim/vim-vagrant'
 Plug 'jceb/vim-orgmode'
 Plug 'jremmen/vim-ripgrep'
 Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
+Plug 'LnL7/vim-nix'
 
 call plug#end()
 " </vim-plug>
