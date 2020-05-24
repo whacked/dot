@@ -45,18 +45,6 @@ if [ ! -e ~/.gitconfig ]; then
 GITCONFIG
 fi
 
-# opt directory
-if [ ! -e ~/opt ]; then
-    echo adding opt directory...
-    mkdir ~/opt
-fi
-
-# rupa's z---------------------------------------------------------------
-if [ ! -e ~/opt/z ]; then
-    echo "adding rupa's z..."
-    git clone https://github.com/rupa/z.git ~/opt/z
-fi
-
 # ZSH -----------------------------------------------------------------
 if [ `command -v zsh | wc -l` -ge 1 ]; then
     echo "setting up ZSH..."

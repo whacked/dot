@@ -43,8 +43,7 @@ mkcd () {
     cd "$1"
 }
 
-alias gits='git status -s'
-. ~/opt/z/z.sh
+eval "$(fasd --init auto)"
 
 for includedir in /usr/local/bin $HOME/opt/thinkpad $HOME/opt /opt $HOME/.cabal/bin $HOME/node_modules/bin; do
     if [ -e $includedir ]; then
