@@ -1,4 +1,7 @@
 # vim: set filetype=zsh :
+if [ -e $HOME/dot/commonrc.local ]; then
+    source $HOME/dot/commonrc.local
+fi
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000000
