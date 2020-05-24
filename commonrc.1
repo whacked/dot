@@ -12,6 +12,18 @@ export TERM="xterm-256color"
 # colored GCC warnings and errors
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
 # some more ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
@@ -85,6 +97,7 @@ stty stop undef # unmap ctrl-s for vim-ipython
 alias ssh-nosave='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -C -X'
 alias scp-nosave='scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -C'
 alias mosh-nosave='mosh --ssh=-"o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -C -X"'
+alias venv='source venv/bin/activate'
 
 NIX_SH_PATH=$HOME/.nix-profile/etc/profile.d/nix.sh
 if [ -e $NIX_SH_PATH ]; then
@@ -105,6 +118,10 @@ if type keychain >/dev/null ; then
     . ~/.keychain/`uname -n`-sh
 fi
 
+
+if [ -e ~/.xsh ]; then
+    source ~/.xsh
+fi
 
 if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
     source /etc/profile.d/vte.sh

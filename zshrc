@@ -33,8 +33,6 @@ plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
-# Customize to your needs...
-
 
 # Lines configured by zsh-newuser-install
 # HISTFILE=~/.histfile
@@ -47,12 +45,6 @@ bindkey -e
 ##autoload -Uz compinit
 ##compinit
 ### End of lines added by compinstall
-
-trycount=1
-while [ -e $HOME/dot/commonrc.$trycount ]; do
-    source $HOME/dot/commonrc.$trycount
-    trycount=$(($trycount+1))
-done
 
 setopt HIST_IGNORE_SPACE
 setopt hist_ignore_dups extended_history HIST_SAVE_NO_DUPS
@@ -67,16 +59,13 @@ select-word-style bash
 # $HOME/.zsh/func was at the end of $FPATH, so the custom forward-word-match wasn't working
 export FPATH=~/.zsh/func:$FPATH
 
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-
-
-if [ -e ~/.xsh ]; then
-    source ~/.xsh
-fi
-
-alias venv='source venv/bin/activate'
-
-
 # don't save failed commands to history
 # http://superuser.com/a/902508
 zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1 }
+
+trycount=1
+while [ -e $HOME/dot/commonrc.$trycount ]; do
+    source $HOME/dot/commonrc.$trycount
+    trycount=$(($trycount+1))
+done
+
