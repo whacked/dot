@@ -178,6 +178,7 @@
 
    csv-mode ;; in elpa, not melpa
    dash
+   deadgrep
    deft
    diff-hl
    dirtree
