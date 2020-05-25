@@ -8,6 +8,7 @@ _SCRIPT_DIRECTORY=$(dirname ${BASH_SOURCE[0]})
 if type nix-channel > /dev/null; then
     mkdir -p $HOME/.config/nixpkgs
     ln -s $(realpath $_SCRIPT_DIRECTORY/home.nix) $HOME/.config/nixpkgs/home.nix
+    export NIXPKGS_ALLOW_UNFREE=1
     if ! type home-manager > /dev/null; then
         echo "installing home-manager..."
         nix-channel --add https://github.com/rycee/home-manager/archive/master.tar.gz home-manager
@@ -16,7 +17,6 @@ if type nix-channel > /dev/null; then
     fi
     echo "preparing home-manager..."
 fi
-
 # DOTFILES --------------------------------------------------------------
 for DOTFILENAME in emacs.d vimrc vim tmux.conf bashrc Rprofile zshrc zsh boot.profile lein subversion; do
     echo [[ processing ]] $DOTFILENAME...

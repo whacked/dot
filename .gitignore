@@ -42,3 +42,5 @@ emacs.d/quelpa
 
 # running `svn` will automatically create this file!
 subversion/README.txt
+
+vim/autoload/plug.vim
