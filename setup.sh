@@ -48,8 +48,19 @@ fi
 # ZSH -----------------------------------------------------------------
 if [ `command -v zsh | wc -l` -ge 1 ]; then
     echo "setting up ZSH..."
+
     if [ ! -e ~/.oh-my-zsh ]; then
-        git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+        echo "setting up oh-my-zsh..."
+
+        # test for nix-supplied oh-my-zsh first
+        _nix_oh_my_zsh_path=$(nix eval --raw nixpkgs.oh-my-zsh.outPath 2>/dev/null)
+        if [ "x$_nix_oh_my_zsh_path" != "x" ]; then
+            echo "using oh-my-zsh found from nix store: $_nix_oh_my_zsh_path"
+            ln -s $_nix_oh_my_zsh_path/share/oh-my-zsh $HOME/.oh-my-zsh
+        else
+            echo "cloning oh-my-zsh from github..."
+            git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+        fi
     fi
 else
     echo ... zsh not installed
