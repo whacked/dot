@@ -39,3 +39,6 @@ emacs.d/session*
 emacs.d/.cache
 emacs.d/.cask
 emacs.d/quelpa
+
+# running `svn` will automatically create this file!
+subversion/README.txt
