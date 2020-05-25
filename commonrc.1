@@ -81,7 +81,7 @@ if [ -e /usr/local/cache ]; then
     export USERCACHE=/usr/local/cache
 fi
 
-if ! type "npm" > /dev/null; then
+if ! type "npm" &>/dev/null; then
     :
 else
     export NODE_PATH=$(npm root -g)
@@ -111,7 +111,7 @@ fi
 
 
 ## keychain
-if type keychain >/dev/null ; then
+if type keychain &>/dev/null ; then
     # this from commonrc.1
     # keychain --eval id_rsa
     # this from original bashrc
@@ -128,3 +128,8 @@ fi
 if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
     source /etc/profile.d/vte.sh
 fi
+
+if type direnv &>/dev/null; then
+    eval "$(direnv hook $(ps -p $$ -ocomm=))"
+fi
+
