@@ -1042,6 +1042,14 @@
  #+END_SRC
 
 
+**** re-enable org-tempo
+
+     this enables shortcut expansions like "<s<TAB>". it is off by default since org 9.2
+     
+     #+begin_src emacs-lisp :results silent
+     (require 'org-tempo)
+     #+end_src
+
 *** tiddlywiki
 
 #+BEGIN_SRC emacs-lisp :results silent
