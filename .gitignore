@@ -46,3 +46,7 @@ emacs.d/quelpa
 subversion/README.txt
 
 vim/autoload/plug.vim
+
+
+lein/repl-history
+lein/self-installs/*.jar
