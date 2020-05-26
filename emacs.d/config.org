@@ -443,24 +443,30 @@
 *** lispy-stuff.el (:lisp)
 
  #+BEGIN_SRC emacs-lisp
-   (when (memq :lisp package-group-list)
-     (setq package-list
-           (delete-dups
-            (append package-list
-                    '(cider
-                      clojure-mode
-                      clj-refactor
-                      expand-region
-                      hy-mode
-                      popup
-                      queue
-                      sibilant-mode
-                      inf-clojure
-                      seq
-                      ))))
-     (setq my-packages 
-           (delete-dups my-packages))
-     (global-set-key (kbd "C-=") 'er/expand-region))
+   (setq package-list
+         (delete-dups
+          (append package-list
+                  '(cider
+                    clojure-mode
+                    clj-refactor
+                    expand-region
+                    hy-mode
+                    popup
+                    queue
+                    sibilant-mode
+                    inf-clojure
+                    seq))))
+
+   (global-set-key (kbd "C-=") 'er/expand-region)
+   (autoload 'paredit-mode "paredit" "Minor mode for pseudo-structurally editing Lisp code." t)
+   (add-hook 'cider-repl-mode-hook        #'enable-paredit-mode)
+   (add-hook 'emacs-lisp-mode-hook        #'enable-paredit-mode)
+   (add-hook 'lisp-mode-hook              #'enable-paredit-mode)
+   (add-hook 'lisp-interaction-mode-hook  #'enable-paredit-mode)
+   (add-hook 'hy-mode-hook                #'enable-paredit-mode)
+   (add-hook 'sibilant-mode-hook          #'enable-paredit-mode)
+   (add-hook 'clojure-mode-hook           #'enable-paredit-mode)
+   (add-hook 'clojurescript-mode-hook     #'enable-paredit-mode)
  #+END_SRC
 
 *** only run on main machine (:unportable)
@@ -484,26 +490,12 @@
      (unless (package-installed-p package)
        (package-install package)))
 
+   (setq my-packages (delete-dups my-packages))
    (el-get 'sync my-packages)
  #+END_SRC
 
 * usual-environment.el
 
-** lispy
-
-   #+BEGIN_SRC emacs-lisp
-     (when (memq :lisp package-group-list)
-       (autoload 'paredit-mode "paredit" "Minor mode for pseudo-structurally editing Lisp code." t)
-       (add-hook 'cider-repl-mode-hook #'enable-paredit-mode)
-       (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
-       (add-hook 'lisp-mode-hook       #'enable-paredit-mode)
-       (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
-       (add-hook 'hy-mode-hook #'enable-paredit-mode)
-       (add-hook 'sibilant-mode-hook #'enable-paredit-mode)
-       (add-hook 'clojure-mode-hook #'enable-paredit-mode)
-       (add-hook 'clojurescript-mode-hook #'enable-paredit-mode))
-   #+END_SRC
-    
 ** revive (resume)
 
    #+BEGIN_SRC emacs-lisp
