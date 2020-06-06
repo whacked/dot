@@ -7,7 +7,6 @@
 * stuff to get familiarized with
 
   - [[https://github.com/technomancy/find-file-in-project][find-file-in-project]]
-  - [[https://github.com/alphapapa/helm-org-rifle][helm-org-rifle]]
 
 * shared init
 
