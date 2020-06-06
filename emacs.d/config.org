@@ -9,35 +9,32 @@
   - [[https://github.com/technomancy/find-file-in-project][find-file-in-project]]
   - [[https://github.com/alphapapa/helm-org-rifle][helm-org-rifle]]
 
-* init + base UI default
+* shared init
 
-  #+BEGIN_SRC emacs-lisp
-    (setq inhibit-splash-screen t)
-    (setq-default
-     truncate-lines t
-     tab-width 2
-     indent-tabs-mode nil
-     echo-keystrokes 0.1 ;; = delay for minibuffer display after pressing function key default is 1
-     )
+#+BEGIN_SRC emacs-lisp
+  (defun path-join (&rest path-seq)
+    (concat (mapconcat
+	     'file-name-as-directory
+	     (butlast path-seq) "")
+	    (car (last path-seq))))
+  (setq EMACS.D-DIR (path-join "~" ".emacs.d"))
+#+END_SRC
 
-    (set-default-coding-systems 'utf-8)
-    (set-language-environment "UTF-8")
-
-    (defun now (&optional return-date-only) (interactive "P") (message (format-time-string (if return-date-only "%Y-%m-%d" "%Y-%m-%d %H:%M:%S"))))
-    (defun insert-timestamp (&optional return-date-only)
-      "Insert date at current cursor position in current active buffer"
-      (interactive "P") (insert (now return-date-only)))
-
-    (setenv "PATH" (concat "/opt:/opt/local/bin:" (getenv "PATH")))
-    (add-to-list 'load-path "~/dot/emacs.d")
-  #+END_SRC
-
-** package init (=package-management.el=)
+** package initialization
 
    remember if you update =package-archives= you must run
    =M-x el-get-elpa-build-local-recipes= to refresh the list
    
   #+BEGIN_SRC emacs-lisp
+    ;; package management
+    (setq package-archives '(("gnu"       . "http://elpa.gnu.org/packages/")
+           ("ELPA"      . "http://tromey.com/elpa/")
+           ("org"       . "http://orgmode.org/elpa/")
+           ("melpa"     . "https://melpa.org/packages/")
+           ("marmalade" . "http://marmalade-repo.org/packages/")))
+    ;; activate all the packages (in particular autoloads)
+    (package-initialize)
+
     ;; https://github.com/dimitri/el-get#readme
     ;; FIXME: OBSOLETE?
     (add-to-list 'load-path "~/dot/emacs.d/el-get/el-get")
@@ -93,10 +90,9 @@
         (lambda (package-name)
           (list 'use-package package-name :ensure t :defer t))
         package-list)))
-
   #+END_SRC
 
-* os-specific
+** UI defaults
 
 ** gnu/linux
 
@@ -1957,10 +1953,3 @@
      ;; Setup font size based on emacs-font-size-pair
      ;; (set-font emacs-english-font emacs-cjk-font emacs-font-size-pair)
    #+END_SRC
-* quickfix
-
-  #+BEGIN_SRC emacs-lisp
-    (setenv "PATH" (concat (getenv "HOME") "/.nix-profile/bin" (getenv "PATH")))
-    (setq exec-path (split-string (getenv "PATH") path-separator))
-  #+END_SRC
-
