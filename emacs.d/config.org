@@ -781,8 +781,6 @@
    ;;;;;;;;;;;;;;;;;;;;;;;
    ;; <org mode config> ;;
    ;;;;;;;;;;;;;;;;;;;;;;;
-
-   (add-to-list 'load-path "~/dot/emacs.d/dev")
    (require 'org)
    ;; force org-babel src edit to use same window instead of splitting
    (setq org-src-window-setup 'current-window)
