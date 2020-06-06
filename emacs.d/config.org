@@ -730,8 +730,6 @@
   (put 'set-goal-column 'disabled nil)
   (put 'narrow-to-region 'disabled nil)
 
-  (load-file "~/dot/emacs.d/dev/sqlite.el")
-
   ;; eliminate strange error with this for now
   (defvar warning-suppress-types nil)
 
