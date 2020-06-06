@@ -33,41 +33,41 @@
             ("marmalade" . "http://marmalade-repo.org/packages/")))
      ;; activate all the packages (in particular autoloads)
      (package-initialize)
- 
+
      ;; https://github.com/dimitri/el-get#readme
      ;; FIXME: OBSOLETE?
      (add-to-list 'load-path "~/dot/emacs.d/el-get/el-get")
- 
+
      (defun local--init-emacs-package ()
        (require 'package)
        (add-to-list 'package-archives
                     '("melpa" . "http://melpa.org/packages/"))
        (package-refresh-contents)
        (package-initialize))
- 
+
      ;; use MELPA's el-get
      (unless (require 'el-get nil 'noerror)
        (local--init-emacs-package)
        (package-install 'el-get)
        (require 'el-get))
      (setq package-list (list))
- 
+
      (unless (package-installed-p 'use-package)
        (local--init-emacs-package)
        (package-install 'use-package))
- 
+
      (eval-when-compile (require 'use-package))
- 
+
      ;; (add-to-list 'el-get-recipe-path "~/dot/emacs.d/el-get-user/recipes")
- 
+
      ;; for MELPA packages
      ;; ref http://stackoverflow.com/questions/23165158/how-do-i-install-melpa-packages-via-el-get
      ;; likely no longer needed as of 2018-01-28
      ;; (require 'el-get-elpa)
      ;; then call el-get-elpa-build-local-recipes
- 
+
      ;;(package-initialize)
- 
+
      ;; local sources
      ;; example:
      ;; (setq el-get-sources
@@ -78,10 +78,10 @@
      ;; (setq my-packages
      ;;       (append '(cssh el-get switch-window vkill google-maps nxhtml xcscope yasnippet)
      ;;        (mapcar 'el-get-source-name el-get-sources)))
- 
+
      ;; specify package sets to load later
      (setq package-group-list (list))
- 
+
      (defmacro local--load-packages (&rest package-list)
        (cons
         'progn
@@ -255,118 +255,116 @@
    )
 #+END_SRC
 
-*** eval-in-repl
+** eval-in-repl
 
-* eval-in-repl
+   #+BEGIN_SRC emacs-lisp :results silent
+     (use-package eval-in-repl
+       :ensure t
+       :config (progn
+                 ;; Shell support
+                 (require 'eval-in-repl-shell)
 
-  #+BEGIN_SRC emacs-lisp :results silent
-    (use-package eval-in-repl
-      :ensure t
-      :config (progn
-                ;; Shell support
-                (require 'eval-in-repl-shell)
-
-                ;; Version with opposite behavior to eir-jump-after-eval configuration
-                (defun eir-eval-in-shell2 ()
-                  "eval-in-repl for shell script (opposite behavior)
+                 ;; Version with opposite behavior to eir-jump-after-eval configuration
+                 (defun eir-eval-in-shell2 ()
+                   "eval-in-repl for shell script (opposite behavior)
          
-                   This version has the opposite behavior to the eir-jump-after-eval
-                   configuration when invoked to evaluate a line."
-                  (interactive)
-                  (let ((eir-jump-after-eval (not eir-jump-after-eval)))
-                    (eir-eval-in-shell)))
-                ;; (add-hook 'sh-mode-hook
-                ;;           '(lambda()
-                ;;              (local-set-key (kbd "C-M-<return>") 'eir-eval-in-shell2)))
+                    This version has the opposite behavior to the eir-jump-after-eval
+                    configuration when invoked to evaluate a line."
+                   (interactive)
+                   (let ((eir-jump-after-eval (not eir-jump-after-eval)))
+                     (eir-eval-in-shell)))
+                 ;; (add-hook 'sh-mode-hook
+                 ;;           '(lambda()
+                 ;;              (local-set-key (kbd "C-M-<return>") 'eir-eval-in-shell2)))
 
-                (add-hook 'sh-mode-hook
-                          '(lambda()
-                             (local-set-key (kbd "C-<return>") 'eir-eval-in-shell)))))
+                 (add-hook 'sh-mode-hook
+                           '(lambda()
+                              (local-set-key (kbd "C-<return>") 'eir-eval-in-shell)))))
 
 
-  #+END_SRC
+   #+END_SRC
 
-**** eval-in-repl-like for ansi-term
+*** eval-in-repl-like for ansi-term
 
     will only work if ansi-term is in line mode (=C-c C-j=)
     switch back to char mode with =C-c C-k=
 
-#+BEGIN_SRC emacs-lisp
-  (setq local--term-buffer-maximum-size 0)
-  (defun local--send-current-line-to-term (prefix)
-    ;; prefix to insert output below current line
-    (interactive "P")
-    (let* ((cur-line (thing-at-point 'line t))
-           ;; (process-name "*ansi-term*")
-           (process-name "*shell*")
-           ;; (cur-line "ls -l\n")
-           (cur-buf (current-buffer))
-           (shell-buf (get-buffer process-name))
-           (cur-point-in-process (let ((rtn (progn (switch-to-buffer shell-buf)
-                                                   (point))))
-                                   (switch-to-buffer cur-buf)
-                                   rtn)))
-      (process-send-string
-       process-name
-       (if (string-match "[ \t\n]*$" cur-line)
-           (concat (replace-match "" nil nil cur-line) "\n")
-         cur-line))
-      (if prefix
-          (save-excursion
-            ;; hack
-            (sleep-for 1)
-            (let ((new-point-max (progn (switch-to-buffer shell-buf)
-                                        (point-max)))
-                  (new-content (progn
-                                 (switch-to-buffer shell-buf)
-                                 (buffer-substring cur-point-in-process (point-max)))))
-              (switch-to-buffer cur-buf)
-              (end-of-line)
-              (newline)
-              (insert new-content)
-              (insert (format "point: %s\nnew max: %s\nstring: %s\n" cur-point-in-process new-point-max new-content))))
-        (progn
-          (message "NO PREFIX")
-         (next-line)))))
-  ;; (local-set-key (kbd "C-<return>") 'local--send-current-line-to-term)
-#+END_SRC
-
-*** fiplr (vim-like ctrl-p)
-
     #+BEGIN_SRC emacs-lisp
-      (use-package fiplr
-        :ensure t
-        :config (setq fiplr-ignored-globs
-                      '((directories (".git" ".svn"))
-                        (files ("*.jpg" "*.png" "*.zip" "*~"
-                                "*.pyc" "*.min.js")))))
+      (setq local--term-buffer-maximum-size 0)
+      (defun local--send-current-line-to-term (prefix)
+        ;; prefix to insert output below current line
+        (interactive "P")
+        (let* ((cur-line (thing-at-point 'line t))
+               ;; (process-name "*ansi-term*")
+               (process-name "*shell*")
+               ;; (cur-line "ls -l\n")
+               (cur-buf (current-buffer))
+               (shell-buf (get-buffer process-name))
+               (cur-point-in-process (let ((rtn (progn (switch-to-buffer shell-buf)
+                                                       (point))))
+                                       (switch-to-buffer cur-buf)
+                                       rtn)))
+          (process-send-string
+           process-name
+           (if (string-match "[ \t\n]*$" cur-line)
+               (concat (replace-match "" nil nil cur-line) "\n")
+             cur-line))
+          (if prefix
+              (save-excursion
+                ;; hack
+                (sleep-for 1)
+                (let ((new-point-max (progn (switch-to-buffer shell-buf)
+                                            (point-max)))
+                      (new-content (progn
+                                     (switch-to-buffer shell-buf)
+                                     (buffer-substring cur-point-in-process (point-max)))))
+                  (switch-to-buffer cur-buf)
+                  (end-of-line)
+                  (newline)
+                  (insert new-content)
+                  (insert (format "point: %s\nnew max: %s\nstring: %s\n" cur-point-in-process new-point-max new-content))))
+            (progn
+              (message "NO PREFIX")
+             (next-line)))))
+      ;; (local-set-key (kbd "C-<return>") 'local--send-current-line-to-term)
     #+END_SRC
 
-*** multi-web-mode
+** fiplr (vim-like ctrl-p)
 
-    #+BEGIN_SRC emacs-lisp
-      (use-package multi-web-mode
-        :ensure t
-        :defer t
-        :config (progn
-                  (setq mweb-default-major-mode 'html-mode)
-                  (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
-                                    (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
-                                    (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
-                  (setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
-                  (multi-web-global-mode 1)))
-    #+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (use-package fiplr
+       :ensure t
+       :config (setq fiplr-ignored-globs
+                     '((directories (".git" ".svn"))
+                       (files ("*.jpg" "*.png" "*.zip" "*~"
+                               "*.pyc" "*.min.js")))))
+   #+END_SRC
 
-*** win-switch
+** multi-web-mode
 
-    allows repeated =other-window= via =C-x o o o ...=
+   #+BEGIN_SRC emacs-lisp
+     (use-package multi-web-mode
+       :ensure t
+       :defer t
+       :config (progn
+                 (setq mweb-default-major-mode 'html-mode)
+                 (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
+                                   (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
+                                   (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
+                 (setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
+                 (multi-web-global-mode 1)))
+   #+END_SRC
+
+** win-switch
+
+   allows repeated =other-window= via =C-x o o o ...=
     
-    #+BEGIN_SRC emacs-lisp
-      (use-package win-switch
-        :ensure t
-        :bind ("C-x o" . win-switch-dispatch)
-        :config (setq win-switch-idle-time 0.3))
-    #+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (use-package win-switch
+       :ensure t
+       :bind ("C-x o" . win-switch-dispatch)
+       :config (setq win-switch-idle-time 0.3))
+   #+END_SRC
 
 ** package-common.el
 
