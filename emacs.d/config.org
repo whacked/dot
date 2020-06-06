@@ -188,7 +188,7 @@
    git-timemachine
    ;; google-this
 
-   helm 
+   helm
    helm-org-rifle ;; https://github.com/alphapapa/helm-org-rifle
    helm-projectile
    helm-swoop
@@ -287,7 +287,7 @@
                                    (switch-to-buffer cur-buf)
                                    rtn)))
       (process-send-string
-       process-name 
+       process-name
        (if (string-match "[ \t\n]*$" cur-line)
            (concat (replace-match "" nil nil cur-line) "\n")
          cur-line))
@@ -430,7 +430,7 @@
                       zencoding-mode
                       inf-ruby
                       ))))
-     (setq my-packages 
+     (setq my-packages
            (delete-dups
             (append my-packages
                     '(
@@ -630,10 +630,10 @@
     (setq TeX-save-query t))
 
   ;;; Don't quit unless you mean it!
-  (defun maybe-save-buffers-kill-emacs (really) 
+  (defun maybe-save-buffers-kill-emacs (really)
     "If REALLY is 'yes', call save-buffers-kill-emacs."
     (interactive "sAre you sure about this? ")
-    (if (equal really "yes") 
+    (if (equal really "yes")
         (progn
           ;; (win-save-all-configurations)
           (save-buffers-kill-emacs))))
@@ -864,7 +864,7 @@
                         (when (re-search-forward org-complex-heading-regexp nil t)
                           (replace-regexp-in-string (concat "[[:space:]]*" org-ts-regexp "[[:space:]]*") "" (match-string 4))))))
            (start-process
-            "kalarm-process" "*Messages*" "/usr/bin/kalarm" 
+            "kalarm-process" "*Messages*" "/usr/bin/kalarm"
             "--color"
             "0x00FF00"
             "--time"
@@ -957,7 +957,7 @@
 
    ;; our little façade-function for djcb-popup
    (defun djcb-appt-display (min-to-app new-time msg)
-     (djcb-popup (format "Appointment in %s minute(s)" min-to-app) msg 
+     (djcb-popup (format "Appointment in %s minute(s)" min-to-app) msg
                  "/usr/share/icons/gnome/32x32/status/appointment-soon.png"
                  "/usr/share/sounds/ubuntu/stereo/phone-incoming-call.ogg"))
    (setq appt-disp-window-function (function djcb-appt-display))
@@ -994,11 +994,6 @@
        (setq appt-time-msg-list (kiwon/merge-appt-time-msg-list appt-time-msg-list))))
 
    ;; (add-hook 'org-finalize-agenda-hook (function kiwon/org-agenda-to-appt))
-
-
-
-   ;;;; ledger
-   ;; (load "ledger")
 
    ;; see earlier commits for google calendar interaction
    ;; ref http://article.gmane.org/gmane.emacs.orgmode/27214
@@ -1201,7 +1196,7 @@
         (defun pdf-annot-markups-as-org-text (pdfpath &optional title level)
           "Acquire highligh annotations as text, and return as org-heading"
 
-          (interactive "fPath to PDF: ")  
+          (interactive "fPath to PDF: ")
           (let* ((outputstring "") ;; the text to be returned
                  (title (or title (replace-regexp-in-string "-" " " (file-name-base pdfpath ))))
                  (level (or level (1+ (org-current-level)))) ;; I guess if we're not in an org-buffer this will fail
@@ -1226,7 +1221,7 @@
 
                           (height (nth 1 real-edges)) ;; distance down the page
                           ;; use pdfview link directly to page number
-                          (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
+                          (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page)
                                             "++" (number-to-string height) "][" title "]]" ))
                           )
                      (setq outputstring (concat outputstring text " ("
@@ -1237,7 +1232,7 @@
             )
           )
         
-        (eval-after-load 'pdf-view 
+        (eval-after-load 'pdf-view
           '(define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation)))
 
     #+END_SRC
@@ -1362,7 +1357,7 @@
      ;; First create new face which is a copy of hl-line-face
      (copy-face 'hl-line 'hl-line-light-face)
 
-     ;; Change what you want in this new face 
+     ;; Change what you want in this new face
      (set-face-attribute 'hl-line-light-face nil
                          :box '(:color "papayawhip"))
 
@@ -1508,7 +1503,7 @@
     (defun replace-html-chars-region (start end)
       "Replace some HTML entities in region …."
       (interactive "r")
-      (save-restriction 
+      (save-restriction
         (narrow-to-region start end)
 
         (goto-char (point-min))
@@ -1532,7 +1527,7 @@
     (defun replace-entity-chars-region (start end)
       "Replace special chars with normal chars"
       (interactive "r")
-      (save-restriction 
+      (save-restriction
         (narrow-to-region start end)
 
         (goto-char (point-min))
@@ -1781,10 +1776,10 @@
       "Identical search to `org-match-sparse-tree', but shows the content of the matches."
       (interactive "P")
       (org-agenda-prepare-buffers (list (current-buffer)))
-      (org-overview) 
-      (org-remove-occur-highlights) 
-      (org-scan-tags '(progn (org-show-entry) 
-                             (org-show-context)) 
+      (org-overview)
+      (org-remove-occur-highlights)
+      (org-scan-tags '(progn (org-show-entry)
+                             (org-show-context))
                      (cdr (org-make-tags-matcher match)) todo-only))
 
 
@@ -1807,7 +1802,7 @@
         (org-map-entries
          (lambda ()
            (let ((tag-string (car (last (org-heading-components)))))
-             (when tag-string   
+             (when tag-string
                (setq all-tags
                      (append all-tags (split-string tag-string ":" t)))))))
         (let ((histogram (frequencies all-tags)))
@@ -1962,12 +1957,6 @@
      ;; Setup font size based on emacs-font-size-pair
      ;; (set-font emacs-english-font emacs-cjk-font emacs-font-size-pair)
    #+END_SRC
-
-* experimental
-
-  file:experimental.el
-
-
 * quickfix
 
   #+BEGIN_SRC emacs-lisp
