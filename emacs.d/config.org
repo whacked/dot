@@ -21,145 +21,170 @@
 #+END_SRC
 
 ** package initialization
-
+   
    remember if you update =package-archives= you must run
    =M-x el-get-elpa-build-local-recipes= to refresh the list
    
-  #+BEGIN_SRC emacs-lisp
-    ;; package management
-    (setq package-archives '(("gnu"       . "http://elpa.gnu.org/packages/")
-           ("ELPA"      . "http://tromey.com/elpa/")
-           ("org"       . "http://orgmode.org/elpa/")
-           ("melpa"     . "https://melpa.org/packages/")
-           ("marmalade" . "http://marmalade-repo.org/packages/")))
-    ;; activate all the packages (in particular autoloads)
-    (package-initialize)
-
-    ;; https://github.com/dimitri/el-get#readme
-    ;; FIXME: OBSOLETE?
-    (add-to-list 'load-path "~/dot/emacs.d/el-get/el-get")
-
-    (defun local--init-emacs-package ()
-      (require 'package)
-      (add-to-list 'package-archives
-                   '("melpa" . "http://melpa.org/packages/"))
-      (package-refresh-contents)
-      (package-initialize))
-
-    ;; use MELPA's el-get
-    (unless (require 'el-get nil 'noerror)
-      (local--init-emacs-package)
-      (package-install 'el-get)
-      (require 'el-get))
-    (setq package-list (list))
-
-    (unless (package-installed-p 'use-package)
-      (local--init-emacs-package)
-      (package-install 'use-package))
-
-    (eval-when-compile (require 'use-package))
-
-    ;; (add-to-list 'el-get-recipe-path "~/dot/emacs.d/el-get-user/recipes")
-
-    ;; for MELPA packages
-    ;; ref http://stackoverflow.com/questions/23165158/how-do-i-install-melpa-packages-via-el-get
-    ;; likely no longer needed as of 2018-01-28
-    ;; (require 'el-get-elpa)
-    ;; then call el-get-elpa-build-local-recipes
-
-    ;;(package-initialize)
-
-    ;; local sources
-    ;; example:
-    ;; (setq el-get-sources
-    ;;       '((:name magit :after (lambda () (global-set-key (kbd "C-x C-z") 'magit-status)))
-    ;;         (:name asciidoc :type elpa :after (lambda () (autoload 'doc-mode "doc-mode" nil t) (add-to-list 'auto-mode-alist '("\\.adoc$" . doc-mode)) (add-hook 'doc-mode-hook '(lambda () (turn-on-auto-fill) (require 'asciidoc)))))
-    ;;         (:name lisppaste :type elpa)
-    ;;         (:name emacs-goodies-el :type apt-get)))
-    ;; (setq my-packages
-    ;;       (append '(cssh el-get switch-window vkill google-maps nxhtml xcscope yasnippet)
-    ;;        (mapcar 'el-get-source-name el-get-sources)))
-
-    ;; specify package sets to load later
-    (setq package-group-list (list))
-
-    (defmacro local--load-packages (&rest package-list)
-      (cons
-       'progn
-       (mapcar
-        (lambda (package-name)
-          (list 'use-package package-name :ensure t :defer t))
-        package-list)))
-  #+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     ;; package management
+     (setq package-archives '(("gnu"       . "http://elpa.gnu.org/packages/")
+            ("ELPA"      . "http://tromey.com/elpa/")
+            ("org"       . "http://orgmode.org/elpa/")
+            ("melpa"     . "https://melpa.org/packages/")
+            ("marmalade" . "http://marmalade-repo.org/packages/")))
+     ;; activate all the packages (in particular autoloads)
+     (package-initialize)
+ 
+     ;; https://github.com/dimitri/el-get#readme
+     ;; FIXME: OBSOLETE?
+     (add-to-list 'load-path "~/dot/emacs.d/el-get/el-get")
+ 
+     (defun local--init-emacs-package ()
+       (require 'package)
+       (add-to-list 'package-archives
+                    '("melpa" . "http://melpa.org/packages/"))
+       (package-refresh-contents)
+       (package-initialize))
+ 
+     ;; use MELPA's el-get
+     (unless (require 'el-get nil 'noerror)
+       (local--init-emacs-package)
+       (package-install 'el-get)
+       (require 'el-get))
+     (setq package-list (list))
+ 
+     (unless (package-installed-p 'use-package)
+       (local--init-emacs-package)
+       (package-install 'use-package))
+ 
+     (eval-when-compile (require 'use-package))
+ 
+     ;; (add-to-list 'el-get-recipe-path "~/dot/emacs.d/el-get-user/recipes")
+ 
+     ;; for MELPA packages
+     ;; ref http://stackoverflow.com/questions/23165158/how-do-i-install-melpa-packages-via-el-get
+     ;; likely no longer needed as of 2018-01-28
+     ;; (require 'el-get-elpa)
+     ;; then call el-get-elpa-build-local-recipes
+ 
+     ;;(package-initialize)
+ 
+     ;; local sources
+     ;; example:
+     ;; (setq el-get-sources
+     ;;       '((:name magit :after (lambda () (global-set-key (kbd "C-x C-z") 'magit-status)))
+     ;;         (:name asciidoc :type elpa :after (lambda () (autoload 'doc-mode "doc-mode" nil t) (add-to-list 'auto-mode-alist '("\\.adoc$" . doc-mode)) (add-hook 'doc-mode-hook '(lambda () (turn-on-auto-fill) (require 'asciidoc)))))
+     ;;         (:name lisppaste :type elpa)
+     ;;         (:name emacs-goodies-el :type apt-get)))
+     ;; (setq my-packages
+     ;;       (append '(cssh el-get switch-window vkill google-maps nxhtml xcscope yasnippet)
+     ;;        (mapcar 'el-get-source-name el-get-sources)))
+ 
+     ;; specify package sets to load later
+     (setq package-group-list (list))
+ 
+     (defmacro local--load-packages (&rest package-list)
+       (cons
+        'progn
+        (mapcar
+         (lambda (package-name)
+           (list 'use-package package-name :ensure t :defer t))
+         package-list)))
+   #+END_SRC
 
 ** UI defaults
+   
+   #+BEGIN_SRC emacs-lisp
+     (setq inhibit-splash-screen t)
+     (setq-default
+      echo-keystrokes 0.1 ;; = delay for minibuffer display after pressing function key default is 1
+      indent-tabs-mode nil
+      tab-width 2
+      truncate-lines t)
 
-** gnu/linux
+     (set-default-coding-systems 'utf-8)
+     (set-language-environment "UTF-8")
 
-  #+BEGIN_SRC emacs-lisp
-    (when (eq system-type 'gnu/linux)
-      ;; use x-clipboard
-      (setq x-select-enable-clipboard t)
-      (when (display-graphic-p)
-        (add-to-list 'default-frame-alist '(width . 100))
-        (add-to-list 'default-frame-alist '(height . 60))))
-  #+END_SRC
+     (defun now (&optional return-date-only) (interactive "P") (message (format-time-string (if return-date-only "%Y-%m-%d" "%Y-%m-%d %H:%M:%S"))))
+     (defun insert-timestamp (&optional return-date-only)
+       "Insert date at current cursor position in current active buffer"
+       (interactive "P") (insert (now return-date-only)))
 
-** darwin
+     (setenv "PATH" (concat "~/.nix-profile/bin:" (getenv "PATH")))
+     ;; (setq exec-path (split-string (getenv "PATH") path-separator))
+     (add-to-list 'exec-path "~/.nix-profile/bin")
+   #+END_SRC
 
-  #+BEGIN_SRC emacs-lisp
-    (when (eq system-type 'darwin)
-      (when (featurep 'ns)
-        ;; for macports
-        (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH")))
-        (setq exec-path (append exec-path '("/opt/local/bin:/opt/local/sbin:")))
+* specific init
 
-        ;; turn apple key into Meta
-        (setq ns-command-modifier 'meta)
-        (if (eq window-system 'mac) (require 'carbon-font))
-        (setq ; xwl-default-font "Monaco-12"
-         xwl-japanese-font "Hiragino_Kaku_Gothic_ProN")
-        (let ((charset-font `((japanese-jisx0208 . ,xwl-japanese-font)
-                              (japanese-jisx0208 . ,xwl-japanese-font)
-                              ;; (japanese-jisx0212 . ,xwl-japanese-font)
-                              )))
-                              ;; (set-default-font xwl-default-font)
-          (mapc (lambda (charset-font)
-                  (set-fontset-font (frame-parameter nil 'font)
-                                    (car charset-font)
-                                    (font-spec :family (cdr charset-font) :size
-                                               14)))
-                charset-font)))
-      (message "using OS X"))
-  #+END_SRC
+** os-specific
 
-** windows-nt
+*** gnu/linux
 
-  #+BEGIN_SRC emacs-lisp
-    (when (eq system-type 'windows-nt)
-      ;; windows only
-      (load-file "~/emacs.d/martin-w32-fullscreen.el"))
-  #+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (when (eq system-type 'gnu/linux)
+        ;; use x-clipboard
+        (setq x-select-enable-clipboard t)
+        (when (display-graphic-p)
+          (add-to-list 'default-frame-alist '(width . 100))
+          (add-to-list 'default-frame-alist '(height . 60))))
+    #+END_SRC
 
-* system-name specific
+*** darwin
 
-#+BEGIN_SRC emacs-lisp
-  (let ((system-name-org
-         (path-join EMACS.D-DIR "system-name"
-                    (concat system-name ".org"))))
-    (when (file-exists-p system-name-org)
-      (org-babel-load-file system-name-org)))
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (when (eq system-type 'darwin)
+        (when (featurep 'ns)
+          ;; for macports
+          (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH")))
+          (setq exec-path (append exec-path '("/opt/local/bin:/opt/local/sbin:")))
+  
+          ;; turn apple key into Meta
+          (setq ns-command-modifier 'meta)
+          (if (eq window-system 'mac) (require 'carbon-font))
+          (setq ; xwl-default-font "Monaco-12"
+           xwl-japanese-font "Hiragino_Kaku_Gothic_ProN")
+          (let ((charset-font `((japanese-jisx0208 . ,xwl-japanese-font)
+                                (japanese-jisx0208 . ,xwl-japanese-font)
+                                ;; (japanese-jisx0212 . ,xwl-japanese-font)
+                                )))
+                                ;; (set-default-font xwl-default-font)
+            (mapc (lambda (charset-font)
+                    (set-fontset-font (frame-parameter nil 'font)
+                                      (car charset-font)
+                                      (font-spec :family (cdr charset-font) :size
+                                                 14)))
+                  charset-font)))
+        (message "using OS X"))
+    #+END_SRC
 
-* user-login-name specific
+*** TODO deprecate windows-nt
 
-#+BEGIN_SRC emacs-lisp
-  (let ((user-login-name-org
-         (path-join EMACS.D-DIR "user-login-name"
-                    (concat user-login-name ".org"))))
-    (when (file-exists-p user-login-name-org)
-      (org-babel-load-file user-login-name-org)))
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (when (eq system-type 'windows-nt)
+        ;; windows only
+        (load-file "~/emacs.d/martin-w32-fullscreen.el"))
+    #+END_SRC
+
+** system-name
+
+   #+BEGIN_SRC emacs-lisp
+     (let ((system-name-org
+            (path-join EMACS.D-DIR "system-name"
+                       (concat system-name ".org"))))
+       (when (file-exists-p system-name-org)
+         (org-babel-load-file system-name-org)))
+   #+END_SRC
+
+** user-login-name
+
+   #+BEGIN_SRC emacs-lisp
+     (let ((user-login-name-org
+            (path-join EMACS.D-DIR "user-login-name"
+                       (concat user-login-name ".org"))))
+       (when (file-exists-p user-login-name-org)
+         (org-babel-load-file user-login-name-org)))
+   #+END_SRC
 
 * package setup
 
@@ -601,7 +626,6 @@
    '(column-number-mode t)
    '(desktop-save-mode t)
    ;; '(dirtree-windata (quote (frame left 0.15 delete)))
-   '(exec-path (quote ("/opt/local/bin" "/usr/bin" "/usr/local/bin" "/usr/sbin" "/bin")))
    '(global-hl-line-mode t)
    '(hscroll-step 1)
    '(ibuffer-fontification-alist (quote ((10 buffer-read-only font-lock-constant-face) (15 (and buffer-file-name (string-match ibuffer-compressed-file-name-regexp buffer-file-name)) font-lock-doc-face) (20 (string-match "^*" (buffer-name)) font-lock-keyword-face) (25 (and (string-match "^ " (buffer-name)) (null buffer-file-name)) italic) (30 (memq major-mode ibuffer-help-buffer-modes) font-lock-comment-face) (35 (eq major-mode (quote dired-mode)) font-lock-function-name-face) (40 (string-match ".py" (buffer-name)) font-lock-type-face) (45 (string-match ".rb" (buffer-name)) font-lock-string-face) (50 (string-match ".org" (buffer-name)) font-lock-preprocessor-face))))
@@ -748,7 +772,7 @@
 
 #+END_SRC
 
-** vim-inspired
+** vim-inspired movement keys
 
    #+BEGIN_SRC emacs-lisp
      (global-set-key (kbd "C-` H") (lambda () (interactive) (move-to-window-line-top-bottom 0)))
@@ -756,10 +780,10 @@
      (global-set-key (kbd "C-` L") (lambda () (interactive) (move-to-window-line-top-bottom -1)))
    #+END_SRC
 
-*** org mode
+** org mode
 
-    if you are getting =Symbol's value as variable is void: org-babel-safe-header-args= errors
-    you can try =M-x org-reload= and re-init
+   if you are getting =Symbol's value as variable is void: org-babel-safe-header-args= errors
+   you can try =M-x org-reload= and re-init
 
  #+BEGIN_SRC emacs-lisp
 
@@ -1021,36 +1045,13 @@
  #+END_SRC
 
 
-**** re-enable org-tempo
+*** re-enable org-tempo
+    
+    this enables shortcut expansions like "<s<TAB>". it is off by default since org 9.2
 
-     this enables shortcut expansions like "<s<TAB>". it is off by default since org 9.2
-     
-     #+begin_src emacs-lisp :results silent
-     (require 'org-tempo)
-     #+end_src
-
-*** tiddlywiki
-
-#+BEGIN_SRC emacs-lisp :results silent
-  (defvar *default-anonymous-tiddler-directory*
-    (expand-file-name "/Users/natto/cloudsync/main/note/org/tw/tiddlers/warehouse"))
-  (defun new-anonymous-tiddler (&optional reserve-for-future-use)
-        "create a new uniquely named tiddler inside designated directory"
-        (interactive "P")
-        (let* ((title (format-time-string "anonymous tiddler %Y-%m-%d %H:%M:%S"))
-               (file-path (concat
-                           (file-name-as-directory
-                            *default-anonymous-tiddler-directory*)
-                           (format-time-string "%Y-%m-%d_%H-%M-%S.tid"))))
-          (find-file-literally file-path)
-          (insert
-           (tiddlywiki-org-mode-tiddler-preamble title)
-           "\n\n")
-          (tiddlywiki-mode)
-          ;; (kill-new (concat "[[file:" file-path "]]"))
-          ))
-  (defalias 'jog 'new-anonymous-tiddler)
-#+END_SRC
+    #+begin_src emacs-lisp
+      (require 'org-tempo)
+    #+end_src
 
 *** org capture
 
@@ -1233,6 +1234,28 @@
 
     #+END_SRC
 
+** tiddlywiki
+
+#+BEGIN_SRC emacs-lisp :results silent
+  (defvar *default-anonymous-tiddler-directory*
+    (expand-file-name "/Users/natto/cloudsync/main/note/org/tw/tiddlers/warehouse"))
+  (defun new-anonymous-tiddler (&optional reserve-for-future-use)
+        "create a new uniquely named tiddler inside designated directory"
+        (interactive "P")
+        (let* ((title (format-time-string "anonymous tiddler %Y-%m-%d %H:%M:%S"))
+               (file-path (concat
+                           (file-name-as-directory
+                            *default-anonymous-tiddler-directory*)
+                           (format-time-string "%Y-%m-%d_%H-%M-%S.tid"))))
+          (find-file-literally file-path)
+          (insert
+           (tiddlywiki-org-mode-tiddler-preamble title)
+           "\n\n")
+          (tiddlywiki-mode)
+          ;; (kill-new (concat "[[file:" file-path "]]"))
+          ))
+  (defalias 'jog 'new-anonymous-tiddler)
+#+END_SRC
 
 * filesync (sync.el)
 
@@ -1850,37 +1873,6 @@
                                
                                ))))
         :buffer "*helm-note-search*"))
-
-
-     (defun helm-projectile-ag (&optional options)
-       "Helm version of projectile-ag."
-       (interactive (if current-prefix-arg (list (helm-read-string "option: " "" 'helm-ag--extra-options-history))))
-       (if (require 'helm-ag nil t)
-           (if (projectile-project-p)
-               (let* ((grep-find-ignored-files (cl-union (projectile-ignored-files-rel) grep-find-ignored-files))
-                      (grep-find-ignored-directories (cl-union (projectile-ignored-directories-rel) grep-find-ignored-directories))
-                      (ignored (mapconcat (lambda (i)
-                                            (concat "--ignore " i))
-                                          (append grep-find-ignored-files grep-find-ignored-directories (cadr (projectile-parse-dirconfig-file)))
-                                          " "))
-                      (helm-ag-command-option options)
-                      (helm-ag-base-command (concat helm-ag-base-command " " ignored))
-                      (current-prefix-arg nil))
-                 (helm-do-ag (projectile-project-root) (car (projectile-parse-dirconfig-file))))
-             (error "You're not in a project"))
-         (when (yes-or-no-p "`helm-ag' is not installed. Install? ")
-           (condition-case nil
-               (progn
-                 (package-install 'helm-ag)
-                 (helm-projectile-ag options))
-             (error (error "`helm-ag' is not available. Is MELPA in your `package-archives'?"))))))
-
-     (defun helm-note ()
-       (interactive)
-       ()
-
-
-       )
    #+END_SRC
 
 * other from util.el
