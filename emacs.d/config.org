@@ -642,9 +642,6 @@
             (t
              (error "no process at point!")))))
 
-
-  ;; (autoload 'dirtree "dirtree" "Add directory to tree view" t)
-
   ;; prevent special buffers from messing with the current layout
   ;; see: http://www.gnu.org/software/emacs/manual/html_node/emacs/Special-Buffer-Frames.html
   (setq special-display-buffer-names
@@ -656,10 +653,6 @@
                                        ;; (left . ,(+ 40 (frame-parameter (selected-frame) 'left)))
                                        ;; (top . ,(+ 20 (frame-parameter (selected-frame) 'top)))
                                        )))
-  (setq default-frame-alist
-        '((top . 0) (left . 0)
-          (width . 84) (height . 40)))
-
   ;; new behavior in emacs 24?
   ;; http://superuser.com/questions/397806/emacs-modify-quit-window-to-delete-buffer-not-just-bury-it
   (defadvice quit-window (before quit-window-always-kill)
@@ -765,14 +758,6 @@
 
   ;; eliminate strange error with this for now
   (defvar warning-suppress-types nil)
-
-  ;; not playing nice with daemon
-  ;; -- now launching with -q = bypass
-  ;; (when nil
-  ;;   (if (display-graphic-p)
-  ;;       (color-theme-solarized-light)
-  ;;     (color-theme-solarized-dark)))
-  ;; (color-theme-initialize)
 #+END_SRC
 
 ** org mode
@@ -788,10 +773,6 @@
  #+END_SRC
 
  #+BEGIN_SRC emacs-lisp
-   ;;;;;;;;;;;;;;;;;;;;;;;
-   ;; <org mode config> ;;
-   ;;;;;;;;;;;;;;;;;;;;;;;
-
    (require 'org)
    ;; force org-babel src edit to use same window instead of splitting
    (setq org-src-window-setup 'current-window)
@@ -886,53 +867,6 @@
             ;; "--play" "/usr/share/sounds/KDE-Im-Sms.ogg"
             "--beep"
             (format "%s" name))))))
-   (add-hook 'org-remember-mode-hook '(lambda () (visual-line-mode t)))
-   (add-hook 'org-remember-before-finalize-hook 'set-calendar-appt)
-
-   ;;; attempt to use org-capture.
-   ;;; remember's work flow is actually more pleasant.
-   ;;; in single buffer visible phase, capture:
-   ;;; 1. creates split buffer, gets selection
-   ;;; 2. fills template in that buffer
-   ;;; 3. completes capture in that buffer
-   ;;; 4. restores original buffer
-   ;;; this is identical to remember
-   ;;; in split-buffer phase, capture:
-   ;;; 1. opens selection window in non-focused buffer (good)
-   ;;; 2. after get selection, fills template in focused buffer,
-   ;;; i.e. it switches away from the window where the selection took place (bad)
-   ;;; 3. when authoring buffer for capture is open, the previously
-   ;;; focused buffer is again put in the split where the template
-   ;;; selection screen came up (bad)
-   ;;; 4. when finished, layout is restored (expected)
-   ;;; the amount of attention shifting is pretty annoying
-   ;;;
-   ;;;;(define-key global-map "\M-\C-r" 'org-capture)
-   ;;;(setq org-capture-templates
-   ;;;      '(("t" "Todo" entry (file "~/note/org/todos.org" "Tasks")
-   ;;;         "* TODO %?\nAdded: %U" :empty-lines 1)
-   ;;;        ("c" "CNE-todo" entry ("~/note/cne/cne.org" "All Todo")
-   ;;;         "* TODO [#%^{IMPORTANCE|B}] [%^{URGENCY|5}] %?\nAdded: %U")
-   ;;;        ("n" "Nikki" entry (file+headline "~/note/org/nikki.org" "ALL")
-   ;;;         "* %U %?\n\n %i\n %a\n\n" :empty-lines 1)
-   ;;;        ("s" "State" entry (file "~/note/org/state.org")
-   ;;;         "* %U %? " :empty-lines 1)
-   ;;;        ("v" "Vocab" plain (file "~/note/org/vocab.org")
-   ;;;         "** %U %^{Word}\n%?\n# -*- xkm-export -*-\n" :empty-lines 1)
-   ;;;        ;; idea template used to be:
-   ;;;        ;; "* %^{Title}\n%?\n  %a"
-   ;;;        ;; but org-capture-fill-template calls (delete-other-windows)
-   ;;;        ;; and maximizes the template-filling buffer
-   ;;;        ;; which is pretty annoying. so simply stop using template prompts
-   ;;;        ("i" "Idea" entry (file "~/note/org/idea.org")
-   ;;;         "* %?\n  %a" :empty-lines 1)
-   ;;;        ("d" "Dump" entry (file+datetree "~/note/org/dump.org")
-   ;;;         "* %?\n%U\n" :empty-lines 1)))
-
-   ;;;;;;;;;;;;;;;;;;;;;;;;
-   ;; </org mode config> ;;
-   ;;;;;;;;;;;;;;;;;;;;;;;;
-
 
    ;; thanks to http://kliketa.wordpress.com/2010/08/04/gtklook-browse-documentation-for-gtk-glib-and-gnome-inside-emacs/
    ;NEW;(require 'gtk-look)
@@ -1049,6 +983,49 @@
 
 
     #+BEGIN_SRC emacs-lisp
+      (add-hook 'org-remember-mode-hook '(lambda () (visual-line-mode t)))
+      (add-hook 'org-remember-before-finalize-hook 'set-calendar-appt)
+
+      ;;; attempt to use org-capture.
+      ;;; remember's work flow is actually more pleasant.
+      ;;; in single buffer visible phase, capture:
+      ;;; 1. creates split buffer, gets selection
+      ;;; 2. fills template in that buffer
+      ;;; 3. completes capture in that buffer
+      ;;; 4. restores original buffer
+      ;;; this is identical to remember
+      ;;; in split-buffer phase, capture:
+      ;;; 1. opens selection window in non-focused buffer (good)
+      ;;; 2. after get selection, fills template in focused buffer,
+      ;;; i.e. it switches away from the window where the selection took place (bad)
+      ;;; 3. when authoring buffer for capture is open, the previously
+      ;;; focused buffer is again put in the split where the template
+      ;;; selection screen came up (bad)
+      ;;; 4. when finished, layout is restored (expected)
+      ;;; the amount of attention shifting is pretty annoying
+      ;;;
+      ;;;;(define-key global-map "\M-\C-r" 'org-capture)
+      ;;;(setq org-capture-templates
+      ;;;      '(("t" "Todo" entry (file "~/note/org/todos.org" "Tasks")
+      ;;;         "* TODO %?\nAdded: %U" :empty-lines 1)
+      ;;;        ("c" "CNE-todo" entry ("~/note/cne/cne.org" "All Todo")
+      ;;;         "* TODO [#%^{IMPORTANCE|B}] [%^{URGENCY|5}] %?\nAdded: %U")
+      ;;;        ("n" "Nikki" entry (file+headline "~/note/org/nikki.org" "ALL")
+      ;;;         "* %U %?\n\n %i\n %a\n\n" :empty-lines 1)
+      ;;;        ("s" "State" entry (file "~/note/org/state.org")
+      ;;;         "* %U %? " :empty-lines 1)
+      ;;;        ("v" "Vocab" plain (file "~/note/org/vocab.org")
+      ;;;         "** %U %^{Word}\n%?\n# -*- xkm-export -*-\n" :empty-lines 1)
+      ;;;        ;; idea template used to be:
+      ;;;        ;; "* %^{Title}\n%?\n  %a"
+      ;;;        ;; but org-capture-fill-template calls (delete-other-windows)
+      ;;;        ;; and maximizes the template-filling buffer
+      ;;;        ;; which is pretty annoying. so simply stop using template prompts
+      ;;;        ("i" "Idea" entry (file "~/note/org/idea.org")
+      ;;;         "* %?\n  %a" :empty-lines 1)
+      ;;;        ("d" "Dump" entry (file+datetree "~/note/org/dump.org")
+      ;;;         "* %?\n%U\n" :empty-lines 1)))
+
       ;; (require 'org-drill)
 
       ;;; org-mode with remember
@@ -1082,39 +1059,39 @@
       ;; see http://orgmode.org/manual/Template-elements.html
 
       (setq org-capture-templates
-	    '(
-	      ;; ("t" "Todo" entry
-	      ;;  "~/note/org/todos.org"
-	      ;;  "* TODO %?\nAdded: %U" "Main")
-	      ;; ("c" "CNE" entry
-	      ;;   "~/note/cne/cne.org"
-	      ;;  "* TODO %?\nAdded: %U" "All Todo")
-	      ;; ("n" "Nikki" entry
-	      ;;   "~/note/org/nikki.org"
-	      ;;  "* %U %?\n\n %i\n %a\n\n" "ALL")
-	      ;; ;; ("State" ?s "* %U %? " "~/note/org/state.org")
-	      ;; ("s" "Scholar" entry
-	      ;;  "~/note/org/scholar.org"
-	      ;;  "* %?\nadded: %U")
-	      ;; ("v" "Vocab" entry
-	      ;;   "~/note/org/vocab.org"
-	      ;;  "* %U %^{Word}\n%?\n# -*- xkm-export -*-\n")
-	      ;; ("i" "Idea" entry
-	  ;;       "~/note/org/idea.org"
-	  ;;      "* %^{Title}\n%?\n  %a\n  %U" "Main")
-	  ;;     ;;("Music" ?m "- %? %U\n" "~/note/org/music.org" "good")
-	  ;;     ("l" "learn" entry
-	  ;;      "omi%?" "~/note/org/learn.org" "captured")
-	  ;;     ("m" "mem" "** %U    :drill:\n
-	  ;;     :PROPERTIES:
-	  ;;     :DATE_ADDED: %U
-	  ;;     :SOURCE_URL: %a
-	  ;;     :END:
-	  ;; \n%i%?" "~/note/org/learn.org" "captured")
-	      ("d" "Dump" entry
-	       (file+headline "~/note/org/dump.org" "test")
-	       )
-	      ))
+      '(
+        ;; ("t" "Todo" entry
+        ;;  "~/note/org/todos.org"
+        ;;  "* TODO %?\nAdded: %U" "Main")
+        ;; ("c" "CNE" entry
+        ;;   "~/note/cne/cne.org"
+        ;;  "* TODO %?\nAdded: %U" "All Todo")
+        ;; ("n" "Nikki" entry
+        ;;   "~/note/org/nikki.org"
+        ;;  "* %U %?\n\n %i\n %a\n\n" "ALL")
+        ;; ;; ("State" ?s "* %U %? " "~/note/org/state.org")
+        ;; ("s" "Scholar" entry
+        ;;  "~/note/org/scholar.org"
+        ;;  "* %?\nadded: %U")
+        ;; ("v" "Vocab" entry
+        ;;   "~/note/org/vocab.org"
+        ;;  "* %U %^{Word}\n%?\n# -*- xkm-export -*-\n")
+        ;; ("i" "Idea" entry
+        ;;       "~/note/org/idea.org"
+        ;;      "* %^{Title}\n%?\n  %a\n  %U" "Main")
+        ;;     ;;("Music" ?m "- %? %U\n" "~/note/org/music.org" "good")
+        ;;     ("l" "learn" entry
+        ;;      "omi%?" "~/note/org/learn.org" "captured")
+        ;;     ("m" "mem" "** %U    :drill:\n
+        ;;     :PROPERTIES:
+        ;;     :DATE_ADDED: %U
+        ;;     :SOURCE_URL: %a
+        ;;     :END:
+        ;; \n%i%?" "~/note/org/learn.org" "captured")
+        ("d" "Dump" entry
+         (file+headline "~/note/org/dump.org" "test")
+         )
+        ))
     #+END_SRC
 
 ** org-mode conf
