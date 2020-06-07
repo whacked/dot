@@ -77,14 +77,6 @@
 
      ;; (add-to-list 'el-get-recipe-path "~/dot/emacs.d/el-get-user/recipes")
 
-     ;; for MELPA packages
-     ;; ref http://stackoverflow.com/questions/23165158/how-do-i-install-melpa-packages-via-el-get
-     ;; likely no longer needed as of 2018-01-28
-     ;; (require 'el-get-elpa)
-     ;; then call el-get-elpa-build-local-recipes
-
-     ;;(package-initialize)
-
      ;; local sources
      ;; example:
      ;; (setq el-get-sources
