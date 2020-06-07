@@ -109,7 +109,23 @@
 ** UI defaults
    
    #+BEGIN_SRC emacs-lisp
-     (setq inhibit-splash-screen t)
+     (setq inhibit-splash-screen t
+           global-hl-line-mode t
+           column-number-mode t
+           hscroll-step 1
+           ibuffer-fontification-alist (quote ((10 buffer-read-only font-lock-constant-face) (15 (and buffer-file-name (string-match ibuffer-compressed-file-name-regexp buffer-file-name)) font-lock-doc-face) (20 (string-match "^*" (buffer-name)) font-lock-keyword-face) (25 (and (string-match "^ " (buffer-name)) (null buffer-file-name)) italic) (30 (memq major-mode ibuffer-help-buffer-modes) font-lock-comment-face) (35 (eq major-mode (quote dired-mode)) font-lock-function-name-face) (40 (string-match ".py" (buffer-name)) font-lock-type-face) (45 (string-match ".rb" (buffer-name)) font-lock-string-face) (50 (string-match ".org" (buffer-name)) font-lock-preprocessor-face)))
+           ;; iswitchb-mode t ;; causes conflict with helm-mode
+           line-number-mode t
+           matlab-auto-fill nil
+           menu-bar-mode nil
+           show-paren-mode t
+           tool-bar-mode nil
+           transient-mark-mode t
+           ;; for smooth scrolling
+           scroll-step            1
+           scroll-conservatively  10000
+           )
+
      (setq-default
       echo-keystrokes 0.1 ;; = delay for minibuffer display after pressing function key default is 1
       indent-tabs-mode nil
@@ -120,10 +136,6 @@
          (functionp 'set-scroll-bar-mode)
        (set-scroll-bar-mode 'right))
      (setq backup-directory-alist '(("" . "~/dot/emacs.d/emacs-backup")))
-
-     ;; for smooth scrolling
-     (setq scroll-step            1
-           scroll-conservatively  10000)
 
        ;;; Don't quit unless you mean it!
      (defun maybe-save-buffers-kill-emacs (really)
@@ -684,26 +696,6 @@
       (setq ad-return-value nil)))
   ;;; desktop-override-stale-locks.el ends here
 
-  ;; add more hooks here
-  (custom-set-variables
-   ;; custom-set-variables was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(column-number-mode t)
-   '(desktop-save-mode t)
-   ;; '(dirtree-windata (quote (frame left 0.15 delete)))
-   '(global-hl-line-mode t)
-   '(hscroll-step 1)
-   '(ibuffer-fontification-alist (quote ((10 buffer-read-only font-lock-constant-face) (15 (and buffer-file-name (string-match ibuffer-compressed-file-name-regexp buffer-file-name)) font-lock-doc-face) (20 (string-match "^*" (buffer-name)) font-lock-keyword-face) (25 (and (string-match "^ " (buffer-name)) (null buffer-file-name)) italic) (30 (memq major-mode ibuffer-help-buffer-modes) font-lock-comment-face) (35 (eq major-mode (quote dired-mode)) font-lock-function-name-face) (40 (string-match ".py" (buffer-name)) font-lock-type-face) (45 (string-match ".rb" (buffer-name)) font-lock-string-face) (50 (string-match ".org" (buffer-name)) font-lock-preprocessor-face))))
-   ;; '(iswitchb-mode t) ;; causes conflict with helm-mode
-   '(line-number-mode t)
-   '(matlab-auto-fill nil)
-   '(menu-bar-mode nil)
-   '(show-paren-mode t)
-   '(tool-bar-mode nil)
-   '(transient-mark-mode t))
-
   (when (load "auctex.el" t t t) ;; first t = don't throw error if not exist
     (load "preview-latex.el" nil t t)
     (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
@@ -801,7 +793,6 @@
       (sqlite . t)
       (shstream . t)
       ))
-
 
    (when (locate-library "python-mode")
      (require 'python-mode)
@@ -1096,30 +1087,26 @@
 
 ** org-mode conf
 
-
    #+BEGIN_SRC emacs-lisp
-     (custom-set-variables
-      '(org-agenda-restore-windows-after-quit t)
-      '(org-catch-invisible-edits "show")
-      '(org-agenda-window-setup (quote other-window))
-      '(org-drill-optimal-factor-matrix (quote ((2 (2.6 . 2.6) (2.7 . 2.691)) (1 (2.6 . 4.14) (2.36 . 3.86) (2.1799999999999997 . 3.72) (1.96 . 3.58) (1.7000000000000002 . 3.44) (2.5 . 4.0)))))
-      ;; '(org-export-blocks (quote ((src org-babel-exp-src-blocks nil) (comment org-export-blocks-format-comment t) (ditaa org-export-blocks-format-ditaa nil) (dot org-export-blocks-format-dot nil))))
-      '(org-file-apps (quote ((auto-mode . emacs) ("\\.mm\\'" . default) ("\\.x?html?\\'" . default) ("\\.xoj\\'" . "xournal %s") ("\\.pdf\\'" . "evince %s"))))
-      '(org-modules (quote (org-bbdb org-bibtex org-gnus org-info
-                                     ;; deprecate, causes problems now
-                                     ;; org-jsinfo
-                                     org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m
-                                     ;; inclusion of this seems to cause problems with using
-                                     ;; load-theme-buffer-local (but! not color-theme-buffer-local)
-                                     ;; org-drill
-                                     org-docview)))
-      '(org-src-fontify-natively t)
-      '(org-startup-folded (quote showeverything))
-      '(org-ellipsis "⤵")
-      ;; FIXME this probably doesn't work as expected
-      '(org-startup-folded nil)
-      )
-     (setq org-export-coding-system 'utf-8)
+     (setq org-agenda-restore-windows-after-quit t
+           org-catch-invisible-edits "show"
+           org-agenda-window-setup (quote other-window)
+           org-drill-optimal-factor-matrix (quote ((2 (2.6 . 2.6) (2.7 . 2.691)) (1 (2.6 . 4.14) (2.36 . 3.86) (2.1799999999999997 . 3.72) (1.96 . 3.58) (1.7000000000000002 . 3.44) (2.5 . 4.0))))
+           org-file-apps (quote ((auto-mode . emacs) ("\\.mm\\'" . default) ("\\.x?html?\\'" . default) ("\\.xoj\\'" . "xournal %s") ("\\.pdf\\'" . "evince %s")))
+           org-modules (quote (org-bbdb org-bibtex org-gnus org-info
+                                        ;; deprecate, causes problems now
+                                        ;; org-jsinfo
+                                        org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m
+                                        ;; inclusion of this seems to cause problems with using
+                                        ;; load-theme-buffer-local (but! not color-theme-buffer-local)
+                                        ;; org-drill
+                                        org-docview))
+           org-src-fontify-natively t
+           org-startup-folded (quote showeverything)
+           org-ellipsis "⤵"
+           ;; FIXME this probably doesn't work as expected
+           org-startup-folded nil
+           org-export-coding-system 'utf-8)
    #+END_SRC
 
 *** pdf-tools interaction
