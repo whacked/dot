@@ -88,6 +88,12 @@
      ;;       (append '(cssh el-get switch-window vkill google-maps nxhtml xcscope yasnippet)
      ;;        (mapcar 'el-get-source-name el-get-sources)))
 
+     (quelpa
+      '(quelpa-use-package
+        :fetcher git
+        :url "https://github.com/quelpa/quelpa-use-package.git"))
+     (require 'quelpa-use-package)
+
      ;; specify package sets to load later
      (setq package-group-list (list))
 
