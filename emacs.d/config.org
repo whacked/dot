@@ -46,6 +46,10 @@
      ;; activate all the packages (in particular autoloads)
      (package-initialize)
 
+     ;; when there are duplicate packages e.g. system-provided Org,
+     ;; prefer the newer
+     (setq load-prefer-newer t)
+
      ;; https://github.com/dimitri/el-get#readme
      ;; FIXME: OBSOLETE?
      (add-to-list 'load-path "~/dot/emacs.d/el-get/el-get")
@@ -112,36 +116,84 @@
       indent-tabs-mode nil
       tab-width 2
       truncate-lines t)
-     
+
      (when
          (functionp 'set-scroll-bar-mode)
        (set-scroll-bar-mode 'right))
+     (setq backup-directory-alist '(("" . "~/dot/emacs.d/emacs-backup")))
+
+     ;; for smooth scrolling
+     (setq scroll-step            1
+           scroll-conservatively  10000)
+
+       ;;; Don't quit unless you mean it!
+     (defun maybe-save-buffers-kill-emacs (really)
+       "If REALLY is 'yes', call save-buffers-kill-emacs."
+       (interactive "sAre you sure about this? ")
+       (if (equal really "yes")
+           (progn
+             ;; (win-save-all-configurations)
+             (save-buffers-kill-emacs))))
+     (global-set-key [(control x)(control c)] 'maybe-save-buffers-kill-emacs)
+     (defun kill-emacs-NOW-iikara ()
+       (interactive)
+       (setq kill-emacs-hook nil)
+       (kill-emacs))
+
+     (defalias 'visu 'visual-line-mode)
+
+     (defadvice balance-windows (around allow-interactive-prefix
+                                        (&optional selected-window-only))
+       "modify balance-windows so that if given C-u prefix, apply only to (selected-window)"
+       (interactive "P")
+       (when selected-window-only
+         (ad-set-arg 0 (window-parent)))
+       ad-do-it)
+     (ad-activate 'balance-windows)
    #+END_SRC
 
-** my-keys-minor-mode-map
+** key mapping
 
-   #+BEGIN_SRC emacs-lisp
-     ;;; custom override keys
-     ;;; ref http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
-     (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
-     (define-minor-mode my-keys-minor-mode
-       "A minor mode so that my key settings override annoying major modes."
-       t " my-keys" 'my-keys-minor-mode-map)
-     (my-keys-minor-mode 1)
+*** global
 
-     (define-key my-keys-minor-mode-map [M-left] 'windmove-left)
-     (define-key my-keys-minor-mode-map [M-right] 'windmove-right)
-     (define-key my-keys-minor-mode-map [M-up] 'windmove-up)
-     (define-key my-keys-minor-mode-map [M-down] 'windmove-down)
+    #+BEGIN_SRC emacs-lisp
+      (global-set-key "\C-x\C-b" 'ibuffer)
+    #+END_SRC
 
-     ;;(define-key my-keys-minor-mode-map [tab] 'yas/expand-from-trigger-key)
+*** my-keys-minor-mode-map
 
-     (define-key my-keys-minor-mode-map [s-left] 'windmove-left)
-     (define-key my-keys-minor-mode-map [s-right] 'windmove-right)
-     (define-key my-keys-minor-mode-map [s-up] 'windmove-up)
-     (define-key my-keys-minor-mode-map [s-down] 'windmove-down)
-   #+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      ;;; custom override keys
+      ;;; ref http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
+      (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
+      (define-minor-mode my-keys-minor-mode
+        "A minor mode so that my key settings override annoying major modes."
+        t " my-keys" 'my-keys-minor-mode-map)
+      (my-keys-minor-mode 1)
+
+      (define-key my-keys-minor-mode-map [M-left] 'windmove-left)
+      (define-key my-keys-minor-mode-map [M-right] 'windmove-right)
+      (define-key my-keys-minor-mode-map [M-up] 'windmove-up)
+      (define-key my-keys-minor-mode-map [M-down] 'windmove-down)
+
+      ;;(define-key my-keys-minor-mode-map [tab] 'yas/expand-from-trigger-key)
+
+      (define-key my-keys-minor-mode-map [s-left] 'windmove-left)
+      (define-key my-keys-minor-mode-map [s-right] 'windmove-right)
+      (define-key my-keys-minor-mode-map [s-up] 'windmove-up)
+      (define-key my-keys-minor-mode-map [s-down] 'windmove-down)
+    #+END_SRC
    
+*** vim-like movement keys
+
+    #+BEGIN_SRC emacs-lisp
+      (global-set-key (kbd "C-` H") (lambda () (interactive) (move-to-window-line-top-bottom 0)))
+      (global-set-key (kbd "C-` M") (lambda () (interactive) (move-to-window-line-top-bottom)))
+      (global-set-key (kbd "C-` L") (lambda () (interactive) (move-to-window-line-top-bottom -1)))
+    #+END_SRC
+
+
+
 * specific init
 
 ** os-specific
@@ -484,6 +536,11 @@
                       )))))
    (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
    (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+
+   (eval-after-load 'haxe-mode
+     '(define-key haxe-mode-map (kbd "C-c C-c")
+        (lambda () (interactive) (compile "make"))))
+   (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
  #+END_SRC
 
 *** lispy-stuff.el (:lisp)
@@ -550,14 +607,17 @@
      (autoload 'wipe "revive" "Wipe Emacs" t)
    #+END_SRC
 
-** remainder
+** recentf
 
 #+BEGIN_SRC emacs-lisp
-  (setq backup-directory-alist '(("" . "~/dot/emacs.d/emacs-backup")))
-
   (recentf-mode 1)
   (setq recentf-max-menu-items 100)
   (setq recentf-max-saved-items 200)
+#+END_SRC
+
+** remainder
+
+#+BEGIN_SRC emacs-lisp
 
   (setq helm-exit-idle-delay 0) ;; fixes "display not ready" https://github.com/emacs-helm/helm/issues/550
 
@@ -618,10 +678,6 @@
   (setq dabbrev-always-check-other-buffers t)
   (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
 
-  (eval-after-load 'haxe-mode
-    '(define-key haxe-mode-map (kbd "C-c C-c")
-       (lambda () (interactive) (compile "make"))))
-
   ;;; see http://www.emacswiki.org/emacs/DeskTop
   ;;; desktop-override-stale-locks.el begins here
   (defun emacs-process-p (pid)
@@ -662,10 +718,6 @@
    '(tool-bar-mode nil)
    '(transient-mark-mode t))
 
-  ;; for smooth scrolling
-  (setq scroll-step            1
-        scroll-conservatively  10000)
-
   (when (load "auctex.el" t t t) ;; first t = don't throw error if not exist
     (load "preview-latex.el" nil t t)
     (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
@@ -673,22 +725,6 @@
     (setq TeX-auto-save t)
     (setq TeX-parse-self t)
     (setq TeX-save-query t))
-
-  ;;; Don't quit unless you mean it!
-  (defun maybe-save-buffers-kill-emacs (really)
-    "If REALLY is 'yes', call save-buffers-kill-emacs."
-    (interactive "sAre you sure about this? ")
-    (if (equal really "yes")
-        (progn
-          ;; (win-save-all-configurations)
-          (save-buffers-kill-emacs))))
-  (global-set-key [(control x)(control c)] 'maybe-save-buffers-kill-emacs)
-  (defun kill-emacs-NOW-iikara ()
-    (interactive)
-    (setq kill-emacs-hook nil)
-    (kill-emacs))
-
-  (defalias 'visu 'visual-line-mode)
 
   (defun surround-region-with-tag (tag-name beg end)
     (interactive "sTag name: \nr")
@@ -698,13 +734,10 @@
       (goto-char beg)
       (insert "<" tag-name ">")))
 
-  (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
   (require 'ansi-color)
-
   (require 'uniquify)
   (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
-  (global-set-key "\C-x\C-b" 'ibuffer)
   (setq ibuffer-expert t)
   (add-hook 'ibuffer-mode-hook '(lambda () (ibuffer-auto-mode 1)))
   ;; (setq ibuffer-show-empty-filter-groups nil)
@@ -757,15 +790,6 @@
   ;; eliminate strange error with this for now
   (defvar warning-suppress-types nil)
 
-  (defadvice balance-windows (around allow-interactive-prefix
-                                     (&optional selected-window-only))
-    "modify balance-windows so that if given C-u prefix, apply only to (selected-window)"
-    (interactive "P")
-    (when selected-window-only
-      (ad-set-arg 0 (window-parent)))
-    ad-do-it)
-  (ad-activate 'balance-windows)
-
   ;; not playing nice with daemon
   ;; -- now launching with -q = bypass
   ;; (when nil
@@ -773,16 +797,7 @@
   ;;       (color-theme-solarized-light)
   ;;     (color-theme-solarized-dark)))
   ;; (color-theme-initialize)
-
 #+END_SRC
-
-** vim-like movement keys
-
-   #+BEGIN_SRC emacs-lisp
-     (global-set-key (kbd "C-` H") (lambda () (interactive) (move-to-window-line-top-bottom 0)))
-     (global-set-key (kbd "C-` M") (lambda () (interactive) (move-to-window-line-top-bottom)))
-     (global-set-key (kbd "C-` L") (lambda () (interactive) (move-to-window-line-top-bottom -1)))
-   #+END_SRC
 
 ** org mode
 
@@ -796,9 +811,7 @@
    (define-key my-keys-minor-mode-map (kbd "M-+") 'org-metaright)
  #+END_SRC
 
-
-
-
+ #+BEGIN_SRC emacs-lisp
    ;;;;;;;;;;;;;;;;;;;;;;;
    ;; <org mode config> ;;
    ;;;;;;;;;;;;;;;;;;;;;;;
@@ -1030,10 +1043,6 @@
    (setq deft-use-filename-as-title t)
    (setq deft-ignore-file-regexp "\\$.+") ;; for ignoring special tiddlers
 
-   (setq desktop-save-mode nil)
-   (desktop-change-dir "~/dot/emacs.d")
-   (setq desktop-save-mode t)
-
    ;; org faces
    (custom-set-faces
     '(org-level-1 ((t (:inherit outline-1 :inverse-video t :weight bold :height 2.2 :foreground "brown"   :background "white" :family "Inconsolata"))))
@@ -1132,8 +1141,6 @@
 	      ))
     #+END_SRC
 
-
-
 ** org-mode conf
 
 
@@ -1169,7 +1176,7 @@
     #+BEGIN_SRC emacs-lisp
       (when (require 'pdf-tools nil :noerror)
         (pdf-tools-install)
-        
+
         ;; this is stolen from https://github.com/pinguim06/pdf-tools/commit/22629c746878f4e554d4e530306f3433d594a654
         (defun pdf-annot-edges-to-region (edges)
           "Attempt to get 4-entry region \(LEFT TOP RIGHT BOTTOM\) from several edges.
@@ -1191,7 +1198,7 @@
                   right1
                   (- bottom1 (/ (- bottom1 top1) 2 )))))
 
-        
+
         (defun pdf-annot-markups-as-org-text (pdfpath &optional title level)
           "Acquire highligh annotations as text, and return as org-heading"
 
@@ -1230,7 +1237,7 @@
             outputstring ;; return the header
             )
           )
-        
+
         (eval-after-load 'pdf-view
           '(define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation)))
 
