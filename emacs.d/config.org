@@ -54,13 +54,10 @@
      (setq load-prefer-newer t)
 
      ;; https://github.com/dimitri/el-get#readme
-     ;; FIXME: OBSOLETE?
-     (add-to-list 'load-path "~/dot/emacs.d/el-get/el-get")
+     (add-to-list 'load-path (concat user-emacs-directory "el-get/el-get"))
 
      (defun local--init-emacs-package ()
        (require 'package)
-       (add-to-list 'package-archives
-                    '("melpa" . "http://melpa.org/packages/"))
        (package-refresh-contents)
        (package-initialize))
 
@@ -89,7 +86,7 @@
      ;; (setq my-packages
      ;;       (append '(cssh el-get switch-window vkill google-maps nxhtml xcscope yasnippet)
      ;;        (mapcar 'el-get-source-name el-get-sources)))
-     
+
      ;; specify package sets to load later
      (setq package-group-list (list))
 
@@ -322,6 +319,7 @@
    s
    simple-httpd
    skewer-mode ;; js live repl https://github.com/skeeto/skewer-mode
+   solarized-theme
    spinner ;; spinner for ongoing operation
    sqlite
    sr-speedbar ;; file list view in buffer
@@ -525,7 +523,6 @@
             (append package-list
                     '(color-theme-buffer-local
                       load-theme-buffer-local
-                      color-theme-solarized
                       ;; color themes, see https://emacsthemes.com/charts/all-time.html
                       alect-themes
                       ample-theme
