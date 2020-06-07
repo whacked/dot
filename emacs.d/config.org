@@ -282,6 +282,7 @@
    diff-hl
    dirtree
    elscreen
+   eyebrowse
    fic-mode ;; to highlight TODO FIXME BUG etc
    find-file-in-project
    git-timemachine
@@ -643,20 +644,6 @@
 
 
   ;; (autoload 'dirtree "dirtree" "Add directory to tree view" t)
-
-  ;; ;; perspective mode
-  ;; ;; ref: http://emacsrookie.com/2011/09/25/workspaces/
-  ;; (persp-mode)
-  ;; (defmacro custom-persp (name &rest body)
-  ;;   `(let ((initialize (not (gethash ,name perspectives-hash)))
-  ;;          (current-perspective persp-curr))
-  ;;      (persp-switch ,name)
-  ;;      (when initialize ,@body)
-  ;;      (setq persp-last current-perspective)))
-  ;; (defun custom-persp/org ()
-  ;;   (interactive)
-  ;;   (custom-persp "@org"
-  ;;                 (find-file (first org-agenda-files))))
 
   ;; prevent special buffers from messing with the current layout
   ;; see: http://www.gnu.org/software/emacs/manual/html_node/emacs/Special-Buffer-Frames.html
