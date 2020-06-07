@@ -334,6 +334,15 @@
    )
 #+END_SRC
 
+** dired+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package dired+
+       :quelpa (dired+ :fetcher github :repo "emacsmirror/dired-plus"))
+     ;; show details by default; "(" to toggle
+     (setq diredp-hide-details-initially-flag nil)
+   #+END_SRC
+
 ** eval-in-repl
 
    #+BEGIN_SRC emacs-lisp :results silent
@@ -346,7 +355,7 @@
                  ;; Version with opposite behavior to eir-jump-after-eval configuration
                  (defun eir-eval-in-shell2 ()
                    "eval-in-repl for shell script (opposite behavior)
-         
+
                     This version has the opposite behavior to the eir-jump-after-eval
                     configuration when invoked to evaluate a line."
                    (interactive)
@@ -359,8 +368,6 @@
                  (add-hook 'sh-mode-hook
                            '(lambda()
                               (local-set-key (kbd "C-<return>") 'eir-eval-in-shell)))))
-
-
    #+END_SRC
 
 *** eval-in-repl-like for ansi-term
@@ -752,23 +759,6 @@
                ad-do-it
                (ibuffer-jump-to-buffer recent-buffer-name)))
   (ad-activate 'ibuffer)
-
-  ;;;; see http://lispuser.net/emacs/emacstips.html
-  ;;(defvar *original-dired-font-lock-keywords* dired-font-lock-keywords)
-  ;;(defun dired-highlight-by-extensions (highlight-list)
-  ;;  "highlight-list accept list of (regexp [regexp] ... face)."
-  ;;  (let ((lst nil))
-  ;;    (dolist (highlight highlight-list)
-  ;;      (push `(,(concat "\\.\\(" (regexp-opt (butlast highlight)) "\\)$")
-  ;;              (".+" (dired-move-to-filename)
-  ;;               nil (0 ,(car (last highlight)))))
-  ;;            lst))
-  ;;    (setq dired-font-lock-keywords
-  ;;          (append *original-dired-font-lock-keywords* lst))))
-  ;;(dired-highlight-by-extensions
-  ;;  '(("txt" font-lock-variable-name-face)
-  ;;    ("rb" font-lock-string-face)
-  ;;    ("org" "lisp" "el" "pl" "c" "h" "cc" font-lock-constant-face)))
 
   (winner-mode 1)
 
