@@ -89,13 +89,7 @@
      ;; (setq my-packages
      ;;       (append '(cssh el-get switch-window vkill google-maps nxhtml xcscope yasnippet)
      ;;        (mapcar 'el-get-source-name el-get-sources)))
-
-     (quelpa
-      '(quelpa-use-package
-        :fetcher git
-        :url "https://github.com/quelpa/quelpa-use-package.git"))
-     (require 'quelpa-use-package)
-
+     
      ;; specify package sets to load later
      (setq package-group-list (list))
 
@@ -336,7 +330,6 @@
    terraform-mode
    transpose-frame
    try
-   unbound ;; provides describe-unbound-keys
    undo-tree
    ;; if win-switch works, remove this:
    ;; linkd ;; required for win-switch
@@ -345,14 +338,34 @@
    )
 #+END_SRC
 
-** dired+
+** quelpa
 
    #+BEGIN_SRC emacs-lisp
-     (use-package dired+
-       :quelpa (dired+ :fetcher github :repo "emacsmirror/dired-plus"))
-     ;; show details by default; "(" to toggle
-     (setq diredp-hide-details-initially-flag nil)
+     (quelpa
+      '(quelpa-use-package
+	:fetcher git
+	:url "https://github.com/quelpa/quelpa-use-package.git"))
+     (require 'quelpa-use-package)
    #+END_SRC
+
+*** dired+
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package dired+
+        :quelpa (dired+ :fetcher github :repo "emacsmirror/dired-plus"))
+      ;; show details by default; "(" to toggle
+      (setq diredp-hide-details-initially-flag nil)
+    #+END_SRC
+
+*** unbound
+
+    provides =describe-unbound-keys=
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package unbound
+        :quelpa (unbound :fetcher github :repo "emacsmirror/unbound"))
+    #+END_SRC
+
 
 ** eval-in-repl
 
