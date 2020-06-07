@@ -1195,6 +1195,16 @@
 
     #+END_SRC
 
+** desktop-save-mode
+
+#+BEGIN_SRC emacs-lisp
+  (when (string= "default"
+                 chemacs-current-emacs-profile)
+    (setq desktop-save-mode nil)
+    (desktop-change-dir "~/dot/emacs.d")
+    (setq desktop-save-mode t))
+#+END_SRC
+
 ** tiddlywiki
 
 #+BEGIN_SRC emacs-lisp :results silent
