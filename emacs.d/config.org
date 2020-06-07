@@ -21,8 +21,9 @@
   (set-default-coding-systems 'utf-8)
   (set-language-environment "UTF-8")
   (setq custom-file (concat user-emacs-directory "custom.el"))
-  (load custom-file)
-  
+  (when (file-exists-p custom-file)
+    (load custom-file))
+
   (defun now (&optional return-date-only) (interactive "P") (message (format-time-string (if return-date-only "%Y-%m-%d" "%Y-%m-%d %H:%M:%S"))))
   (defun insert-timestamp (&optional return-date-only)
     "Insert date at current cursor position in current active buffer"
