@@ -1120,12 +1120,13 @@
         '(table-cell-face ((((class color)) (:background "#AA3" :foreground "gray90"))))))
    #+END_SRC
 
-*** pdf-tools interaction
+*** TODO FIXME pdf-tools interaction
 
     http://matt.hackinghistory.ca/2015/11/11/note-taking-with-pdf-tools/
 
     #+BEGIN_SRC emacs-lisp
-      (when (require 'pdf-tools nil :noerror)
+      (when (and (memq :pdf-tools package-group-list)
+                 (require 'pdf-tools nil :noerror))
         (pdf-tools-install)
 
         ;; this is stolen from https://github.com/pinguim06/pdf-tools/commit/22629c746878f4e554d4e530306f3433d594a654
