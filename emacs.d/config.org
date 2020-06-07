@@ -21,7 +21,8 @@
   (set-default-coding-systems 'utf-8)
   (set-language-environment "UTF-8")
   (setq custom-file (concat user-emacs-directory "custom.el"))
-
+  (load custom-file)
+  
   (defun now (&optional return-date-only) (interactive "P") (message (format-time-string (if return-date-only "%Y-%m-%d" "%Y-%m-%d %H:%M:%S"))))
   (defun insert-timestamp (&optional return-date-only)
     "Insert date at current cursor position in current active buffer"
@@ -109,28 +110,25 @@
 ** UI defaults
    
    #+BEGIN_SRC emacs-lisp
-     (setq inhibit-splash-screen t
-           global-hl-line-mode t
-           column-number-mode t
-           hscroll-step 1
-           ibuffer-fontification-alist (quote ((10 buffer-read-only font-lock-constant-face) (15 (and buffer-file-name (string-match ibuffer-compressed-file-name-regexp buffer-file-name)) font-lock-doc-face) (20 (string-match "^*" (buffer-name)) font-lock-keyword-face) (25 (and (string-match "^ " (buffer-name)) (null buffer-file-name)) italic) (30 (memq major-mode ibuffer-help-buffer-modes) font-lock-comment-face) (35 (eq major-mode (quote dired-mode)) font-lock-function-name-face) (40 (string-match ".py" (buffer-name)) font-lock-type-face) (45 (string-match ".rb" (buffer-name)) font-lock-string-face) (50 (string-match ".org" (buffer-name)) font-lock-preprocessor-face)))
-           ;; iswitchb-mode t ;; causes conflict with helm-mode
-           line-number-mode t
-           matlab-auto-fill nil
-           menu-bar-mode nil
-           show-paren-mode t
-           tool-bar-mode nil
-           transient-mark-mode t
-           ;; for smooth scrolling
-           scroll-step            1
-           scroll-conservatively  10000
-           )
-
-     (setq-default
-      echo-keystrokes 0.1 ;; = delay for minibuffer display after pressing function key default is 1
-      indent-tabs-mode nil
-      tab-width 2
-      truncate-lines t)
+     (setq-default inhibit-splash-screen t
+                   ibuffer-fontification-alist (quote ((10 buffer-read-only font-lock-constant-face) (15 (and buffer-file-name (string-match ibuffer-compressed-file-name-regexp buffer-file-name)) font-lock-doc-face) (20 (string-match "^*" (buffer-name)) font-lock-keyword-face) (25 (and (string-match "^ " (buffer-name)) (null buffer-file-name)) italic) (30 (memq major-mode ibuffer-help-buffer-modes) font-lock-comment-face) (35 (eq major-mode (quote dired-mode)) font-lock-function-name-face) (40 (string-match ".py" (buffer-name)) font-lock-type-face) (45 (string-match ".rb" (buffer-name)) font-lock-string-face) (50 (string-match ".org" (buffer-name)) font-lock-preprocessor-face)))
+                   ;; iswitchb-mode t ;; causes conflict with helm-mode
+                   line-number-mode t
+                   column-number-mode t
+                   matlab-auto-fill nil
+                   hscroll-step 1
+                   ;; for smooth scrolling
+                   scroll-step            1
+                   scroll-conservatively  10000
+                   echo-keystrokes 0.1 ;; = delay for minibuffer display after pressing function key default is 1
+                   indent-tabs-mode nil
+                   tab-width 2
+                   truncate-lines t)
+     (transient-mark-mode 1)
+     (show-paren-mode 1)
+     (tool-bar-mode -1)
+     (menu-bar-mode -1)
+     (global-hl-line-mode 1)
 
      (when
          (functionp 'set-scroll-bar-mode)
@@ -428,6 +426,19 @@
       ;; (local-set-key (kbd "C-<return>") 'local--send-current-line-to-term)
     #+END_SRC
 
+** deft
+
+   #+BEGIN_SRC emacs-lisp
+     ;; in case useful: http://jblevins.org/projects/deft/
+     ;; Deft is an Emacs mode for quickly browsing, filtering, and editing directories of plain text notes, inspired by Notational Velocity.
+     (setq deft-extensions '("org" "tid")
+           deft-directory "~/note/org/"
+           deft-text-mode 'org-mode
+           deft-recursive t
+           deft-use-filename-as-title t
+           deft-ignore-file-regexp "\\$.+") ;; for ignoring special tiddlers
+   #+END_SRC
+
 ** fiplr (vim-like ctrl-p)
 
    #+BEGIN_SRC emacs-lisp
@@ -637,7 +648,6 @@
 ** remainder
 
 #+BEGIN_SRC emacs-lisp
-
   (setq helm-exit-idle-delay 0) ;; fixes "display not ready" https://github.com/emacs-helm/helm/issues/550
 
   ;; kill process hack
@@ -934,28 +944,7 @@
    ;; see earlier commits for google calendar interaction
    ;; ref http://article.gmane.org/gmane.emacs.orgmode/27214
    ;; "defadvice org-agenda-add-entry-to-org-agenda-diary-file"
-
-   ;; in case useful: http://jblevins.org/projects/deft/
-   ;; Deft is an Emacs mode for quickly browsing, filtering, and editing directories of plain text notes, inspired by Notational Velocity.
-   (setq deft-extensions '("org" "tid"))
-   (setq deft-directory "~/note/org/")
-   (setq deft-text-mode 'org-mode)
-   (setq deft-recursive t)
-   (setq deft-use-filename-as-title t)
-   (setq deft-ignore-file-regexp "\\$.+") ;; for ignoring special tiddlers
-
-   ;; org faces
-   (custom-set-faces
-    '(org-level-1 ((t (:inherit outline-1 :inverse-video t :weight bold :height 2.2 :foreground "brown"   :background "white" :family "Inconsolata"))))
-    '(org-level-2 ((t (:inherit outline-2 :inverse-video t :weight bold :height 2.0 :foreground "red"     :background "white" :family "Inconsolata"))))
-    '(org-level-3 ((t (:inherit outline-3 :inverse-video t :weight bold :height 1.8 :foreground "orange"  :background "black" :family "Inconsolata"))))
-    '(org-level-4 ((t (:inherit outline-4 :inverse-video t :weight bold :height 1.6 :foreground "yellow3" :background "white" :family "Inconsolata"))))
-    '(org-level-5 ((t (:inherit outline-5 :inverse-video t :weight bold :height 1.4 :foreground "green4"  :background "white" :family "Inconsolata"))))
-    '(org-level-6 ((t (:inherit outline-6 :inverse-video t :weight bold :height 1.2 :foreground "blue"    :background "white" :family "Inconsolata"))))
-    '(table-cell ((t (:background "#DD8" :foreground "gray50" :inverse-video nil))))
-    '(table-cell-face ((((class color)) (:background "#AA3" :foreground "gray90")))))
  #+END_SRC
-
 
 *** re-enable org-tempo
     
@@ -1107,6 +1096,28 @@
            ;; FIXME this probably doesn't work as expected
            org-startup-folded nil
            org-export-coding-system 'utf-8)
+
+     ;; ref https://zzamboni.org/post/beautifying-org-mode-in-emacs/
+     (let* ((variable-tuple
+             (cond ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+                   ((x-list-fonts "Inconsolata")     '(:font "Inconsolata"))
+                   (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+            (base-font-color     (face-foreground 'default nil 'default))
+            (headline           `(:inherit default :inverse-video t :weight bold :foreground ,base-font-color)))
+
+       (custom-theme-set-faces
+        'user
+        `(org-level-1 ((t (,@headline ,@variable-tuple :height 2.2 :foreground "brown"   :background "white"))))
+        `(org-level-2 ((t (,@headline ,@variable-tuple :height 2.0 :foreground "red"     :background "white"))))
+        `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.8 :foreground "orange"  :background "black"))))
+        `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.6 :foreground "yellow3" :background "white"))))
+        `(org-level-5 ((t (,@headline ,@variable-tuple :height 1.4 :foreground "green4"  :background "white"))))
+        `(org-level-6 ((t (,@headline ,@variable-tuple :height 1.2 :foreground "blue"    :background "white"))))
+        `(org-level-7 ((t (,@headline ,@variable-tuple))))
+        `(org-level-8 ((t (,@headline ,@variable-tuple))))
+        `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))
+        '(table-cell ((t (:background "#DD8" :foreground "gray50" :inverse-video nil))))
+        '(table-cell-face ((((class color)) (:background "#AA3" :foreground "gray90"))))))
    #+END_SRC
 
 *** pdf-tools interaction
@@ -1309,6 +1320,8 @@
    not working
 
    #+BEGIN_SRC emacs-lisp
+     (require 'hl-line)
+
      ;; http://stackoverflow.com/a/10239361
      ;; see C-h-f defface for source of this
      (defun set-buffer-local-hl-color ()
