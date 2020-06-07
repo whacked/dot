@@ -20,6 +20,7 @@
 
   (set-default-coding-systems 'utf-8)
   (set-language-environment "UTF-8")
+  (setq custom-file (concat user-emacs-directory "custom.el"))
 
   (defun now (&optional return-date-only) (interactive "P") (message (format-time-string (if return-date-only "%Y-%m-%d" "%Y-%m-%d %H:%M:%S"))))
   (defun insert-timestamp (&optional return-date-only)
