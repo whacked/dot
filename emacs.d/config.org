@@ -951,7 +951,12 @@
     this enables shortcut expansions like "<s<TAB>". it is off by default since org 9.2
 
     #+begin_src emacs-lisp
-      (require 'org-tempo)
+      (when (<= 9.2
+                (string-to-number
+                 (replace-regexp-in-string
+                  "\\.[[:digit:]]+$" ""
+                  org-version)))
+        (require 'org-tempo))
     #+end_src
 
 *** org capture
