@@ -44,7 +44,6 @@
      (setq package-archives '(
             ("gnu"   . "http://elpa.gnu.org/packages/")
             ("ELPA"  . "http://tromey.com/elpa/")
-            ("org"   . "http://orgmode.org/elpa/")
             ("melpa" . "https://melpa.org/packages/")))
      ;; activate all the packages (in particular autoloads)
      (package-initialize)
@@ -306,7 +305,7 @@
    muse
    navi-mode
    neotree
-   org-brain
+   ;; org-brain  ;; haven't used for long
    outorg outshine  ;; retire?
    ov ;; overlay
 
@@ -777,7 +776,6 @@
  #+END_SRC
 
  #+BEGIN_SRC emacs-lisp
-   (require 'org)
    ;; force org-babel src edit to use same window instead of splitting
    (setq org-src-window-setup 'current-window)
    (org-babel-do-load-languages
@@ -1200,8 +1198,10 @@
 ** desktop-save-mode
 
 #+BEGIN_SRC emacs-lisp
-  (when (string= "default"
-                 chemacs-current-emacs-profile)
+  (when (and
+         (boundp 'chemacs-current-emacs-profile)
+         (string= "default"
+                  chemacs-current-emacs-profile))
     (setq desktop-save-mode nil)
     (desktop-change-dir "~/dot/emacs.d")
     (setq desktop-save-mode t))
