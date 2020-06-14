@@ -69,3 +69,11 @@ while [ -e $HOME/dot/commonrc.$trycount ]; do
     trycount=$(($trycount+1))
 done
 
+ZSH_PLUGINS_DIR=$USERCACHE/zsh-plugins
+if [ -e $ZSH_PLUGINS_DIR ]; then
+    if [ -e $ZSH_PLUGINS_DIR/zsh-histdb ]; then
+        source $ZSH_PLUGINS_DIR/zsh-histdb/sqlite-history.zsh
+        autoload -Uz add-zsh-hook
+        add-zsh-hook precmd histdb-update-outcome
+    fi
+fi

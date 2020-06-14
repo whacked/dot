@@ -5,17 +5,18 @@
 _SCRIPT_DIRECTORY=$(dirname ${BASH_SOURCE[0]})
 
 # NIX -------------------------------------------------------------------
-if type nix-channel > /dev/null; then
+if type nix-channel &> /dev/null; then
+    export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
     mkdir -p $HOME/.config/nixpkgs
     ln -s $(realpath $_SCRIPT_DIRECTORY/home.nix) $HOME/.config/nixpkgs/home.nix
     export NIXPKGS_ALLOW_UNFREE=1
-    if ! type home-manager > /dev/null; then
+    if ! type home-manager &> /dev/null; then
         echo "installing home-manager..."
         nix-channel --add https://github.com/rycee/home-manager/archive/master.tar.gz home-manager
         nix-channel --update
         nix-shell '<home-manager>' -A install
     fi
-    echo "preparing home-manager..."
+    echo "prepare home-manager by running 'home-manager switch'"
 fi
 # DOTFILES --------------------------------------------------------------
 for DOTFILENAME in emacs.d vimrc vim tmux.conf bashrc Rprofile zshrc zsh boot.profile lein subversion; do
@@ -70,13 +71,30 @@ if [ `command -v zsh | wc -l` -ge 1 ]; then
 
         # test for nix-supplied oh-my-zsh first
         _nix_oh_my_zsh_path=$(nix eval --raw nixpkgs.oh-my-zsh.outPath 2>/dev/null)
-        if [ "x$_nix_oh_my_zsh_path" != "x" ]; then
+        if [ "x$_nix_oh_my_zsh_path" != "x" ] && [ -e $_nix_oh_my_zsh_path ]; then
             echo "using oh-my-zsh found from nix store: $_nix_oh_my_zsh_path"
-            ln -s $_nix_oh_my_zsh_path/share/oh-my-zsh $HOME/.oh-my-zsh
+            ln -sf $_nix_oh_my_zsh_path/share/oh-my-zsh $HOME/.oh-my-zsh
         else
             echo "cloning oh-my-zsh from github..."
             git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
         fi
+
+        nix eval --raw nixpkgs.oh-my-zsh.outPath 2>/dev/null
+    fi
+
+    if [ "x$USERCACHE" != "x" ] && [ -e $USERCACHE ]; then
+        echo installing zsh-histdb into user cache...
+        _zsh_histdb_source_path=$(nix-instantiate --eval -E 'with import <nixpkgs> {}; (callPackage (import ~/setup/nix/pkgs/shells/zsh-histdb/default.nix) {}).outPath' | tr -d '"')
+        if [ "x$_zsh_histdb_source_path" != "x" ]; then
+            echo found zsh-histdb in $_zsh_histdb_source_path
+            ZSH_PLUGINS_DIR=$USERCACHE/zsh-plugins
+            mkdir -p $ZSH_PLUGINS_DIR
+            ln -sf $_zsh_histdb_source_path $ZSH_PLUGINS_DIR/zsh-histdb
+        else
+            echo "could not find location of zsh-histdb"
+        fi
+    else
+        echo 'no usercache available'
     fi
 else
     echo ... zsh not installed
