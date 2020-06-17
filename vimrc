@@ -70,6 +70,7 @@ set nowrap
 set hlsearch
 set ic
 set foldlevel=100
+set noincsearch
 
 autocmd Filetype ruby setlocal ts=2 sts=2 sw=2
 
