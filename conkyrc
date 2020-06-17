@@ -1,89 +1,89 @@
 conky.config = {
---#####################
--- - Conky settings - #
---#####################
-	update_interval = 1,
-	total_run_times = 0,
-	net_avg_samples = 1,
-	cpu_avg_samples = 1,
-
-	imlib_cache_size = 0,
-	double_buffer = true,
-	no_buffers = true,
-
-	format_human_readable = true,
-
---####################
--- - Text settings - #
---####################
-	use_xft = true,
-	font = 'Droid Sans:size=8',
-	override_utf8_locale = true,
-	text_buffer_size = 2048,
-
---############################
--- - Window specifications - #
---############################
-	own_window_class = 'Conky',
-	own_window = true,
---own_window_type override
-	own_window_type = 'desktop',
---own_window_transparent yes
-	own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
-
-	alignment = 'top_left',
-	gap_x = 400,
-	gap_y = 850,
-	minimum_width = 200, minimum_height = 0,
-	maximum_width = 200,
-
-	default_bar_width = 60, default_bar_height = 8,
-
---########################
--- - Graphics settings - #
---########################
-	draw_shades = false,
-
-	default_color = '#cccccc',
-
-	color0 = 'white',
+    alignment = 'middle_middle',
+    background = false,
+    border_width = 2,
+    cpu_avg_samples = 2,
+    default_color = '#CCCCCC',
+	color0 = '#DDDDDD',
 	color1 = '#E07A1F',
 	color2 = 'white',
-
-};
+    default_outline_color = 'white',
+    default_shade_color = 'white',
+    double_buffer = true,
+    draw_borders = false,
+    draw_graph_borders = true,
+    draw_outline = false,
+    draw_shades = false,
+    extra_newline = false,
+    font = 'DejaVu Sans Mono:size=10',
+    gap_x = 0,
+    gap_y = 0,
+    minimum_height = 5,
+    minimum_width = 5,
+    net_avg_samples = 2,
+    no_buffers = true,
+    out_to_console = false,
+    out_to_ncurses = false,
+    out_to_stderr = false,
+    out_to_x = true,
+    own_window = true,
+    own_window_class = 'Conky',
+    own_window_type = 'desktop',
+    show_graph_range = false,
+    show_graph_scale = false,
+    stippled_borders = 0,
+    update_interval = 1,
+    uppercase = false,
+    use_spacer = 'none',
+    use_xft = true,
+}
 
 conky.text = [[
 #############
 # - CLOCK - #
 #############
 ${voffset 4}${font Consolas:style=Bold:size=8}TIME $stippled_hr${font}
-${alignc}${font Consolas:size=9}${time %Y-%m-%d}
-${voffset -10}${color2}${font Arial Black:size=30}${time %H:%M:%S}${font}${color}
-${color2}${font Arial Black:size=8}${execp acpi | cut -f 3- -d ' '}${font}${color}
-
+${voffset -10}${color2}${font Arial Black:size=40}${alignc}${time %H:%M:%S}${font}${color}
 ################
 # - CALENDAR - #
 ################
 ${color orange}CALENDAR ${hr 2}$color
-${voffset 10}${font Consolas Mono:size=11}${color bbf}${execpi 60 /Users/$USER/linux/opt/thinkpad/dzen/draw_calendar_conky.sh }
-#${font Consolas Mono:size=11}${color 888}${execpi 60 DJS=`date +%_d`; cal | sed -r -e "s/_.//g" -e "s/(^| )($DJS)($| )/\1\${color orange}\2\${color 888}\3/"}
-##
-##
+${alignc}${font Arial:size=18}${time %Y-%m-%d}
+# https://ubuntuforums.org/showthread.php?t=1403035
+${voffset 10}${font DejaVu Sans Mono:size=12}${color 999}${execpi 60 DJS=`date +%_d`; cal | sed '1d' | sed '/./!d' | sed 's/$/ /' | fold -w 21 | sed -n '/^.\{21\}/p' | sed 's/^/${goto 25}/' | sed /" $DJS "/s/" $DJS "/" "'${color yellow}'"$DJS"'${color}'" "/}
 ################
-### - SYSTEM - #
+# - CPU, RAM - #
 ################
-##${font Consolas:style=Bold:size=8}SYSTEM $stippled_hr${font}
-### |--CPU
-##${offset 1}${color}${font Consolas Mono:size=8}${goto 32}CPU: ${font Consolas:style=Bold:size=8}${color1}${cpu cpu1}%${color}${font} ${alignr}${color2}${cpugraph cpu1 8,60 CE5C00 E07A1F}${color}
-### |--MEM
-##${font Consolas Mono:size=8}${color}${goto 32}RAM: ${font Consolas:style=Bold:size=8}${color1}$memperc%${color}${font}
-##
-##${font Arial:bold:size=10}${color Tan2}WEATHER ${color DarkSlateGray}${hr 2}
-##${font}${color DimGray}
-##
-##${voffset -25}${font Weather:size=45}${execi 1800 conkyForecast –location=BEXX0008 –datatype=WF}
-##${alignc 22}${voffset -60}${font Arial:bold:size=10}${color DimGray}${execi 1800 conkyForecast –location=BEXX0008 –datatype=HT}
-##$font${voffset -55}${alignr}${color DimGray}Wind: ${execi 1800 conkyForecast –location=BEXX0008 –datatype=WS}
-##${alignr}${color DimGray}Humidity: ${execi 1800 conkyForecast –location=BEXX0008 –datatype=HM}
-##
-]];
+${voffset 0}${font Consolas:style=Bold:size=8}SYSTEM $stippled_hr${font}
+${color2}BAT: ${execp acpi | cut -f 3- -d ' '}${font}${color}
+${color grey}UPT:$color $uptime
+## this slows down conky startup
+##${color grey}CPU:$color $freq MHz
+##${color grey}    $color ${if_match $cpu<10} ${endif}$cpu% ${cpubar 4}
+${color grey}RAM:$color $mem/$memmax 
+${color grey}    $color ${if_match $memperc<10} ${endif}$memperc% ${membar 4}
+############
+# - DISK - #
+############
+${voffset 4}${font Consolas:style=Bold:size=8}DISK $stippled_hr${font}
+/     ${goto 60}$color${fs_used /}     ${goto 120}/${fs_size /}
+${fs_bar 6 /}
+/home ${goto 60}$color${fs_used /home} ${goto 120}/${fs_size /home}
+${fs_bar 6 /home}
+###############
+# - NETWORK - #
+###############
+${voffset 4}${font Consolas:style=Bold:size=8}NETWORK $stippled_hr${font}
+${color #33CC33}${font Inconsolata:size=9}${execp nmcli -f name,type,device con show --active}${font}${color}
+#################
+# - PROCESSES - #
+#################
+${voffset 4}${font Consolas:style=Bold:size=8}PROCESSES $stippled_hr${font Inconsolata:size=7}
+${color grey}Name              PID     CPU%   MEM%
+${color lightgrey} ${top name 1} ${top pid 1} ${top cpu 1} ${top mem 1}
+${color lightgrey} ${top name 2} ${top pid 2} ${top cpu 2} ${top mem 2}
+${color lightgrey} ${top name 3} ${top pid 3} ${top cpu 3} ${top mem 3}
+${color lightgrey} ${top name 4} ${top pid 4} ${top cpu 4} ${top mem 4}
+${color lightgrey} ${top name 5} ${top pid 5} ${top cpu 5} ${top mem 5} ${font}
+]]
+
