@@ -1,4 +1,7 @@
 import XMonad
+-- import XMonad.Config.Gnome
+-- import XMonad.Config.Xfce
+import Data.Typeable
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.FadeInactive
@@ -7,14 +10,13 @@ import XMonad.Util.EZConfig
 import System.IO
 import Data.List
 
--- import XMonad.Config.Gnome
-import XMonad.Config.Xfce
 import XMonad.Actions.SimpleDate
 
 import qualified XMonad.StackSet as W
 import XMonad.Actions.CycleWS
 import XMonad.Actions.CycleWindows
 import XMonad.Actions.FloatKeys
+import XMonad.Actions.PhysicalScreens
 
 import XMonad.Layout.ThreeColumns
 import XMonad.Layout.Tabbed
@@ -28,26 +30,36 @@ import XMonad.Hooks.ManageHelpers
 
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.Place -- for placing floating windows
+import XMonad.Layout.ShowWName
 
 -- check xmodmap -pm to see mod key mapping
-
-
-import XMonad.Layout.ShowWName
 
 devMode = False
 myFocusedBorderColor = if devMode == True then "green" else "red"
 
+-- see Xmodmap for rebinding
+myModMask = mod3Mask
+
+-- was [0..] *** change to match your screen order ***
+-- this is used by screenWorkspace below, so the type is ScreenId
+myScreenOrderMapping :: [ScreenId]
+myScreenOrderMapping = [0,2,1]
+
 main = do
-    xmonad $ xfceConfig
-        { terminal = "terminator" -- terminal = "gnome-terminal" 
+    -- xmonad $ xfceConfig
+    -- xmonad $ gnomeConfig
+    xmonad $ defaultConfig
+        { terminal = "terminator"
         , borderWidth = 1
         , modMask = myModMask
         --, focusedBorderColor = "red"
         , focusedBorderColor = myFocusedBorderColor
+
         -- , manageHook = manageDocks -- <+> manageHook gnomeConfig
         -- , layoutHook = avoidStruts $ layoutHook gnomeConfig
+        
         , layoutHook = showWName myLayout -- avoidStruts $ layoutHook defaultConfig
-        , manageHook = myManageHook <+> manageHook xfceConfig
+        , manageHook = myManageHook -- <+> manageHook xfceConfig
         , workspaces = myWorkspaces
         -- , logHook = myLogHook
 
@@ -70,8 +82,6 @@ myLayout = tiled
     ratio   = 1/2
     delta   = 3/100
 
-myModMask = mod3Mask
--- myModMask = mod4Mask
 myWorkspaces = [ "1"
                , "2:web"
                , "3"
@@ -95,9 +105,9 @@ myManageHook = composeAll
     [ className =? "Pidgin" --> doFloat
     , className =? "Skype" --> doFloat
     , className =? "Shutter" --> doFloat
-    , className =? "SpiderOak" --> doFloat
-    , className =? "CrashPlan" --> doFloat
     , className =? "Tk" --> doFloat
+    , className =? "Conky" --> doIgnore
+
     -- , className =? "Display" --> doFloat
     , fmap ("awt-X11" `isInfixOf`) title --> doFloat -- java awt windows
     , title     =? "Set Zoom" --> doFloat -- xournal's zoom box
@@ -111,7 +121,6 @@ myManageHook = composeAll
     , className =? "Xournalpp" --> doShift "8:read"
     , className =? "Calibre-gui" --> doShift "fa"
     -- , ( role =? "gimp-toolbox" <||> role =? "gimp-image-window") --> (ask >>= doF . W.sink)
-    , className =? "Emacs24" --> doFloat
     , className =? "Toplevel" --> doFloat
     -- Firefox download window
     , fmap (isInfixOf "Downloads") title --> doFloat
@@ -119,7 +128,7 @@ myManageHook = composeAll
     -- , fmap (isInfixOf "Speedbar") title --> doFloat
     --
     -- for R plots
-    , className =? "" --> doFloat
+    -- , className =? "" --> doFloat
     -- , fmap ("R Graphics" `isInfixOf`) title --> doFloat
     --
     -- gloobus preview
@@ -139,11 +148,36 @@ myManageHook = composeAll
 
     -- for imagemagick `display`
     , className =? "Display.im6" --> doCenterFloat
-    
+
+    -- firefox extension
+    , fmap (isInfixOf "Tree Style Tab") title --> doFloat
     ]
 
+-- ref https://github.com/iamjamestl/dotfiles/blob/3919540264c4be6298f9a4354f36ccc11fded226/.xmonad/xmonad.hs.erb#L191
+physicalScreens :: X [Maybe ScreenId]
+physicalScreens = withWindowSet $ \windowSet -> do
+    let numScreens = length $ W.screens windowSet
+    mapM (\s -> getScreen def (P s)) [0..numScreens]
+
+getPhysicalScreen :: ScreenId -> X (Maybe PhysicalScreen)
+getPhysicalScreen sid = do
+    pscreens <- physicalScreens
+    return $ (Just sid) `elemIndex` pscreens >>= \s -> Just (P s)
+
+toggleConky :: X ()
+toggleConky = do
+    withWindowSet $ \windowSet -> do
+        let sid = W.screen (W.current windowSet)
+        pscreen <- getPhysicalScreen sid
+        unsafeSpawn (
+            "if pgrep conky; then pkill conky; else conky -m "
+            ++ (show (toInteger (case pscreen of
+                                     Just (P s) -> myScreenOrderMapping!!s
+                                     otherwise  -> 0)))
+            ++ " -c $HOME/dot/conkyrc; fi")
+
 myKeys = [] ++
-         [ ((mod4Mask, xK_space    ), unsafeSpawn "/Users/$USER/linux/opt/thinkpad/dzen/popup_calendar.sh")] ++
+         [ ((mod4Mask, xK_space    ), toggleConky)] ++
 
          -- application shortcuts
          [ ((mod4Mask, xK_F9      ), unsafeSpawn "emacsclient -c -e '(switch-to-buffer (dolist (buf (buffer-list)) (if (or (equal (get-buffer \"*scratch*\") buf) (equal (get-buffer \" *Minibuf-1*\") buf)) nil  (return buf))))'")] ++
@@ -195,5 +229,5 @@ myKeys = [] ++
          ] ++
          -- http://www.haskell.org/haskellwiki/Xmonad/Frequently_asked_questions#Screens_are_in_wrong_order
          [((m .|. myModMask, key), screenWorkspace sc >>= flip whenJust (windows . f)) -- Replace 'mod1Mask' with your mod key of choice.
-             | (key, sc) <- zip [xK_w, xK_e, xK_r] [0,2,1] -- was [0..] *** change to match your screen order ***
+             | (key, sc) <- zip [xK_w, xK_e, xK_r] myScreenOrderMapping
              , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
