@@ -8,7 +8,9 @@ _SCRIPT_DIRECTORY=$(dirname ${BASH_SOURCE[0]})
 if type nix-channel &> /dev/null; then
     export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
     mkdir -p $HOME/.config/nixpkgs
-    ln -s $(realpath $_SCRIPT_DIRECTORY/home.nix) $HOME/.config/nixpkgs/home.nix
+    if [ ! -e $HOME/.config/nixpkgs/home.nix ]; then
+        ln -s $(realpath $_SCRIPT_DIRECTORY/home.nix) $HOME/.config/nixpkgs/home.nix
+    fi
     export NIXPKGS_ALLOW_UNFREE=1
     if ! type home-manager &> /dev/null; then
         echo "installing home-manager..."
