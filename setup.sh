@@ -123,3 +123,31 @@ else
     popd >/dev/null
 fi
 
+# ZOTERO ----------------------------------------------------------------
+# start zotero once to generate the profile directory
+ZOTEROHOME=$HOME/.zotero/zotero
+ZOTEROINI=$ZOTEROHOME/profiles.ini
+ZOTERO_DATA_DIR=$CLOUDSYNC/main/appdata/Zotero
+
+# modify user.js in the profile directory to override
+# the dataDir setting to a custom storage directory.
+# Zotero will read the setting from user.js and write
+# it back into prefs.js
+ZOTERO_FAILED_TESTS=()
+if [ ! -e $ZOTEROINI ]; then
+    ZOTERO_FAILED_TESTS+=(ini-not-exist)
+else
+    ZOTERO_PROFILE0=$(crudini --get $ZOTEROHOME/profiles.ini Profile0 Path)
+    if [ "x$ZOTERO_PROFILE0" != "x" ]; then
+        ZOTERO_PROFILEDIR=$(crudini --get $ZOTEROHOME/profiles.ini Profile0 path)
+    fi
+fi
+[ "x$ZOTERO_PROFILEDIR" == "x" ] && ZOTERO_FAILED_TESTS+=(no-profile-dir)
+[ ! -e $ZOTEROHOME/$ZOTERO_PROFILEDIR ] && ZOTERO_FAILED_TESTS+=(profile-dir-not-exist)
+[ ! -e $ZOTERO_DATA_DIR ] && ZOTERO_FAILED_TESTS+=(data-dir-not-exist)
+if [ ${#ZOTERO_FAILED_TESTS[@]} -gt 0 ]; then
+    echo "- ZOTERO failed tests: ${ZOTERO_FAILED_TESTS[@]}"
+else
+    echo "UPDATING Zotero profile settings at $ZOTEROHOME/$ZOTERO_PROFILEDIR/user.js"
+    echo 'user_pref("extensions.zotero.dataDir", "'$ZOTERO_DATA_DIR'");' | tee $ZOTEROHOME/$ZOTERO_PROFILEDIR/user.js
+fi
