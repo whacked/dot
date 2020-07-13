@@ -283,6 +283,7 @@
    diff-hl
    dirtree
    elscreen
+   esqlite
    eyebrowse
    fic-mode ;; to highlight TODO FIXME BUG etc
    find-file-in-project
@@ -298,6 +299,7 @@
    hydra
    ibuffer-vc
    iedit
+   ivy
    
    json-mode
    magit
@@ -306,6 +308,8 @@
    navi-mode
    neotree
    ;; org-brain  ;; haven't used for long
+   org-noter
+   org-sidebar
    outorg outshine  ;; retire?
    ov ;; overlay
 
