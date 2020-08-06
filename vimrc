@@ -11,6 +11,7 @@ endif
 call plug#begin('~/.vim/plugged')
 
 Plug 'honza/vim-snippets'
+Plug 'google/vim-jsonnet'
 Plug 'jdonaldson/vaxe'
 Plug 'altercation/vim-colors-solarized'
 Plug 'Lokaltog/vim-powerline'
@@ -43,6 +44,7 @@ Plug 'jremmen/vim-ripgrep'
 Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
 Plug 'LnL7/vim-nix'
 Plug 'hashivim/vim-terraform'
+Plug 'jeetsukumaran/vim-buffergator'
 
 call plug#end()
 " </vim-plug>
