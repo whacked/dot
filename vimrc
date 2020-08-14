@@ -11,6 +11,7 @@ endif
 call plug#begin('~/.vim/plugged')
 
 Plug 'honza/vim-snippets'
+Plug 'editorconfig/vim-editorconfig'
 Plug 'google/vim-jsonnet'
 Plug 'jdonaldson/vaxe'
 Plug 'altercation/vim-colors-solarized'

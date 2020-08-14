@@ -282,6 +282,7 @@
    deft
    diff-hl
    dirtree
+   editorconfig
    elscreen
    esqlite
    eyebrowse
