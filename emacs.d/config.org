@@ -274,6 +274,8 @@
    async ;; https://github.com/jwiegley/emacs-async
    auto-complete
    
+   calfw
+   calfw-org
    color-theme
 
    csv-mode ;; in elpa, not melpa
@@ -308,9 +310,11 @@
    muse
    navi-mode
    neotree
+   nix-mode
    ;; org-brain  ;; haven't used for long
    org-noter
    org-sidebar
+   origami  ;; code folding
    outorg outshine  ;; retire?
    ov ;; overlay
 
@@ -333,6 +337,7 @@
    terraform-mode
    transpose-frame
    try
+   typescript-mode
    undo-tree
    ;; if win-switch works, remove this:
    ;; linkd ;; required for win-switch
