@@ -1,0 +1,5 @@
+% ansifilter, format, text, cleanup, pipe
+
+# de-ansify text
+cat <source-file> | ansifilter
+

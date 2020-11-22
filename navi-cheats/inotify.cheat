@@ -1,0 +1,7 @@
+% inotify
+
+# when "User limit of inotify watches reached": check current watches
+cat /proc/sys/fs/inotify/max_user_instances
+
+# dynamically increase inotify watch limit
+echo <new-watch-value> | sudo tee /proc/sys/fs/inotify/max_user_watches
