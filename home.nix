@@ -22,5 +22,8 @@ in {
   ++ myconfig.includeDefaultPackages
   ++ myconfig.includeUnfreePackages
   ;
+
+  home.sessionVariables.LOCALES_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";
+  # export LOCALE_ARCHIVE=$(nix-build '<nixpkgs>' -A glibcLocales)/lib/locale/locale-archive
 }
 
