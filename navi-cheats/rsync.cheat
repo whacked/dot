@@ -1,0 +1,5 @@
+% rsync
+
+# (ssh) specify explicit path to rsync binary in remote server
+rsync --rsync-path=<path-to-binary> -avz -e ssh <source> <destination>
+

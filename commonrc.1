@@ -133,3 +133,5 @@ if type direnv &>/dev/null; then
     eval "$(direnv hook $(ps -p $$ -ocomm=))"
 fi
 
+export NAVI_PATH=${NAVI_PATH:+$NAVI_PATH:}$HOME/dot/navi-cheats
+
