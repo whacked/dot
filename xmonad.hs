@@ -9,14 +9,17 @@ import XMonad.Util.Run
 import XMonad.Util.EZConfig
 import System.IO
 import Data.List
+import Data.Maybe
 
 import XMonad.Actions.SimpleDate
 
 import qualified XMonad.StackSet as W
 import XMonad.Actions.CycleWS
+import XMonad.Actions.CycleRecentWS
 import XMonad.Actions.CycleWindows
 import XMonad.Actions.FloatKeys
 import XMonad.Actions.PhysicalScreens
+import XMonad.Actions.SwapWorkspaces
 
 import XMonad.Layout.ThreeColumns
 import XMonad.Layout.Tabbed
@@ -97,7 +100,16 @@ myWorkspaces = [ "1"
                , "fb"
                , "fc"
                ]
+
+myWorkspaceKeys = ([xK_1 .. xK_9] ++ [xK_0] ++ [xK_F9, xK_F10, xK_F11, xK_F12])
+
 role = stringProperty "WM_WINDOW_ROLE"
+
+-- https://mail.haskell.org/pipermail/xmonad/2009-September/008497.html
+-- note that the referenced swapNextScreen / swapPrevScreen does not allow targeting arbitrary screens
+swapScreens = do
+   screen <- gets (listToMaybe . W.visible . windowset)
+   whenJust screen $ windows . W.greedyView . W.tag . W.workspace
 
 -- use `xprop` to find out the window class name
 myManageHook :: ManageHook
@@ -177,6 +189,7 @@ toggleConky = do
             ++ " -c $HOME/dot/conkyrc; fi")
 
 myKeys = [] ++
+         -- [ ((myModMask, xK_p       ), unsafeSpawn "rofi -show run -modi run")] ++
          [ ((mod4Mask, xK_space    ), toggleConky)] ++
 
          -- application shortcuts
@@ -195,15 +208,19 @@ myKeys = [] ++
          -- [ ((myModMask,               xK_p),  unsafeSpawn "gnome-do") ] ++
 
          -- a basic CycleWS setup
-         [ ((myModMask,               xK_Down),  nextWS)
-         , ((myModMask,               xK_Up),    prevWS)
-         , ((myModMask .|. shiftMask, xK_Down),  shiftToNext)
-         , ((myModMask .|. shiftMask, xK_Up),    shiftToPrev)
+         [ ((myModMask,               xK_Down ), nextWS)
+         , ((myModMask,               xK_Up   ), prevWS)
+         , ((myModMask .|. shiftMask, xK_Down ), shiftToNext)
+         , ((myModMask .|. shiftMask, xK_Up   ), shiftToPrev)
          , ((myModMask,               xK_Right), nextScreen)
-         , ((myModMask,               xK_Left),  prevScreen)
+         , ((myModMask,               xK_Left ), prevScreen)
          , ((myModMask .|. shiftMask, xK_Right), shiftNextScreen)
-         , ((myModMask .|. shiftMask, xK_Left),  shiftPrevScreen)
-         , ((myModMask,               xK_z),     toggleWS)
+         , ((myModMask .|. shiftMask, xK_Left ), shiftPrevScreen)
+         , ((myModMask,               xK_z    ), toggleWS)
+
+         , ((myModMask .|. controlMask, xK_Left  ), swapPrevScreen)
+         , ((myModMask .|. controlMask, xK_Right ), swapNextScreen)
+         , ((myModMask .|. controlMask, xK_z  ), swapScreens)
          ] ++
          -- FloatKeys
          [ ((myModMask,               xK_f   ), withFocused (keysMoveWindow (25, 0)))
@@ -218,15 +235,38 @@ myKeys = [] ++
          -- to fix the overwritten default of Mod+Shift+c
          , ((mod1Mask               , xK_F4   ), kill)
 
-         , ((myModMask .|. controlMask, xK_f   ), withFocused (keysResizeWindow (20, 0)  (0, 0)))
-         , ((myModMask .|. controlMask, xK_s   ), withFocused (keysResizeWindow (-10, 0) (0, 0)))
-         , ((myModMask .|. controlMask, xK_d   ), withFocused (keysResizeWindow (0, -10)  (0, 0)))
-         , ((myModMask .|. controlMask, xK_c   ), withFocused (keysResizeWindow (0, 20) (0, 0)))
+         , ((myModMask .|. controlMask, xK_f   ), withFocused (keysResizeWindow ( 20,   0) (0, 0)))
+         , ((myModMask .|. controlMask, xK_s   ), withFocused (keysResizeWindow (-10,   0) (0, 0)))
+         , ((myModMask .|. controlMask, xK_d   ), withFocused (keysResizeWindow (  0, -10) (0, 0)))
+         , ((myModMask .|. controlMask, xK_c   ), withFocused (keysResizeWindow (  0,  20) (0, 0)))
          ] ++
+
          [((m .|. mod3Mask, k), windows $ f i)
-              | (i, k) <- zip myWorkspaces ([xK_1 .. xK_9] ++ [xK_0] ++ [xK_F9, xK_F10, xK_F11, xK_F12])
+              | (i, k) <- zip myWorkspaces myWorkspaceKeys
               , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
          ] ++
+
+         -- swaps workspace LABELs
+         -- [((myModMask .|. controlMask, k), windows $ swapWorkspaces i) | (i, k) <- zip myWorkspaces myWorkspaceKeys ] ++
+         -- [((m .|. mod3Mask .|. controlMask, k), windows $ f i)
+         --      | (i, k) <- zip myWorkspaces myWorkspaceKeys
+         --      , (f, m) <- [(W.view, 0), (W.shift, shiftMask .|. controlMask)]
+         -- ] ++
+         --
+
+         -- -- Cycle recent (not visible) workspaces, tab is next, escape previous in history
+         -- , let options w     = map (W.greedyView `flip` w)   (hiddenTags w)
+         --   in ("M-<Tab>" , cycleWindowSets options [xK_Super_L] xK_Tab xK_Escape)
+
+         -- -- https://mail.haskell.org/pipermail/xmonad/2009-August/008462.html
+         -- -- Cycle through visible screens, a is next, s previous
+         -- , let options w     = map (W.view `flip` w)         (visibleTags w)
+         --   in ("M-a"     , cycleWindowSets options [xK_Super_L] xK_a xK_s)
+
+         -- Swap visible workspaces on current screen, s is next, d previous
+         -- , let options w     = map (W.greedyView `flip` w)   (visibleTags w)
+         --   in ("M-s"     , cycleWindowSets options [xK_Super_L] xK_s xK_d)
+
          -- http://www.haskell.org/haskellwiki/Xmonad/Frequently_asked_questions#Screens_are_in_wrong_order
          [((m .|. myModMask, key), screenWorkspace sc >>= flip whenJust (windows . f)) -- Replace 'mod1Mask' with your mod key of choice.
              | (key, sc) <- zip [xK_w, xK_e, xK_r] myScreenOrderMapping
