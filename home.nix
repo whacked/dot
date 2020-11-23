@@ -6,6 +6,7 @@ in {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
   home.file.".icons/default".source = "${pkgs.vanilla-dmz}/share/icons/Vanilla-DMZ";
+  fonts.fontconfig.enable = true;
 
   # This value determines the Home Manager release that your
   # configuration is compatible with. This helps avoid breakage
