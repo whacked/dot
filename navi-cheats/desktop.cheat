@@ -1,0 +1,5 @@
+% wmctrl
+
+# resize a window
+wmctrl -i -r <window-id> -e 0,<left>,<top>,<width>,<height>
+
