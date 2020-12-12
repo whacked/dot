@@ -34,6 +34,7 @@ import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.Place -- for placing floating windows
 import XMonad.Layout.ShowWName
+import Graphics.X11.ExtraTypes.XF86
 
 -- check xmodmap -pm to see mod key mapping
 
@@ -191,6 +192,12 @@ toggleConky = do
 myKeys = [] ++
          -- [ ((myModMask, xK_p       ), unsafeSpawn "rofi -show run -modi run")] ++
          [ ((mod4Mask, xK_space    ), toggleConky)] ++
+         
+         -- multimedia keys
+         [ ((0, xF86XK_AudioMute       ), spawn "amixer set Master toggle")
+         , ((0, xF86XK_AudioLowerVolume), spawn "amixer -q set Master 2%-")
+         , ((0, xF86XK_AudioRaiseVolume), spawn "amixer -q set Master 2%+")
+         ] ++
 
          -- application shortcuts
          [ ((mod4Mask, xK_F9      ), unsafeSpawn "emacsclient -c -e '(switch-to-buffer (dolist (buf (buffer-list)) (if (or (equal (get-buffer \"*scratch*\") buf) (equal (get-buffer \" *Minibuf-1*\") buf)) nil  (return buf))))'")] ++
