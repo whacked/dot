@@ -1,0 +1,8 @@
+% sound, multimedia, screen brightness
+
+# set volume to <level>
+amixer sset Master <level>%
+
+# set screen brightness to <level>
+echo <level> | sudo tee /sys/class/backlight/*/brightness
+

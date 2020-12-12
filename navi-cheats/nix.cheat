@@ -1,0 +1,5 @@
+% nix
+
+# get store path of a package
+nix eval nixpkgs.<package>.outPath
+

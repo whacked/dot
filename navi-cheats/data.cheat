@@ -1,0 +1,4 @@
+% data processors, vd, visidata
+
+# pipe a jsonl file and get a csv out of STDOUT
+head <jsonl-file> | vd -f json -b --save-filetype=csv --output - 2>/dev/null

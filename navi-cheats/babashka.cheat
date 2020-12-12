@@ -1,0 +1,5 @@
+% babashka, bootleg, bb
+
+# convert html to hiccup
+bootleg -d -e '(html (slurp "<source-file>") :data :hiccup-seq)'
+

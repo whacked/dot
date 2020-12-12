@@ -1,0 +1,4 @@
+% bluetooth
+
+# scan for devices
+hcitool scan
