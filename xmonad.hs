@@ -10,6 +10,7 @@ import XMonad.Util.EZConfig
 import System.IO
 import Data.List
 import Data.Maybe
+import Text.Printf
 
 import XMonad.Actions.SimpleDate
 
@@ -189,14 +190,27 @@ toggleConky = do
                                      otherwise  -> 0)))
             ++ " -c $HOME/dot/conkyrc; fi")
 
+mainScreenName = "eDP-1"  -- xrandr | head -2 | tail -1 | awk '{print $1}'
+
+getNextXranderBrightnessValue :: Double -> String
+getNextXranderBrightnessValue increment = do
+    printf "xrandr --current --verbose | grep Brightness | awk '{sum=$NF%+f;if(sum>1)out=1;else if(sum<0)out=0;else out=sum}END{print out}'" increment
+
+makeXrandrBrightnessCommand :: Double -> String
+makeXrandrBrightnessCommand increment = do
+    let brightnessCommand = getNextXranderBrightnessValue increment
+    printf "xrandr --output %s --brightness $(%s)" mainScreenName  brightnessCommand
+
 myKeys = [] ++
          -- [ ((myModMask, xK_p       ), unsafeSpawn "rofi -show run -modi run")] ++
          [ ((mod4Mask, xK_space    ), toggleConky)] ++
          
          -- multimedia keys
-         [ ((0, xF86XK_AudioMute       ), spawn "amixer set Master toggle")
-         , ((0, xF86XK_AudioLowerVolume), spawn "amixer -q set Master 2%-")
-         , ((0, xF86XK_AudioRaiseVolume), spawn "amixer -q set Master 2%+")
+         [ ((0, xF86XK_AudioMute       ),      spawn "amixer set Master toggle")
+         , ((0, xF86XK_AudioLowerVolume),      spawn "amixer -q set Master 2%-")
+         , ((0, xF86XK_AudioRaiseVolume),      spawn "amixer -q set Master 2%+")
+         , ((0, xF86XK_MonBrightnessUp),   spawn (makeXrandrBrightnessCommand ( 0.05)))
+         , ((0, xF86XK_MonBrightnessDown), spawn (makeXrandrBrightnessCommand (-0.05)))
          ] ++
 
          -- application shortcuts
