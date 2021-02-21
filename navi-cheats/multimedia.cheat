@@ -6,3 +6,5 @@ amixer sset Master <level>%
 # set screen brightness to <level>
 echo <level> | sudo tee /sys/class/backlight/*/brightness
 
+# convert wav to mp3
+lame -b 320 -h "<source-file>" "<source-file>.mp3"
