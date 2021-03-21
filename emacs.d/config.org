@@ -1945,6 +1945,20 @@ https://emacs.stackexchange.com/a/35904
       (google-search prefix "http://scholar.google.com/scholar?hl=en&btnG=&as_sdt=1%%2C22&q=%s"))
   #+END_SRC
 
+* assorted library customization
+  
+** neotree
+
+*** yank full path key
+
+    #+begin_src emacs-lisp
+      ;; for neotree-mode-map
+      (add-hook 'neotree-mode-hook
+                (lambda () (local-set-key
+                            (kbd "M-w")
+                            #'neotree-copy-filepath-to-yank-ring)))
+    #+end_src
+
 * assorted fix
 
 ** freeze on yank
