@@ -237,14 +237,6 @@
         (message "using OS X"))
     #+END_SRC
 
-*** TODO deprecate windows-nt
-
-    #+BEGIN_SRC emacs-lisp
-      (when (eq system-type 'windows-nt)
-        ;; windows only
-        (load-file "~/emacs.d/martin-w32-fullscreen.el"))
-    #+END_SRC
-
 ** system-name
 
    #+BEGIN_SRC emacs-lisp
@@ -305,6 +297,10 @@
    ivy
    
    json-mode
+   jsonnet-mode
+   jsonl
+   lsp-mode
+   
    magit
    multiple-cursors
    muse
@@ -312,7 +308,9 @@
    neotree
    nix-mode
    ;; org-brain  ;; haven't used for long
+   org-download
    org-noter
+   org-ql
    org-sidebar
    origami  ;; code folding
    outorg outshine  ;; retire?
@@ -339,6 +337,7 @@
    try
    typescript-mode
    undo-tree
+   vterm
    ;; if win-switch works, remove this:
    ;; linkd ;; required for win-switch
    with-editor ;; dependency for magit
@@ -351,8 +350,8 @@
    #+BEGIN_SRC emacs-lisp
      (quelpa
       '(quelpa-use-package
-	:fetcher git
-	:url "https://github.com/quelpa/quelpa-use-package.git"))
+        :fetcher git
+        :url "https://github.com/quelpa/quelpa-use-package.git"))
      (require 'quelpa-use-package)
    #+END_SRC
 
