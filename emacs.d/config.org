@@ -1279,24 +1279,88 @@ https://emacs.stackexchange.com/a/35904
 ** tiddlywiki
 
 #+BEGIN_SRC emacs-lisp :results silent
+  (defvar *default-tiddler-directory*
+    (expand-file-name
+     (format "/Users/%s/cloudsync/main/note/org/tw/tiddlers"
+             user-login-name)))
+
   (defvar *default-anonymous-tiddler-directory*
-    (expand-file-name "/Users/natto/cloudsync/main/note/org/tw/tiddlers/warehouse"))
+    (concat
+     (file-name-as-directory
+      ,*default-tiddler-directory*)
+     "warehouse"))
+
+  (defun new-named-tiddler (&optional reserve-for-future-use)
+    (interactive "P")
+    (let* ((title (read-string (format "title: ") nil nil nil))
+           (file-path (concat
+                       (file-name-as-directory
+                        ,*default-tiddler-directory*)
+                       (format-time-string "%Y-%m-%d_%H-%M-%S")
+                       "_"
+                       (replace-regexp-in-string (concat "[[:space:]]+") "-" title)
+                       ".tid")))
+      (tiddlywiki-create-new-tiddler file-path title)))
+
+  ;; FIXME
+  (defun new-anonymous-tiddler-from-date (&optional reserve-for-future-use)
+    (interactive "P")
+    (let* ((date-string (org-read-date))
+           (title (format "anonymous tiddler %s" date-string))
+           (file-path (concat
+                       (file-name-as-directory
+                        ,*default-anonymous-tiddler-directory*)
+                       (format "%s.tid" date-string))))
+      (tiddlywiki-create-new-tiddler file-path title)))
+
   (defun new-anonymous-tiddler (&optional reserve-for-future-use)
-        "create a new uniquely named tiddler inside designated directory"
-        (interactive "P")
-        (let* ((title (format-time-string "anonymous tiddler %Y-%m-%d %H:%M:%S"))
-               (file-path (concat
-                           (file-name-as-directory
-                            *default-anonymous-tiddler-directory*)
-                           (format-time-string "%Y-%m-%d_%H-%M-%S.tid"))))
-          (find-file-literally file-path)
-          (insert
-           (tiddlywiki-org-mode-tiddler-preamble title)
-           "\n\n")
-          (tiddlywiki-mode)
-          ;; (kill-new (concat "[[file:" file-path "]]"))
-          ))
+    "create a new uniquely named tiddler inside designated directory"
+    (interactive "P")
+    (let* ((title (format-time-string "anonymous tiddler %Y-%m-%d %H:%M:%S"))
+           (file-path (concat
+                       (file-name-as-directory
+                        ,*default-anonymous-tiddler-directory*)
+                       (format-time-string "%Y-%m-%d_%H-%M-%S.tid"))))
+      (tiddlywiki-create-new-tiddler file-path title)))
   (defalias 'jog 'new-anonymous-tiddler)
+
+  (defun save-screenshot-into-tiddler-directory ()
+    (interactive)
+    (let ((maybe-url (sentence-at-point)))
+      (when (string=
+             (substring maybe-url 0 4)
+             "http")
+        (let* ((relative-img-directory
+                (format-time-string "img/%Y/%m/%d"))
+               (filename
+                (concat
+                 (replace-regexp-in-string
+                  "\\W+$" ""
+                  (replace-regexp-in-string
+                   "\\W+" "-" maybe-url))
+                 ".png"))
+               (relative-filepath
+                (concat
+                 (file-name-as-directory relative-img-directory)
+                 filename))
+               (target-filepath
+                (concat
+                 (file-name-as-directory *default-tiddler-directory*)
+                 relative-filepath)))
+          (make-directory
+           (concat
+            (file-name-as-directory *default-tiddler-directory*)
+            (file-name-as-directory relative-img-directory))
+           :allow-recreate)
+          (shell-command (concat
+                          "PDIR=$(mktemp -d --suffix=-firefox-temp) || exit;"
+                          "firefox --profile $PDIR --window-size 1000,600 --screenshot "
+                          target-filepath " " maybe-url ";"
+                          "rmdir $PDIR;"))
+          (save-excursion
+            (end-of-line)
+            (newline-and-indent)
+            (insert (format "[[file:%s]]" relative-filepath)))))))
 #+END_SRC
 
 * filesync (sync.el)
