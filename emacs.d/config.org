@@ -1371,6 +1371,25 @@ https://emacs.stackexchange.com/a/35904
             (end-of-line)
             (newline-and-indent)
             (insert (format "[[file:%s]]" relative-filepath)))))))
+
+  (defun save-clipboard-into-tiddler-directory ()
+    (interactive)
+    (let* ((relative-filepath
+            (format-time-string
+             "img/%Y/%m/%d/%H.%M.%S-screenshot.png"))
+           (target-filepath
+            (concat
+             (file-name-as-directory *default-tiddler-directory*)
+             relative-filepath)))
+      (make-directory
+       (file-name-directory target-filepath)
+       :allow-recreate)
+      (shell-command
+       (format
+        "xclip -selection clipboard -t image/png -o > '%s'"
+        target-filepath))
+      (save-excursion
+        (insert (format "[[file:%s]]" relative-filepath)))))
 #+END_SRC
 
 * filesync (sync.el)
@@ -1694,7 +1713,21 @@ https://emacs.stackexchange.com/a/35904
       (revert-buffer nil t))
   #+END_SRC
 
+  #+begin_src emacs-lisp
+    (defun remove-all-text-properties-in-buffer ()
+      ;; https://emacs.stackexchange.com/a/12527
+      (interactive)
+      (let ((inhibit-read-only t))
+        (set-text-properties (point-min) (point-max) nil)))
 
+    (defun copy-path-of-current-file-to-clipboard ()
+      (interactive)
+      (kill-new buffer-file-name))
+
+    (defun copy-path-of-current-directory-to-clipboard ()
+      (interactive)
+      (kill-new default-directory))
+  #+end_src
 
 * org interaction + util (from util.el)
 
