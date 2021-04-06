@@ -3,3 +3,8 @@
 # get store path of a package
 nix eval nixpkgs.<package>.outPath
 
+# show where a nix package is on disk
+nix eval nixpkgs.<package-name>.outPath
+
+# show package derivation eval out
+nix show-derivation nixpkgs.<package-name> | jq '. | to_entries[] | .value.env.out' -r
