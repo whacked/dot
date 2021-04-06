@@ -192,6 +192,13 @@
       (global-set-key (kbd "C-` L") (lambda () (interactive) (move-to-window-line-top-bottom -1)))
     #+END_SRC
 
+*** guide key
+
+    #+begin_src emacs-lisp
+    (setq guide-key/guide-key-sequence '("C-x r"))
+    (setq guide-key/highlight-command-regexp "rectangle")
+    #+end_src
+
 
 
 * specific init
@@ -269,6 +276,7 @@
    calfw
    calfw-org
    color-theme
+   company
 
    csv-mode ;; in elpa, not melpa
    dash
@@ -280,9 +288,11 @@
    elscreen
    esqlite
    eyebrowse
+   free-keys  ;; show what keys are available for binding; cf describe-personal-keybindings() from use-package
    fic-mode ;; to highlight TODO FIXME BUG etc
    find-file-in-project
    git-timemachine
+   guide-key
    ;; google-this
 
    helm
