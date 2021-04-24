@@ -270,13 +270,15 @@
 
 #+BEGIN_SRC emacs-lisp
   (local--load-packages
+   ace-window  ;; switch to window by numbered target labels
    async ;; https://github.com/jwiegley/emacs-async
    auto-complete
-   
+
    calfw
    calfw-org
    color-theme
    company
+   counsel  ;; counsel-buffer-or-recentf etc
 
    csv-mode ;; in elpa, not melpa
    dash
@@ -284,8 +286,10 @@
    deft
    diff-hl
    dirtree
+   dumb-jump  ;; config-less M-. (xref-find-definitions)
    editorconfig
    elscreen
+   ereader  ;; .epub reader (somewhat stale)
    esqlite
    eyebrowse
    free-keys  ;; show what keys are available for binding; cf describe-personal-keybindings() from use-package
