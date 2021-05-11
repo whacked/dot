@@ -38,7 +38,7 @@ The SongList.csv will be saved in the vlc user director which can be found in th
 FileName = "SongList.csv"
 SongTrackerFile = ""
 -- Default header for the csv file
-FileHeader = "Date,Time,Title,Artist,Album,NowPlaying,Genre,Comments,Location\n"
+FileHeader = "Date,Time,Status,Title,Artist,Album,NowPlaying,Genre,Comments,Location\n"
 -- CSV field separator
 CSV_FS = ","--"|"
 -- maintain lastsong played
@@ -76,11 +76,11 @@ end
 
 -- Triggers
 function input_changed()
-  vlc.msg.dbg("[VLC Song Tracker] Input Changed")
+  vlc.msg.dbg("[VLC Song Tracker] Input Changed to " .. vlc.playlist.status())
   update_song_Tracker()
 end
 function meta_changed()
-  vlc.msg.dbg("[VLC Song Tracker] Meta Changed")
+  vlc.msg.dbg("[VLC Song Tracker] Meta Changed to " .. vlc.playlist.status())
   update_song_Tracker()
 end
 
@@ -114,12 +114,30 @@ function init()
   end
 end
 
+-- debug helper
+function dump(o)
+   if type(o) == 'table' then
+      local s = '{ '
+      for k,v in pairs(o) do
+         if type(k) ~= 'number' then k = '"'..k..'"' end
+         s = s .. '['..k..'] = ' .. dump(v) .. ','
+      end
+      return s .. '} '
+   else
+      return tostring(o)
+   end
+end
+
 -- Update Tracker
 function update_song_Tracker()
   vlc.msg.dbg("[VLC Song Tracker] Update Song Tracker!")
-  if vlc.input.is_playing() then
-    local item = vlc.item or vlc.input.item()
-    if item then
+  local status = vlc.playlist.status()
+  local date = os.date("%Y-%m-%d")
+  local time = os.date("%H:%M:%S")
+  vlc.msg.dbg("[VLC Song Tracker] Status: " .. status .. " at " .. date .. time)
+
+  local item = vlc.item or vlc.input.item()
+  if item then
       local meta = item:metas()
       --Check Meta tags
       if meta then
@@ -153,6 +171,12 @@ function update_song_Tracker()
           genre = ""
         end
 
+        --original Url
+        local original_url = meta["url"]
+        if original_url == nil then
+          original_url = ""
+        end
+  
         --Description
         local description = meta["description"]
         if description == nil then
@@ -167,7 +191,9 @@ function update_song_Tracker()
         local uri = item:uri()
 
         -- Combine Song Info Together
-        local songinfo = title .. CSV_FS .. artist .. CSV_FS .. album .. CSV_FS .. now_playing .. CSV_FS .. genre .. CSV_FS .. description .. CSV_FS .. uri
+        -- original version
+        -- local songinfo = title .. CSV_FS .. artist .. CSV_FS .. album .. CSV_FS .. now_playing .. CSV_FS .. genre .. CSV_FS .. description .. CSV_FS .. uri
+        local songinfo = status .. CSV_FS .. title .. CSV_FS .. artist .. CSV_FS .. album .. CSV_FS .. now_playing .. CSV_FS .. genre .. CSV_FS .. original_url
 
         -- Check if the song was previously played
         if lastsong == songinfo then
@@ -177,9 +203,6 @@ function update_song_Tracker()
           -- New Song Detected
           -- Update last song captured
           lastsong = songinfo
-          -- Date & Time
-          local date = os.date("%d/%m/%Y")
-          local time = os.date("%H:%M:%S")
 
           -- Add time stamp with the song info
           local info = date .. CSV_FS .. time .. CSV_FS .. songinfo
@@ -187,13 +210,12 @@ function update_song_Tracker()
           return true
         end
       end
-    end
   end
 end
 
 -- Write File
 function write_file(info)
-  vlc.msg.dbg("[VLC Song Tracker] Write File!")
+  vlc.msg.dbg("[VLC Song Tracker] Write File! Using info: " .. info)
   local file = io.open(SongTrackerFile, "a")
   file:write(info .. "\n")
   file:close()
