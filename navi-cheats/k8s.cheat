@@ -1,0 +1,5 @@
+% k8s, k3s, k3d, kubernetes, minikube
+
+# get nodePort for service
+kubectl get service <service-name> --output=jsonpath="{.spec.ports[0].nodePort}"   
+
