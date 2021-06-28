@@ -126,7 +126,32 @@ if [ -e ~/.xsh ]; then
 fi
 
 if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
-    source /etc/profile.d/vte.sh
+    _VTE_SH_PATH=/etc/profile.d/vte.sh
+    if [ ! -e $_VTE_SH_PATH ]; then
+        _VTE_SOURCE_CANDIDATE=$(find /etc/profile.d -name 'vte*.sh' | head -1)
+        if [ "x$_VTE_SOURCE_CANDIDATE" != "x" ]; then
+            echo "found candidate vte.sh in $_VTE_SOURCE_CANDIDATE; symlink it?"
+            read confirm
+            case $confirm in
+                y)
+                    set -x
+                    sudo ln -s $_VTE_SOURCE_CANDIDATE $_VTE_SH_PATH
+                    set +x
+                    ;;
+                *)
+                    echo "doing nothing"
+                    ;;
+            esac
+                
+        fi
+        unset confirm _VTE_SOURCE_CANDIDATE
+    fi
+    if [ -e $_VTE_SH_PATH ]; then
+        source $_VTE_SH_PATH
+    else
+        echo "WARN: no vte.sh found in $_VTE_SH_PATH"
+    fi
+    unset _VTE_SH_PATH
 fi
 
 if type direnv &>/dev/null; then
