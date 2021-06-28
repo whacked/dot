@@ -16,7 +16,7 @@ if type nix-channel &> /dev/null; then
         echo "installing home-manager..."
         nix-channel --add https://github.com/rycee/home-manager/archive/master.tar.gz home-manager
         nix-channel --update
-        nix-shell '<home-manager>' -A install
+        TMPDIR=/tmp nix-shell '<home-manager>' -A install
     fi
     echo "prepare home-manager by running 'home-manager switch'"
 fi
