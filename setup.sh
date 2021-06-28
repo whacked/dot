@@ -31,8 +31,13 @@ for DOTFILENAME in emacs.d vimrc vim tmux.conf bashrc Rprofile zshrc zsh boot.pr
     fi
 
     if [ ! -e $DOTTARGET ]; then
-        echo symlinking ~/dot/$DOTFILENAME to $DOTTARGET...
-        ln -sf ~/dot/$DOTFILENAME $DOTTARGET
+        DOTSOURCE=~/dot/$DOTFILENAME
+        echo symlinking $DOTSOURCE to $DOTTARGET...
+        if [ ! -e $DOTSOURCE ]; then
+            echo "WARN: $DOTSOURCE does not exist; assuming it should be a directory"
+            mkdir $DOTSOURCE
+        fi
+        ln -sf $DOTSOURCE $DOTTARGET
     fi
 done
 
