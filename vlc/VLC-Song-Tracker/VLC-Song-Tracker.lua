@@ -99,8 +99,15 @@ function init()
     vlc.msg.dbg("[VLC Song Tracker] OS Detected: Linux/Unix")
     slash = "/"
   end
-  
-  SongTrackerFile = vlc.config.userdatadir() .. slash .. FileName
+
+  local customDirectory = os.getenv("VLC_SONG_TRACKER_FILE_DIRECTORY")
+  if customDirectory ~= nil and customDirectory ~= '' and os.execute(('[ -d "%s" ]'):format(customDirectory)) then
+    vlc.msg.dbg("[VLC Song Tracker] found custom output directory at " .. customDirectory)
+    SongTrackerFile = customDirectory .. slash .. FileName
+  else
+    SongTrackerFile = vlc.config.userdatadir() .. slash .. FileName
+  end
+
   vlc.msg.dbg("[VLC Song Tracker] Song Tracker File: " .. SongTrackerFile)
   -- Check if the file exist
   local file = io.open(SongTrackerFile,"r")
@@ -193,7 +200,7 @@ function update_song_Tracker()
         -- Combine Song Info Together
         -- original version
         -- local songinfo = title .. CSV_FS .. artist .. CSV_FS .. album .. CSV_FS .. now_playing .. CSV_FS .. genre .. CSV_FS .. description .. CSV_FS .. uri
-        local songinfo = status .. CSV_FS .. title .. CSV_FS .. artist .. CSV_FS .. album .. CSV_FS .. now_playing .. CSV_FS .. genre .. CSV_FS .. original_url
+        local songinfo = status .. CSV_FS .. '"' .. title .. '"' .. CSV_FS .. '"' .. artist .. '"' .. CSV_FS .. '"' .. album .. '"' .. CSV_FS .. '"' .. now_playing .. '"' .. CSV_FS .. '"' .. genre .. '"' .. CSV_FS .. original_url .. CSV_FS .. '"' .. description .. '"'
 
         -- Check if the song was previously played
         if lastsong == songinfo then
