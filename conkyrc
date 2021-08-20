@@ -28,7 +28,7 @@ conky.config = {
     out_to_x = true,
     own_window = true,
     own_window_class = 'Conky',
-    own_window_type = 'desktop',
+    -- own_window_type = 'panel',  # use this in gnome
     show_graph_range = false,
     show_graph_scale = false,
     stippled_borders = 0,
@@ -55,12 +55,13 @@ ${voffset 10}${font DejaVu Sans Mono:size=12}${color 999}${execpi 60 DJS=`date +
 # - CPU, RAM - #
 ################
 ${voffset 0}${font Consolas:style=Bold:size=8}SYSTEM $stippled_hr${font}
-${color2}BAT: ${execp acpi | cut -f 3- -d ' ' | head -c 24}${font}${color}
+${color skyblue}BAT: ${execp acpi | head -1 | cut -f 3- -d ' ' | head -c 24}${font}${color}
+${color turquoise}TMP: ${execp i8kctl temp}${font}${color}
 ${color grey}UPT:$color $uptime
 ## this slows down conky startup
 ##${color grey}CPU:$color $freq MHz
 ##${color grey}    $color ${if_match $cpu<10} ${endif}$cpu% ${cpubar 4}
-${color grey}RAM:$color $mem/$memmax 
+${color red}RAM: $mem/$memmax $color
 ${color grey}    $color ${if_match $memperc<10} ${endif}$memperc% ${membar 4}
 ############
 # - DISK - #
