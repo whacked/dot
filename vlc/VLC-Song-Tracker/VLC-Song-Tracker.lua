@@ -148,6 +148,7 @@ function update_song_Tracker()
       local meta = item:metas()
       --Check Meta tags
       if meta then
+          vlc.msg.dbg('META', dump(meta))
         --Title
         local title = meta["title"]
         if title == nil then
@@ -181,7 +182,7 @@ function update_song_Tracker()
         --original Url
         local original_url = meta["url"]
         if original_url == nil then
-          original_url = ""
+          original_url = meta["filename"] or ""
         end
   
         --Description
