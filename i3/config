@@ -91,7 +91,8 @@ set_from_resource $ws10_key i3-wm.workspace.10.key 0
 
 ## Launch // Terminal // <> Enter ##
 set_from_resource $i3-wm.binding.terminal i3-wm.binding.terminal Return
-bindsym $mod+$i3-wm.binding.terminal exec /usr/bin/x-terminal-emulator
+# bindsym $mod+$i3-wm.binding.terminal exec /usr/bin/x-terminal-emulator
+bindsym $mod+$i3-wm.binding.terminal exec terminator
 
 ## Launch // Browser // <><Shift> Enter ##
 set_from_resource $i3-wm.binding.browser i3-wm.binding.browser Shift+Return
@@ -134,11 +135,13 @@ bindsym $mod+$i3-wm.binding.look_selector exec $i3-wm.program.look_selector
 ###############################################################################
 
 ## Navigate // Relative Parent // <> a ##/
-set_from_resource $i3-wm.binding.focus_parent i3-wm.binding.focus_parent a
+# set_from_resource $i3-wm.binding.focus_parent i3-wm.binding.focus_parent a
+set_from_resource $i3-wm.binding.focus_parent i3-wm.binding.focus_parent Shift+a
 bindsym $mod+$i3-wm.binding.focus_parent focus parent
 
 ## Navigate // Relative Child // <> z ##/
-set_from_resource $i3-wm.binding.focus_child i3-wm.binding.focus_child z
+# set_from_resource $i3-wm.binding.focus_child i3-wm.binding.focus_child z
+set_from_resource $i3-wm.binding.focus_child i3-wm.binding.focus_child Shift+z
 bindsym $mod+$i3-wm.binding.focus_child focus child
 
 ## Navigate // Relative Window // <> ↑ ↓ ← → ##
@@ -417,9 +420,9 @@ set_from_resource $i3-wm.program.display i3-wm.program.display gnome-control-cen
 bindsym $mod+$i3-wm.binding.display exec $i3-wm.program.display
 
 ## Modify // Wifi Settings // <> w ##
-set_from_resource $i3-wm.binding.wifi i3-wm.binding.wifi w
-set_from_resource $i3-wm.program.wifi i3-wm.program.wifi gnome-control-center --class=floating_window wifi
-bindsym $mod+$i3-wm.binding.wifi exec $i3-wm.program.wifi
+# set_from_resource $i3-wm.binding.wifi i3-wm.binding.wifi w
+# set_from_resource $i3-wm.program.wifi i3-wm.program.wifi gnome-control-center --class=floating_window wifi
+# bindsym $mod+$i3-wm.binding.wifi exec $i3-wm.program.wifi
 
 ## Modify // Bluetooth Settings // <> b ##
 set_from_resource $i3-wm.binding.bluetooth i3-wm.binding.bluetooth b
@@ -427,9 +430,9 @@ set_from_resource $i3-wm.program.bluetooth i3-wm.program.bluetooth gnome-control
 bindsym $mod+$i3-wm.binding.bluetooth exec $i3-wm.program.bluetooth
 
 ## Modify // Sound Settings // <> s ##
-set_from_resource $i3-wm.binding.sound i3-wm.binding.sound s
-set_from_resource $i3-wm.program.sound i3-wm.program.sound gnome-control-center --class=floating_window sound
-bindsym $mod+$i3-wm.binding.sound exec $i3-wm.program.sound
+# set_from_resource $i3-wm.binding.sound i3-wm.binding.sound s
+# set_from_resource $i3-wm.program.sound i3-wm.program.sound gnome-control-center --class=floating_window sound
+# bindsym $mod+$i3-wm.binding.sound exec $i3-wm.program.sound
 
 ## Launch // File Browser // <><Shift> n ##
 set_from_resource $i3-wm.binding.files i3-wm.binding.files Shift+n
@@ -525,7 +528,7 @@ default_border pixel $i3-wm.window.border.size
 default_floating_border pixel $i3-wm.floatingwindow.border.size
 
 # Specify the distance between windows in pixels. (i3-gaps)
-set_from_resource $i3-wm.gaps.inner.size i3-wm.gaps.inner.size 5
+set_from_resource $i3-wm.gaps.inner.size i3-wm.gaps.inner.size 2
 set_from_resource $i3-wm.gaps.outer.size i3-wm.gaps.outer.size 0
 gaps inner $i3-wm.gaps.inner.size
 gaps outer $i3-wm.gaps.outer.size
@@ -547,7 +550,7 @@ focus_follows_mouse $i3-wm.gaps.focus_follows_mouse
 ###############################################################################
 
 # Create variables from Xresources for i3's look.
-set_from_resource $focused.color.border i3-wm.client.focused.color.border "#002b36"
+set_from_resource $focused.color.border i3-wm.client.focused.color.border "#ff0000"
 set_from_resource $focused.color.background i3-wm.client.focused.color.background "#586e75"
 set_from_resource $focused.color.text i3-wm.client.focused.color.text "#fdf6e3"
 set_from_resource $focused.color.indicator i3-wm.client.focused.color.indicator "#268bd2"
@@ -584,7 +587,7 @@ set_from_resource $i3-wm.bar.background.color i3-wm.bar.background.color "#002b3
 set_from_resource $i3-wm.bar.statusline.color i3-wm.bar.statusline.color "#93a1a1"
 set_from_resource $i3-wm.bar.separator.color i3-wm.bar.separator.color "#268bd2"
 
-set_from_resource $i3-wm.bar.workspace.focused.border.color i3-wm.bar.workspace.focused.border.color "#073642"
+set_from_resource $i3-wm.bar.workspace.focused.border.color i3-wm.bar.workspace.focused.border.color "#0000ff"
 set_from_resource $i3-wm.bar.workspace.focused.background.color i3-wm.bar.workspace.focused.background.color "#073642"
 set_from_resource $i3-wm.bar.workspace.focused.text.color i3-wm.bar.workspace.focused.text.color "#eee8d5"
 
@@ -613,7 +616,8 @@ set_from_resource $i3-wm.bar.font i3-wm.bar.font pango:Source Code Pro Medium 13
 set_from_resource $i3-wm.bar.separator i3-wm.bar.separator " "
 set_from_resource $i3-wm.bar.trayoutput i3-wm.bar.trayoutput primary
 set_from_resource $i3-wm.bar.stripworkspacenumbers i3-wm.bar.stripworkspacenumbers yes
-set_from_resource $i3-wm.bar.mode i3-wm.bar.mode dock
+# set_from_resource $i3-wm.bar.mode i3-wm.bar.mode dock
+set_from_resource $i3-wm.bar.mode i3-wm.bar.mode hide
 
 # i3xrocks config file. Override this for a custom status bar generator.
 set_from_resource $i3-wm.bar.status_command i3-wm.bar.status_command i3xrocks -u ~/.config/regolith/i3xrocks/conf.d -d /etc/regolith/i3xrocks/conf.d
@@ -674,3 +678,24 @@ set_from_resource $i3-wm.program.2 i3-wm.program.2 :
 exec --no-startup-id $i3-wm.program.2
 set_from_resource $i3-wm.program.3 i3-wm.program.3 :
 exec --no-startup-id $i3-wm.program.3
+
+
+# LOCAL CUSTOMIZATION
+
+focus_follows_mouse yes
+# bindsym $mod+x execbash -c "if pgrep conky; then pkill conky; else conky -m 0 -c /home/natto/dot/conkyrc; fi" &
+for_window [class="Conky"] floating enable
+bindsym $mod+x exec --no-startup-id ~/dot/toggle-conky.sh
+
+
+bindsym $mod+z workspace back_and_forth
+
+# move focused workspace between monitors
+bindsym $mod+Shift+greater move workspace to output left
+bindsym $mod+Shift+less move workspace to output right
+
+bindsym $mod+Control+Left focus output left
+bindsym $mod+Control+Right focus output right
+
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
