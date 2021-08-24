@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
-MONITOR_NUMBER=0
+EDP1_MONITOR_NUMBER=$(xrandr --listactivemonitors | grep eDP-1 | cut -d: -f1)
 MOUSE_X=$(xdotool getmouselocation --shell | grep X= | cut -d= -f2)
 if [ $MOUSE_X -gt 1920 ]; then
-    MONITOR_NUMBER=1
+    MONITOR_NUMBER=$((1 - $EDP1_MONITOR_NUMBER))
+else
+    MONITOR_NUMBER=$EDP1_MONITOR_NUMBER
 fi
 
 if pgrep conky; then
