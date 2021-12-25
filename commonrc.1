@@ -164,3 +164,12 @@ export KITTY_CONFIG_DIRECTORY=$HOME/dot/kitty
 if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
     export SSH_AUTH_SOCK=$HOME/.ssh/ssh_auth_sock
 fi
+
+slugify() {
+    # https://gist.github.com/oneohthree/f528c7ae1e701ad990e6
+    sed -r 's/[^a-zA-Z0-9]+/-/g' | sed -r s/^-+\|-+$//g | tr A-Z a-z
+}
+
+tslugify() {
+    echo "$(date +%F_%H%M%S_%Z)_$(cat|slugify)"
+}
