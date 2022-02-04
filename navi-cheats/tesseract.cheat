@@ -1,0 +1,4 @@
+% k8s, k3s, k3d, kubernetes, minikube
+
+# ocr text from japanese source
+tesseract <input-image-file> <output-text-file-without-extension> -l jpn

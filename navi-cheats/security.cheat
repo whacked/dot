@@ -1,0 +1,4 @@
+% security software
+
+# mount a truecrypt volume
+veracrypt --truecrypt --mount <path-to-volume>

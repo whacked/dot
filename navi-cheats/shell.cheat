@@ -1,0 +1,4 @@
+% shell
+
+# delete broken symlinks
+find . -maxdepth 1 -xtype l -delete

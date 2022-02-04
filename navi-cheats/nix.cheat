@@ -8,3 +8,9 @@ nix eval nixpkgs.<package-name>.outPath
 
 # show package derivation eval out
 nix show-derivation nixpkgs.<package-name> | jq '. | to_entries[] | .value.env.out' -r
+
+# nix shell to specific repo/package (see https://gist.github.com/davidak/171f81f945f36d7fd88dce4e67af8a5d)
+nix-shell -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/refs/tags/20.03.tar.gz -p <package-attribute-name>
+
+# nix shell for blender 2.82a
+nix-shell -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/refs/tags/20.03.tar.gz -p blender

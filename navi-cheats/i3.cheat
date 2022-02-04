@@ -1,0 +1,4 @@
+% i3
+
+# move even numbered workspaces to monitor right
+for i in 2 4 6 8 0; do i3-msg "[workspace=$i], move workspace to output DP-3"; done
