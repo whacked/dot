@@ -173,3 +173,7 @@ slugify() {
 tslugify() {
     echo "$(date +%F_%H%M%S_%Z)_$(cat|slugify)"
 }
+
+alias ls='lsd'
+
+export RIPGREP_CONFIG_PATH=$HOME/dot/ripgreprc
