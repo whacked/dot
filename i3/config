@@ -528,7 +528,7 @@ default_border pixel $i3-wm.window.border.size
 default_floating_border pixel $i3-wm.floatingwindow.border.size
 
 # Specify the distance between windows in pixels. (i3-gaps)
-set_from_resource $i3-wm.gaps.inner.size i3-wm.gaps.inner.size 2
+set_from_resource $i3-wm.gaps.inner.size i3-wm.gaps.inner.size 1
 set_from_resource $i3-wm.gaps.outer.size i3-wm.gaps.outer.size 0
 gaps inner $i3-wm.gaps.inner.size
 gaps outer $i3-wm.gaps.outer.size
@@ -604,7 +604,7 @@ set_from_resource $i3-wm.bar.workspace.urgent.background.color i3-wm.bar.workspa
 set_from_resource $i3-wm.bar.workspace.urgent.text.color i3-wm.bar.workspace.urgent.text.color "#fdf6e3"
 
 # Sets i3 font for dialogs
-set_from_resource $i3-wm.font i3-wm.font pango:Source Code Pro Medium 13
+set_from_resource $i3-wm.font i3-wm.font pango:Source Code Pro Medium 12
 font $i3-wm.font
 
 ###############################################################################
@@ -612,7 +612,7 @@ font $i3-wm.font
 ###############################################################################
 
 set_from_resource $i3-wm.bar.position i3-wm.bar.position bottom
-set_from_resource $i3-wm.bar.font i3-wm.bar.font pango:Source Code Pro Medium 13, Material Design Icons 13
+set_from_resource $i3-wm.bar.font i3-wm.bar.font pango:Source Code Pro Medium 12, Material Design Icons 12
 set_from_resource $i3-wm.bar.separator i3-wm.bar.separator " "
 set_from_resource $i3-wm.bar.trayoutput i3-wm.bar.trayoutput primary
 set_from_resource $i3-wm.bar.stripworkspacenumbers i3-wm.bar.stripworkspacenumbers yes
