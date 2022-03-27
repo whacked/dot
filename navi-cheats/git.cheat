@@ -1,0 +1,7 @@
+% git
+
+# find string in all files in all commits in repository
+git log --all --patch -S "<string>"
+
+# find string in all commit logs in repository history
+git log --all --grep="<string>"

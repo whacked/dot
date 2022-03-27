@@ -1,0 +1,4 @@
+% data transfer related ops
+
+# run ad-hoc ftp server
+nix-shell -p python39Packages.pyftpdlib --run 'python -m pyftpdlib -w'
