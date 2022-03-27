@@ -56,3 +56,5 @@ vim/autoload/plug.vim
 
 lein/repl-history
 lein/self-installs/*.jar
+
+emacs.d/emojis
