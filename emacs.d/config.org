@@ -2178,3 +2178,47 @@ https://emacs.stackexchange.com/a/35904
   #+begin_src emacs-lisp
     (define-key global-map (kbd "<f12>") 'dumb-jump-go)
   #+end_src
+* mardown fence code eval via org-babel
+
+  #+begin_src emacs-lisp
+    (defun markdown-eval-current-code-block ()
+      (interactive)
+      (save-excursion
+        (forward-paragraph)
+        (let ((start (progn
+                       (backward-paragraph)
+                       (point))))
+          (forward-paragraph)
+          (let ((region-string
+                 (s-trim (buffer-substring start (point)))))
+            (when (and (s-starts-with? "```" region-string)
+                       (s-ends-with? "\n```" region-string))
+              (let* ((split-1 (s-split-up-to
+                               "\n"
+                               (substring region-string
+                                          0
+                                          (- (length region-string) 4))
+                               1))
+                     (language (substring (car split-1) 3))
+                     (code-body (cadr split-1)))
+                (cond ((string= language "sh")
+                       (insert
+                        (format "```\n%s\n```"
+                                (org-babel-sh-evaluate
+                                 nil ;; session
+                                 code-body
+                                 ;; params
+                                 '((:colname-names)
+                                   (:rowname-names)
+                                   (:result-params . ("replace" "output"))
+                                   (:result-type . "output")
+                                   (:exports . code)
+                                   (:session . none)
+                                   (:cache . no)
+                                   (:noweb . no)
+                                   (:hlines . no)
+                                   (:tangle . no))))))
+                      (t (progn
+                           (message "cannot process"))))))))))
+  #+end_src
+
