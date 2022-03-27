@@ -46,6 +46,8 @@ Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
 Plug 'LnL7/vim-nix'
 Plug 'hashivim/vim-terraform'
 Plug 'jeetsukumaran/vim-buffergator'
+Plug 'chrisbra/matchit'
+Plug 'TovarishFin/vim-solidity'
 
 call plug#end()
 " </vim-plug>
