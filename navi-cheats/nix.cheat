@@ -14,3 +14,6 @@ nix-shell -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/refs/tags/20.03.ta
 
 # nix shell for blender 2.82a
 nix-shell -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/refs/tags/20.03.tar.gz -p blender
+
+# get nix sha256 hash for a file
+nix-hash --flat --base32 --type sha256 <file-path>
