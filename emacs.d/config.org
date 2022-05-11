@@ -35,10 +35,10 @@
 #+END_SRC
 
 ** package initialization
-   
+
    remember if you update =package-archives= you must run
    =M-x el-get-elpa-build-local-recipes= to refresh the list
-   
+
    #+BEGIN_SRC emacs-lisp
      ;; package management
      (setq package-archives '(
@@ -99,7 +99,7 @@
    #+END_SRC
 
 ** UI defaults
-   
+
    #+BEGIN_SRC emacs-lisp
      (setq-default inhibit-splash-screen t
                    ibuffer-fontification-alist (quote ((10 buffer-read-only font-lock-constant-face) (15 (and buffer-file-name (string-match ibuffer-compressed-file-name-regexp buffer-file-name)) font-lock-doc-face) (20 (string-match "^*" (buffer-name)) font-lock-keyword-face) (25 (and (string-match "^ " (buffer-name)) (null buffer-file-name)) italic) (30 (memq major-mode ibuffer-help-buffer-modes) font-lock-comment-face) (35 (eq major-mode (quote dired-mode)) font-lock-function-name-face) (40 (string-match ".py" (buffer-name)) font-lock-type-face) (45 (string-match ".rb" (buffer-name)) font-lock-string-face) (50 (string-match ".org" (buffer-name)) font-lock-preprocessor-face)))
@@ -183,7 +183,7 @@
       (define-key my-keys-minor-mode-map [s-up] 'windmove-up)
       (define-key my-keys-minor-mode-map [s-down] 'windmove-down)
     #+END_SRC
-   
+
 *** vim-like movement keys
 
     #+BEGIN_SRC emacs-lisp
@@ -224,7 +224,7 @@
           ;; for macports
           (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH")))
           (setq exec-path (append exec-path '("/opt/local/bin:/opt/local/sbin:")))
-  
+
           ;; turn apple key into Meta
           (setq ns-command-modifier 'meta)
           (if (eq window-system 'mac) (require 'carbon-font))
@@ -312,18 +312,17 @@
    ibuffer-vc
    iedit
    ivy
-   
    json-mode
    jsonnet-mode
    jsonl
    lsp-mode
-   
    magit
    multiple-cursors
    muse
    navi-mode
    neotree
    nix-mode
+
    ;; org-brain  ;; haven't used for long
    org-download
    org-noter
@@ -514,7 +513,7 @@
 ** win-switch
 
    allows repeated =other-window= via =C-x o o o ...=
-    
+
    #+BEGIN_SRC emacs-lisp
      (use-package win-switch
        :ensure t
@@ -661,7 +660,7 @@
  #+END_SRC
 
 *** apply packages
-    
+
  #+BEGIN_SRC emacs-lisp
    ;; install the missing packages
    (dolist (package package-list)
@@ -983,7 +982,7 @@
  #+END_SRC
 
 *** re-enable org-tempo
-    
+
     this enables shortcut expansions like "<s<TAB>". it is off by default since org 9.2
 
     #+begin_src emacs-lisp
@@ -1127,7 +1126,7 @@ https://emacs.stackexchange.com/a/35904
           (result-params (assoc :result-params code-block-params)))
       (if (and (equal timestamp "t") (> (length code-block-name) 0))
           (save-excursion
-            (search-forward-regexp (concat "#\\+RESULTS\\(\\[.*\\]\\)?: " 
+            (search-forward-regexp (concat "#\\+RESULTS\\(\\[.*\\]\\)?: "
                                            code-block-name))
             (beginning-of-line)
             (search-forward "RESULTS")
@@ -1435,7 +1434,7 @@ https://emacs.stackexchange.com/a/35904
               (revert-buffer nil t)
               (outline-show-all))
             (setq postsave-list (cdr postsave-list))))
-        
+
         (switch-to-buffer cur-buf)
         (goto-line current-line)))
 
@@ -1874,7 +1873,7 @@ https://emacs.stackexchange.com/a/35904
                           " ")))
                   (t
                    (list 'doi 'sconvert--dxdoi-to-org input-query-string)))
-          
+
           ;; need to re-bind into lexical scope
           (lexical-let* ((k2r key-to-retrieve)
                          (pfn postproc-fn)
@@ -2029,7 +2028,7 @@ https://emacs.stackexchange.com/a/35904
                   '((name . "matches")
                     (candidates . helm-note--get-matches)
                     (action . (("dummy" . helm-dummy)
-                               
+
                                ))))
         :buffer "*helm-note-search*"))
    #+END_SRC
@@ -2060,7 +2059,7 @@ https://emacs.stackexchange.com/a/35904
   #+END_SRC
 
 * assorted library customization
-  
+
 ** neotree
 
 *** yank full path key
@@ -2076,7 +2075,7 @@ https://emacs.stackexchange.com/a/35904
 * assorted fix
 
 ** freeze on yank
-   
+
    http://ergoemacs.org/misc/emacs_bug_cant_paste_2015.html
 
    =(setq x-selection-timeout 300)=
@@ -2084,11 +2083,11 @@ https://emacs.stackexchange.com/a/35904
 ** org mode CJK table alignment
 
    see http://coldnew.github.io/blog/2013/11-16_d2f3a/ 解決 org-mode 表格內中英文對齊的問題
-   
+
    #+BEGIN_SRC emacs-lisp
      (defvar emacs-cjk-font "Hiragino Sans GB W3"
        "The font name for CJK.")
-     
+
      (defvar emacs-font-size-pair '(13 . 16)
        "Default font size pair for (english . chinese)")
 
@@ -2255,4 +2254,10 @@ https://emacs.stackexchange.com/a/35904
                                "and a ':results output' argument.")))))))
   (ad-activate 'org-babel-execute-src-block)
 #+end_src
+
+* save hooks
+
+  #+begin_src emacs-lisp
+    (add-hook 'before-save-hook 'delete-trailing-whitespace)
+  #+end_src
 
