@@ -3,6 +3,16 @@
 # delete broken symlinks
 find . -maxdepth 1 -xtype l -delete
 
+# find files edited within the last 2 hours
+ find . -type f -mmin -120 \
+    ! -path './node_modules/*' \
+    ! -path './.git/*' \
+    ! -path './.shadow-cljs/*' \
+    ! -path './.clj-kondo/*' \
+    ! -path '*.js.map' \
+    ! -path '*/cljs-runtime/*' \
+    ! -path '*.swp'
+
 # find files edited within the last day
 find . -maxdepth 3 \
          -name node_modules -prune -o \
