@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # to bypass github ssl verify:
 # export GIT_SSL_NO_VERIFY=true; bash setup.sh
 # git config --global http.sslVerify false
@@ -20,10 +21,21 @@ if type nix-channel &> /dev/null; then
     fi
     echo "prepare home-manager by running 'home-manager switch'"
 fi
+
 # DOTFILES --------------------------------------------------------------
-for DOTFILENAME in emacs.d vimrc vim tmux.conf bashrc Rprofile zshrc zsh boot.profile lein subversion; do
+for DOTFILENAME in emacs.d emacs.d/gnus.el vimrc vim tmux.conf bashrc Rprofile zshrc zsh boot.profile lein subversion; do
     echo [[ processing ]] $DOTFILENAME...
-    DOTTARGET=~/.$DOTFILENAME
+
+    case $DOTFILENAME in
+        *gnus.el)
+            DOTTARGET=~/.gnus.el
+            ;;
+
+        *)
+            DOTTARGET=~/.$DOTFILENAME
+            ;;
+    esac
+
     if [ -e $DOTTARGET ] && [ ! -h $DOTTARGET ]; then
         BAK=~/$DOTFILENAME.`date +%F`
         echo -e "moving: .$DOTFILENAME\\t->\\t$BAK"
@@ -155,4 +167,9 @@ if [ ${#ZOTERO_FAILED_TESTS[@]} -gt 0 ]; then
 else
     echo "UPDATING Zotero profile settings at $ZOTEROHOME/$ZOTERO_PROFILEDIR/user.js"
     echo 'user_pref("extensions.zotero.dataDir", "'$ZOTERO_DATA_DIR'");' | tee $ZOTEROHOME/$ZOTERO_PROFILEDIR/user.js
+# GNUS ------------------------------------------------------------------
+GNUS_DATA_DIR=$CLOUDSYNC/main/appdata/Gnus
+if [ ! -e $GNUS_DATA_DIR ]; then
+    echo "creating Gnus directories at $GNUS_DATA_DIR"
+    mkdir -p $GNUS_DATA_DIR/{News,Mail}
 fi

@@ -288,6 +288,7 @@
    dirtree
    dumb-jump  ;; config-less M-. (xref-find-definitions)
    editorconfig
+   elfeed
    elscreen
    ereader  ;; .epub reader (somewhat stale)
    esqlite
@@ -304,7 +305,8 @@
    helm-org-rifle ;; https://github.com/alphapapa/helm-org-rifle
    helm-projectile
    helm-swoop
-   
+
+   hnreader
    htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
    hydra
    ibuffer-vc
@@ -2221,4 +2223,36 @@ https://emacs.stackexchange.com/a/35904
                       (t (progn
                            (message "cannot process"))))))))))
   #+end_src
+
+* org-mode modifications
+
+** add support for special links
+
+   #+begin_src emacs-lisp
+  (require 'ol-eww)  ;; [[eww:...]]
+   #+end_src
+
+** add timestamps to source blocks
+
+   ref https://emacs.stackexchange.com/a/35904
+
+#+begin_src emacs-lisp
+  (defadvice org-babel-execute-src-block (after org-babel-record-execute-timestamp)
+    (let ((code-block-params (nth 2 (org-babel-get-src-block-info)))
+          (code-block-name (nth 4 (org-babel-get-src-block-info))))
+      (let ((timestamp (cdr (assoc :timestamp code-block-params)))
+            (result-params (assoc :result-params code-block-params)))
+        (if (and (equal timestamp "t") (> (length code-block-name) 0))
+            (save-excursion
+              (search-forward-regexp (concat "#\\+RESULTS\\(\\[.*\\]\\)?: "
+                                             code-block-name))
+              (beginning-of-line)
+              (search-forward "RESULTS")
+              (kill-line)
+              (insert (concat (format-time-string "[%F %r]: ") code-block-name)))
+          (if (equal timestamp "t")
+              (message (concat "Result timestamping requires a #+NAME: "
+                               "and a ':results output' argument.")))))))
+  (ad-activate 'org-babel-execute-src-block)
+#+end_src
 
