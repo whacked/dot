@@ -264,6 +264,17 @@
          (org-babel-load-file user-login-name-org)))
    #+END_SRC
 
+** chemacs-profile
+
+   #+BEGIN_SRC emacs-lisp
+     (when (boundp 'chemacs-current-emacs-profile)
+       (let ((chemacs-profile-custom-file
+              (path-join user-emacs-directory
+                         "chemacs-profile-custom.el")))
+         (when (file-exists-p chemacs-profile-custom-file)
+           (load-file chemacs-profile-custom-file))))
+   #+END_SRC
+
 * package setup
 
 ** common
