@@ -2335,6 +2335,31 @@ https://emacs.stackexchange.com/a/35904
     (eval-after-load 'markdown '(define-key markdown-mode-map [(f5)] 'markdown-eval-current-code-block))
   #+end_src
 
+* text format conversion
+
+
+#+begin_src emacs-lisp
+  (defun js->json ()
+    (interactive)
+    (shell-command-on-region (region-beginning)
+                             (region-end)
+                             "node -e 'console.log(JSON.stringify(eval(require(\"fs\").readFileSync(0, \"utf-8\"))))'"
+                             (current-buffer)
+                             t))
+#+end_src
+
+** html to hiccup
+
+   #+begin_src emacs-lisp
+     (defun html->hiccup ()
+       (interactive)
+       (shell-command-on-region (region-beginning)
+                                (region-end)
+                                "bootleg -d -e '(html (slurp *in*) :data :hiccup-seq)'"
+                                (current-buffer)
+                                t))
+   #+end_src
+
 * org-mode modifications
 
 ** add support for special links
@@ -2373,3 +2398,13 @@ https://emacs.stackexchange.com/a/35904
     (add-hook 'before-save-hook 'delete-trailing-whitespace)
   #+end_src
 
+* emacs show emoji
+
+  ref https://ianyepan.github.io/posts/emacs-emojis/
+
+  #+begin_src emacs-lisp
+    ;; (dolist (x (font-family-list)) (insert (format "%s\n" x)))
+    (when (member "NotoEmoji Nerd Font Mono" (font-family-list))
+      (set-fontset-font
+        t 'symbol (font-spec :family "NotoEmoji Nerd Font Mono") nil 'prepend))
+  #+end_src
