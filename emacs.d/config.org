@@ -298,9 +298,11 @@
    diff-hl
    dirtree
    dumb-jump  ;; config-less M-. (xref-find-definitions)
+   duplicate-thing  ;; provides duplicate-thing (e.g. duplicate a line)
    editorconfig
    elfeed
    elscreen
+   emojify
    ereader  ;; .epub reader (somewhat stale)
    esqlite
    eyebrowse
@@ -313,6 +315,7 @@
    ;; google-this
 
    helm
+   helm-rg
    helm-org-rifle ;; https://github.com/alphapapa/helm-org-rifle
    helm-projectile
    helm-swoop
@@ -323,13 +326,20 @@
    ibuffer-vc
    iedit
    ivy
+   ivy-rich
+
    json-mode
    jsonnet-mode
    jsonl
+   jupyter
    lsp-mode
+   lsp-ui
+
    magit
+   mermaid-mode
    multiple-cursors
    muse
+   mustache
    navi-mode
    neotree
    nix-mode
@@ -348,6 +358,7 @@
    project-explorer
    projectile
    request
+   restclient
    quelpa
    s
    simple-httpd
@@ -602,6 +613,7 @@
                       markdown-mode
                       matlab-mode
                       ;; nxhtml
+                      ob-async ;; https://github.com/astahlman/ob-async
                       ob-go ;; https://github.com/pope/ob-go
                       ob-ipython ;; https://github.com/gregsexton/ob-ipython/
                       python-mode
@@ -824,11 +836,13 @@
  #+BEGIN_SRC emacs-lisp
    ;; force org-babel src edit to use same window instead of splitting
    (setq org-src-window-setup 'current-window)
+   (require 'jupyter)
    (org-babel-do-load-languages
     'org-babel-load-languages
     '((R . t)
       (python . t)
       (ledger . t)
+      (jupyter . t)  ;; emacs-jupyter
       (C . t)
       (lua . t)
       (gnuplot . t)
