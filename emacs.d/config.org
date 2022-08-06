@@ -2398,6 +2398,12 @@ https://emacs.stackexchange.com/a/35904
     (add-hook 'before-save-hook 'delete-trailing-whitespace)
   #+end_src
 
+* change emacs default open browser
+
+  #+begin_src emacs-lisp :eval never
+    (setq browse-url-browser-function 'browse-url-firefox)  ;; browse-url-chrome
+  #+end_src
+
 * emacs show emoji
 
   ref https://ianyepan.github.io/posts/emacs-emojis/
