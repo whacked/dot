@@ -17,3 +17,6 @@ nix-shell -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/refs/tags/20.03.ta
 
 # get nix sha256 hash for a file
 nix-hash --flat --base32 --type sha256 <file-path>
+
+# get store path of executable
+nix-store -r $(whcih <program-executable>)
