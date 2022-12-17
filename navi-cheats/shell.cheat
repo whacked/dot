@@ -3,7 +3,7 @@
 # delete broken symlinks
 find . -maxdepth 1 -xtype l -delete
 
-# find files edited within the last 2 hours
+# find recent files, edited within the last 2 hours
  find . -type f -mmin -120 \
     ! -path './node_modules/*' \
     ! -path './.git/*' \
@@ -13,9 +13,9 @@ find . -maxdepth 1 -xtype l -delete
     ! -path '*/cljs-runtime/*' \
     ! -path '*.swp'
 
-# find files edited within the last day
+# find recent files, edited within the last N days
 find . -maxdepth 3 \
          -name node_modules -prune -o \
          -name .git -prune -o \
-         -type f -mtime -1 -exec ls -gol --time-style=iso {} \; | sed 's|^[^ ]\+\? . [0-9]\+ ||'
+         -type f -mtime -<n> -exec ls -gol --time-style=iso {} \; | sed 's|^[^ ]\+\? . [0-9]\+ ||'
 
