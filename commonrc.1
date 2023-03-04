@@ -43,8 +43,6 @@ mkcd () {
     cd "$1"
 }
 
-eval "$(fasd --init auto)"
-
 for includedir in /usr/local/bin $HOME/opt/thinkpad $HOME/opt /opt $HOME/.cabal/bin $HOME/node_modules/bin; do
     if [ -e $includedir ]; then
         export PATH=$PATH:$includedir
@@ -108,6 +106,8 @@ if [ -e $NIX_SH_PATH ]; then
     . $NIX_SH_PATH;
     alias nsh=nix-shell
 fi
+
+eval "$(fasd --init auto)"
 
 
 ## keychain
