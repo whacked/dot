@@ -24,7 +24,7 @@
   (when (file-exists-p custom-file)
     (load custom-file))
 
-  (defun now (&optional return-date-only) (interactive "P") (message (format-time-string (if return-date-only "%Y-%m-%d" "%Y-%m-%d %H:%M:%S"))))
+  (defun now (&optional return-date-only) (interactive "P") (message (format-time-string (if return-date-only "%Y-%m-%d" "%Y-%m-%d %H:%M:%S%z"))))
   (defun insert-timestamp (&optional return-date-only)
     "Insert date at current cursor position in current active buffer"
     (interactive "P") (insert (now return-date-only)))
