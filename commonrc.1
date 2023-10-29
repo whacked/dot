@@ -43,8 +43,6 @@ mkcd () {
     cd "$1"
 }
 
-eval "$(fasd --init auto)"
-
 for includedir in /usr/local/bin $HOME/opt/thinkpad $HOME/opt /opt $HOME/.cabal/bin $HOME/node_modules/bin; do
     if [ -e $includedir ]; then
         export PATH=$PATH:$includedir
@@ -109,6 +107,8 @@ if [ -e $NIX_SH_PATH ]; then
     alias nsh=nix-shell
 fi
 
+eval "$(fasd --init auto)"
+
 
 ## keychain
 if type keychain &>/dev/null ; then
@@ -116,7 +116,12 @@ if type keychain &>/dev/null ; then
     # keychain --eval id_rsa
     # this from original bashrc
     # one of the methods is probably obsolete
-    keychain ~/.ssh/id_rsa
+    for candidate in id_ecdsa id_rsa id_ed25519; do
+        if [ -e ~/.ssh/$candidate ]; then
+            keychain ~/.ssh/$candidate
+            break
+        fi
+    done
     . ~/.keychain/`uname -n`-sh
 fi
 

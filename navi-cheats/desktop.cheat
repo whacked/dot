@@ -14,3 +14,6 @@ xprop -f _NET_WM_WINDOW_OPACITY 32c -set _NET_WM_WINDOW_OPACITY $(printf 0x%x $(
 
 # run color picker eyedropper
 nix-shell -p gcolor2 --run gcolor2
+
+# swaywm get state tree
+swaymsg -t get_tree

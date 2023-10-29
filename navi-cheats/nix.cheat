@@ -20,3 +20,6 @@ nix-hash --flat --base32 --type sha256 <file-path>
 
 # get store path of executable
 nix-store -r $(whcih <program-executable>)
+
+# run nix-shell with specific nixpkgs version
+nix-shell -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/refs/tags/20.09.tar.gz -p <p-args>

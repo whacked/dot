@@ -24,7 +24,7 @@
   (when (file-exists-p custom-file)
     (load custom-file))
 
-  (defun now (&optional return-date-only) (interactive "P") (message (format-time-string (if return-date-only "%Y-%m-%d" "%Y-%m-%d %H:%M:%S"))))
+  (defun now (&optional return-date-only) (interactive "P") (message (format-time-string (if return-date-only "%Y-%m-%d" "%Y-%m-%d %H:%M:%S%z"))))
   (defun insert-timestamp (&optional return-date-only)
     "Insert date at current cursor position in current active buffer"
     (interactive "P") (insert (now return-date-only)))
@@ -321,6 +321,7 @@
    helm-swoop
 
    hnreader
+   html-to-hiccup
    htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
    hydra
    ibuffer-vc
@@ -344,6 +345,7 @@
    neotree
    nix-mode
 
+   occur-x  ;; addition candidate: [k] to push a regex into an occur buffer; occur-x-undo-filter to clear
    ;; org-brain  ;; haven't used for long
    org-download
    org-noter
@@ -363,6 +365,7 @@
    s
    simple-httpd
    skewer-mode ;; js live repl https://github.com/skeeto/skewer-mode
+   slime
    solarized-theme
    spinner ;; spinner for ongoing operation
    sqlite
@@ -376,6 +379,7 @@
    typescript-mode
    undo-tree
    vterm
+   websocket
    ;; if win-switch works, remove this:
    ;; linkd ;; required for win-switch
    with-editor ;; dependency for magit
@@ -492,19 +496,6 @@
              (next-line)))))
       ;; (local-set-key (kbd "C-<return>") 'local--send-current-line-to-term)
     #+END_SRC
-
-** deft
-
-   #+BEGIN_SRC emacs-lisp
-     ;; in case useful: http://jblevins.org/projects/deft/
-     ;; Deft is an Emacs mode for quickly browsing, filtering, and editing directories of plain text notes, inspired by Notational Velocity.
-     (setq deft-extensions '("org" "tid")
-           deft-directory "~/note/org/"
-           deft-text-mode 'org-mode
-           deft-recursive t
-           deft-use-filename-as-title t
-           deft-ignore-file-regexp "\\$.+") ;; for ignoring special tiddlers
-   #+END_SRC
 
 ** fiplr (vim-like ctrl-p)
 
@@ -1422,6 +1413,19 @@ https://emacs.stackexchange.com/a/35904
       (save-excursion
         (insert (format "[[file:%s]]" relative-filepath)))))
 #+END_SRC
+
+* deft
+
+  #+BEGIN_SRC emacs-lisp
+    ;; in case useful: http://jblevins.org/projects/deft/
+    ;; Deft is an Emacs mode for quickly browsing, filtering, and editing directories of plain text notes, inspired by Notational Velocity.
+    (setq deft-extensions '("org" "tid")
+          deft-directory CLOUDSYNC-NOTE-DIR
+          deft-text-mode 'org-mode
+          deft-recursive t
+          deft-use-filename-as-title t
+          deft-ignore-file-regexp "\\$.+") ;; for ignoring special tiddlers
+  #+END_SRC
 
 * filesync (sync.el)
 
