@@ -1,0 +1,28 @@
+[init]
+    defaultBranch = main
+[core]
+    autocrlf = false
+    safecrlf = false
+[diff "gz"]
+    textconv = gzcat
+    binary = true
+[alias]
+    P = push
+    a = add
+    st = status -s
+    ci = commit
+    df = diff --color --color-words --abbrev
+    l = log --graph --pretty=oneline --abbrev-commit --decorate
+    lg   = log --pretty=oneline --abbrev-commit --graph --decorate --date=relative
+    lgt  = log --graph --pretty=format:'%Cred%h%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+    lgtt = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+    b = for-each-ref --sort=-committerdate refs/heads/ --format='%(authordate:short) %(color:red)%(objectname:short) %(color:yellow)%(refname:short)%(color:reset) (%(color:green)%(committerdate:relative)%(color:reset))'
+[pull]
+    rebase = true
+[user]
+    name = whacked-xps
+    email = whacked@users.noreply.github.com
+[cola]
+    spellcheck = false
+    hidpi = 1.5
+    theme = flat-dark-grey

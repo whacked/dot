@@ -23,7 +23,7 @@ if type nix-channel &> /dev/null; then
 fi
 
 # DOTFILES --------------------------------------------------------------
-for DOTFILENAME in emacs.d emacs.d/gnus.el vimrc vim tmux.conf bashrc Rprofile zshrc zsh boot.profile lein subversion; do
+for DOTFILENAME in emacs.d emacs.d/gnus.el gitconfig vimrc vim tmux.conf bashrc Rprofile zshrc zsh boot.profile lein subversion; do
     echo [[ processing ]] $DOTFILENAME...
 
     case $DOTFILENAME in
