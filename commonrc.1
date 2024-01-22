@@ -4,11 +4,11 @@ if [ -e $HOME/dot/commonrc.local ]; then
 fi
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000000
+export HISTSIZE=1000000
 # bash only
-HISTFILESIZE=1000000
+export HISTFILESIZE=1000000
 # zsh only
-SAVEHIST=1000000
+export SAVEHIST=1000000
 
 export TERM="xterm-256color"
 
@@ -107,7 +107,7 @@ if [ -e $NIX_SH_PATH ]; then
     alias nsh=nix-shell
 fi
 
-eval "$(fasd --init auto)"
+eval "$(zoxide init $(basename $SHELL))"
 
 
 ## keychain
