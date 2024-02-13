@@ -19,3 +19,8 @@ find . -maxdepth 3 \
          -name .git -prune -o \
          -type f -mtime -<n> -exec ls -gol --time-style=iso {} \; | sed 's|^[^ ]\+\? . [0-9]\+ ||'
 
+# take a screenshot of a region on screen
+nix-shell -p spectacle --run 'spectacle -rb -o <file-name>'
+
+# take wayland screenshot of a region on screen (saves to ~/Pictures)
+nix-shell -p grim slurp --run 'grim -g "$(slurp)"'
