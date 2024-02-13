@@ -1,0 +1,4 @@
+% json data interaction
+
+# cat a jsonl file and for each line, add a "hash" field to the json object where the "hash" is the sha256 of the whole line, truncated to 8 characters
+cat <file> | while read -r line; do echo "$line" | jq -c --arg hash "$(echo -n "$line" | sha256sum | cut -c1-8)" '. + {hash: $hash}'; done
