@@ -107,9 +107,6 @@ if [ -e $NIX_SH_PATH ]; then
     alias nsh=nix-shell
 fi
 
-eval "$(zoxide init $(basename $SHELL))"
-
-
 ## keychain
 if type keychain &>/dev/null ; then
     # this from commonrc.1
@@ -182,3 +179,13 @@ tslugify() {
 alias ls='lsd'
 
 export RIPGREP_CONFIG_PATH=$HOME/dot/ripgreprc
+current_shell=$(ps -p $$ -ocomm=)
+
+eval "$(zoxide init $current_shell)"
+if [ "$current_shell" = "zsh" ]; then
+    eval "$(just --completions zsh)"
+elif [ "$current_shell" = "bash" ]; then
+    eval "$(just --completions bash)"
+else
+    echo "Unsupported shell: $current_shell"
+fi
