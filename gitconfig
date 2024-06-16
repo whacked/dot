@@ -42,8 +42,8 @@
     rebase = true
 
 [user]
-    name = whacked-xps
-    email = whacked@users.noreply.github.com
+    name = @userName@
+    email = @userEmail@
 
 [cola]
     spellcheck = false

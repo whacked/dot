@@ -7,6 +7,10 @@ let
   # {
   #   username = "fooser";
   #   homeDirectory = "/Users/barser";  # <-- optional, fallback to /home/$username
+  #   git = {
+  #     userName = "git-user-name";
+  #     userEmail = "gituser@users.noreply.example.com";
+  #   };
   # }
   userConfig = (import ./user-config.nix);
   userHomeDirectory = if builtins.hasAttr "homeDirectory" userConfig
@@ -23,7 +27,6 @@ let
 in {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
-  home.file.".icons/default".source = "${pkgs.vanilla-dmz}/share/icons/Vanilla-DMZ";
   fonts.fontconfig.enable = true;
 
   # This value determines the Home Manager release that your
@@ -54,16 +57,12 @@ in {
 
   home.file = {
 
+    ".icons/default".source = "${pkgs.vanilla-dmz}/share/icons/Vanilla-DMZ";
+
     ".bashrc".source = makeSubstitutedFile {
       srcName = "bashrc";
       substitutions = {
         minioPath = "${pkgs.minio-client}/bin/mc";
-      };
-    };
-    ".config/i3/config".source = makeSubstitutedFile {
-      srcName = "i3/config";
-      substitutions = {
-        fileManagerPath = "${pkgs.cinnamon.nemo}/bin/nemo";
       };
     };
     ".config/kitty/kitty.conf".source = makeSubstitutedFile {
@@ -78,6 +77,8 @@ in {
       srcName = "gitconfig";
       substitutions = {
         deltaPath = "${pkgs.delta}/bin/delta";
+        userName = "${userConfig.git.userName}";
+        userEmail = "${userConfig.git.userEmail}";
       };
     };
     ".lein".source = makeSymlink "lein";
@@ -96,7 +97,17 @@ in {
     # ".boot.profile".source = makeSymlink "boot.profile";
     # ".subversion".source = makeSymlink "subversion";
 
-  };
+  } // (
+    lib.optionalAttrs pkgs.stdenv.isLinux
+    {
+      ".config/i3/config".source = makeSubstitutedFile {
+        srcName = "i3/config";
+        substitutions = {
+          fileManagerPath = "${pkgs.cinnamon.nemo}/bin/nemo";
+        };
+      };
+    }
+  );
 
 }
 
