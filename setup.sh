@@ -8,14 +8,14 @@ _SCRIPT_DIRECTORY=$(dirname ${BASH_SOURCE[0]})
 # NIX -------------------------------------------------------------------
 if type nix-channel &> /dev/null; then
     export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
-    mkdir -p $HOME/.config/nixpkgs
-    if [ ! -e $HOME/.config/nixpkgs/home.nix ]; then
-        ln -s $(realpath $_SCRIPT_DIRECTORY/home.nix) $HOME/.config/nixpkgs/home.nix
+    mkdir -p $HOME/.config/home-manager
+    if [ ! -e $HOME/.config/home-manager/home.nix ]; then
+        ln -s $(realpath $_SCRIPT_DIRECTORY/home.nix) $HOME/.config/home-manager/home.nix
     fi
     export NIXPKGS_ALLOW_UNFREE=1
     if ! type home-manager &> /dev/null; then
         echo "installing home-manager..."
-        nix-channel --add https://github.com/rycee/home-manager/archive/master.tar.gz home-manager
+        nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
         nix-channel --update
         TMPDIR=/tmp nix-shell '<home-manager>' -A install
     fi
