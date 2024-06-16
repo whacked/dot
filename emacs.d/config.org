@@ -345,6 +345,7 @@
    ivy
    ivy-rich
 
+   janet-mode
    json-mode
    jsonnet-mode
    jsonl
@@ -549,6 +550,17 @@
        :bind ("C-x o" . win-switch-dispatch)
        :config (setq win-switch-idle-time 0.3))
    #+END_SRC
+
+** ijanet-mode
+
+#+begin_src emacs-lisp
+  (straight-use-package
+   '(ijanet
+     :type git
+     :host github
+     :repo "serialdev/ijanet-mode"
+  ))
+#+end_src
 
 ** package-common.el
 
