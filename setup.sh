@@ -53,34 +53,6 @@ for DOTFILENAME in emacs.d emacs.d/gnus.el gitconfig vimrc vim tmux.conf bashrc 
     fi
 done
 
-# GIT -------------------------------------------------------------------
-if [ ! -e ~/.gitconfig ]; then
-    echo "setting up gitconfig..."
-    cat > ~/.gitconfig <<GITCONFIG
-[core]
-	autocrlf = false
-	safecrlf = false
-[alias]
-    P = push
-    a = add
-    st = status -s
-    ci = commit
-    df = diff --color --color-words --abbrev
-    l = log --graph --pretty=oneline --abbrev-commit --decorate
-    lg   = log --pretty=oneline --abbrev-commit --graph --decorate --date=relative
-    lgt  = log --graph --pretty=format:'%Cred%h%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
-    lgtt = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
-    b = for-each-ref --sort=-committerdate refs/heads/ --format='%(authordate:short) %(color:red)%(objectname:short) %(color:yellow)%(refname:short)%(color:reset) (%(color:green)%(committerdate:relative)%(color:reset))'
-[pull]
-    rebase = true
-[user]
-    name = $USER
-    email = $USER@fixme.example.com
-[cola]
-    spellcheck = false
-GITCONFIG
-fi
-
 # ZSH -------------------------------------------------------------------
 if [ `command -v zsh | wc -l` -ge 1 ]; then
     echo "setting up ZSH..."
