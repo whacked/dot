@@ -1,11 +1,31 @@
 [init]
     defaultBranch = main
+
 [core]
     autocrlf = false
     safecrlf = false
+
+    pager = @deltaPath@
+
+[interactive]
+    diffFilter = @deltaPath@ --color-only
+
+[delta]
+    navigate = true    # use n and N to move between diff sections
+    light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
+    side-by-side = true
+    line-numbers = true
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+
 [diff "gz"]
     textconv = gzcat
     binary = true
+
 [alias]
     P = push
     a = add
@@ -17,12 +37,16 @@
     lgt  = log --graph --pretty=format:'%Cred%h%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
     lgtt = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
     b = for-each-ref --sort=-committerdate refs/heads/ --format='%(authordate:short) %(color:red)%(objectname:short) %(color:yellow)%(refname:short)%(color:reset) (%(color:green)%(committerdate:relative)%(color:reset))'
+
 [pull]
     rebase = true
+
 [user]
     name = whacked-xps
     email = whacked@users.noreply.github.com
+
 [cola]
     spellcheck = false
     hidpi = 1.5
     theme = flat-dark-grey
+

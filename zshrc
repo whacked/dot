@@ -78,4 +78,9 @@ if [ -e $ZSH_PLUGINS_DIR ]; then
 fi
 
 autoload -U +X bashcompinit && bashcompinit
-complete -o nospace -C /nix/store/pcd6g56j7p68q2y4d753dzb8ckinafpm-minio-client-2022-03-09T02-08-36Z/bin/mc mc
+
+# opam configuration, for google-drive-ocamlfuse
+[[ ! -r $HOME/.opam/opam-init/init.zsh ]] || source $HOME/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
+
+complete -o nospace -C @minioPath@ mc
+

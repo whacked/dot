@@ -1,7 +1,25 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 let
   myconfig = (import ~/setup/nix/config.nix);
+
+  # YOU MUST CREATE THIS! example:
+  # {
+  #   username = "fooser";
+  #   homeDirectory = "/Users/barser";  # <-- optional, fallback to /home/$username
+  # }
+  userConfig = (import ./user-config.nix);
+  userHomeDirectory = if builtins.hasAttr "homeDirectory" userConfig
+    then userConfig.homeDirectory
+    else "/home/${userConfig.username}";
+
+  makeSubstitutedFile = { srcName, substitutions }:
+    pkgs.substituteAll ({
+      src = /. + builtins.toPath "${userHomeDirectory}/dot/${srcName}";
+    } // substitutions);
+
+  makeSymlink = srcName:
+    config.lib.file.mkOutOfStoreSymlink (/. + builtins.toPath "${userHomeDirectory}/dot/${srcName}");
 in {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
@@ -16,7 +34,7 @@ in {
   # You can update Home Manager without changing this value. See
   # the Home Manager release notes for a list of state version
   # changes in each release.
-  home.stateVersion = "20.03";
+  home.stateVersion = "24.05";
 
   home.packages = [
   ]
@@ -30,5 +48,43 @@ in {
       "${pkgs.glibcLocales}/lib/locale/locale-archive"
     ) else null
   );
+
+  home.username = userConfig.username;
+  home.homeDirectory = userHomeDirectory;
+
+  home.file = {
+
+    ".bashrc".source = makeSubstitutedFile {
+      srcName = "bashrc";
+      substitutions = {
+        minioPath = "${pkgs.minio-client}/bin/mc";
+      };
+    };
+    ".config/tmux.conf".source = makeSymlink "tmux.conf";
+    ".emacs.d".source = makeSymlink "emacs.d";
+    ".gitconfig".source = makeSubstitutedFile {
+      srcName = "gitconfig";
+      substitutions = {
+        deltaPath = "${pkgs.delta}/bin/delta";
+      };
+    };
+    ".lein".source = makeSymlink "lein";
+    ".Rprofile".source = makeSymlink "Rprofile";
+    ".vim".source = makeSymlink "vim";
+    ".vimrc".source = makeSymlink "vimrc";
+    ".zsh".source = makeSymlink "zsh";
+    ".zshrc".source = makeSubstitutedFile {
+      srcName = "zshrc";
+      substitutions = {
+        minioPath = "${pkgs.minio-client}/bin/mc";
+      };
+    };
+
+    # haven't used these in a long time
+    # ".boot.profile".source = makeSymlink "boot.profile";
+    # ".subversion".source = makeSymlink "subversion";
+
+  };
+
 }
 

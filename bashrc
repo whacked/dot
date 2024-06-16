@@ -131,5 +131,5 @@ while [ -e $HOME/dot/commonrc.$trycount ]; do
     trycount=$(($trycount+1))
 done
 
-complete -C /nix/store/8wh2pzcz6c43djzvrpn7hvg075d9k8rz-minio-client-2023-05-04T18-10-16Z/bin/mc mc
+complete -C @minioPath@ mc
 
