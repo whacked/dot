@@ -66,6 +66,12 @@ in {
         fileManagerPath = "${pkgs.cinnamon.nemo}/bin/nemo";
       };
     };
+    ".config/kitty/kitty.conf".source = makeSubstitutedFile {
+      srcName = "kitty.conf";
+      substitutions = {
+        shellPath = "${pkgs.zsh}/bin/zsh";
+      };
+    };
     ".config/tmux.conf".source = makeSymlink "tmux.conf";
     ".emacs.d".source = makeSymlink "emacs.d";
     ".gitconfig".source = makeSubstitutedFile {
