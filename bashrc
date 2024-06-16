@@ -8,12 +8,24 @@ case $- in
       *) return;;
 esac
 
+# to prevent nix bash annoyance
+shopt -s direxpand
+
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
 
+# Unlimited size for the history file
+export HISTSIZE=-1
+export HISTFILESIZE=-1
+
 # append to the history file, don't overwrite it
 shopt -s histappend
+
+# Immediately append to the history file, not just when a session ends
+export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -118,4 +130,6 @@ while [ -e $HOME/dot/commonrc.$trycount ]; do
     source $HOME/dot/commonrc.$trycount
     trycount=$(($trycount+1))
 done
+
+complete -C /nix/store/8wh2pzcz6c43djzvrpn7hvg075d9k8rz-minio-client-2023-05-04T18-10-16Z/bin/mc mc
 
