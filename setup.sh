@@ -57,22 +57,6 @@ done
 if [ `command -v zsh | wc -l` -ge 1 ]; then
     echo "setting up ZSH..."
 
-    if [ ! -e ~/.oh-my-zsh ]; then
-        echo "setting up oh-my-zsh..."
-
-        # test for nix-supplied oh-my-zsh first
-        _nix_oh_my_zsh_path=$(nix eval --raw nixpkgs.oh-my-zsh.outPath 2>/dev/null)
-        if [ "x$_nix_oh_my_zsh_path" != "x" ] && [ -e $_nix_oh_my_zsh_path ]; then
-            echo "using oh-my-zsh found from nix store: $_nix_oh_my_zsh_path"
-            ln -sf $_nix_oh_my_zsh_path/share/oh-my-zsh $HOME/.oh-my-zsh
-        else
-            echo "cloning oh-my-zsh from github..."
-            git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
-        fi
-
-        nix eval --raw nixpkgs.oh-my-zsh.outPath 2>/dev/null
-    fi
-
     if [ "x$USERCACHE" != "x" ] && [ -e $USERCACHE ]; then
         echo installing zsh-histdb into user cache...
         _zsh_histdb_source_path=$(nix-instantiate --eval -E 'with import <nixpkgs> {}; (callPackage (import ~/setup/nix/pkgs/shells/zsh-histdb/default.nix) {}).outPath' | tr -d '"')
