@@ -21,6 +21,7 @@ if [ $(mount | grep $STATIC_MOUNT_POINT | wc -l) -gt 0 ]; then
 else
     sudo mount /dev/mapper/sdcard-cryptlvm $STATIC_MOUNT_POINT
     sudo chown $USER: $STATIC_MOUNT_POINT
+    echo "mount ok"
 fi
 
 du -sh $STATIC_MOUNT_POINT
