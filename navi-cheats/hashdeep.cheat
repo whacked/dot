@@ -1,0 +1,4 @@
+% hashdeep
+
+# common hashdeep for a directory, recursive
+hashdeep -r . | tee <outpath>

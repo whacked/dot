@@ -1,0 +1,5 @@
+% ansible
+
+# run an ad-hoc command against a single remote
+ansible all -i <hostname>, -m command -a "<command>"
+
