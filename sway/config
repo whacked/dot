@@ -27,7 +27,7 @@ include /etc/sway/config-vars.d/*
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-output * bg /usr/share/backgrounds/ESP_016895_1525_desktop.jpg fill
+output * bg /usr/share/backgrounds/ESP_020528_1750_desktop.jpg fill
 #
 # Example configuration:
 #
@@ -101,6 +101,8 @@ input "type:keyboard" {
 # xkb_variant ,nodeadkeys
 }
 
+# lock touchscreen to laptop screen only (for xps-7390)
+input "1386:18670:Wacom_HID_48EE_Finger" map_to_output "eDP-1"
 
 ### Key bindings
 #
@@ -154,6 +156,15 @@ input "type:keyboard" {
 #
 # Workspaces:
 #
+
+### sov https://github.com/milgra/sov
+# exec rm -f /tmp/pipes/sov.pipe && mkfifo /tmp/pipes/sov.pipe && tail -f /tmp/pipes/sov.pipe | sov
+set $sovpipe_path /tmp/pipes/sov.pipe
+bindsym --no-repeat $mod+o exec "echo 1 > $sovpipe_path"
+bindsym --release $mod+o exec "echo 0 > $sovpipe_path"
+
+# bindsym $mod+o exec "cat $sovpipe_path - 1 )) >> /tmp/foo"
+
     # Switch to workspace
     bindsym $mod+1 workspace number 1
     bindsym $mod+2 workspace number 2
@@ -165,6 +176,7 @@ input "type:keyboard" {
     bindsym $mod+8 workspace number 8
     bindsym $mod+9 workspace number 9
     bindsym $mod+0 workspace number 10
+
     # Move focused container to workspace
     bindsym $mod+Shift+1 move container to workspace number 1
     bindsym $mod+Shift+2 move container to workspace number 2
@@ -190,19 +202,21 @@ input "type:keyboard" {
     # Switch the current container between different layout styles
     bindsym $mod+s layout stacking
     bindsym $mod+w layout tabbed
-    bindsym $mod+e layout toggle split
+    bindsym $mod+t layout toggle stacking tabbed split
 
     # Make the current focus fullscreen
     bindsym $mod+f fullscreen
 
     # Toggle the current focus between tiling and floating mode
-    bindsym $mod+Shift+space floating toggle
+    bindsym $mod+Shift+f floating toggle
 
     # Swap focus between the tiling area and the floating area
     bindsym $mod+space focus mode_toggle
 
     # Move focus to the parent container
     bindsym $mod+a focus parent
+
+
 #
 # Scratchpad:
 #
@@ -249,7 +263,7 @@ bar {
 
     # When the status_command prints a new line to stdout, swaybar updates.
     # The default just shows the current date and time.
-    status_command while date +'%Y-%m-%d %I:%M:%S %p'; do sleep 1; done
+    status_command while date +'%Y-%m-%d %H:%M:%S'; do sleep 1; done
 
     colors {
         statusline #ffffff
@@ -265,9 +279,56 @@ bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
 
+
+bindsym $mod+z workspace back_and_forth
+# Switch to prev/next workspace on current output
+bindsym $mod+n workspace next_on_output
+bindsym $mod+p workspace prev_on_output
+# Switch to prev/next workspace on all outputs
+bindsym $mod+Shift+n workspace next
+bindsym $mod+Shift+p workspace prev
+
+bindsym $mod+greater move workspace to output right
+bindsym $mod+less move workspace to output left
+
+
+# bindsym $mod+Escape exec swaymsg input type:keyboard xkb_switch_layout next
+
+
 for_window [instance="Godot_Engine"] floating enable
 for_window [instance="Godot_Editor"] floating disable
 for_window [app_id="firefox" title="Picture-in-Picture"] floating enable
 for_window [instance="Conky"] floating enable
 for_window [instance="anki"] floating enable
+for_window [app_id="thunderbird"] floating enable
+
+# hax https://github.com/swaywm/sway/issues/5732
+exec systemctl --user import-environment
+
+# hax https://github.com/swaywm/sway/wiki#gtk-applications-take-20-seconds-to-start
+exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
+
+bindsym $mod+e exec nautilus
+bindsym $mod+x exec bash /home/natto/dot/toggle-conky.sh
+
+# alt-tab behavior
+# https://github.com/korreman/sway-overfocus
+# lazy so I added the releases binary to /usr/bin
+#bindsym $mod+h exec sway-overfocus split-lt float-lt output-ls
+#bindsym $mod+j exec sway-overfocus split-dt float-dt output-ds
+#bindsym $mod+k exec sway-overfocus split-ut float-ut output-us
+#bindsym $mod+l exec sway-overfocus split-rt float-rt output-rs
+bindsym $mod+Tab exec sway-overfocus group-rw group-dw
+bindsym $mod+Shift+Tab exec sway-overfocus group-lw group-uw
+
+
+# bindsym $mod+Tab         exec /nix/store/sp84mk3qbwnzz4s8gkj0pnqigaqzwm4b-swayr-0.24.0/bin/swayr switch-window
+# bindsym $mod+Space       exec /nix/store/sp84mk3qbwnzz4s8gkj0pnqigaqzwm4b-swayr-0.24.0/bin/swayr switch-window
+# bindsym $mod+Delete      exec /nix/store/sp84mk3qbwnzz4s8gkj0pnqigaqzwm4b-swayr-0.24.0/bin/swayr quit-window
+# bindsym $mod+Tab         exec /nix/store/sp84mk3qbwnzz4s8gkj0pnqigaqzwm4b-swayr-0.24.0/bin/swayr switch-to-urgent-or-lru-window
+# bindsym $mod+Next        exec /nix/store/sp84mk3qbwnzz4s8gkj0pnqigaqzwm4b-swayr-0.24.0/bin/swayr next-window all-workspaces
+# bindsym $mod+Prior       exec /nix/store/sp84mk3qbwnzz4s8gkj0pnqigaqzwm4b-swayr-0.24.0/bin/swayr prev-window all-workspaces
+# bindsym $mod+Shift+Space exec /nix/store/sp84mk3qbwnzz4s8gkj0pnqigaqzwm4b-swayr-0.24.0/bin/swayr switch-workspace-or-window
+# bindsym $mod+c           exec /nix/store/sp84mk3qbwnzz4s8gkj0pnqigaqzwm4b-swayr-0.24.0/bin/swayr execute-swaymsg-command
+# bindsym $mod+Shift+c     exec /nix/store/sp84mk3qbwnzz4s8gkj0pnqigaqzwm4b-swayr-0.24.0/bin/swayr execute-swayr-command
 
