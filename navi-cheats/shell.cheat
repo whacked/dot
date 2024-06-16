@@ -24,3 +24,7 @@ nix-shell -p spectacle --run 'spectacle -rb -o <file-name>'
 
 # take wayland screenshot of a region on screen (saves to ~/Pictures)
 nix-shell -p grim slurp --run 'grim -g "$(slurp)"'
+
+# get the current timestamp in milliseconds since epoch
+date +%s%3N
+

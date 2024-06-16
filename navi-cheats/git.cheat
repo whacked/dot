@@ -5,3 +5,8 @@ git log --all --patch -S "<string>"
 
 # find string in all commit logs in repository history
 git log --all --grep="<string>"
+
+# show how many lines have changed in the file
+git diff --shortstat <cwd-files>
+
+$ cwd-files: ls
