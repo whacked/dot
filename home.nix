@@ -60,6 +60,12 @@ in {
         minioPath = "${pkgs.minio-client}/bin/mc";
       };
     };
+    ".config/i3/config".source = makeSubstitutedFile {
+      srcName = "i3/config";
+      substitutions = {
+        fileManagerPath = "${pkgs.cinnamon.nemo}/bin/nemo";
+      };
+    };
     ".config/tmux.conf".source = makeSymlink "tmux.conf";
     ".emacs.d".source = makeSymlink "emacs.d";
     ".gitconfig".source = makeSubstitutedFile {
