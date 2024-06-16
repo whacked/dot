@@ -7,12 +7,14 @@ api-key.el
 .#*
 .*.swp
 *.elc
+*.*~
 
 vim/autoload/pathogen.vim
 vim/.netrwhist
 vim/bundle
 vim/vim-addons
 vim/plugged
+vim/view
 
 emacs.d/network-security.data
 
@@ -58,3 +60,5 @@ lein/repl-history
 lein/self-installs/*.jar
 
 emacs.d/emojis
+# straight package manager
+emacs.d/straight
