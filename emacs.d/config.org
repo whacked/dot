@@ -174,6 +174,7 @@
 
     #+BEGIN_SRC emacs-lisp
       (global-set-key "\C-x\C-b" 'ibuffer)
+      (global-set-key (kbd "M-o") 'ace-window)
     #+END_SRC
 
 *** my-keys-minor-mode-map
@@ -362,6 +363,7 @@
    neotree
    nix-mode
 
+   obsidian  ;; interop with obsidian
    occur-x  ;; addition candidate: [k] to push a regex into an occur buffer; occur-x-undo-filter to clear
    ;; org-brain  ;; haven't used for long
    org-download
@@ -441,6 +443,15 @@
         :quelpa (so-long :url "https://raw.githubusercontent.com/emacs-mirror/emacs/master/lisp/so-long.el" :fetcher url)
         :config (global-so-long-mode 1))
     #+END_SRC
+
+** el-get
+
+*** packages from emacswiki
+
+  #+begin_src emacs-lisp :eval never
+    (el-get-install "thingatpt+")
+    (el-get-install "thing-cmds")
+  #+end_src
 
 ** eval-in-repl
 
@@ -714,6 +725,12 @@
  #+END_SRC
 
 * usual-environment.el
+
+** global vars
+
+#+begin_src emacs-lisp
+(defvar CLOUDSYNC-NOTE-DIR (concat (file-name-as-directory (getenv "CLOUDSYNC")) "main/note/org"))
+#+end_src
 
 ** recentf
 
@@ -1587,6 +1604,8 @@ https://emacs.stackexchange.com/a/35904
        (set (make-local-variable 'hl-line-face) ; This is how to make it local
             'hl-line-light-face)
        (hl-line-mode))
+
+     (set-cursor-color "#ff6699")
    #+END_SRC
 
 * utility (from util.el)
@@ -2243,6 +2262,15 @@ https://emacs.stackexchange.com/a/35904
     (eval-after-load 'markdown '(define-key markdown-mode-map [(f5)] 'markdown-eval-current-code-block))
   #+end_src
 
+* ivy-rich
+
+  #+begin_src emacs-lisp
+    (require 'ivy)
+    (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
+    (global-set-key (kbd "M-x") 'counsel-M-x)
+  #+end_src
+
+
 * text format conversion
 
 
@@ -2306,6 +2334,243 @@ https://emacs.stackexchange.com/a/35904
     (add-hook 'before-save-hook 'delete-trailing-whitespace)
   #+end_src
 
+
+* editing utils
+
+** widget utils
+
+
+   #+begin_src emacs-lisp
+     ;; ref https://www.gnu.org/software/emacs/manual/html_node/elisp/Parsing-JSON.html
+     ;; ref https://www.mssl.ucl.ac.uk/swift/om/sw/help/man/widget.html
+     (require 'widget)
+
+     ;; (eval-when-compile
+     ;;   (require 'wid-edit))
+
+     (defvar record-editor--buffer)
+     (defun jsonl-record-editor (source-json callback)
+       ;; test value: "{\"Nul\": null, \"Int\": 9, \"Num\": 3.14, \"Str\": \"hello\\nlines\", \"Boo\": true, \"Arr\": [1, 2, \"d\"], \"Obj\": {\"f\": \"multi\\nline\\ntext\"}}"
+       (switch-to-buffer "*Record Editor*")
+       (kill-all-local-variables)
+       (make-local-variable 'record-editor--buffer)
+
+       (let ((inhibit-read-only t))
+         (erase-buffer))
+
+       ;; (widget-insert "Here is some documentation.\n")
+
+       (setq record-editor--buffer (json-read-from-string source-json))
+       (mapcar (lambda (pair)
+                 (lexical-let* ((key (car pair))
+                                (value (cdr pair))
+                                (emacs-value-type (type-of value))
+                                (json-value-type (cond ((eq emacs-value-type 'hash-table) 'object)
+                                                       ((eq emacs-value-type 'vector) 'array)
+                                                       ((eq emacs-value-type 'float) 'number)
+                                                       ((eq emacs-value-type 'integer) 'number)
+                                                       ((eq emacs-value-type 'symbol)
+                                                        (if (eq value nil) 'null
+                                                          'boolean))
+                                                       ((eq emacs-value-type 'string) 'string)))
+                                (decoder
+                                 (cond ((eq json-value-type 'number) 'string-to-number)
+                                       ((eq json-value-type 'string) 'identity)
+                                       ((eq json-value-type 'boolean)
+                                        (lambda (val)
+                                          (if (string= val "true") t :json-false)))
+                                       ((eq json-value-type 'null)
+                                        (lambda (val)
+                                          (if (string= val "null") nil val)))
+                                       (t (lambda (val)
+                                            ;; (message "decoding: <%s>%s: %s (%s)" json-value-type key val (type-of value))
+                                            (json-read-from-string val))))))
+
+                   (widget-insert (format "[%07s] %s: " json-value-type key))
+
+                   (if (and (eq json-value-type 'string)
+                            (s-contains? "\n" value))
+                       (insert "\n"))
+
+                   (cond ((eq json-value-type 'boolean)
+                          (let* ((serialized-boolean (if (eq value t)
+                                                         "true" "false"))
+                                 (other-boolean (if (eq value t)
+                                                    "false" "true")))
+                            (widget-insert "\n")
+                            (widget-create 'radio-button-choice
+                                           :indent 10
+                                           :value serialized-boolean
+                                           :notify (lambda (widget &rest ignore)
+                                                     (let ((new-value (widget-value widget)))
+                                                       (message "You selected %s /// %s" new-value (string= new-value "true"))
+                                                       (setcdr (assq key record-editor--buffer)
+                                                               (if (string= new-value "true")
+                                                                   t
+                                                                 :json-false))))
+                                           (list 'item serialized-boolean)
+                                           (list 'item other-boolean))))
+                         (t
+                          (widget-create 'editable-field
+                                         ;; :size 20
+                                         :value (cond ((eq json-value-type 'string)
+                                                       (s-replace "\\n" "\n" value))
+
+                                                      ((eq json-value-type 'null)
+                                                       "null")
+
+                                                      (t
+                                                       (json-encode value)))
+                                         :notify (lambda (widget &rest ignore)
+                                                   (let ((new-value (widget-value widget)))
+                                                     (condition-case nil
+                                                         (let* ((decoded-value (funcall decoder new-value)))
+                                                           (when nil
+                                                             (message "<%s>%s [%s]  --{%s}-->  %s" json-value-type key new-value decoder decoded-value)
+                                                             ;; consider this if you do on-the-fly sanitation
+                                                             ;; (widget-value-set widget (widget-value widget))
+
+                                                             (when (eq json-value-type 'string)
+                                                               (message "WE GOT STRING: ^%s$" new-value)
+                                                               (message "DECODED: ^%s$" decoded-value)))
+
+                                                           ;; (message "%s" (json-encode record-editor--buffer))
+                                                           (setcdr (assq key record-editor--buffer) decoded-value))
+                                                       (error nil)))))))))
+               record-editor--buffer)
+
+       (when nil
+
+         ;; don't see a way to do this easily with keyboard. must use mouse on the tag?
+         (widget-create 'menu-choice
+                        :tag "Choose"
+                        :value "This"
+                        :help-echo "Choose me, please!"
+                        :notify (lambda (widget &rest ignore)
+                                  (message "%s is a good choice!"
+                                           (widget-value widget)))
+                        '(item :tag "This option" :value "This")
+                        '(choice-item "That option")
+                        '(editable-field :menu-tag "No option" "Thus option"))
+
+         (widget-insert "\n\nSelect multiple:\n\n")
+         (widget-create 'checkbox t)
+         (widget-insert " This\n")
+         (widget-create 'checkbox nil)
+         (widget-insert " That\n")
+         (widget-create 'checkbox
+                        :notify (lambda (&rest ignore) (message "Tickle"))
+                        t)
+         (widget-insert " Thus\n\nSelect one:\n\n"))
+
+       (widget-insert "\n")
+       (lexical-let* ((source-json source-json)
+                      (callback callback)
+                      (on-submit (lambda (&rest ignore)
+                                   (interactive)
+                                   (let ((rendered-json (json-encode record-editor--buffer)))
+                                     (kill-buffer)
+                                     (funcall callback rendered-json)))))
+         (widget-create 'push-button
+                        :notify (lambda (&rest ignore)
+                                  (jsonl-record-editor source-json callback))
+                        "reset")
+
+         (widget-insert " or ")
+         (widget-insert "C-c C-c to ")
+         (widget-create 'push-button :notify on-submit "SUBMIT")
+         (widget-insert "\n")
+         (use-local-map (copy-keymap widget-keymap))
+         (local-set-key (kbd "C-c C-c") on-submit))
+       ;; this function is what sets up the widget component styling (grey background color)
+       ;; and :notify functions
+       (widget-setup)
+       (beginning-of-buffer))
+
+     (defun edit-jsonl-record ()
+       "Create the widgets from the Widget manual."
+       (interactive)
+       (save-excursion
+         (lexical-let* ((current-position (point))  ;; save-excursion not working as I thought it would
+                        (beg (progn
+                               (beginning-of-line)
+                               (point)))
+                        (end (progn
+                               (end-of-line)
+                               (point)))
+                        (source-json
+                         ;; (thing-at-point 'line t)
+                         (buffer-substring beg end))
+                        (maybe-json-data
+                         (condition-case err
+                             (json-read-from-string source-json)
+                           (error err
+                                  (message "failed to parse json: %s" err)
+                                  nil))))
+           (jsonl-record-editor
+            source-json
+            (lambda (rendered-json)
+              (kill-region beg end)
+              (insert rendered-json)
+              (goto-char current-position))))))
+   #+end_src
+
+** single-line utils
+
+#+begin_src emacs-lisp :eval never
+  (defun single-lineify ()  ;; ref https://stackoverflow.com/a/14202425
+    (interactive)
+    (save-excursion
+      (let* ((beg (region-beginning))
+             (end (region-end))
+             (resulting-text
+              ;; requires
+              ;; subr-x magnars/s
+              (thread-last (buffer-substring-no-properties beg end)
+                (s-trim)
+                (s-replace "\n" "\\n"))))
+        (kill-region beg end)
+        (insert resulting-text))))
+
+  (defun de-single-lineify ()
+    (interactive)
+    (save-excursion
+      (let* ((beg (region-beginning))
+             (end (region-end))
+             (resulting-text
+              (thread-last
+                  ;; requires
+                  ;; subr-x magnars/s
+                  (buffer-substring-no-properties beg end)
+                (s-replace "\\n" "\n"))))
+        (kill-region beg end)
+        (insert resulting-text))))
+#+end_src
+
+* get the best enclosed string
+
+  #+begin_src emacs-lisp :eval never
+    (defun zotero-open-at-point ()
+      "look up openable file from zotero, recognizing [zotero:...] and [...]()"
+      (interactive)
+      (er/mark-inside-pairs)
+      (let* ((selection
+              (when mark-active
+                (buffer-substring-no-properties
+                 (region-beginning)
+                 (region-end)))))
+        (deactivate-mark)
+        (cond ((= (length selection) 0)
+               (message "nothing available here"))
+
+              ((not (string-match-p "^zotero:" selection))
+               (message "doesn't look like a zotero link"))
+
+              (t
+               (zotero-query
+                (substring selection 7))))))
+  #+end_src
+
 * change emacs default open browser
 
   #+begin_src emacs-lisp :eval never
@@ -2322,3 +2587,131 @@ https://emacs.stackexchange.com/a/35904
       (set-fontset-font
         t 'symbol (font-spec :family "NotoEmoji Nerd Font Mono") nil 'prepend))
   #+end_src
+
+* fix ugly shell prompt from M-x shell due to dumb terminal not understanding ansi escape sequences
+
+# PS1='\u at \h in \w\n\$ '
+
+* highlight duplicate lines
+
+#+begin_src emacs-lisp :eval never
+  (defun my-highlight-duplicate-lines-in-region (&optional show-all)
+    ;; ref https://emacs.stackexchange.com/a/13122
+    "optional = show all, otherwise don't highlight first occurences"
+    (interactive "P")
+    (when mark-active
+      (let* (($beg (region-beginning))
+             ($end (region-end))
+             ($st (buffer-substring-no-properties
+                   $beg $end))
+             ($lines)
+             $first-occurrence-with-dup
+             $dup)
+        (deactivate-mark t)
+        (save-excursion
+          (goto-char $beg)
+          (while (< (point) $end)
+            (let* (($b (point))
+                   ($e (point-at-eol))
+                   ($c (buffer-substring-no-properties $b $e))
+                   ($a (assoc $c $lines)))
+              (when (not (eq $b $e))
+                (if $a
+                    (progn
+                      (setq $dup (cons $b $dup))
+                      (if show-all
+                          (setq $dup (cons (cdr $a) $dup))
+                        (setq $first-occurrence-with-dup
+                               (cons (cdr $a) $first-occurrence-with-dup))))
+                  (setq $lines
+                        (cons (cons $c $b) $lines)))))
+            (forward-line 1))
+          (mapc (lambda ($p)
+                  (ov-set (ov-line $p) 'face '(:foreground "red")))
+                (sort (delete-dups $dup) '<))
+          (mapc (lambda ($p)
+                  (ov-set (ov-line $p) 'face '(:foreground "green")))
+                $first-occurrence-with-dup)))))
+
+
+  (defun my-highlight-repeated-lines (&optional show-all)
+    (interactive "P")
+    "highlight lines if they are identical to the line above it"
+    (when mark-active
+      (let* (($beg (region-beginning))
+             ($end (region-end))
+             ($st (buffer-substring-no-properties
+                   $beg $end))
+             previous-line
+             $same-as-previous-line)
+        (deactivate-mark t)
+        (save-excursion
+          (goto-char $beg)
+          (while (< (point) $end)
+            (let* (($b (point))
+                   ($e (point-at-eol))
+                   ($c (buffer-substring-no-properties $b $e)))
+              ;; (message "line: %s" $c)
+              (when (and (not (eq $b $e))
+                         (string= $c previous-line))
+                (progn
+                  (setq $same-as-previous-line (cons $b $same-as-previous-line))))
+              (setq previous-line $c))
+            (forward-line 1))
+          (mapc (lambda ($p)
+                  (ov-set (ov-line $p) 'face '(:foreground "red")))
+                $same-as-previous-line)))))
+#+end_src
+
+* obsidian.el
+
+#+begin_src emacs-lisp
+  (use-package obsidian
+    :ensure t
+    :demand t
+    :config
+    (obsidian-specify-path cloudsync-note-dir)
+    (global-obsidian-mode t)
+    :custom
+    ;; This directory will be used for `obsidian-capture' if set.
+    (obsidian-inbox-directory "pages")
+    :bind (:map obsidian-mode-map
+    ;; Replace C-c C-o with Obsidian.el's implementation. It's ok to use another key binding.
+    ("C-c C-o" . obsidian-follow-link-at-point)
+    ;; Jump to backlinks
+    ("C-c C-b" . obsidian-backlink-jump)
+    ;; If you prefer you can use `obsidian-insert-link'
+    ("C-c C-l" . obsidian-insert-wikilink)))
+#+end_src
+
+* paredit duplicate expression
+
+http://inclojurewetrust.blogspot.com/2013/01/duplicating-s-expressions-on-line.html
+
+#+begin_src emacs-lisp
+  (defun paredit-duplicate-after-point
+    ()
+    "Duplicates the content of the line that is after the point."
+    (interactive)
+    ;; skips to the next sexp
+    (while (looking-at " ")
+      (forward-char))
+    (set-mark-command nil)
+    ;; while we find sexps we move forward on the line
+    (while (and (<= (point) (car (bounds-of-thing-at-point 'sexp)))
+                (not (= (point) (line-end-position))))
+      (forward-sexp)
+      (while (looking-at " ")
+        (forward-char)))
+    (kill-ring-save (mark) (point))
+    ;; go to the next line and copy the sexprs we encountered
+    (paredit-newline)
+    (set-mark-command nil)
+    (yank)
+    (exchange-point-and-mark))
+#+end_src
+
+#+begin_src emacs-lisp
+  (eval-after-load "paredit"
+    '(progn (define-key paredit-mode-map (kbd "C-S-d") 'paredit-duplicate-after-point)))
+#+end_src
