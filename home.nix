@@ -6,6 +6,7 @@ let
   # {
   #   username = "fooser";
   #   homeDirectory = "/Users/barser";  # <-- optional, fallback to /home/$username
+  #   includeUnfree = true;             # <-- optional
   #   git = {
   #     userName = "git-user-name";
   #     userEmail = "gituser@users.noreply.example.com";
@@ -41,22 +42,28 @@ in {
   home.packages = [
   ]
   ++ myConfig.includeDefaultPackages
-  ++ myConfig.includeUnfreePackages
+  ++ (if (userConfig.includeUnfree or false) then
+    myConfig.includeUnfreePackages
+    else [])
   ;
 
-  # export LOCALE_ARCHIVE=$(nix-build '<nixpkgs>' -A glibcLocales)/lib/locale/locale-archive
-  home.sessionVariables.LOCALES_ARCHIVE = (
-    if pkgs.stdenv.isLinux then (
-      "${pkgs.glibcLocales}/lib/locale/locale-archive"
-    ) else null
+  home.sessionVariables = {
+  } // (
+    lib.optionalAttrs pkgs.stdenv.isLinux
+    {
+      ### export LOCALE_ARCHIVE=$(nix-build '<nixpkgs>' -A glibcLocales)/lib/locale/locale-archive
+      LOCALES_ARCHIVE = (
+        if pkgs.stdenv.isLinux then (
+          "${pkgs.glibcLocales}/lib/locale/locale-archive"
+        ) else null
+      );
+    }
   );
 
   home.username = userConfig.username;
   home.homeDirectory = userHomeDirectory;
 
   home.file = {
-
-    ".icons/default".source = "${pkgs.vanilla-dmz}/share/icons/Vanilla-DMZ";
 
     ".bashrc".source = makeSubstitutedFile {
       srcName = "bashrc";
@@ -71,6 +78,7 @@ in {
       };
     };
     ".config/tmux.conf".source = makeSymlink "tmux.conf";
+    ".config/wezterm/wezterm.lua".source = makeSymlink "wezterm/wezterm.lua";
     ".emacs.d".source = makeSymlink "emacs.d";
     ".gitconfig".source = makeSubstitutedFile {
       srcName = "gitconfig";
@@ -99,6 +107,8 @@ in {
   } // (
     lib.optionalAttrs pkgs.stdenv.isLinux
     {
+      ".icons/default".source = "${pkgs.vanilla-dmz}/share/icons/Vanilla-DMZ";
+
       ".config/i3/config".source = makeSubstitutedFile {
         srcName = "i3/config";
         substitutions = {
