@@ -179,7 +179,7 @@ tslugify() {
 alias ls='lsd'
 
 export RIPGREP_CONFIG_PATH=$HOME/dot/ripgreprc
-current_shell=$(ps -p $$ -ocomm=)
+current_shell=$(ps -p $$ -ocomm= | tr -d '-')  # mac returns "-zsh"
 
 eval "$(zoxide init $current_shell)"
 if [ "$current_shell" = "zsh" ]; then
