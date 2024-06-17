@@ -1,8 +1,7 @@
 { config, pkgs, lib, ... }:
 
 let
-  myconfig = (import ~/setup/nix/config.nix);
-
+  myConfig = (import ~/setup/nix/config.nix) { inherit pkgs; };
   # YOU MUST CREATE THIS! example:
   # {
   #   username = "fooser";
@@ -41,8 +40,8 @@ in {
 
   home.packages = [
   ]
-  ++ myconfig.includeDefaultPackages
-  ++ myconfig.includeUnfreePackages
+  ++ myConfig.includeDefaultPackages
+  ++ myConfig.includeUnfreePackages
   ;
 
   # export LOCALE_ARCHIVE=$(nix-build '<nixpkgs>' -A glibcLocales)/lib/locale/locale-archive
