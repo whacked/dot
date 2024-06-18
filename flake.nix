@@ -1,14 +1,18 @@
 {
-  description = "Example Darwin system flake";
-
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs }:
+  outputs = inputs@{ self, nix-darwin, home-manager, nixpkgs, ... }:
   let
+    # darwin-rebuild switch --flake ~/dot --impure
+    userConfig = (import ./user-config.nix);
+
     configuration = { pkgs, ... }: {
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
@@ -34,19 +38,54 @@
       # $ darwin-rebuild changelog
       system.stateVersion = 4;
 
+      system.defaults = {
+        dock.autohide = true;  # this requires logout/login
+      };
+
       # The platform the configuration will be used on.
-      nixpkgs.hostPlatform = "x86_64-darwin";
+      nixpkgs.hostPlatform = userConfig.hostPlatform;
+
+      users.users.${userConfig.username} = {
+        name = userConfig.username;
+        home = userConfig.homeDirectory;
+      };
+
+      # enables unlocking sudo using touch id (only locally, not remotely)
+      security.pam.enableSudoTouchIdAuth = true;
+
+      # Install fonts
+      # unused and disallowed on nix-darwin
+      # fonts.fontDir.enable = true;
+      fonts.packages = with pkgs; [
+        fira-code
+        fira-code-nerdfont
+      ];
+
     };
   in
   {
-    # Build darwin flake using:
-    # $ darwin-rebuild build --flake .#simple
-    darwinConfigurations."simple" = nix-darwin.lib.darwinSystem {
-      modules = [ configuration ];
-    };
+  } // (
+    if nixpkgs.legacyPackages.${userConfig.hostPlatform}.pkgs.stdenv.isDarwin then {
+      # Build darwin flake using:
+      # $ darwin-rebuild build --flake .#<yourLocalHostName>
+      darwinConfigurations.${userConfig.localHostName} = nix-darwin.lib.darwinSystem {
+        modules = [
+          configuration
+          home-manager.darwinModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.${userConfig.username} = import ./home.nix;
 
-    # Expose the package set, including overlays, for convenience.
-    darwinPackages = self.darwinConfigurations."simple".pkgs;
-  };
+            # Optionally, use home-manager.extraSpecialArgs to pass
+            # arguments to home.nix
+          }
+        ];
+      };
+
+      # Expose the package set, including overlays, for convenience.
+      darwinPackages = self.darwinConfigurations.${userConfig.localHostName}.pkgs;
+    } else {
+    }
+  );
 }
-
