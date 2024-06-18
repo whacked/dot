@@ -1,18 +1,24 @@
 { config, pkgs, lib, ... }:
 
 let
-  myConfig = (import ~/setup/nix/config.nix) { inherit pkgs; };
-  # YOU MUST CREATE THIS! example:
-  # {
-  #   username = "fooser";
-  #   homeDirectory = "/Users/barser";  # <-- optional, fallback to /home/$username
-  #   includeUnfree = true;             # <-- optional
-  #   git = {
-  #     userName = "git-user-name";
-  #     userEmail = "gituser@users.noreply.example.com";
-  #   };
-  # }
+  /**
+  # YOU MUST CREATE ./user-config.nix
+  # example:
+  {
+    username = "fooser";
+    hostPlatform = "aarch64-darwin"; | "x86_64-linux"
+    homeDirectory = "/Users/barser";        # <-- optional, fallback to /home/$username
+    includeUnfree = true;                   # <-- optional
+    # on mac: scutil --get LocalHostName
+    localHostName = "foobars-macbook";      # <-- optional, for nix-darwin
+    git = {
+      userName = "git-user-name";
+      userEmail = "gituser@users.noreply.example.com";
+    };
+  }
+  */
   userConfig = (import ./user-config.nix);
+  myConfig = (import ~/setup/nix/config.nix) { inherit pkgs; };
   userHomeDirectory = if builtins.hasAttr "homeDirectory" userConfig
     then userConfig.homeDirectory
     else "/home/${userConfig.username}";
@@ -40,12 +46,21 @@ in {
   home.stateVersion = "24.05";
 
   home.packages = [
+    pkgs.zsh
   ]
   ++ myConfig.includeDefaultPackages
   ++ (if (userConfig.includeUnfree or false) then
     myConfig.includeUnfreePackages
     else [])
   ;
+
+  programs.zsh = {
+    enable = true;
+    oh-my-zsh = {
+      enable = true;
+      theme = "agnoster";
+    };
+  };
 
   home.sessionVariables = {
   } // (
