@@ -17,7 +17,11 @@ let
     };
   }
   */
-  userConfig = (import ./user-config.nix);
+  userConfig = (import (if builtins.pathExists "/etc/nix/user-config.nix"
+    then "/etc/nix/user-config.nix"
+    else ./user-config.nix)
+  );
+
   myConfig = (import ~/setup/nix/config.nix) { inherit pkgs; };
   userHomeDirectory = if builtins.hasAttr "homeDirectory" userConfig
     then userConfig.homeDirectory

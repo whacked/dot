@@ -11,7 +11,10 @@
   outputs = inputs@{ self, nix-darwin, home-manager, nixpkgs, ... }:
   let
     # darwin-rebuild switch --flake ~/dot --impure
-    userConfig = (import ./user-config.nix);
+    userConfig = (import (if builtins.pathExists "/etc/nix/user-config.nix"
+      then "/etc/nix/user-config.nix"
+      else ./user-config.nix)
+    );
 
     configuration = { pkgs, ... }: {
       # List packages installed in system profile. To search by name, run:
