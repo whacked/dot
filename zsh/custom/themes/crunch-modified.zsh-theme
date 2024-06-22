@@ -21,28 +21,29 @@ CRUNCH_RVM_='$(ruby_prompt_info)'
 CRUNCH_DIR_="$CRUNCH_DIR_COLOR%~\$(git_prompt_info) "
 CRUNCH_PROMPT="$CRUNCH_BRACKET_COLOR❯ "
 
+# ref https://github.com/ohmyzsh/ohmyzsh/blob/master/themes/dieter.zsh-theme
 
-# from https://github.com/ohmyzsh/ohmyzsh/blob/master/themes/dieter.zsh-theme
-typeset -g -A host_repr
+# Check if connected via SSH
+if [[ -n "$SSH_CONNECTION" ]]; then
+  typeset -g -A host_repr
 
-# translate hostnames into shortened, colorcoded strings
-host_repr=('dieter-ws-a7n8x-arch' "%{$fg_bold[green]%}ws" 'dieter-p4sci-arch' "%{$fg_bold[blue]%}p4")
+  # translate hostnames into shortened, colorcoded strings
+  host_repr=('dieter-ws-a7n8x-arch' "%{$fg_bold[green]%}ws" 'dieter-p4sci-arch' "%{$fg_bold[blue]%}p4")
+  
+  # user part, color coded by privileges
+  local user="%(!.%{$fg[blue]%}.%{$fg[blue]%})%n%{$reset_color%}"
+  
+  # Hostname part.  compressed and colorcoded per host_repr array
+  # if not found, regular hostname in default color
+  local host="@${host_repr[$HOST]:-$HOST}%{$reset_color%}"
 
-# local time, color coded by last return code
-time_enabled="%(?.%{$fg[green]%}.%{$fg[red]%})%*%{$reset_color%}"
-time_disabled="%{$fg[green]%}%*%{$reset_color%}"
-time=$time_enabled
-
-# user part, color coded by privileges
-local user="%(!.%{$fg[blue]%}.%{$fg[blue]%})%n%{$reset_color%}"
-
-# Hostname part.  compressed and colorcoded per host_repr array
-# if not found, regular hostname in default color
-local host="@${host_repr[$HOST]:-$HOST}%{$reset_color%}"
-
+  user_host_part="${user}${host}:"
+else
+  user_host_part=""
+fi
 
 # Put it all together
-PROMPT="$CRUNCH_TIME_${user}${host}:$CRUNCH_RVM_$CRUNCH_DIR_$CRUNCH_PROMPT%{$reset_color%}"
+PROMPT="$CRUNCH_TIME_${user_host_part}$CRUNCH_RVM_$CRUNCH_DIR_$CRUNCH_PROMPT%{$reset_color%}"
 
 
 ORIGINAL_RPROMPT=""
