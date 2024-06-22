@@ -3,19 +3,7 @@
 let
   /**
   # YOU MUST CREATE ./user-config.nix
-  # example:
-  {
-    username = "fooser";
-    hostPlatform = "aarch64-darwin"; | "x86_64-linux"
-    homeDirectory = "/Users/barser";        # <-- optional, fallback to /home/$username
-    includeUnfree = true;                   # <-- optional
-    # on mac: scutil --get LocalHostName
-    localHostName = "foobars-macbook";      # <-- optional, for nix-darwin
-    git = {
-      userName = "git-user-name";
-      userEmail = "gituser@users.noreply.example.com";
-    };
-  }
+  # see ./user-config.nix.example
   */
   userConfig = (import (if builtins.pathExists "/etc/nix/user-config.nix"
     then "/etc/nix/user-config.nix"

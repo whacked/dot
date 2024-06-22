@@ -1,0 +1,19 @@
+# -*- ft: nix -*-
+{
+  username = "fooser";
+  hostPlatform = "aarch64-darwin"; | "x86_64-linux"
+  homeDirectory = "/Users/barser";        # <-- optional, fallback to /home/$username
+  includeUnfree = true;                   # <-- optional
+  # on mac: scutil --get LocalHostName
+  localHostName = "foobars-macbook";      # <-- optional, for nix-darwin
+
+  # optional for nixos
+  timeZone = "Continent/City";
+  # optional for nixos+luks
+  luksDeviceId = "luks-########-####-####-####-############";
+
+  git = {
+    userName = "git-user-name";
+    userEmail = "gituser@users.noreply.example.com";
+  };
+}
