@@ -111,7 +111,6 @@ in {
     ".Rprofile".source = makeSymlink "Rprofile";
     ".vim".source = makeSymlink "vim";
     ".vimrc".source = makeSymlink "vimrc";
-    ".zsh".source = makeSymlink "zsh";
     ".zshrc".source = makeSubstitutedFile {
       srcName = "zshrc";
       substitutions = {
