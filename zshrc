@@ -63,12 +63,7 @@ export FPATH=~/.zsh/func:$FPATH
 # http://superuser.com/a/902508
 zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1 }
 
-trycount=1
-while [ -e $HOME/dot/commonrc.$trycount ]; do
-    source $HOME/dot/commonrc.$trycount
-    trycount=$(($trycount+1))
-done
-
+# [DEPRECATE] old method
 ZSH_PLUGINS_DIR=$USERCACHE/zsh-plugins
 if [ -e $ZSH_PLUGINS_DIR ]; then
     if [ -e $ZSH_PLUGINS_DIR/zsh-histdb ]; then
@@ -76,6 +71,19 @@ if [ -e $ZSH_PLUGINS_DIR ]; then
         autoload -Uz add-zsh-hook
     fi
 fi
+# 2024-06 new method (home-manager)
+if [[ -n "${ZSH_PLUGINS_SOURCES}" ]]; then
+    for plugin_source in ${(s: :)ZSH_PLUGINS_SOURCES}; do
+      source $plugin_source
+    done
+    autoload -Uz add-zsh-hook
+fi
+
+trycount=1
+while [ -e $HOME/dot/commonrc.$trycount ]; do
+    source $HOME/dot/commonrc.$trycount
+    trycount=$(($trycount+1))
+done
 
 autoload -U +X bashcompinit && bashcompinit
 

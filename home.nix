@@ -27,6 +27,8 @@ let
     then userConfig.homeDirectory
     else "/home/${userConfig.username}";
 
+  zshHistDb = pkgs.callPackage (import (/. + builtins.toPath "${userHomeDirectory}/setup/nix/pkgs/shells/zsh-histdb/default.nix")) {};
+
   makeSubstitutedFile = { srcName, substitutions }:
     pkgs.substituteAll ({
       src = /. + builtins.toPath "${userHomeDirectory}/dot/${srcName}";
@@ -60,13 +62,19 @@ in {
 
   programs.zsh = {
     enable = true;
+    # this is overridden by .zshrc symlink
+    # plugins = [ ];
     oh-my-zsh = {
       enable = true;
-      theme = "agnoster";
     };
   };
 
+  home.username = userConfig.username;
+  home.homeDirectory = userHomeDirectory;
   home.sessionVariables = {
+    ZSH_PLUGINS_SOURCES = lib.concatStringsSep " " [
+      "${zshHistDb}/sqlite-history.zsh"
+    ];
   } // (
     lib.optionalAttrs pkgs.stdenv.isLinux
     {
@@ -79,8 +87,6 @@ in {
     }
   );
 
-  home.username = userConfig.username;
-  home.homeDirectory = userHomeDirectory;
 
   home.file = {
 

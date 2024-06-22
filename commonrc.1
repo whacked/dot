@@ -186,6 +186,7 @@ current_shell=$(ps -p $$ -ocomm= | tr -d '-')  # mac returns "-zsh"
 
 eval "$(zoxide init $current_shell)"
 if [ "$current_shell" = "zsh" ]; then
+    # NOTE: this spits errors on just 1.26, works fine on 1.28.0+
     eval "$(just --completions zsh)"
 elif [ "$current_shell" = "bash" ]; then
     eval "$(just --completions bash)"
