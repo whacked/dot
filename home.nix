@@ -84,6 +84,7 @@ in {
         minioPath = "${pkgs.minio-client}/bin/mc";
       };
     };
+    ".config/fcitx5".source = makeSymlink "fcitx5";
     ".config/kitty/kitty.conf".source = makeSubstitutedFile {
       srcName = "kitty.conf";
       substitutions = {
