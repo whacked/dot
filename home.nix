@@ -15,8 +15,6 @@ let
     then userConfig.homeDirectory
     else "/home/${userConfig.username}";
 
-  zshHistDb = pkgs.callPackage (import (/. + builtins.toPath "${userHomeDirectory}/setup/nix/pkgs/shells/zsh-histdb/default.nix")) {};
-
   makeSubstitutedFile = { srcName, substitutions }:
     pkgs.substituteAll ({
       src = /. + builtins.toPath "${userHomeDirectory}/dot/${srcName}";
@@ -46,6 +44,10 @@ in {
   ++ (if (userConfig.includeUnfree or false) then
     myConfig.includeUnfreePackages
     else [])
+  ++ [
+    (pkgs.writeShellScriptBin "midnight-commander" "${pkgs.mc}/bin/mc $*")
+    (pkgs.writeShellScriptBin "minioc" "${pkgs.minio-client}/bin/mc $*")
+  ]
   ;
 
   programs.zsh = {
@@ -61,7 +63,12 @@ in {
   home.homeDirectory = userHomeDirectory;
   home.sessionVariables = {
     ZSH_PLUGINS_SOURCES = lib.concatStringsSep " " [
-      "${zshHistDb}/sqlite-history.zsh"
+      (pkgs.callPackage (import (/. + builtins.toPath "${userHomeDirectory}/setup/nix/pkgs/shells/zsh-histdb/default.nix")) {})
+
+      # "${pkgs.zsh-autocomplete}/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh"
+      "${pkgs.zsh-you-should-use}/share/zsh/plugins/you-should-use/you-should-use.plugin.zsh"
+      "${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+      "${pkgs.zsh-fast-syntax-highlighting}/share/zsh/site-functions/fast-syntax-highlighting.plugin.zsh"
     ];
   } // (
     lib.optionalAttrs pkgs.stdenv.isLinux
@@ -78,12 +85,7 @@ in {
 
   home.file = {
 
-    ".bashrc".source = makeSubstitutedFile {
-      srcName = "bashrc";
-      substitutions = {
-        minioPath = "${pkgs.minio-client}/bin/mc";
-      };
-    };
+    ".bashrc".source = makeSymlink "bashrc";
     ".config/fcitx5".source = makeSymlink "fcitx5";
     ".config/kitty/kitty.conf".source = makeSubstitutedFile {
       srcName = "kitty.conf";
@@ -107,12 +109,7 @@ in {
     ".Rprofile".source = makeSymlink "Rprofile";
     ".vim".source = makeSymlink "vim";
     ".vimrc".source = makeSymlink "vimrc";
-    ".zshrc".source = makeSubstitutedFile {
-      srcName = "zshrc";
-      substitutions = {
-        minioPath = "${pkgs.minio-client}/bin/mc";
-      };
-    };
+    ".zshrc".source = makeSymlink "zshrc";
 
     # haven't used these in a long time
     # ".boot.profile".source = makeSymlink "boot.profile";

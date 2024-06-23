@@ -130,6 +130,5 @@ while [ -e $HOME/dot/commonrc.$trycount ]; do
     source $HOME/dot/commonrc.$trycount
     trycount=$(($trycount+1))
 done
-
-complete -C @minioPath@ mc
+unset trycount
 

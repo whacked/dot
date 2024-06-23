@@ -193,3 +193,30 @@ elif [ "$current_shell" = "bash" ]; then
 else
     echo "Unsupported shell: $current_shell"
 fi
+
+# wrapped minio client to avoid collision with midnight commander
+if type "minioc" &>/dev/null; then
+  if [ "$current_shell" = "zsh" ]; then
+      complete -o nospace -C minioc minioc
+  elif [ "$current_shell" = "bash" ]; then
+      complete -C minioc minioc
+  fi
+fi
+
+# <nix stuff>
+export NIX_CONFIG="experimental-features = nix-command flakes"
+export NIXPKGS_ALLOW_UNFREE=1
+nxd() {
+    if [ -e flake.nix ]; then
+        nix --extra-experimental-features nix-command --extra-experimental-features flakes develop $*
+    elif [ -e shell.nix ]; then
+        echo "WARNING: using shell.nix"
+        nix-shell $*
+    elif [ -e default.nix ]; then
+        echo "WARNING: using default.nix"
+        nix-shell $*
+    else
+        echo "no usable file"
+    fi
+}
+# </nix stuff>

@@ -26,7 +26,7 @@ ZSH_THEME="crunch-modified"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git)
+plugins=(git history)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -76,16 +76,20 @@ if [[ -n "${ZSH_PLUGINS_SOURCES}" ]]; then
     autoload -Uz add-zsh-hook
 fi
 
+# plugin var overrides
+export YSU_MESSAGE_POSITION="after"
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#666633,underline"
+
+# shared rc
 trycount=1
 while [ -e $HOME/dot/commonrc.$trycount ]; do
     source $HOME/dot/commonrc.$trycount
     trycount=$(($trycount+1))
 done
+unset trycount
 
 autoload -U +X bashcompinit && bashcompinit
 
 # opam configuration, for google-drive-ocamlfuse
 [[ ! -r $HOME/.opam/opam-init/init.zsh ]] || source $HOME/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
-
-complete -o nospace -C @minioPath@ mc
 

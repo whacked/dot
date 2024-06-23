@@ -7,6 +7,10 @@ local config = {}
 
 
 config.color_scheme = 'Wombat'
+config.colors = {
+    selection_fg = 'black',
+    selection_bg = '#fffacd',
+}
 config.default_prog = { 'zsh' }
 config.window_padding = {
     left = 0,
