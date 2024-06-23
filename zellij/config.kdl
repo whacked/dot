@@ -1,0 +1,2 @@
+default_shell "zsh"
+pane_frames false
