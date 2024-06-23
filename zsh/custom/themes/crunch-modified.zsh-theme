@@ -19,7 +19,7 @@ ZSH_THEME_RUBY_PROMPT_PREFIX="$CRUNCH_BRACKET_COLOR"["$CRUNCH_RVM_COLOR"
 ZSH_THEME_RUBY_PROMPT_SUFFIX="$CRUNCH_BRACKET_COLOR"]"%{$reset_color%}"
 CRUNCH_RVM_='$(ruby_prompt_info)'
 CRUNCH_DIR_="$CRUNCH_DIR_COLOR%~\$(git_prompt_info) "
-CRUNCH_PROMPT="$CRUNCH_BRACKET_COLOR❯ "
+CRUNCH_PROMPT="$CRUNCH_BRACKET_COLOR%{$fg_bold[white]%}❯%{$reset_color%} "
 
 # ref https://github.com/ohmyzsh/ohmyzsh/blob/master/themes/dieter.zsh-theme
 
