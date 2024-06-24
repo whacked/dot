@@ -182,7 +182,9 @@ tslugify() {
 alias ls='lsd'
 
 export RIPGREP_CONFIG_PATH=$HOME/dot/ripgreprc
-current_shell=$(ps -p $$ -ocomm= | tr -d '-')  # mac returns "-zsh"
+# remove leading "-" for login shell e.g. -zsh
+# take basename for absolute path to executable
+current_shell=$(basename $(ps -p $$ -ocomm= | sed 's/^-//'))
 
 eval "$(zoxide init $current_shell)"
 if [ "$current_shell" = "zsh" ]; then
