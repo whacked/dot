@@ -50,7 +50,7 @@ ${voffset -10}${color2}${font Arial Black:size=40}${alignc}${time %H:%M:%S}${fon
 ${color orange}CALENDAR ${hr 2}$color
 ${alignc}${font Arial:size=18}${time %Y-%m-%d}
 # https://ubuntuforums.org/showthread.php?t=1403035
-${voffset 10}${font DejaVu Sans Mono:size=12}${color 999}${execpi 60 DJS=`date +%e`; cal | sed -e '1d' -e 's/^/${goto 25}/' -e "s/\b\($DJS\)\b/\${color yellow}\1\${color}/"}
+${voffset 10}${font DejaVu Sans Mono:size=12}${color 999}${execpi 60 DJS=`date +%e|tr -d ' '`; cal | sed -e '1d' -e 's/^/${goto 25}/' -e "s/\b\($DJS\)\b/\${color yellow}\1\${color}/"}
 ################
 # - CPU, RAM - #
 ################
