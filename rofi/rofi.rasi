@@ -1,5 +1,5 @@
 configuration {
-   modi: "combi,window,drun,run";
+   modi: "combi,calc,window,drun,run";
    show-icons: true;
    fake-transparency: true;
    sidebar-mode: true;

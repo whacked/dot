@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
-if [ $DESKTOP_SESSION = "sway" ]; then
+if pgrep conky; then
+    pkill conky
+    exit
+fi
+
+if [ "$DESKTOP_SESSION" = "sway" ]; then
     MONITOR_NUMBER=1
 else
     EDP1_MONITOR_NUMBER=$(xrandr --listactivemonitors | grep eDP-1 | cut -d: -f1)
@@ -16,10 +21,6 @@ else
     fi
 fi
 
-if pgrep conky; then
-    pkill conky
-else
-    # override for PATH if env doesn't supply nix-enabled
-    # PATH=$HOME/.nix-profile/bin:$PATH
-    conky -m $MONITOR_NUMBER -c $HOME/dot/conkyrc &
-fi
+# override for PATH if env doesn't supply nix-enabled
+# PATH=$HOME/.nix-profile/bin:$PATH
+conky -m $MONITOR_NUMBER -c $HOME/dot/conkyrc &

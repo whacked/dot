@@ -19,7 +19,7 @@ config.window_padding = {
     bottom = 0,
 }
 config.window_background_opacity = 0.8
-config.hide_tab_bar_if_only_one_tab = true
+config.hide_tab_bar_if_only_one_tab = false
 config.hide_mouse_cursor_when_typing = false
 config.use_fancy_tab_bar = true  -- default true
 

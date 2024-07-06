@@ -59,6 +59,12 @@ in {
     };
   };
 
+  programs.rofi = {
+    enable = true;
+    package = pkgs.rofi;
+    plugins = [ pkgs.rofi-calc ];
+  };
+
   home.username = userConfig.username;
   home.homeDirectory = userHomeDirectory;
   home.sessionVariables = {
@@ -119,13 +125,7 @@ in {
     lib.optionalAttrs pkgs.stdenv.isLinux
     {
       ".icons/default".source = "${pkgs.vanilla-dmz}/share/icons/Vanilla-DMZ";
-
-      ".config/i3/config".source = makeSubstitutedFile {
-        srcName = "i3/config";
-        substitutions = {
-          fileManagerPath = "${pkgs.cinnamon.nemo}/bin/nemo";
-        };
-      };
+      ".config/i3/config".source = makeSymlink "i3/config";
     }
   );
 

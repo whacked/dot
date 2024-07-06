@@ -102,7 +102,8 @@ set_from_resource $rofiTheme rofi.theme ~/dot/rofi/rofi.rasi
 
 ## Launch // Application // <> Space ##
 set_from_resource $i3-wm.binding.launcher.app i3-wm.binding.launcher.app space
-set_from_resource $i3-wm.program.launcher.app i3-wm.program.launcher.app rofi -show drun -theme $rofiTheme
+set_from_resource $i3-wm.program.launcher.app i3-wm.program.launcher.app rofi -show combi -theme ~/dot/rofi/rofi.rasi
+
 bindsym $mod+$i3-wm.binding.launcher.app exec $i3-wm.program.launcher.app
 
 ## Launch // Command // <><Shift> Space ##
@@ -436,7 +437,7 @@ bindsym $mod+$i3-wm.binding.bluetooth exec $i3-wm.program.bluetooth
 
 ## Launch // File Browser // <><Shift> n ##
 set_from_resource $i3-wm.binding.files i3-wm.binding.files Shift+n
-set_from_resource $i3-wm.program.files i3-wm.program.files @fileManagerPath@ --new-window
+set_from_resource $i3-wm.program.files i3-wm.program.files nemo --new-window
 bindsym $mod+$i3-wm.binding.files exec $i3-wm.program.files
 
 ## Launch // Notification Viewer // <> n ##
@@ -467,6 +468,19 @@ for_window [class="floating_window"] floating enable
 
 set_from_resource $i3-wm.workspace.auto_back_and_forth i3-wm.workspace.auto_back_and_forth no
 workspace_auto_back_and_forth $i3-wm.workspace.auto_back_and_forth
+
+workspace 1 output eDP1
+workspace 3 output eDP1
+workspace 5 output eDP1
+workspace 7 output eDP1
+workspace 9 output eDP1
+
+workspace 2 output DP2
+workspace 4 output DP2
+workspace 6 output DP2
+workspace 8 output DP2
+workspace 10 output DP2
+
 
 ###############################################################################
 # Window Resize and Gaps
@@ -611,16 +625,15 @@ font $i3-wm.font
 # i3 Bar
 ###############################################################################
 
-set_from_resource $i3-wm.bar.position i3-wm.bar.position bottom
+set_from_resource $i3-wm.bar.position i3-wm.bar.position top
 set_from_resource $i3-wm.bar.font i3-wm.bar.font pango:Source Code Pro Medium 12, Material Design Icons 12
 set_from_resource $i3-wm.bar.separator i3-wm.bar.separator " "
 set_from_resource $i3-wm.bar.trayoutput i3-wm.bar.trayoutput primary
 set_from_resource $i3-wm.bar.stripworkspacenumbers i3-wm.bar.stripworkspacenumbers yes
-# set_from_resource $i3-wm.bar.mode i3-wm.bar.mode dock
-set_from_resource $i3-wm.bar.mode i3-wm.bar.mode hide
+set_from_resource $i3-wm.bar.mode i3-wm.bar.mode dock
+# set_from_resource $i3-wm.bar.mode i3-wm.bar.mode hide
 
-# i3xrocks config file. Override this for a custom status bar generator.
-set_from_resource $i3-wm.bar.status_command i3-wm.bar.status_command i3xrocks -u ~/.config/regolith/i3xrocks/conf.d -d /etc/regolith/i3xrocks/conf.d
+set_from_resource $i3-wm.bar.status_command i3-wm.bar.status_command i3status
 
 # The bar configuration
 bar {
@@ -644,6 +657,16 @@ bar {
       urgent_workspace   $i3-wm.bar.workspace.urgent.border.color       $i3-wm.bar.workspace.urgent.background.color    $i3-wm.bar.workspace.urgent.text.color
   }
 }
+
+
+# # use polybar?
+# exec_always --no-startup-id ~/dot/polybar/launch.sh &
+# 
+# # use xev to find the key code for $mod
+# # show polybar when mod is held
+# bindcode 133 exec --no-startup-id polybar-msg cmd show
+# # hide polybar when mod is released
+# bindcode --release 133 exec --no-startup-id polybar-msg cmd hide
 
 ###############################################################################
 # External programs launched with i3
