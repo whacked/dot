@@ -14,7 +14,7 @@ element-icon {
 }
 
 window {
-   width: 33%;
+   width: 50%;
    padding: 4px;
    fullscreen: false;
    border:  2px;
