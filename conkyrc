@@ -56,7 +56,7 @@ ${voffset 10}${font DejaVu Sans Mono:size=12}${color 999}${execpi 60 DJS=`date +
 ################
 ${voffset 0}${font Consolas:style=Bold:size=8}SYSTEM $stippled_hr${font}
 ${color skyblue}BAT: ${execp acpi | head -1 | cut -f 3- -d ' ' | head -c 24}${font}${color}
-${color turquoise}TMP: ${execp i8kctl temp}${font}${color}
+${color turquoise}TMP: ${execp sensors | awk '/^Package id 0:/ {print $4}' | tr -d '+°C' | sort -nr | head -n 1}${font}${color}
 ${color grey}UPT:$color $uptime
 ## this slows down conky startup
 ##${color grey}CPU:$color $freq MHz
