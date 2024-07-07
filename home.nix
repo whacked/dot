@@ -88,6 +88,19 @@ in {
     }
   );
 
+  home.activation = (if pkgs.stdenv.isLinux then {
+    xset = lib.hm.dag.entryAfter ["xserver"] ''
+      # disable screen blank and screen off
+      ${pkgs.xorg.xset}/bin/xset s off
+      ${pkgs.xorg.xset}/bin/xset s noblank
+      ${pkgs.xorg.xset}/bin/xset r rate 200 30
+      ${pkgs.xorg.xrdb}/bin/xrdb -merge <<EOF
+      Xft.dpi: 160
+      EOF
+    '';
+  } else {
+
+  });
 
   home.file = {
 
