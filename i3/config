@@ -92,7 +92,7 @@ set_from_resource $ws10_key i3-wm.workspace.10.key 0
 ## Launch // Terminal // <> Enter ##
 set_from_resource $i3-wm.binding.terminal i3-wm.binding.terminal Return
 # bindsym $mod+$i3-wm.binding.terminal exec /usr/bin/x-terminal-emulator
-bindsym $mod+$i3-wm.binding.terminal exec wezterm
+bindsym $mod+$i3-wm.binding.terminal exec nixGL wezterm
 
 ## Launch // Browser // <><Shift> Enter ##
 set_from_resource $i3-wm.binding.browser i3-wm.binding.browser Shift+Return
@@ -121,15 +121,15 @@ set_from_resource $i3-wm.binding.help i3-wm.binding.help Shift+question
 set_from_resource $i3-wm.program.help i3-wm.program.help /usr/bin/remontoire-toggle
 bindsym $mod+$i3-wm.binding.help exec --no-startup-id $i3-wm.program.help
 
-## Launch // File Search // <><Alt> Space ##
-set_from_resource $i3-wm.binding.file_search i3-wm.binding.file_search Mod1+space
-set_from_resource $i3-wm.program.file_search i3-wm.program.file_search rofi -show find -modi find:/usr/share/rofi/modi/finder.sh
-bindsym $mod+$i3-wm.binding.file_search exec $i3-wm.program.file_search
-
-## Launch // Look Selector // <><Alt> l ##
-set_from_resource $i3-wm.binding.look_selector i3-wm.binding.look_selector Mod1+l
-set_from_resource $i3-wm.program.look_selector i3-wm.program.look_selector rofi -show look -modi look:/usr/share/rofi/modi/look-selector.sh
-bindsym $mod+$i3-wm.binding.look_selector exec $i3-wm.program.look_selector
+# ## Launch // File Search // <><Alt> Space ##
+# set_from_resource $i3-wm.binding.file_search i3-wm.binding.file_search Mod1+space
+# set_from_resource $i3-wm.program.file_search i3-wm.program.file_search rofi -show find -modi find:/usr/share/rofi/modi/finder.sh
+# bindsym $mod+$i3-wm.binding.file_search exec $i3-wm.program.file_search
+# 
+# ## Launch // Look Selector // <><Alt> l ##
+# set_from_resource $i3-wm.binding.look_selector i3-wm.binding.look_selector Mod1+l
+# set_from_resource $i3-wm.program.look_selector i3-wm.program.look_selector rofi -show look -modi look:/usr/share/rofi/modi/look-selector.sh
+# bindsym $mod+$i3-wm.binding.look_selector exec $i3-wm.program.look_selector
 
 ###############################################################################
 # Window and Workspace Navigation
@@ -372,10 +372,10 @@ bindsym $mod+$i3-wm.binding.kill_app [con_id="__focused__"] exec --no-startup-id
 set_from_resource $i3-wm.binding.reload i3-wm.binding.reload Shift+c
 bindsym $mod+$i3-wm.binding.reload reload
 
-## Session // Refresh Session // <><Shift> r ##
-set_from_resource $i3-wm.binding.refresh i3-wm.binding.refresh Shift+r
-set_from_resource $i3-wm.program.refresh_ui i3-wm.program.refresh_ui /usr/bin/regolith-look refresh
-bindsym $mod+$i3-wm.binding.refresh exec --no-startup-id $i3-wm.program.refresh_ui
+# ## Session // Refresh Session // <><Shift> r ##
+# set_from_resource $i3-wm.binding.refresh i3-wm.binding.refresh Shift+r
+# set_from_resource $i3-wm.program.refresh_ui i3-wm.program.refresh_ui /usr/bin/regolith-look refresh
+# bindsym $mod+$i3-wm.binding.refresh exec --no-startup-id $i3-wm.program.refresh_ui
 
 ## Session // Restart i3 // <><Ctrl> r ##
 set_from_resource $i3-wm.binding.restart i3-wm.binding.restart Ctrl+r
@@ -437,7 +437,7 @@ bindsym $mod+$i3-wm.binding.bluetooth exec $i3-wm.program.bluetooth
 
 ## Launch // File Browser // <><Shift> n ##
 set_from_resource $i3-wm.binding.files i3-wm.binding.files Shift+n
-set_from_resource $i3-wm.program.files i3-wm.program.files nemo --new-window
+set_from_resource $i3-wm.program.files i3-wm.program.files nemo
 bindsym $mod+$i3-wm.binding.files exec $i3-wm.program.files
 
 ## Launch // Notification Viewer // <> n ##
@@ -469,17 +469,17 @@ for_window [class="floating_window"] floating enable
 set_from_resource $i3-wm.workspace.auto_back_and_forth i3-wm.workspace.auto_back_and_forth no
 workspace_auto_back_and_forth $i3-wm.workspace.auto_back_and_forth
 
-workspace 1 output eDP1
-workspace 3 output eDP1
-workspace 5 output eDP1
-workspace 7 output eDP1
-workspace 9 output eDP1
+workspace 1 output eDP-1
+workspace 3 output eDP-1
+workspace 5 output eDP-1
+workspace 7 output eDP-1
+workspace 9 output eDP-1
 
-workspace 2 output DP2
-workspace 4 output DP2
-workspace 6 output DP2
-workspace 8 output DP2
-workspace 10 output DP2
+workspace 2 output  DP-2
+workspace 4 output  DP-2
+workspace 6 output  DP-2
+workspace 8 output  DP-2
+workspace 10 output DP-2
 
 
 ###############################################################################
@@ -728,3 +728,20 @@ bindsym $mod+w layout tabbed
 for_window [instance="Godot_Engine"] floating enable
 for_window [instance="Godot_Editor"] floating disable
 
+
+# media keys
+
+# Pulse Audio controls
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+
+# Sreen brightness controls
+bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
+bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightness
+
+# Media player controls
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioPause exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
