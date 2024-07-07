@@ -6,7 +6,7 @@ local config = {}
 -- https://www.youtube.com/watch?v=I3ipo8NxsjY
 
 
-config.color_scheme = 'Wombat'
+config.color_scheme = 'Monokai'
 config.colors = {
     selection_fg = 'black',
     selection_bg = '#fffacd',
