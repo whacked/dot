@@ -99,7 +99,7 @@ in {
         shellPath = "${pkgs.zsh}/bin/zsh";
       };
     };
-    ".config/tmux.conf".source = makeSymlink "tmux.conf";
+    ".config/tmux/tmux.conf".source = makeSymlink "tmux.conf";
     ".config/wezterm/wezterm.lua".source = makeSymlink "wezterm/wezterm.lua";
     ".config/zellij/config.kdl".source = makeSymlink "zellij/config.kdl";
     ".emacs.d".source = makeSymlink "emacs.d";
