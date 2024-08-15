@@ -56,6 +56,7 @@ call plug#end()
 " </vim-plug>
 
 
+let g:CommandTPreferredImplementation='lua'
 let g:AutoCloseExpandEnterOn = ""
 
 " most recently visited files
