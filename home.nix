@@ -112,6 +112,7 @@ in {
         shellPath = "${pkgs.zsh}/bin/zsh";
       };
     };
+    ".config/nvim".source = makeSymlink "vim";
     ".config/tmux/tmux.conf".source = makeSymlink "tmux.conf";
     ".config/wezterm/wezterm.lua".source = makeSymlink "wezterm/wezterm.lua";
     ".config/zellij/config.kdl".source = makeSymlink "zellij/config.kdl";
