@@ -319,6 +319,8 @@
    editorconfig
    elfeed
    elscreen
+   embark
+   embark-consult
    emojify
    ereader  ;; .epub reader (somewhat stale)
    esqlite
@@ -327,7 +329,9 @@
    fic-mode ;; to highlight TODO FIXME BUG etc
    find-file-in-project
    git-gutter
+   git-gutter-fringe
    git-timemachine
+   gptel  ;; ChatGPT in emacs
    guide-key
    ;; google-this
 
@@ -351,10 +355,12 @@
    jsonnet-mode
    jsonl
    jupyter
+   keycast
    lsp-mode
    lsp-ui
 
    magit
+   marginalia
    mermaid-mode
    multiple-cursors
    muse
@@ -365,6 +371,7 @@
 
    obsidian  ;; interop with obsidian
    occur-x  ;; addition candidate: [k] to push a regex into an occur buffer; occur-x-undo-filter to clear
+   orderless
    ;; org-brain  ;; haven't used for long
    org-download
    org-noter
@@ -397,8 +404,10 @@
    try
    typescript-mode
    undo-tree
+   vertico
    vterm
    websocket
+   which-key  ;; repo is archived; likely bundled in emacs 30
    ;; if win-switch works, remove this:
    ;; linkd ;; required for win-switch
    with-editor ;; dependency for magit
