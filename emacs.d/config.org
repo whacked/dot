@@ -8,7 +8,7 @@
 
   - [[https://github.com/technomancy/find-file-in-project][find-file-in-project]]
 
-* shared init
+* general utility                                                   :utility:
 
 #+BEGIN_SRC emacs-lisp
   (defun path-join (&rest path-seq)
@@ -29,9 +29,10 @@
     "Insert date at current cursor position in current active buffer"
     (interactive "P") (insert (now return-date-only)))
 
-  (setenv "PATH" (concat "~/.nix-profile/bin:" (getenv "PATH")))
-  ;; (setq exec-path (split-string (getenv "PATH") path-separator))
-  (add-to-list 'exec-path "~/.nix-profile/bin")
+  (let ((nix-bin (expand-file-name "~/.nix-profile/bin")))
+    (unless (string-match-p (regexp-quote nix-bin) (getenv "PATH"))
+      (setenv "PATH" (concat nix-bin ":" (getenv "PATH"))))
+    (add-to-list 'exec-path nix-bin))
 #+END_SRC
 
 ** package initialization
