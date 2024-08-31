@@ -65,6 +65,15 @@ in {
     plugins = [ pkgs.rofi-calc ];
   };
 
+  i18n.inputMethod = {
+    enabled = "fcitx5";
+    fcitx5.addons = with pkgs; [
+      fcitx5-chewing
+      fcitx5-mozc
+      fcitx5-gtk
+    ];
+  };
+
   home.username = userConfig.username;
   home.homeDirectory = userHomeDirectory;
   home.sessionVariables = {
