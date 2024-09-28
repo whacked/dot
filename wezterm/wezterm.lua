@@ -6,6 +6,15 @@ local config = {}
 -- https://www.youtube.com/watch?v=I3ipo8NxsjY
 
 
+wezterm.on('open-uri', function(window, pane, uri)
+    -- disable open browser on url
+    return false
+end)
+
+
+-- disable ligatures
+config.harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' }
+
 config.color_scheme = 'Monokai'
 config.colors = {
     selection_fg = 'black',
