@@ -729,6 +729,10 @@ for_window [instance="Godot_Engine"] floating enable
 for_window [instance="Godot_Editor"] floating disable
 
 
+# float tk
+for_window [class="Nodgui"] floating enable
+
+
 # media keys
 
 # Pulse Audio controls
