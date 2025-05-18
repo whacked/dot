@@ -10,3 +10,9 @@ git log --all --grep="<string>"
 git diff --shortstat <cwd-files>
 
 $ cwd-files: ls
+
+# find a file in all of commit history
+git rev-list --all | xargs git grep --name-only '<filename_pattern>'
+
+# find a string in all files in git history
+git grep "<string_to_find>" $(git rev-list --all)
