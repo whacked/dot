@@ -224,9 +224,9 @@ nxd() {
 export NIX_PATH=nixpkgs=$HOME/.nix-defexpr/channels/nixpkgs
 # </nix stuff>
 
-
 smart_ssh_tmux() {  # Function to smartly connect to a remote host and attach to tmux or create one if needed
   local host="$1"
+  shift # Remove first argument, leaving remaining args
   local ssh_timeout=3
   local retry_delay=2
   local max_attempts=99
@@ -234,7 +234,7 @@ smart_ssh_tmux() {  # Function to smartly connect to a remote host and attach to
 
   # Validate input
   if [[ -z "$host" ]]; then
-    echo "Usage: smart_ssh_tmux user@hostname"
+    echo "Usage: smart_ssh_tmux user@hostname [additional ssh args]"
     return 1
   fi
 
@@ -244,7 +244,7 @@ smart_ssh_tmux() {  # Function to smartly connect to a remote host and attach to
     printf "\033[1;34m[%s]\033[0m Attempting to connect to %s...\n" "$(date '+%Y-%m-%d %H:%M:%S')" "$host"
     
     # Try to connect with tmux attach, or create a new tmux session if attach fails
-    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -C -o ConnectTimeout=$ssh_timeout "$host" -t '
+    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -C -o ConnectTimeout=$ssh_timeout "$host" "$@" -t '
       if command -v tmux &> /dev/null; then
         if tmux has-session 2>/dev/null; then
           echo "Attaching to existing tmux session..."
