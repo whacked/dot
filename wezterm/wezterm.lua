@@ -1,6 +1,6 @@
 local wezterm = require 'wezterm'
 local act = wezterm.action
-local config = {}
+local config = wezterm.config_builder()
 
 -- helpful:
 -- https://www.youtube.com/watch?v=I3ipo8NxsjY
@@ -31,6 +31,114 @@ config.window_background_opacity = 0.8
 config.hide_tab_bar_if_only_one_tab = false
 config.hide_mouse_cursor_when_typing = false
 config.use_fancy_tab_bar = true  -- default true
+config.tab_bar_at_bottom = false
+
+config.colors = {
+  -- foreground = 'silver',
+  -- background = 'white',
+
+  selection_fg = 'black',
+  selection_bg = '#fffacd',
+
+
+  -- The color of the scrollbar "thumb"; the portion that represents the current viewport
+  scrollbar_thumb = '#ff2222',
+
+  -- Colors for copy_mode and quick_select
+  -- available since: 20220807-113146-c2fee766
+  -- In copy_mode, the color of the active text is:
+  -- 1. copy_mode_active_highlight_* if additional text was selected using the mouse
+  -- 2. selection_* otherwise
+  copy_mode_active_highlight_bg = { Color = '#000000' },
+  -- use `AnsiColor` to specify one of the ansi color palette values
+  -- (index 0-15) using one of the names "Black", "Maroon", "Green",
+  --  "Olive", "Navy", "Purple", "Teal", "Silver", "Grey", "Red", "Lime",
+  -- "Yellow", "Blue", "Fuchsia", "Aqua" or "White".
+  copy_mode_active_highlight_fg = { AnsiColor = 'Black' },
+  copy_mode_inactive_highlight_bg = { Color = '#52ad70' },
+  copy_mode_inactive_highlight_fg = { AnsiColor = 'White' },
+
+  quick_select_label_bg = { Color = 'peru' },
+  quick_select_label_fg = { Color = '#ffffff' },
+  quick_select_match_bg = { AnsiColor = 'Navy' },
+  quick_select_match_fg = { Color = '#ffffff' },
+
+
+  -- cursor_fg = 'red',
+  -- cursor_bg = 'red',
+--  brights = {
+--    'grey',
+--    'red',
+--    'lime',
+--    'yellow',
+--    'blue',
+--    'fuchsia',
+--    'aqua',
+--    'white',
+--  },
+
+  tab_bar = {
+    -- The color of the strip that goes along the top of the window
+    -- (does not apply when fancy tab bar is in use)
+    background = '#0b0022',
+
+    -- The active tab is the one that has focus in the window
+    active_tab = {
+      -- The color of the background area for the tab
+      bg_color = '#5b4022',
+      -- The color of the text for the tab
+      fg_color = '#c0c0c0',
+
+      -- Specify whether you want "Half", "Normal" or "Bold" intensity for the
+      -- label shown for this tab.
+      -- The default is "Normal"
+      intensity = 'Normal',
+
+    },
+
+    -- Inactive tabs are the tabs that do not have focus
+    inactive_tab = {
+      bg_color = '#1b1032',
+      fg_color = '#808080',
+
+      -- The same options that were listed under the `active_tab` section above
+      -- can also be used for `inactive_tab`.
+    },
+
+    -- You can configure some alternate styling when the mouse pointer
+    -- moves over inactive tabs
+    inactive_tab_hover = {
+      bg_color = '#3b3052',
+      fg_color = '#909090',
+      italic = true,
+
+      -- The same options that were listed under the `active_tab` section above
+      -- can also be used for `inactive_tab_hover`.
+    },
+
+    -- The new tab button that let you create new tabs
+    new_tab = {
+      bg_color = '#1b1032',
+      fg_color = '#808080',
+
+      -- The same options that were listed under the `active_tab` section above
+      -- can also be used for `new_tab`.
+    },
+
+    -- You can configure some alternate styling when the mouse pointer
+    -- moves over the new tab button
+    new_tab_hover = {
+      bg_color = '#3b3052',
+      fg_color = '#909090',
+      italic = true,
+
+      -- The same options that were listed under the `active_tab` section above
+      -- can also be used for `new_tab_hover`.
+    },
+  },
+}
+
+
 
 config.status_update_interval = 1000  -- what's the default?
 wezterm.on("update-right-status", function(window, pane)
@@ -64,6 +172,8 @@ config.inactive_pane_hsb = {
   saturation = 0.9,
   brightness = 0.4,
 }
+-- disable ligatures
+config.harfbuzz_features = { 'calt=0' }
 
 local mod_key = 'ALT|SUPER'
 
@@ -105,6 +215,14 @@ config.keys = {
   { key = '[', mods = mod_key, action = act.ActivateTabRelative(-1), },
   { key = ']', mods = mod_key, action = act.ActivateTabRelative(1), },
   -- move tabs: https://youtu.be/I3ipo8NxsjY?t=603
+
+  {
+    key = '.',
+    mods = mod_key,
+    action = wezterm.action_callback(function(win, pane)
+      local tab, window = pane:move_to_new_window()
+    end),
+  },
 }
 
 config.key_tables = {
