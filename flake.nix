@@ -6,6 +6,9 @@
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    # lumen flake
+    lumen-flake.url = "github:jnsahaj/lumen";
   };
 
   outputs = inputs@{ self, nix-darwin, home-manager, nixpkgs, ... }:
@@ -78,7 +81,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.${userConfig.username} = import ./home.nix;
+            home-manager.users.${userConfig.username} = import ./home.nix { inherit inputs; };
 
             # Optionally, use home-manager.extraSpecialArgs to pass
             # arguments to home.nix
