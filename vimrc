@@ -51,6 +51,8 @@ Plug 'vim-scripts/AutoClose'
 Plug 'vmchale/just-vim'
 Plug 'wincent/Command-T'
 Plug 'yegappan/mru'
+Plug 'ftorres16/spice.vim'
+Plug 'jvirtanen/vim-hcl'
 
 call plug#end()
 " </vim-plug>
