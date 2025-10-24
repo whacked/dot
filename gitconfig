@@ -6,6 +6,7 @@
     safecrlf = false
 
     pager = @deltaPath@
+    excludesfile = "~/dot/global.gitignore"
 
 [interactive]
     diffFilter = @deltaPath@ --color-only
