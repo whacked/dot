@@ -8,6 +8,15 @@
 
   - [[https://github.com/technomancy/find-file-in-project][find-file-in-project]]
 
+* environment variable defaults
+
+#+begin_src emacs-lisp
+  (when (not (getenv "CLOUDSYNC"))
+    (setenv "CLOUDSYNC"
+            (concat (file-name-as-directory (getenv "HOME"))
+                    "cloudsync")))
+#+end_src
+
 * general utility                                                   :utility:
 
 #+BEGIN_SRC emacs-lisp
