@@ -357,6 +357,7 @@
    jsonl
    jupyter
    keycast
+   logview  ;; log parsing and analysis
    lsp-mode
    lsp-ui
 
