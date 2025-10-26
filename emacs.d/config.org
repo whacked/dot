@@ -483,8 +483,6 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
    hydra
    ibuffer-vc
    iedit
-   ivy
-   ivy-rich
 
    janet-mode
    json-mode
@@ -2299,15 +2297,6 @@ https://emacs.stackexchange.com/a/35904
     (load-file (concat (file-name-as-directory (getenv "CLOUDSYNC")) "main/dev/elisp/emacs-markdown-babel/emacs-markdown-babel.el"))
     (eval-after-load 'markdown '(define-key markdown-mode-map [(f5)] 'markdown-eval-current-code-block))
   #+end_src
-
-* ivy-rich
-
-  #+begin_src emacs-lisp
-    (require 'ivy)
-    (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
-    (global-set-key (kbd "M-x") 'counsel-M-x)
-  #+end_src
-
 
 * text format conversion
 
