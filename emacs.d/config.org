@@ -471,12 +471,6 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
    guide-key
    ;; google-this
 
-   helm
-   helm-rg
-   helm-org-rifle ;; https://github.com/alphapapa/helm-org-rifle
-   helm-projectile
-   helm-swoop
-
    hnreader
    html-to-hiccup
    htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
@@ -819,8 +813,6 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
 ** remainder
 
 #+BEGIN_SRC emacs-lisp
-  (setq helm-exit-idle-delay 0) ;; fixes "display not ready" https://github.com/emacs-helm/helm/issues/550
-
   ;; kill process hack
   ;; http://stackoverflow.com/questions/10627289/emacs-internal-process-killing-any-command
   (define-key process-menu-mode-map (kbd "C-k") 'joaot/delete-process-at-point)
@@ -2154,37 +2146,6 @@ https://emacs.stackexchange.com/a/35904
 
   #+END_SRC
 
-** helm org
-
-   #+BEGIN_SRC emacs-lisp :results silent
-     (require 'subr-x)
-
-     (setq helm-note--base-directory
-           (concat
-            (file-name-as-directory (getenv "HOME"))
-            "note/org"))
-
-     (defun helm-note--get-matches ()
-       (cons '()
-             (list :title "foo title"
-                   :text "foo text")))
-
-     (defun helm-dummy
-         (choice)
-       (message (format "dummy function: %s" choice)))
-
-     (defun helm-note--test ()
-       (interactive)
-       (helm
-        :sources (list
-                  '((name . "matches")
-                    (candidates . helm-note--get-matches)
-                    (action . (("dummy" . helm-dummy)
-
-                               ))))
-        :buffer "*helm-note-search*"))
-   #+END_SRC
-
 * other from util.el
 
 ** elscreen
@@ -2787,9 +2748,4 @@ http://inclojurewetrust.blogspot.com/2013/01/duplicating-s-expressions-on-line.h
                        (list (file-name-directory "/nix/store/91y8h7rysgi5cl8hsj2bmjd00dq2l9pk-nodejs-22.14.0/bin/node")
                              "/opt/npm/bin"
                              (getenv "PATH"))) 1))
-#+end_src
-
-* more key bindings
-
-#+begin_src emacs-lisp
 #+end_src
