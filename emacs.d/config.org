@@ -8,16 +8,7 @@
 
   - [[https://github.com/technomancy/find-file-in-project][find-file-in-project]]
 
-* environment variable defaults
-
-#+begin_src emacs-lisp
-  (when (not (getenv "CLOUDSYNC"))
-    (setenv "CLOUDSYNC"
-            (concat (file-name-as-directory (getenv "HOME"))
-                    "cloudsync")))
-#+end_src
-
-* general utility                                                   :utility:
+* core utils
 
 #+BEGIN_SRC emacs-lisp
   (defun path-join (&rest path-seq)
@@ -25,104 +16,196 @@
        'file-name-as-directory
        (butlast path-seq) "")
       (car (last path-seq))))
-  (setq EMACS.D-DIR (path-join "~" ".emacs.d"))
 
-  (set-default-coding-systems 'utf-8)
-  (set-language-environment "UTF-8")
-  (setq custom-file (concat user-emacs-directory "custom.el"))
-  (when (file-exists-p custom-file)
-    (load custom-file))
-
-  (defun now (&optional return-date-only) (interactive "P") (message (format-time-string (if return-date-only "%Y-%m-%d" "%Y-%m-%d %H:%M:%S%z"))))
+  (defun now (&optional return-date-only)
+    (interactive "P")
+    (message (format-time-string (if return-date-only "%Y-%m-%d" "%Y-%m-%d %H:%M:%S%z"))))
   (defun insert-timestamp (&optional return-date-only)
     "Insert date at current cursor position in current active buffer"
     (interactive "P") (insert (now return-date-only)))
+#+END_SRC
+
+* environment / global variables
+
+#+begin_src emacs-lisp
+  (when (not (getenv "CLOUDSYNC"))
+    (setenv "CLOUDSYNC"
+	    (concat (file-name-as-directory (getenv "HOME"))
+		    "cloudsync")))
+
+  (setq EMACS.D-DIR (path-join "~" ".emacs.d"))
 
   (let ((nix-bin (expand-file-name "~/.nix-profile/bin")))
     (unless (string-match-p (regexp-quote nix-bin) (getenv "PATH"))
       (setenv "PATH" (concat nix-bin ":" (getenv "PATH"))))
     (add-to-list 'exec-path nix-bin))
-#+END_SRC
+#+end_src
 
-** package initialization
+* global emacs settings
 
-   remember if you update =package-archives= you must run
-   =M-x el-get-elpa-build-local-recipes= to refresh the list
+#+begin_src emacs-lisp
+  (set-default-coding-systems 'utf-8)
+  (set-language-environment "UTF-8")
+  (global-so-long-mode 1)
+#+end_src
 
-   #+BEGIN_SRC emacs-lisp
-     ;; package management
-     (setq package-archives '(
-            ("gnu"   . "http://elpa.gnu.org/packages/")
-            ("melpa" . "https://melpa.org/packages/")))
-     ;; activate all the packages (in particular autoloads)
-     (package-initialize)
+** UI defaults
 
-     ;; when there are duplicate packages e.g. system-provided Org,
-     ;; prefer the newer
-     (setq load-prefer-newer t)
+#+begin_src emacs-lisp
+  ;; this changes the org-mode styling
+  (setq custom-file (concat user-emacs-directory "custom.el"))
+  (when (file-exists-p custom-file)
+    (load custom-file))
+#+end_src
 
-     ;; https://github.com/dimitri/el-get#readme
-     (add-to-list 'load-path (concat user-emacs-directory "el-get/el-get"))
 
-     (defun local--init-emacs-package ()
-       (require 'package)
-       (package-refresh-contents)
-       (package-initialize))
+* packages
 
-     ;; use MELPA's el-get
-     (unless (require 'el-get nil 'noerror)
-       (local--init-emacs-package)
-       (package-install 'el-get)
-       (require 'el-get))
-     (setq package-list (list))
+ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
 
-     (unless (package-installed-p 'use-package)
-       (local--init-emacs-package)
-       (package-install 'use-package))
+** scaffolding
 
-     (eval-when-compile (require 'use-package))
+#+begin_src emacs-lisp
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+	 (expand-file-name
+	  "straight/repos/straight.el/bootstrap.el"
+	  (or (bound-and-true-p straight-base-dir)
+	      user-emacs-directory)))
+	(bootstrap-version 7))
+    (unless (file-exists-p bootstrap-file)
+      ;; Confirmation Check
+      (when (y-or-n-p "straight.el bootstrap file not found. Download and install it now? ")
+	(with-current-buffer
+	    (url-retrieve-synchronously
+	     "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+	     'silent 'inhibit-cookies)
+	  (goto-char (point-max))
+	  (eval-print-last-sexp))))
+    (load bootstrap-file nil 'nomessage))
 
-     ;; (add-to-list 'el-get-recipe-path "~/dot/emacs.d/el-get-user/recipes")
+  (setq package-enable-at-startup nil)
+  (straight-use-package 'use-package)
 
-     ;; local sources
-     ;; example:
-     ;; (setq el-get-sources
-     ;;       '((:name magit :after (lambda () (global-set-key (kbd "C-x C-z") 'magit-status)))
-     ;;         (:name asciidoc :type elpa :after (lambda () (autoload 'doc-mode "doc-mode" nil t) (add-to-list 'auto-mode-alist '("\\.adoc$" . doc-mode)) (add-hook 'doc-mode-hook '(lambda () (turn-on-auto-fill) (require 'asciidoc)))))
-     ;;         (:name lisppaste :type elpa)
-     ;;         (:name emacs-goodies-el :type apt-get)))
-     ;; (setq my-packages
-     ;;       (append '(cssh el-get switch-window vkill google-maps nxhtml xcscope yasnippet)
-     ;;        (mapcar 'el-get-source-name el-get-sources)))
+  ;; Configure package archives
+  (setq package-archives
+	'(("melpa" . "https://melpa.org/packages/")
+	  ("gnu" . "https://elpa.gnu.org/packages/")
+	  ("nongnu" . "https://elpa.nongnu.org/packages/")))
 
-     ;; specify package sets to load later
-     (setq package-group-list (list))
+  (setq use-package-always-ensure t)
+  (setq straight-use-package-by-default t)
 
-     (defmacro local--load-packages (&rest package-list)
-       (cons
-        'progn
-        (mapcar
-         (lambda (package-name)
-           (list 'use-package package-name :ensure t :defer t))
-         package-list)))
 
-     ;; straight
-     (defvar bootstrap-version)
-     (let ((bootstrap-file
-            (expand-file-name
-             "straight/repos/straight.el/bootstrap.el"
-             (or (bound-and-true-p straight-base-dir)
-                 user-emacs-directory)))
-           (bootstrap-version 7))
-       (unless (file-exists-p bootstrap-file)
-         (with-current-buffer
-             (url-retrieve-synchronously
-              "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-              'silent 'inhibit-cookies)
-           (goto-char (point-max))
-           (eval-print-last-sexp)))
-       (load bootstrap-file nil 'nomessage))
-   #+END_SRC
+  ;; DELETE ME?
+  ;; https://github.com/dimitri/el-get#readme
+  ;; (add-to-list 'load-path (concat user-emacs-directory "el-get/el-get"))
+  ;; (add-to-list 'el-get-recipe-path "~/dot/emacs.d/el-get-user/recipes")
+
+  ;; local sources
+  ;; example:
+  ;; (setq el-get-sources
+  ;;       '((:name magit :after (lambda () (global-set-key (kbd "C-x C-z") 'magit-status)))
+  ;;         (:name asciidoc :type elpa :after (lambda () (autoload 'doc-mode "doc-mode" nil t) (add-to-list 'auto-mode-alist '("\\.adoc$" . doc-mode)) (add-hook 'doc-mode-hook '(lambda () (turn-on-auto-fill) (require 'asciidoc)))))
+  ;;         (:name lisppaste :type elpa)
+  ;;         (:name emacs-goodies-el :type apt-get)))
+  ;; (setq my-packages
+  ;;       (append '(cssh el-get switch-window vkill google-maps nxhtml xcscope yasnippet)
+  ;;        (mapcar 'el-get-source-name el-get-sources)))
+
+  (defmacro local--load-packages (&rest package-list)
+    (cons
+     'progn
+     (mapcar
+      (lambda (package-name)
+	(list 'use-package package-name :ensure t :defer t))
+      package-list)))
+#+end_src
+
+** completions
+
+#+begin_src emacs-lisp
+  ;; Vertico for vertical completion for the emacs minibuffer.
+  (use-package vertico
+    :init
+    (vertico-mode))
+
+  ;; Emacs minibuffer configurations.
+  (use-package emacs
+    :custom
+    ;; Hide commands in M-x which do not work in the current mode.  Vertico
+    ;; commands are hidden in normal buffers. This setting is useful beyond
+    ;; Vertico.
+    (read-extended-command-predicate #'command-completion-default-include-p))
+
+  ;; A bunch of great search and navigation commands
+  (use-package consult
+     :hook (completion-list-mode . consult-preview-at-point-mode)
+     :custom
+     (consult-preview-key nil)
+     (consult-narrow-key nil)
+     :config
+     (consult-customize consult-theme consult-line consult-line-at-point :preview-key '(:debounce 0.2 any))
+   )
+
+  ;; Annotations in the minibuffer, i.e a description of the function next to the name in M-x
+  (use-package marginalia
+    :init
+    (marginalia-mode))
+
+  ;; In buffer completions, think lsp completions
+  (use-package corfu
+    :custom
+    (corfu-auto t)
+    (corfu-cycle t) ;; Enable cycling for `corfu-next/previous'
+    :bind
+    (:map corfu-map
+	  ("TAB" . corfu-next)
+	  ("C-n" . corfu-next)
+	  ([tab] . corfu-next)
+	  ("C-p" . corfu-previous)
+	  ("S-TAB" . corfu-previous)
+	  ([backtab] . corfu-previous))
+    :init
+    (global-corfu-mode))
+
+  ;; Completion style and fuzzy matching
+  (use-package orderless
+    :custom
+    (completion-styles '(orderless basic))
+    (completion-category-defaults nil)
+    (completion-category-overrides '((file (styles partial-completion)))))
+#+end_src
+
+** syntax
+
+#+begin_src emacs-lisp
+(use-package treesit-auto
+  :custom
+  (treesit-auto-install 'prompt) ;; if a treesitter grammar can't be found for the language detected in the buffer, prompt me to install it
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all) ;; if a treesitter grammar is found for the language detected in the buffer, use the corresponding language-ts-mode
+  (global-treesit-auto-mode))
+#+end_src
+
+** common
+
+#+begin_src emacs-lisp
+  (local--load-packages
+   ace-window  ;; switch to window by numbered target labels
+   async ;; https://github.com/jwiegley/emacs-async
+
+   ;; if the dired view is messed up, investigate:
+   ;; show details by default; "(" to toggle
+   ;; (setq diredp-hide-details-initially-flag nil)
+   dired+  
+
+   free-keys  ;; show unbound keys; previously used "unbound" package
+
+   )
+#+end_src
+
+* theme /style
 
 ** UI defaults
 
@@ -177,6 +260,8 @@
        ad-do-it)
      (ad-activate 'balance-windows)
    #+END_SRC
+
+* key bindings
 
 ** key mapping
 
@@ -307,15 +392,13 @@
 ** common
 
 #+BEGIN_SRC emacs-lisp
-  (local--load-packages
-   ace-window  ;; switch to window by numbered target labels
-   async ;; https://github.com/jwiegley/emacs-async
-   auto-complete
+  (quote local--load-packages
+   ;; auto-complete  --> complany-mode
 
    calfw
    calfw-org
    color-theme
-   company
+   ;; company --> corfu
    cond-let
    counsel  ;; counsel-buffer-or-recentf etc
 
@@ -373,7 +456,6 @@
    lsp-ui
 
    magit
-   marginalia
    mermaid-mode
    multiple-cursors
    muse
@@ -400,7 +482,6 @@
    projectile
    request
    restclient
-   quelpa
    s
    simple-httpd
    skewer-mode ;; js live repl https://github.com/skeeto/skewer-mode
@@ -417,7 +498,6 @@
    try
    typescript-mode
    undo-tree
-   vertico
    vterm
    websocket
    which-key  ;; repo is archived; likely bundled in emacs 30
@@ -427,44 +507,6 @@
    yasnippet
    )
 #+END_SRC
-
-** quelpa
-
-   #+BEGIN_SRC emacs-lisp
-     (quelpa
-      '(quelpa-use-package
-        :fetcher git
-        :url "https://github.com/quelpa/quelpa-use-package.git"))
-     (require 'quelpa-use-package)
-   #+END_SRC
-
-*** dired+
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package dired+
-        :quelpa (dired+ :fetcher github :repo "emacsmirror/dired-plus"))
-      ;; show details by default; "(" to toggle
-      (setq diredp-hide-details-initially-flag nil)
-    #+END_SRC
-
-*** unbound
-
-    provides =describe-unbound-keys=
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package unbound
-        :quelpa (unbound :fetcher github :repo "emacsmirror/unbound"))
-    #+END_SRC
-
-*** so-long
-
-    https://www.emacswiki.org/emacs/SoLong
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package so-long
-        :quelpa (so-long :url "https://raw.githubusercontent.com/emacs-mirror/emacs/master/lisp/so-long.el" :fetcher url)
-        :config (global-so-long-mode 1))
-    #+END_SRC
 
 ** el-get
 
@@ -598,6 +640,9 @@
 ** package-common.el
 
   #+BEGIN_SRC emacs-lisp
+    ;; (use-package floaty-edit-mode
+    ;;   :quelpa (floaty-edit-mode :repo "whacked/floaty-edit-mode" :fetcher github))
+
     (setq el-get-sources
           '((:name tiddlywiki-org
                    :type git
@@ -620,6 +665,7 @@
              ;; NOTE: packages moved to use-package macro
              )
            (mapcar 'el-get-source-name el-get-sources)))
+
 
   #+END_SRC
 
@@ -2231,7 +2277,7 @@ https://emacs.stackexchange.com/a/35904
 
   #+begin_src emacs-lisp
     (use-package org-logseq
-      :quelpa (org-logseq :fetcher github :repo "llcc/org-logseq" :files ("*"))
+      :straight (org-logseq :fetcher github :repo "llcc/org-logseq" :files ("*"))
       :custom (org-logseq-dir (concat (file-name-as-directory (getenv "CLOUDSYNC")) "main/note/org")))
     ;; ((org-mode . ((eval org-logseq-mode 1))))
 
@@ -2784,104 +2830,7 @@ http://inclojurewetrust.blogspot.com/2013/01/duplicating-s-expressions-on-line.h
                              (getenv "PATH"))) 1))
 #+end_src
 
-* 2025 new config
-
-ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
+* more key bindings
 
 #+begin_src emacs-lisp
-  (defvar bootstrap-version)
-  (let ((bootstrap-file
-	 (expand-file-name
-	  "straight/repos/straight.el/bootstrap.el"
-	  (or (bound-and-true-p straight-base-dir)
-	      user-emacs-directory)))
-	(bootstrap-version 7))
-    (unless (file-exists-p bootstrap-file)
-      ;; Confirmation Check
-      (when (y-or-n-p "straight.el bootstrap file not found. Download and install it now? ")
-	(with-current-buffer
-	    (url-retrieve-synchronously
-	     "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-	     'silent 'inhibit-cookies)
-	  (goto-char (point-max))
-	  (eval-print-last-sexp))))
-    (load bootstrap-file nil 'nomessage))
-
-  (setq package-enable-at-startup nil)
-  (straight-use-package 'use-package)
-
-  ;; Configure package archives
-  (setq package-archives
-	'(("melpa" . "https://melpa.org/packages/")
-	  ("gnu" . "https://elpa.gnu.org/packages/")
-	  ("nongnu" . "https://elpa.nongnu.org/packages/")))
-
-  (setq use-package-always-ensure t)
-  (setq straight-use-package-by-default t)
-#+end_src
-
-** completions
-
-#+begin_src emacs-lisp
-  ;; Vertico for vertical completion for the emacs minibuffer.
-  (use-package vertico
-    :init
-    (vertico-mode))
-
-  ;; Emacs minibuffer configurations.
-  (use-package emacs
-    :custom
-    ;; Hide commands in M-x which do not work in the current mode.  Vertico
-    ;; commands are hidden in normal buffers. This setting is useful beyond
-    ;; Vertico.
-    (read-extended-command-predicate #'command-completion-default-include-p))
-
-  ;; A bunch of great search and navigation commands
-  (use-package consult
-     :hook (completion-list-mode . consult-preview-at-point-mode)
-     :custom
-     (consult-preview-key nil)
-     (consult-narrow-key nil)
-     :config
-     (consult-customize consult-theme consult-line consult-line-at-point :preview-key '(:debounce 0.2 any))
-   )
-
-  ;; Annotations in the minibuffer, i.e a description of the function next to the name in M-x
-  (use-package marginalia
-    :init
-    (marginalia-mode))
-
-  ;; In buffer completions, think lsp completions
-  (use-package corfu
-    :custom
-    (corfu-auto t)
-    (corfu-cycle t) ;; Enable cycling for `corfu-next/previous'
-    :bind
-    (:map corfu-map
-	  ("TAB" . corfu-next)
-	  ("C-n" . corfu-next)
-	  ([tab] . corfu-next)
-	  ("C-p" . corfu-previous)
-	  ("S-TAB" . corfu-previous)
-	  ([backtab] . corfu-previous))
-    :init
-    (global-corfu-mode))
-
-  ;; Completion style and fuzzy matching
-  (use-package orderless
-    :custom
-    (completion-styles '(orderless basic))
-    (completion-category-defaults nil)
-    (completion-category-overrides '((file (styles partial-completion)))))
-#+end_src
-
-** syntax
-
-#+begin_src emacs-lisp
-(use-package treesit-auto
-  :custom
-  (treesit-auto-install 'prompt) ;; if a treesitter grammar can't be found for the language detected in the buffer, prompt me to install it
-  :config
-  (treesit-auto-add-to-auto-mode-alist 'all) ;; if a treesitter grammar is found for the language detected in the buffer, use the corresponding language-ts-mode
-  (global-treesit-auto-mode))
 #+end_src
