@@ -30,8 +30,12 @@
 #+begin_src emacs-lisp
   (when (not (getenv "CLOUDSYNC"))
     (setenv "CLOUDSYNC"
-	    (concat (file-name-as-directory (getenv "HOME"))
-		    "cloudsync")))
+  	    (concat (file-name-as-directory (getenv "HOME"))
+  		    "cloudsync")))
+
+  (defvar CLOUDSYNC-NOTE-DIR
+    (concat (file-name-as-directory
+  	   (getenv "CLOUDSYNC")) "main/note/org"))
 
   (setq EMACS.D-DIR (path-join "~" ".emacs.d"))
 
@@ -60,6 +64,14 @@
   (desktop-change-dir "~/dot/emacs.d")
   (setq desktop-save-mode t)
 #+end_src
+
+** recentf
+
+#+BEGIN_SRC emacs-lisp
+  (recentf-mode 1)
+  (setq recentf-max-menu-items 100)
+  (setq recentf-max-saved-items 200)
+#+END_SRC
 
 ** UI defaults
 
@@ -459,7 +471,6 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
    duplicate-thing  ;; provides duplicate-thing (e.g. duplicate a line)
    editorconfig
    elfeed
-   elscreen
    embark
    embark-consult
    emojify
@@ -540,8 +551,6 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
    vterm
    websocket
    which-key  ;; repo is archived; likely bundled in emacs 30
-   ;; if win-switch works, remove this:
-   ;; linkd ;; required for win-switch
    with-editor ;; dependency for magit
    yasnippet
    )
@@ -800,22 +809,18 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
 
  #+END_SRC
 
-* usual-environment.el
 
-** global vars
+
+
+* theme /style
+
+** UI defaults
 
 #+begin_src emacs-lisp
-  (defvar CLOUDSYNC-NOTE-DIR (concat (file-name-as-directory
-                                      (or (getenv "CLOUDSYNC")
-                                          (concat (getenv "HOME") "/cloudsync"))) "main/note/org"))
 #+end_src
 
-** recentf
 
 #+BEGIN_SRC emacs-lisp
-  (recentf-mode 1)
-  (setq recentf-max-menu-items 100)
-  (setq recentf-max-saved-items 200)
 #+END_SRC
 
 ** remainder
@@ -824,16 +829,6 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
   ;; kill process hack
   ;; http://stackoverflow.com/questions/10627289/emacs-internal-process-killing-any-command
   (define-key process-menu-mode-map (kbd "C-k") 'joaot/delete-process-at-point)
-
-  (defun joaot/delete-process-at-point ()
-    (interactive)
-    (let ((process (get-text-property (point) 'tabulated-list-id)))
-      (cond ((and process
-                  (processp process))
-             (delete-process process)
-             (revert-buffer))
-            (t
-             (error "no process at point!")))))
 
   ;; prevent special buffers from messing with the current layout
   ;; see: http://www.gnu.org/software/emacs/manual/html_node/emacs/Special-Buffer-Frames.html
@@ -876,14 +871,6 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
     (when (not (emacs-process-p ad-return-value))
       (setq ad-return-value nil)))
   ;;; desktop-override-stale-locks.el ends here
-
-  (when (load "auctex.el" t t t) ;; first t = don't throw error if not exist
-    (load "preview-latex.el" nil t t)
-    (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-    (setq TeX-command-master "latex")
-    (setq TeX-auto-save t)
-    (setq TeX-parse-self t)
-    (setq TeX-save-query t))
 
   (defun surround-region-with-tag (tag-name beg end)
     (interactive "sTag name: \nr")
@@ -989,7 +976,7 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
      )
 
    ;; (setq-default py-split-windows-on-execute-function 'split-window-horizontally)
-   (setq-default py-keep-windows-configuration t)
+   ;; (setq-default py-keep-windows-configuration t)
 
    ;; FIXME
    ;; (setq org-ditaa-jar-path "~/dot/emacs.d/bundle/org-mode/contrib/scripts/ditaa.jar")
@@ -1008,127 +995,22 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
    ;; (add-to-list 'iimage-mode-image-regex-alist
    ;;              (cons (concat "file:\\(~?[]\\[\\(\\),~+./_0-9a-zA-Z -]+\\.\\(GIF\\|JP\\(?:E?G\\)\\|P\\(?:BM\\|GM\\|N[GM]\\|PM\\)\\|SVG\\|TIFF?\\|X\\(?:[BP]M\\)\\|gif\\|jp\\(?:e?g\\)\\|p\\(?:bm\\|gm\\|n[gm]\\|pm\\)\\|svg\\|tiff?\\|x\\(?:[bp]m\\)\\)\\)")  1))
    (define-key global-map (kbd "<f9>") 'org-agenda)
-   (defun set-calendar-appt ()
-     (save-excursion
-       (end-of-buffer)
-       (outline-previous-visible-heading 1)
-       (backward-char)
-       (when (re-search-forward org-ts-regexp nil t)
-         (let* ((spl-matched (split-string (match-string 1) " "))
-                (date (first spl-matched))
-                (time (if (= 3 (length spl-matched)) ;; contains time
-                          (third spl-matched)
-                        ;; only contains date
-                        nil))
-                (tm-start (or time "00:00"))
-                (alarm "5min")
-                (name (save-excursion
-                        (end-of-buffer)
-                        (outline-previous-visible-heading 1)
-                        (backward-char)
-                        (when (re-search-forward org-complex-heading-regexp nil t)
-                          (replace-regexp-in-string (concat "[[:space:]]*" org-ts-regexp "[[:space:]]*") "" (match-string 4))))))
-           (start-process
-            "kalarm-process" "*Messages*" "/usr/bin/kalarm"
-            "--color"
-            "0x00FF00"
-            "--time"
-            (format "%s-%s" date tm-start)
-            "--reminder"
-            "0H5M"
-            ;; doesn't work :(
-            ;; "--play" "/usr/share/sounds/KDE-Im-Sms.ogg"
-            "--beep"
-            (format "%s" name))))))
 
    ;; thanks to http://kliketa.wordpress.com/2010/08/04/gtklook-browse-documentation-for-gtk-glib-and-gnome-inside-emacs/
    ;NEW;(require 'gtk-look)
-   (setq browse-url-browser-function 'browse-url-generic
-         browse-url-generic-program "chromium-browser")
+   ;; (setq browse-url-browser-function 'browse-url-generic
+   ;;       browse-url-generic-program "chromium-browser")
    ;;(setq browse-url-browser-function
    ;; '(("file:.*/usr/share/doc/.*gtk.*-doc/.*" . w3m-browse-url)
    ;;   ("." . browse-url-firefox)))
 
-   ;; ref: http://emacs-fu.blogspot.com/2009/11/showing-pop-ups.html
-   (defun djcb-popup (title msg &optional icon sound)
-     "Show a popup if we're on X, or echo it otherwise; TITLE is the title
-   of the message, MSG is the context. Optionally, you can provide an ICON and
-   a sound to be played"
-
-     (interactive)
-     (if (eq window-system 'x)
-         (shell-command (concat "notify-send "
-
-                                (if icon (concat "-i " icon) "")
-                                " '" title "' '" msg "'")))
-     (when sound (shell-command
-                  (concat "mplayer -really-quiet " sound " 2> /dev/null"))))
-
-   ;; the appointment notification facility
-   (setq
-    appt-message-warning-time 10 ;; warn 10 min in advance
-    appt-display-mode-line t     ;; show in the modeline
-    appt-display-format 'window) ;; use our func
-   (appt-activate 1)              ;; active appt (appointment notification)
-   (display-time)                 ;; time display is required for this...
-   (setq appt-audible t)
-
-   ;; our little façade-function for djcb-popup
-   (defun djcb-appt-display (min-to-app new-time msg)
-     (djcb-popup (format "Appointment in %s minute(s)" min-to-app) msg
-                 "/usr/share/icons/gnome/32x32/status/appointment-soon.png"
-                 "/usr/share/sounds/ubuntu/stereo/phone-incoming-call.ogg"))
-   (setq appt-disp-window-function (function djcb-appt-display))
-
-   (defun org-add-appt-after-save-hook ()
-     (if ;(string= mode-name "Org")
-         (member (buffer-file-name) org-agenda-files)
-         (org-agenda-to-appt)))
-   (add-hook 'after-save-hook 'org-add-appt-after-save-hook)
-
-    ;; update appt each time agenda opened
-   (add-hook 'org-finalize-agenda-hook 'org-agenda-to-appt)
-
-   (defun kiwon/merge-appt-time-msg-list (time-msg-list)
-     "Merge time-msg-list's elements if they have the same time."
-     (let* ((merged-time-msg-list (list)))
-       (while time-msg-list
-         (if (eq (car (caar time-msg-list)) (car (caar (cdr time-msg-list))))
-             (setq time-msg-list
-                   (cons
-                    (append
-                     (list (car (car time-msg-list)) ; time
-                           (concat (car (cdr (car time-msg-list))) " / "(car (cdr (car (cdr time-msg-list)))))) ; combined msg
-                     (cdr (cdr (car time-msg-list)))) ; rest information
-                    (nthcdr 2 time-msg-list)))
-           (progn (add-to-list 'merged-time-msg-list (car time-msg-list) t)
-                  (setq time-msg-list (cdr time-msg-list)))))
-       merged-time-msg-list))
-
-   (defun kiwon/org-agenda-to-appt ()
-     (prog2
-         (setq appt-time-msg-list nil)
-         (org-agenda-to-appt)
-       (setq appt-time-msg-list (kiwon/merge-appt-time-msg-list appt-time-msg-list))))
-
-   ;; (add-hook 'org-finalize-agenda-hook (function kiwon/org-agenda-to-appt))
-
-   ;; see earlier commits for google calendar interaction
-   ;; ref http://article.gmane.org/gmane.emacs.orgmode/27214
-   ;; "defadvice org-agenda-add-entry-to-org-agenda-diary-file"
+   (display-time)
  #+END_SRC
 
-*** re-enable org-tempo
-
-    this enables shortcut expansions like "<s<TAB>". it is off by default since org 9.2
+*** fix "org-mouse-features"
 
     #+begin_src emacs-lisp
-      (when (<= 9.2
-                (string-to-number
-                 (replace-regexp-in-string
-                  "\\.[[:digit:]]+$" ""
-                  org-version)))
-        (require 'org-tempo))
+      (require 'org-mouse)
     #+end_src
 
 *** org capture
@@ -1536,64 +1418,6 @@ https://emacs.stackexchange.com/a/35904
           deft-ignore-file-regexp "\\$.+") ;; for ignoring special tiddlers
   #+END_SRC
 
-* filesync (sync.el)
-
-  #+BEGIN_SRC emacs-lisp :tangle no
-
-    (defun local--sync-note! ()
-      (interactive)
-      (let ((current-line (count-lines 1 (point)))
-            (cur-buf (current-buffer))
-            (file-list (list "index.org.gpg" "jp.muse.gpg")))
-        (let ((presave-list file-list))
-          (while presave-list
-            (when (get-buffer (car presave-list))
-              (switch-to-buffer (car presave-list))
-              (save-buffer))
-            (setq presave-list (cdr presave-list))))
-
-        (message (format "syncing now: %s" (now)))
-
-        (cond ((string= system-name "natto-tp")
-               ;; (start-process "sync-linode" "*Messages*" "/bin/bash" "sync-linode.sh")
-               ;; (start-process "sync" "*Messages*" "rsync" "-au" "--include" "*.gpg" "--exclude" "*" "linode:note/" (expand-file-name "~/note/org/"))
-               (start-process "sync-linode" "*Messages*" "/bin/bash" "sync-linode.sh")
-               )
-              ((string= system-name "Nokia-N900")
-               ;; (start-process "sync-linode" "*Messages*" "/bin/sh" "/media/mmc1/mod/syncnote.sh")
-               (call-process "/bin/sh" "/media/mmc1/mod/syncnote.sh"))
-              ((string= system-name "localhost")
-               (start-process "sync" "*Messages*" "/bin/bash" (expand-file-name "~/sync.sh"))))
-
-        (let ((postsave-list file-list))
-          (while postsave-list
-            (when (get-buffer (car postsave-list))
-              (switch-to-buffer (car postsave-list))
-              (revert-buffer nil t)
-              (outline-show-all))
-            (setq postsave-list (cdr postsave-list))))
-
-        (switch-to-buffer cur-buf)
-        (goto-line current-line)))
-
-    (setq local--sync-interval-S (* 60 10))
-    (defun *local--sync-note-repeater* ()
-      (sync-note!)
-      (run-with-idle-timer (time-add (seconds-to-time sync-interval-S) (current-idle-time)) nil '*sync-note-repeater*))
-
-    (defun local--start-sync ()
-      (interactive)
-      (setq *sync-note-timer* (run-with-idle-timer sync-interval-S t '*sync-note-repeater*)))
-
-    ;; to cancel:
-    (defun local--stop-sync ()
-      (interactive)
-      (cancel-timer *sync-note-timer*))
-
-    ;; (local--start-sync)
-  #+END_SRC
-
-
 * custom faces
 
   #+BEGIN_SRC emacs-lisp
@@ -1633,43 +1457,6 @@ https://emacs.stackexchange.com/a/35904
            (add-to-list
             'default-frame-alist
             `(font . ,(format "%s-%s" emacs-english-font (cdr font-pair)))))))
-   #+END_SRC
-
-** highlight line
-
-   not working
-
-   #+BEGIN_SRC emacs-lisp
-     (require 'hl-line)
-
-     ;; http://stackoverflow.com/a/10239361
-     ;; see C-h-f defface for source of this
-     (defun set-buffer-local-hl-color ()
-       (interactive)
-       (custom-declare-face (make-local-variable 'buffer-local-hl-face)
-                            '((t :inherit hl-line))
-                            "store default global hl-line face"
-                            :background "blue"
-                            :group 'hl-line)
-       (set (make-local-variable 'hl-line-face) 'buffer-local-hl-face))
-
-
-     ;; see http://stackoverflow.com/questions/17628985/how-to-set-a-buffer-locally-face-attribute-for-a-particular-buffer
-     ;; First create new face which is a copy of hl-line-face
-     (copy-face 'hl-line 'hl-line-light-face)
-
-     ;; Change what you want in this new face
-     (set-face-attribute 'hl-line-light-face nil
-                         :box '(:color "papayawhip"))
-
-     ;; The function to use the new face
-     (defun set-buffer-local-hl-color ()
-       (interactive)
-       (set (make-local-variable 'hl-line-face) ; This is how to make it local
-            'hl-line-light-face)
-       (hl-line-mode))
-
-     (set-cursor-color "#ff6699")
    #+END_SRC
 
 * utility (from util.el)
@@ -1853,10 +1640,6 @@ https://emacs.stackexchange.com/a/35904
 
         )
       )
-
-    (defun rev! ()
-      (interactive)
-      (revert-buffer nil t))
   #+END_SRC
 
   #+begin_src emacs-lisp
@@ -2140,31 +1923,6 @@ https://emacs.stackexchange.com/a/35904
                 "\n"))))
           histogram)))
 
-  #+END_SRC
-
-* other from util.el
-
-** elscreen
-
-   (not loaded by default)
-
-  #+BEGIN_SRC emacs-lisp :tangle no
-    ;; elscreen
-    (require 'elscreen)
-    (load "elscreen" "ElScreen" t)
-    (global-set-key (kbd "s-_") 'elscreen-previous)
-    (global-set-key (kbd "s-+") 'elscreen-next)
-    (setq elscreen-display-tab nil)
-  #+END_SRC
-
-  #+BEGIN_SRC emacs-lisp :tangle no
-    ;; google-this
-    ;; (global-set-key (kbd "C-x g") 'google-this-mode-submap)
-    (define-key google-this-mode-submap "c" 'google-scholar-search)
-    (defun google-scholar-search (prefix)
-      "search in google scholar"
-      (interactive "P")
-      (google-search prefix "http://scholar.google.com/scholar?hl=en&btnG=&as_sdt=1%%2C22&q=%s"))
   #+END_SRC
 
 * assorted library customization
