@@ -365,15 +365,6 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
       (global-set-key (kbd "C-` L") (lambda () (interactive) (move-to-window-line-top-bottom -1)))
     #+END_SRC
 
-*** guide key
-
-    #+begin_src emacs-lisp
-    (setq guide-key/guide-key-sequence '("C-x r"))
-    (setq guide-key/highlight-command-regexp "rectangle")
-    #+end_src
-
-
-
 * specific init
 
 ** os-specific
@@ -435,17 +426,6 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
                        (concat user-login-name ".org"))))
        (when (file-exists-p user-login-name-org)
          (org-babel-load-file user-login-name-org)))
-   #+END_SRC
-
-** chemacs-profile
-
-   #+BEGIN_SRC emacs-lisp
-     (when (boundp 'chemacs-current-emacs-profile)
-       (let ((chemacs-profile-custom-file
-              (path-join user-emacs-directory
-                         "chemacs-profile-custom.el")))
-         (when (file-exists-p chemacs-profile-custom-file)
-           (load-file chemacs-profile-custom-file))))
    #+END_SRC
 
 * package setup
