@@ -1,0 +1,4 @@
+% moreutils
+
+# pipe to ts in rfc-3339-like format
+<command> | ts '%Y-%m-%d %H:%M:%.T%z'
