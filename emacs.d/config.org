@@ -96,23 +96,6 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
   (setq use-package-always-ensure t)
   (setq straight-use-package-by-default t)
 
-
-  ;; DELETE ME?
-  ;; https://github.com/dimitri/el-get#readme
-  ;; (add-to-list 'load-path (concat user-emacs-directory "el-get/el-get"))
-  ;; (add-to-list 'el-get-recipe-path "~/dot/emacs.d/el-get-user/recipes")
-
-  ;; local sources
-  ;; example:
-  ;; (setq el-get-sources
-  ;;       '((:name magit :after (lambda () (global-set-key (kbd "C-x C-z") 'magit-status)))
-  ;;         (:name asciidoc :type elpa :after (lambda () (autoload 'doc-mode "doc-mode" nil t) (add-to-list 'auto-mode-alist '("\\.adoc$" . doc-mode)) (add-hook 'doc-mode-hook '(lambda () (turn-on-auto-fill) (require 'asciidoc)))))
-  ;;         (:name lisppaste :type elpa)
-  ;;         (:name emacs-goodies-el :type apt-get)))
-  ;; (setq my-packages
-  ;;       (append '(cssh el-get switch-window vkill google-maps nxhtml xcscope yasnippet)
-  ;;        (mapcar 'el-get-source-name el-get-sources)))
-
   (defmacro local--load-packages (&rest package-list)
     (cons
      'progn
@@ -188,7 +171,7 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
   (global-treesit-auto-mode))
 #+end_src
 
-** common
+** other
 
 #+begin_src emacs-lisp
   (local--load-packages
@@ -203,6 +186,84 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
    free-keys  ;; show unbound keys; previously used "unbound" package
 
    )
+
+
+  (use-package thingatpt+
+    :straight (:host github
+		     :repo "emacsmirror/thingatpt-plus"
+		     :files ("thingatpt+.el"))
+    :defer t)
+
+  (use-package thing-cmds
+    :straight (:host github
+		     :repo "emacsmirror/thing-cmds"
+		     :files ("thing-cmds.el"))
+    :after thingatpt+
+    :defer t)
+#+end_src
+
+** org-logseq
+
+#+begin_src emacs-lisp
+  (straight-override-recipe (cons 'org '(:type built-in)))
+  ;; (straight-override-recipe
+  ;;    '(org :type git :host github :repo "emacsmirror/org" :no-build t))
+  (use-package org)
+  (use-package org-logseq
+    :after org
+    :straight (:type git :host github :repo "llcc/org-logseq")
+    :custom (org-logseq-dir (concat (file-name-as-directory (getenv "CLOUDSYNC")) "main/note/org")))
+
+  (defun my/org-logseq-auto-enable ()
+    "Enable `org-logseq-mode' if the current Org file is located within
+     the directory specified by `org-logseq-dir'."
+    (interactive)
+    (let ((file-name (buffer-file-name)))
+      (when (and file-name ; Ensure a file is being visited
+		 (boundp 'org-logseq-dir) ; Ensure the variable is defined
+		 org-logseq-dir ; Ensure the variable is non-nil
+		 (file-in-directory-p file-name org-logseq-dir))
+	;; If all checks pass, enable the mode
+	(org-logseq-mode 1))))
+
+  ;; Add the function to the org-mode hook, so it runs every time an
+  ;; Org file is opened or org-mode is entered.
+  (add-hook 'org-mode-hook 'my/org-logseq-auto-enable)
+
+  (defun org-logseq-fd-query (page-or-id)
+    "Return fd result for searching <file name> in `org-logseq-dir'."
+    (let ((type (car page-or-id))
+	    (query (cdr page-or-id)))
+	(format (pcase type
+		  ;; note that it wants the line number
+		  ('page "fd \"%s\" %s | sed 's/$/:1/'" ))
+		query (shell-quote-argument org-logseq-dir))))
+
+  ;; OVERRIDE
+  ;; because ~/.emacs.d/elpa/org-logseq-20210410.2236/org-logseq.el:org-logseq-grep-query()
+  ;;         only searches for the #+TITLE or #+ALIAS fields, and not file names
+  (defun org-logseq-open-link ()
+    "Open link at point. Supports url, id and page.
+  or Block Ref or Embed overlays."
+    (interactive)
+    (when-let* ((t-l (or (org-logseq-get-block-ref-or-embed-link)
+			   (org-logseq-get-link)
+			   (org-logseq-get-block-id))))
+	(let ((type (car t-l))
+	      (link (cdr t-l)))
+	  (pcase type
+	    ('url (browse-url link))
+	    ('draw (org-logseq-open-excalidraw link))
+	    (_ (let ((result (shell-command-to-string
+			      (org-logseq-fd-query t-l))))
+		 (when (string-prefix-p "grep" result)
+		   (error "grep searching error"))
+		 (if (string= result "")
+		     (org-logseq-new-page link)
+		   (let* ((f-n (split-string result ":" nil))
+			  (fname (car f-n))
+			  (lineno (string-to-number (cadr f-n))))
+		     (org-open-file fname t lineno)))))))))
 #+end_src
 
 * theme /style
@@ -508,15 +569,6 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
    )
 #+END_SRC
 
-** el-get
-
-*** packages from emacswiki
-
-  #+begin_src emacs-lisp :eval never
-    (el-get-install "thingatpt+")
-    (el-get-install "thing-cmds")
-  #+end_src
-
 ** eval-in-repl
 
    #+BEGIN_SRC emacs-lisp :results silent
@@ -643,30 +695,21 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
     ;; (use-package floaty-edit-mode
     ;;   :quelpa (floaty-edit-mode :repo "whacked/floaty-edit-mode" :fetcher github))
 
-    (setq el-get-sources
-          '((:name tiddlywiki-org
-                   :type git
-                   :url "git://github.com/whacked/tiddlywiki-org.git"
-                   :features "tiddlywiki-mode")
+    ;; (use-package tiddlywiki-org
+    ;;   :ensure t
+    ;;   ;; Specify the Git source for straight.el
+    ;;   :straight (:host github :repo "whacked/tiddlywiki-org"))
 
-            (:name ob-shstream
-                   :type git
-                   :url "git://github.com/whacked/ob-shstream.git"
-                   :features "ob-shstream")
+    ;; (use-package ob-shstream
+    ;;   :ensure t
+    ;;   ;; Specify the Git source for straight.el
+    ;;   :straight (:host github :repo "whacked/ob-shstream")
+    ;;   :after org)
 
-            (:name clojure-utils
-                   :type git
-                   :url "https://github.com/plexus/emacs-clojure-utils.git"
-                   :features "clojure-utils")))
-
-    (setq my-packages
-          (append
-           '(el-get
-             ;; NOTE: packages moved to use-package macro
-             )
-           (mapcar 'el-get-source-name el-get-sources)))
-
-
+    (use-package clojure-utils
+      :ensure t
+      :straight (:host github :repo "plexus/emacs-clojure-utils")
+      :after clojure-mode)
   #+END_SRC
 
 ** color themes
@@ -775,21 +818,8 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
       pdf-tools
       ;; org-pdfview
       epc ;; https://github.com/kiwanami/emacs-epc
-      ;; swank-js ;; move to el-get?
       ))
 
- #+END_SRC
-
-*** apply packages
-
- #+BEGIN_SRC emacs-lisp
-   ;; install the missing packages
-   (dolist (package package-list)
-     (unless (package-installed-p package)
-       (package-install package)))
-
-   (setq my-packages (delete-dups my-packages))
-   (el-get 'sync my-packages)
  #+END_SRC
 
 * usual-environment.el
@@ -2276,46 +2306,6 @@ https://emacs.stackexchange.com/a/35904
 * org-logseq
 
   #+begin_src emacs-lisp
-    (use-package org-logseq
-      :straight (org-logseq :fetcher github :repo "llcc/org-logseq" :files ("*"))
-      :custom (org-logseq-dir (concat (file-name-as-directory (getenv "CLOUDSYNC")) "main/note/org")))
-    ;; ((org-mode . ((eval org-logseq-mode 1))))
-
-
-    (defun org-logseq-fd-query (page-or-id)
-      "Return fd result for searching <file name> in `org-logseq-dir'."
-      (let ((type (car page-or-id))
-            (query (cdr page-or-id)))
-        (format (pcase type
-                  ;; note that it wants the line number
-                  ('page "fd \"%s\" %s | sed 's/$/:1/'" ))
-                query (shell-quote-argument org-logseq-dir))))
-
-    ;; OVERRIDE
-    ;; because ~/.emacs.d/elpa/org-logseq-20210410.2236/org-logseq.el:org-logseq-grep-query()
-    ;;         only searches for the #+TITLE or #+ALIAS fields, and not file names
-    (defun org-logseq-open-link ()
-      "Open link at point. Supports url, id and page.
-    or Block Ref or Embed overlays."
-      (interactive)
-      (when-let* ((t-l (or (org-logseq-get-block-ref-or-embed-link)
-                           (org-logseq-get-link)
-                           (org-logseq-get-block-id))))
-        (let ((type (car t-l))
-              (link (cdr t-l)))
-          (pcase type
-            ('url (browse-url link))
-            ('draw (org-logseq-open-excalidraw link))
-            (_ (let ((result (shell-command-to-string
-                              (org-logseq-fd-query t-l))))
-                 (when (string-prefix-p "grep" result)
-                   (error "grep searching error"))
-                 (if (string= result "")
-                     (org-logseq-new-page link)
-                   (let* ((f-n (split-string result ":" nil))
-                          (fname (car f-n))
-                          (lineno (string-to-number (cadr f-n))))
-                     (org-open-file fname t lineno)))))))))
   #+end_src
 
 * other key bindings
