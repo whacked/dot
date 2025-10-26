@@ -47,6 +47,18 @@
   (set-default-coding-systems 'utf-8)
   (set-language-environment "UTF-8")
   (global-so-long-mode 1)
+
+  (setq backup-directory-alist '(("" . "~/dot/emacs.d/emacs-backup")))
+
+  ;; if using chemacs
+  ;; (when (and
+  ;;        (boundp 'chemacs-current-emacs-profile)
+  ;;        (string= "default"
+  ;;                 chemacs-current-emacs-profile))
+  ;;   (setq desktop-save-mode nil))
+
+  (desktop-change-dir "~/dot/emacs.d")
+  (setq desktop-save-mode t)
 #+end_src
 
 ** UI defaults
@@ -270,68 +282,66 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
 
 ** UI defaults
 
-   #+BEGIN_SRC emacs-lisp
-     (setq-default inhibit-splash-screen t
-                   ibuffer-fontification-alist (quote ((10 buffer-read-only font-lock-constant-face) (15 (and buffer-file-name (string-match ibuffer-compressed-file-name-regexp buffer-file-name)) font-lock-doc-face) (20 (string-match "^*" (buffer-name)) font-lock-keyword-face) (25 (and (string-match "^ " (buffer-name)) (null buffer-file-name)) italic) (30 (memq major-mode ibuffer-help-buffer-modes) font-lock-comment-face) (35 (eq major-mode (quote dired-mode)) font-lock-function-name-face) (40 (string-match ".py" (buffer-name)) font-lock-type-face) (45 (string-match ".rb" (buffer-name)) font-lock-string-face) (50 (string-match ".org" (buffer-name)) font-lock-preprocessor-face)))
-                   ;; iswitchb-mode t ;; causes conflict with helm-mode
-                   line-number-mode t
-                   column-number-mode t
-                   matlab-auto-fill nil
-                   hscroll-step 1
-                   ;; for smooth scrolling
-                   scroll-step            1
-                   scroll-conservatively  10000
-                   echo-keystrokes 0.1 ;; = delay for minibuffer display after pressing function key default is 1
-                   indent-tabs-mode nil
-                   tab-width 2
-                   truncate-lines t)
-     (transient-mark-mode 1)
-     (show-paren-mode 1)
-     (tool-bar-mode -1)
-     (menu-bar-mode -1)
-     (global-hl-line-mode 1)
+#+begin_src emacs-lisp
+  (setq-default inhibit-splash-screen t
+  	      ibuffer-fontification-alist (quote ((10 buffer-read-only font-lock-constant-face) (15 (and buffer-file-name (string-match ibuffer-compressed-file-name-regexp buffer-file-name)) font-lock-doc-face) (20 (string-match "^*" (buffer-name)) font-lock-keyword-face) (25 (and (string-match "^ " (buffer-name)) (null buffer-file-name)) italic) (30 (memq major-mode ibuffer-help-buffer-modes) font-lock-comment-face) (35 (eq major-mode (quote dired-mode)) font-lock-function-name-face) (40 (string-match ".py" (buffer-name)) font-lock-type-face) (45 (string-match ".rb" (buffer-name)) font-lock-string-face) (50 (string-match ".org" (buffer-name)) font-lock-preprocessor-face)))
+  	      line-number-mode t
+  	      column-number-mode t
+  	      matlab-auto-fill nil
+  	      hscroll-step 1
+  	      ;; for smooth scrolling
+  	      scroll-step            1
+  	      scroll-conservatively  10000
+  	      echo-keystrokes 0.1 ;; = delay for minibuffer display after pressing function key default is 1
+  	      indent-tabs-mode nil
+  	      tab-width 2
+  	      truncate-lines t)
+  (transient-mark-mode 1)
+  (show-paren-mode 1)
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
+  (global-hl-line-mode 1)
 
-     (when
-         (functionp 'set-scroll-bar-mode)
-       (set-scroll-bar-mode 'right))
-     (setq backup-directory-alist '(("" . "~/dot/emacs.d/emacs-backup")))
+  (when
+      (functionp 'set-scroll-bar-mode)
+    (set-scroll-bar-mode 'right))
+#+end_src
 
-       ;;; Don't quit unless you mean it!
-     (defun maybe-save-buffers-kill-emacs (really)
-       "If REALLY is 'yes', call save-buffers-kill-emacs."
-       (interactive "sAre you sure about this? ")
-       (if (equal really "yes")
-           (progn
-             ;; (win-save-all-configurations)
-             (save-buffers-kill-emacs))))
-     (global-set-key [(control x)(control c)] 'maybe-save-buffers-kill-emacs)
-     (defun kill-emacs-NOW-iikara ()
-       (interactive)
-       (setq kill-emacs-hook nil)
-       (kill-emacs))
 
-     (defalias 'visu 'visual-line-mode)
+* key bindings / functions
 
-     (defadvice balance-windows (around allow-interactive-prefix
-                                        (&optional selected-window-only))
-       "modify balance-windows so that if given C-u prefix, apply only to (selected-window)"
-       (interactive "P")
-       (when selected-window-only
-         (ad-set-arg 0 (window-parent)))
-       ad-do-it)
-     (ad-activate 'balance-windows)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  ;;; Don't quit unless you mean it!
+  (defun maybe-save-buffers-kill-emacs (really)
+    "If REALLY is 'yes', call save-buffers-kill-emacs."
+    (interactive "sAre you sure about this? ")
+    (if (equal really "yes")
+	   (progn
+	     ;; (win-save-all-configurations)
+	     (save-buffers-kill-emacs))))
+  (global-set-key [(control x)(control c)] 'maybe-save-buffers-kill-emacs)
+  
+  (defalias 'visu 'visual-line-mode)
 
-* key bindings
+  (defadvice balance-windows (around allow-interactive-prefix
+					(&optional selected-window-only))
+    "modify balance-windows so that if given C-u prefix, apply only to (selected-window)"
+    (interactive "P")
+    (when selected-window-only
+	 (ad-set-arg 0 (window-parent)))
+    ad-do-it)
+  (ad-activate 'balance-windows)
+
+  ;; apparently this gets lower precedence than global map here
+  ;; (define-key my-keys-minor-mode-map [s-p] 'consult-find)
+  ;; this works!
+  (global-set-key (kbd "s-p") 'consult-find)
+
+  (global-set-key "\C-x\C-b" 'ibuffer)
+  (global-set-key (kbd "M-o") 'ace-window)
+#+END_SRC
 
 ** key mapping
-
-*** global
-
-    #+BEGIN_SRC emacs-lisp
-      (global-set-key "\C-x\C-b" 'ibuffer)
-      (global-set-key (kbd "M-o") 'ace-window)
-    #+END_SRC
 
 *** my-keys-minor-mode-map
 
@@ -344,13 +354,9 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
         t " my-keys" 'my-keys-minor-mode-map)
       (my-keys-minor-mode 1)
 
-      (define-key my-keys-minor-mode-map [M-left] 'windmove-left)
-      (define-key my-keys-minor-mode-map [M-right] 'windmove-right)
-      (define-key my-keys-minor-mode-map [M-up] 'windmove-up)
-      (define-key my-keys-minor-mode-map [M-down] 'windmove-down)
-
       ;;(define-key my-keys-minor-mode-map [tab] 'yas/expand-from-trigger-key)
 
+      ;; (define-key my-keys-minor-mode-map [M-left] 'windmove-left)
       (define-key my-keys-minor-mode-map [s-left] 'windmove-left)
       (define-key my-keys-minor-mode-map [s-right] 'windmove-right)
       (define-key my-keys-minor-mode-map [s-up] 'windmove-up)
@@ -799,7 +805,9 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
 ** global vars
 
 #+begin_src emacs-lisp
-(defvar CLOUDSYNC-NOTE-DIR (concat (file-name-as-directory (getenv "CLOUDSYNC")) "main/note/org"))
+  (defvar CLOUDSYNC-NOTE-DIR (concat (file-name-as-directory
+                                      (or (getenv "CLOUDSYNC")
+                                          (concat (getenv "HOME") "/cloudsync"))) "main/note/org"))
 #+end_src
 
 ** recentf
@@ -1408,18 +1416,6 @@ https://emacs.stackexchange.com/a/35904
           '(define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation)))
 
     #+END_SRC
-
-** desktop-save-mode
-
-#+BEGIN_SRC emacs-lisp
-  (when (and
-         (boundp 'chemacs-current-emacs-profile)
-         (string= "default"
-                  chemacs-current-emacs-profile))
-    (setq desktop-save-mode nil)
-    (desktop-change-dir "~/dot/emacs.d")
-    (setq desktop-save-mode t))
-#+END_SRC
 
 ** tiddlywiki
 
