@@ -88,6 +88,8 @@ while [ -e $HOME/dot/commonrc.$trycount ]; do
 done
 unset trycount
 
+eval "$(atuin init zsh)"
+
 autoload -U +X bashcompinit && bashcompinit
 
 # opam configuration, for google-drive-ocamlfuse

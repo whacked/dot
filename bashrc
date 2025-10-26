@@ -134,3 +134,5 @@ while [ -e $HOME/dot/commonrc.$trycount ]; do
 done
 unset trycount
 
+eval "$(atuin init bash)"
+
