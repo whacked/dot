@@ -307,6 +307,7 @@
    calfw-org
    color-theme
    company
+   cond-let
    counsel  ;; counsel-buffer-or-recentf etc
 
    csv-mode ;; in elpa, not melpa
@@ -325,6 +326,7 @@
    emojify
    ereader  ;; .epub reader (somewhat stale)
    esqlite
+   exec-path-from-shell  ;; PATH and exec-path sync
    eyebrowse
    free-keys  ;; show what keys are available for binding; cf describe-personal-keybindings() from use-package
    fic-mode ;; to highlight TODO FIXME BUG etc
@@ -2726,3 +2728,50 @@ http://inclojurewetrust.blogspot.com/2013/01/duplicating-s-expressions-on-line.h
   (eval-after-load "paredit"
     '(progn (define-key paredit-mode-map (kbd "C-S-d") 'paredit-duplicate-after-point)))
 #+end_src
+* eat
+
+#+begin_src emacs-lisp
+(straight-use-package
+ '(eat :type git
+       :host codeberg
+       :repo "akib/emacs-eat"
+       :files ("*.el" ("term" "term/*.el") "*.texi"
+               "*.ti" ("terminfo/e" "terminfo/e/*")
+               ("terminfo/65" "terminfo/65/*")
+               ("integration" "integration/*")
+               (:exclude ".dir-locals.el" "*-tests.el"))))
+#+end_src
+
+
+* claude code
+
+#+begin_src emacs-lisp
+(straight-use-package
+ '(cond-let :repo "emacsmirror/cond-let" :host github :branch "master"))
+
+;; you MAY need this. transient is built in but not new enough
+;; for claude-code-ide. i had to
+;; (unload-feature 'transient t)
+;; and load this stuff again
+(use-package transient
+  :straight t
+  :config
+  ;; You can add any required configuration here, but often none is needed.
+  (message "Loaded modern transient"))
+(straight-use-package 'transient)
+
+(use-package claude-code-ide
+  :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
+  ;; :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
+  :config
+  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
+
+;; WARNING BRITTLE
+(exec-path-from-shell-setenv
+ "PATH"
+ (substring (mapconcat (lambda (x) (concat ":" x))
+                       (list (file-name-directory "/nix/store/91y8h7rysgi5cl8hsj2bmjd00dq2l9pk-nodejs-22.14.0/bin/node")
+                             "/opt/npm/bin"
+                             (getenv "PATH"))) 1))
+#+end_src
+
