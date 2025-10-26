@@ -146,6 +146,7 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
     (read-extended-command-predicate #'command-completion-default-include-p))
 
   ;; A bunch of great search and navigation commands
+  ;; consult-line subsumes swiper
   (use-package consult
      :hook (completion-list-mode . consult-preview-at-point-mode)
      :custom
@@ -195,260 +196,7 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
   (global-treesit-auto-mode))
 #+end_src
 
-** other
-
-#+begin_src emacs-lisp
-  (local--load-packages
-   ace-window  ;; switch to window by numbered target labels
-   async ;; https://github.com/jwiegley/emacs-async
-
-   ;; if the dired view is messed up, investigate:
-   ;; show details by default; "(" to toggle
-   ;; (setq diredp-hide-details-initially-flag nil)
-   dired+  
-
-   free-keys  ;; show unbound keys; previously used "unbound" package
-
-   )
-
-
-  (use-package thingatpt+
-    :straight (:host github
-		     :repo "emacsmirror/thingatpt-plus"
-		     :files ("thingatpt+.el"))
-    :defer t)
-
-  (use-package thing-cmds
-    :straight (:host github
-		     :repo "emacsmirror/thing-cmds"
-		     :files ("thing-cmds.el"))
-    :after thingatpt+
-    :defer t)
-#+end_src
-
-** org-logseq
-
-#+begin_src emacs-lisp
-  (straight-override-recipe (cons 'org '(:type built-in)))
-  ;; (straight-override-recipe
-  ;;    '(org :type git :host github :repo "emacsmirror/org" :no-build t))
-  (use-package org)
-  (use-package org-logseq
-    :after org
-    :straight (:type git :host github :repo "llcc/org-logseq")
-    :custom (org-logseq-dir (concat (file-name-as-directory (getenv "CLOUDSYNC")) "main/note/org")))
-
-  (defun my/org-logseq-auto-enable ()
-    "Enable `org-logseq-mode' if the current Org file is located within
-     the directory specified by `org-logseq-dir'."
-    (interactive)
-    (let ((file-name (buffer-file-name)))
-      (when (and file-name ; Ensure a file is being visited
-		 (boundp 'org-logseq-dir) ; Ensure the variable is defined
-		 org-logseq-dir ; Ensure the variable is non-nil
-		 (file-in-directory-p file-name org-logseq-dir))
-	;; If all checks pass, enable the mode
-	(org-logseq-mode 1))))
-
-  ;; Add the function to the org-mode hook, so it runs every time an
-  ;; Org file is opened or org-mode is entered.
-  (add-hook 'org-mode-hook 'my/org-logseq-auto-enable)
-
-  (defun org-logseq-fd-query (page-or-id)
-    "Return fd result for searching <file name> in `org-logseq-dir'."
-    (let ((type (car page-or-id))
-	    (query (cdr page-or-id)))
-	(format (pcase type
-		  ;; note that it wants the line number
-		  ('page "fd \"%s\" %s | sed 's/$/:1/'" ))
-		query (shell-quote-argument org-logseq-dir))))
-
-  ;; OVERRIDE
-  ;; because ~/.emacs.d/elpa/org-logseq-20210410.2236/org-logseq.el:org-logseq-grep-query()
-  ;;         only searches for the #+TITLE or #+ALIAS fields, and not file names
-  (defun org-logseq-open-link ()
-    "Open link at point. Supports url, id and page.
-  or Block Ref or Embed overlays."
-    (interactive)
-    (when-let* ((t-l (or (org-logseq-get-block-ref-or-embed-link)
-			   (org-logseq-get-link)
-			   (org-logseq-get-block-id))))
-	(let ((type (car t-l))
-	      (link (cdr t-l)))
-	  (pcase type
-	    ('url (browse-url link))
-	    ('draw (org-logseq-open-excalidraw link))
-	    (_ (let ((result (shell-command-to-string
-			      (org-logseq-fd-query t-l))))
-		 (when (string-prefix-p "grep" result)
-		   (error "grep searching error"))
-		 (if (string= result "")
-		     (org-logseq-new-page link)
-		   (let* ((f-n (split-string result ":" nil))
-			  (fname (car f-n))
-			  (lineno (string-to-number (cadr f-n))))
-		     (org-open-file fname t lineno)))))))))
-#+end_src
-
-* theme /style
-
-** UI defaults
-
-#+begin_src emacs-lisp
-  (setq-default inhibit-splash-screen t
-  	      ibuffer-fontification-alist (quote ((10 buffer-read-only font-lock-constant-face) (15 (and buffer-file-name (string-match ibuffer-compressed-file-name-regexp buffer-file-name)) font-lock-doc-face) (20 (string-match "^*" (buffer-name)) font-lock-keyword-face) (25 (and (string-match "^ " (buffer-name)) (null buffer-file-name)) italic) (30 (memq major-mode ibuffer-help-buffer-modes) font-lock-comment-face) (35 (eq major-mode (quote dired-mode)) font-lock-function-name-face) (40 (string-match ".py" (buffer-name)) font-lock-type-face) (45 (string-match ".rb" (buffer-name)) font-lock-string-face) (50 (string-match ".org" (buffer-name)) font-lock-preprocessor-face)))
-  	      line-number-mode t
-  	      column-number-mode t
-  	      matlab-auto-fill nil
-  	      hscroll-step 1
-  	      ;; for smooth scrolling
-  	      scroll-step            1
-  	      scroll-conservatively  10000
-  	      echo-keystrokes 0.1 ;; = delay for minibuffer display after pressing function key default is 1
-  	      indent-tabs-mode nil
-  	      tab-width 2
-  	      truncate-lines t)
-  (transient-mark-mode 1)
-  (show-paren-mode 1)
-  (tool-bar-mode -1)
-  (menu-bar-mode -1)
-  (global-hl-line-mode 1)
-
-  (when
-      (functionp 'set-scroll-bar-mode)
-    (set-scroll-bar-mode 'right))
-#+end_src
-
-
-* key bindings / functions
-
-#+BEGIN_SRC emacs-lisp
-  ;;; Don't quit unless you mean it!
-  (defun maybe-save-buffers-kill-emacs (really)
-    "If REALLY is 'yes', call save-buffers-kill-emacs."
-    (interactive "sAre you sure about this? ")
-    (if (equal really "yes")
-	   (progn
-	     ;; (win-save-all-configurations)
-	     (save-buffers-kill-emacs))))
-  (global-set-key [(control x)(control c)] 'maybe-save-buffers-kill-emacs)
-  
-  (defalias 'visu 'visual-line-mode)
-
-  (defadvice balance-windows (around allow-interactive-prefix
-					(&optional selected-window-only))
-    "modify balance-windows so that if given C-u prefix, apply only to (selected-window)"
-    (interactive "P")
-    (when selected-window-only
-	 (ad-set-arg 0 (window-parent)))
-    ad-do-it)
-  (ad-activate 'balance-windows)
-
-  ;; apparently this gets lower precedence than global map here
-  ;; (define-key my-keys-minor-mode-map [s-p] 'consult-find)
-  ;; this works!
-  (global-set-key (kbd "s-p") 'consult-find)
-
-  (global-set-key "\C-x\C-b" 'ibuffer)
-  (global-set-key (kbd "M-o") 'ace-window)
-#+END_SRC
-
-** key mapping
-
-*** my-keys-minor-mode-map
-
-    #+BEGIN_SRC emacs-lisp
-      ;;; custom override keys
-      ;;; ref http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
-      (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
-      (define-minor-mode my-keys-minor-mode
-        "A minor mode so that my key settings override annoying major modes."
-        t " my-keys" 'my-keys-minor-mode-map)
-      (my-keys-minor-mode 1)
-
-      ;;(define-key my-keys-minor-mode-map [tab] 'yas/expand-from-trigger-key)
-
-      ;; (define-key my-keys-minor-mode-map [M-left] 'windmove-left)
-      (define-key my-keys-minor-mode-map [s-left] 'windmove-left)
-      (define-key my-keys-minor-mode-map [s-right] 'windmove-right)
-      (define-key my-keys-minor-mode-map [s-up] 'windmove-up)
-      (define-key my-keys-minor-mode-map [s-down] 'windmove-down)
-    #+END_SRC
-
-*** vim-like movement keys
-
-    #+BEGIN_SRC emacs-lisp
-      (global-set-key (kbd "C-` H") (lambda () (interactive) (move-to-window-line-top-bottom 0)))
-      (global-set-key (kbd "C-` M") (lambda () (interactive) (move-to-window-line-top-bottom)))
-      (global-set-key (kbd "C-` L") (lambda () (interactive) (move-to-window-line-top-bottom -1)))
-    #+END_SRC
-
-* specific init
-
-** os-specific
-
-*** gnu/linux
-
-    #+BEGIN_SRC emacs-lisp
-      (when (eq system-type 'gnu/linux)
-        ;; use x-clipboard
-        (setq x-select-enable-clipboard t)
-        (when (display-graphic-p)
-          (add-to-list 'default-frame-alist '(width . 100))
-          (add-to-list 'default-frame-alist '(height . 60))))
-    #+END_SRC
-
-*** darwin
-
-    #+BEGIN_SRC emacs-lisp
-      (when (eq system-type 'darwin)
-        (when (featurep 'ns)
-          ;; for macports
-          (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH")))
-          (setq exec-path (append exec-path '("/opt/local/bin:/opt/local/sbin:")))
-
-          ;; turn apple key into Meta
-          (setq ns-command-modifier 'meta)
-          (if (eq window-system 'mac) (require 'carbon-font))
-          (setq ; xwl-default-font "Monaco-12"
-           xwl-japanese-font "Hiragino_Kaku_Gothic_ProN")
-          (let ((charset-font `((japanese-jisx0208 . ,xwl-japanese-font)
-                                (japanese-jisx0208 . ,xwl-japanese-font)
-                                ;; (japanese-jisx0212 . ,xwl-japanese-font)
-                                )))
-                                ;; (set-default-font xwl-default-font)
-            (mapc (lambda (charset-font)
-                    (set-fontset-font (frame-parameter nil 'font)
-                                      (car charset-font)
-                                      (font-spec :family (cdr charset-font) :size
-                                                 14)))
-                  charset-font)))
-        (message "using OS X"))
-    #+END_SRC
-
-** system-name
-
-   #+BEGIN_SRC emacs-lisp
-     (let ((system-name-org
-            (path-join EMACS.D-DIR "system-name"
-                       (concat system-name ".org"))))
-       (when (file-exists-p system-name-org)
-         (org-babel-load-file system-name-org)))
-   #+END_SRC
-
-** user-login-name
-
-   #+BEGIN_SRC emacs-lisp
-     (let ((user-login-name-org
-            (path-join EMACS.D-DIR "user-login-name"
-                       (concat user-login-name ".org"))))
-       (when (file-exists-p user-login-name-org)
-         (org-babel-load-file user-login-name-org)))
-   #+END_SRC
-
-* package setup
-
-** common
+** old collection
 
 #+BEGIN_SRC emacs-lisp
   (quote local--load-packages
@@ -467,7 +215,6 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
    deft
    diff-hl
    dirtree
-   dumb-jump  ;; config-less M-. (xref-find-definitions)
    duplicate-thing  ;; provides duplicate-thing (e.g. duplicate a line)
    editorconfig
    elfeed
@@ -478,12 +225,10 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
    esqlite
    exec-path-from-shell  ;; PATH and exec-path sync
    eyebrowse
-   free-keys  ;; show what keys are available for binding; cf describe-personal-keybindings() from use-package
    fic-mode ;; to highlight TODO FIXME BUG etc
    find-file-in-project
    git-gutter
    git-gutter-fringe
-   git-timemachine
    gptel  ;; ChatGPT in emacs
    guide-key
    ;; google-this
@@ -505,18 +250,15 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
    lsp-mode
    lsp-ui
 
-   magit
    mermaid-mode
    multiple-cursors
    muse
    mustache
    navi-mode
-   neotree
    nix-mode
 
    obsidian  ;; interop with obsidian
    occur-x  ;; addition candidate: [k] to push a regex into an occur buffer; occur-x-undo-filter to clear
-   orderless
    ;; org-brain  ;; haven't used for long
    org-download
    org-noter
@@ -526,13 +268,10 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
    outorg outshine  ;; retire?
    ov ;; overlay
 
-   paredit
    powerline
    project-explorer
    projectile
    request
-   restclient
-   s
    simple-httpd
    skewer-mode ;; js live repl https://github.com/skeeto/skewer-mode
    slime
@@ -541,20 +280,56 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
    sqlite
    sr-speedbar ;; file list view in buffer
    string-inflection ;; underscore -> UPCASE -> CapitalCase -> camelCase -> kebab-case
-   swiper
-   tabbar
    terraform-mode
-   transpose-frame
-   try
    typescript-mode
-   undo-tree
    vterm
    websocket
-   which-key  ;; repo is archived; likely bundled in emacs 30
-   with-editor ;; dependency for magit
    yasnippet
    )
 #+END_SRC
+
+** default collection
+
+#+begin_src emacs-lisp
+  (local--load-packages
+   ace-window  ;; switch to window by numbered target labels
+   async ;; https://github.com/jwiegley/emacs-async
+
+   ;; if the dired view is messed up, investigate:
+   ;; show details by default; "(" to toggle
+   ;; (setq diredp-hide-details-initially-flag nil)
+   dired+  
+   dumb-jump  ;; config-less M-. (xref-find-definitions)
+
+   ;; show what keys are available for binding; cf describe-personal-keybindings() from use-package
+   ;; previously used "unbound" package
+   free-keys
+   git-timemachine
+   magit
+   paredit
+   polymode  ;; supersedes multi-web-mode
+   restclient
+   s
+   transpose-frame
+   treemacs
+   try  ;; try packages without installing
+   undo-tree
+   )
+
+
+  (use-package thingatpt+
+    :straight (:host github
+		     :repo "emacsmirror/thingatpt-plus"
+		     :files ("thingatpt+.el"))
+    :defer t)
+
+  (use-package thing-cmds
+    :straight (:host github
+		     :repo "emacsmirror/thing-cmds"
+		     :files ("thing-cmds.el"))
+    :after thingatpt+
+    :defer t)
+#+end_src
 
 ** eval-in-repl
 
@@ -628,31 +403,71 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
       ;; (local-set-key (kbd "C-<return>") 'local--send-current-line-to-term)
     #+END_SRC
 
-** fiplr (vim-like ctrl-p)
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package fiplr
-       :ensure t
-       :config (setq fiplr-ignored-globs
-                     '((directories (".git" ".svn"))
-                       (files ("*.jpg" "*.png" "*.zip" "*~"
-                               "*.pyc" "*.min.js")))))
-   #+END_SRC
 
-** multi-web-mode
+** org-logseq
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package multi-web-mode
-       :ensure t
-       :defer t
-       :config (progn
-                 (setq mweb-default-major-mode 'html-mode)
-                 (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
-                                   (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
-                                   (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
-                 (setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
-                 (multi-web-global-mode 1)))
-   #+END_SRC
+#+begin_src emacs-lisp
+  (straight-override-recipe (cons 'org '(:type built-in)))
+  ;; (straight-override-recipe
+  ;;    '(org :type git :host github :repo "emacsmirror/org" :no-build t))
+  (use-package org)
+  (use-package org-logseq
+    :after org
+    :straight (:type git :host github :repo "llcc/org-logseq")
+    :custom (org-logseq-dir (concat (file-name-as-directory (getenv "CLOUDSYNC")) "main/note/org")))
+
+  (defun my/org-logseq-auto-enable ()
+    "Enable `org-logseq-mode' if the current Org file is located within
+     the directory specified by `org-logseq-dir'."
+    (interactive)
+    (let ((file-name (buffer-file-name)))
+      (when (and file-name ; Ensure a file is being visited
+		 (boundp 'org-logseq-dir) ; Ensure the variable is defined
+		 org-logseq-dir ; Ensure the variable is non-nil
+		 (file-in-directory-p file-name org-logseq-dir))
+	;; If all checks pass, enable the mode
+	(org-logseq-mode 1))))
+
+  ;; Add the function to the org-mode hook, so it runs every time an
+  ;; Org file is opened or org-mode is entered.
+  (add-hook 'org-mode-hook 'my/org-logseq-auto-enable)
+
+  (defun org-logseq-fd-query (page-or-id)
+    "Return fd result for searching <file name> in `org-logseq-dir'."
+    (let ((type (car page-or-id))
+	    (query (cdr page-or-id)))
+	(format (pcase type
+		  ;; note that it wants the line number
+		  ('page "fd \"%s\" %s | sed 's/$/:1/'" ))
+		query (shell-quote-argument org-logseq-dir))))
+
+  ;; OVERRIDE
+  ;; because ~/.emacs.d/elpa/org-logseq-20210410.2236/org-logseq.el:org-logseq-grep-query()
+  ;;         only searches for the #+TITLE or #+ALIAS fields, and not file names
+  (defun org-logseq-open-link ()
+    "Open link at point. Supports url, id and page.
+  or Block Ref or Embed overlays."
+    (interactive)
+    (when-let* ((t-l (or (org-logseq-get-block-ref-or-embed-link)
+			   (org-logseq-get-link)
+			   (org-logseq-get-block-id))))
+	(let ((type (car t-l))
+	      (link (cdr t-l)))
+	  (pcase type
+	    ('url (browse-url link))
+	    ('draw (org-logseq-open-excalidraw link))
+	    (_ (let ((result (shell-command-to-string
+			      (org-logseq-fd-query t-l))))
+		 (when (string-prefix-p "grep" result)
+		   (error "grep searching error"))
+		 (if (string= result "")
+		     (org-logseq-new-page link)
+		   (let* ((f-n (split-string result ":" nil))
+			  (fname (car f-n))
+			  (lineno (string-to-number (cadr f-n))))
+		     (org-open-file fname t lineno)))))))))
+#+end_src
 
 ** win-switch
 
@@ -817,11 +632,144 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
 ** UI defaults
 
 #+begin_src emacs-lisp
+  (setq-default inhibit-splash-screen t
+  	      ibuffer-fontification-alist (quote ((10 buffer-read-only font-lock-constant-face) (15 (and buffer-file-name (string-match ibuffer-compressed-file-name-regexp buffer-file-name)) font-lock-doc-face) (20 (string-match "^*" (buffer-name)) font-lock-keyword-face) (25 (and (string-match "^ " (buffer-name)) (null buffer-file-name)) italic) (30 (memq major-mode ibuffer-help-buffer-modes) font-lock-comment-face) (35 (eq major-mode (quote dired-mode)) font-lock-function-name-face) (40 (string-match ".py" (buffer-name)) font-lock-type-face) (45 (string-match ".rb" (buffer-name)) font-lock-string-face) (50 (string-match ".org" (buffer-name)) font-lock-preprocessor-face)))
+  	      line-number-mode t
+  	      column-number-mode t
+  	      matlab-auto-fill nil
+  	      hscroll-step 1
+  	      ;; for smooth scrolling
+  	      scroll-step            1
+  	      scroll-conservatively  10000
+  	      echo-keystrokes 0.1 ;; = delay for minibuffer display after pressing function key default is 1
+  	      indent-tabs-mode nil
+  	      tab-width 2
+  	      truncate-lines t)
+  (transient-mark-mode 1)
+  (show-paren-mode 1)
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
+  (global-hl-line-mode 1)
+
+  (when
+      (functionp 'set-scroll-bar-mode)
+    (set-scroll-bar-mode 'right))
 #+end_src
 
 
+* key bindings / functions
+
 #+BEGIN_SRC emacs-lisp
+  ;;; Don't quit unless you mean it!
+  (defun maybe-save-buffers-kill-emacs (really)
+    "If REALLY is 'yes', call save-buffers-kill-emacs."
+    (interactive "sAre you sure about this? ")
+    (if (equal really "yes")
+	   (progn
+	     ;; (win-save-all-configurations)
+	     (save-buffers-kill-emacs))))
+  (global-set-key [(control x)(control c)] 'maybe-save-buffers-kill-emacs)
+  
+  (defalias 'visu 'visual-line-mode)
+
+  (defadvice balance-windows (around allow-interactive-prefix
+					(&optional selected-window-only))
+    "modify balance-windows so that if given C-u prefix, apply only to (selected-window)"
+    (interactive "P")
+    (when selected-window-only
+	 (ad-set-arg 0 (window-parent)))
+    ad-do-it)
+  (ad-activate 'balance-windows)
+
+  ;; apparently this gets lower precedence than global map here
+  ;; (define-key my-keys-minor-mode-map [s-p] 'consult-find)
+  ;; this works!
+  (global-set-key (kbd "s-p") 'consult-find)
+
+  (global-set-key "\C-x\C-b" 'ibuffer)
+  (global-set-key (kbd "M-o") 'ace-window)
 #+END_SRC
+
+** key mapping
+
+*** my-keys-minor-mode-map
+
+    #+BEGIN_SRC emacs-lisp
+      ;;; custom override keys
+      ;;; ref http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
+      (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
+      (define-minor-mode my-keys-minor-mode
+        "A minor mode so that my key settings override annoying major modes."
+        t " my-keys" 'my-keys-minor-mode-map)
+      (my-keys-minor-mode 1)
+
+      ;;(define-key my-keys-minor-mode-map [tab] 'yas/expand-from-trigger-key)
+
+      ;; (define-key my-keys-minor-mode-map [M-left] 'windmove-left)
+      (define-key my-keys-minor-mode-map [s-left] 'windmove-left)
+      (define-key my-keys-minor-mode-map [s-right] 'windmove-right)
+      (define-key my-keys-minor-mode-map [s-up] 'windmove-up)
+      (define-key my-keys-minor-mode-map [s-down] 'windmove-down)
+    #+END_SRC
+
+*** vim-like movement keys
+
+    #+BEGIN_SRC emacs-lisp
+      (global-set-key (kbd "C-` H") (lambda () (interactive) (move-to-window-line-top-bottom 0)))
+      (global-set-key (kbd "C-` M") (lambda () (interactive) (move-to-window-line-top-bottom)))
+      (global-set-key (kbd "C-` L") (lambda () (interactive) (move-to-window-line-top-bottom -1)))
+    #+END_SRC
+
+* specific init
+
+** os-specific
+
+*** gnu/linux
+
+    #+BEGIN_SRC emacs-lisp
+      (when (eq system-type 'gnu/linux)
+        ;; use x-clipboard
+        (setq x-select-enable-clipboard t)
+        (when (display-graphic-p)
+          (add-to-list 'default-frame-alist '(width . 100))
+          (add-to-list 'default-frame-alist '(height . 60))))
+    #+END_SRC
+
+*** darwin
+
+    #+BEGIN_SRC emacs-lisp
+      (when (eq system-type 'darwin)
+        (when (featurep 'ns)
+          ;; turn apple key into Meta
+          ;; (setq ns-command-modifier 'meta)
+
+          ;; ;; for macports
+          ;; (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH")))
+          ;; (setq exec-path (append exec-path '("/opt/local/bin:/opt/local/sbin:")))
+          (message "mac config loaded")))
+    #+END_SRC
+
+** system-name
+
+   #+BEGIN_SRC emacs-lisp
+     (let ((system-name-org
+            (path-join EMACS.D-DIR "system-name"
+                       (concat system-name ".org"))))
+       (when (file-exists-p system-name-org)
+         (org-babel-load-file system-name-org)))
+   #+END_SRC
+
+** user-login-name
+
+   #+BEGIN_SRC emacs-lisp
+     (let ((user-login-name-org
+            (path-join EMACS.D-DIR "user-login-name"
+                       (concat user-login-name ".org"))))
+       (when (file-exists-p user-login-name-org)
+         (org-babel-load-file user-login-name-org)))
+   #+END_SRC
+
+* usual-environment.el
 
 ** remainder
 
@@ -1925,20 +1873,6 @@ https://emacs.stackexchange.com/a/35904
 
   #+END_SRC
 
-* assorted library customization
-
-** neotree
-
-*** yank full path key
-
-    #+begin_src emacs-lisp
-      ;; for neotree-mode-map
-      (add-hook 'neotree-mode-hook
-                (lambda () (local-set-key
-                            (kbd "M-w")
-                            #'neotree-copy-filepath-to-yank-ring)))
-    #+end_src
-
 * assorted fix
 
 ** freeze on yank
@@ -2080,7 +2014,6 @@ https://emacs.stackexchange.com/a/35904
 * editing utils
 
 ** widget utils
-
 
    #+begin_src emacs-lisp
      ;; ref https://www.gnu.org/software/emacs/manual/html_node/elisp/Parsing-JSON.html
