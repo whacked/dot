@@ -82,6 +82,11 @@
     (load custom-file))
 #+end_src
 
+** save hooks
+
+  #+begin_src emacs-lisp
+    (add-hook 'before-save-hook 'delete-trailing-whitespace)
+  #+end_src
 
 * packages
 
@@ -209,7 +214,6 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
    cond-let
    counsel  ;; counsel-buffer-or-recentf etc
 
-   csv-mode ;; in elpa, not melpa
    dash
    deadgrep
    deft
@@ -227,7 +231,6 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
    eyebrowse
    fic-mode ;; to highlight TODO FIXME BUG etc
    find-file-in-project
-   git-gutter
    git-gutter-fringe
    gptel  ;; ChatGPT in emacs
    guide-key
@@ -295,17 +298,21 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
    ace-window  ;; switch to window by numbered target labels
    async ;; https://github.com/jwiegley/emacs-async
 
+   csv-mode
+
    ;; if the dired view is messed up, investigate:
    ;; show details by default; "(" to toggle
    ;; (setq diredp-hide-details-initially-flag nil)
-   dired+  
+   dired+
    dumb-jump  ;; config-less M-. (xref-find-definitions)
 
    ;; show what keys are available for binding; cf describe-personal-keybindings() from use-package
    ;; previously used "unbound" package
    free-keys
+   git-gutter
    git-timemachine
    magit
+   markdown-mode
    paredit
    polymode  ;; supersedes multi-web-mode
    restclient
@@ -315,7 +322,6 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
    try  ;; try packages without installing
    undo-tree
    )
-
 
   (use-package thingatpt+
     :straight (:host github
@@ -553,7 +559,6 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
                       js2-mode
                       json-rpc ;; https://github.com/skeeto/elisp-json-rpc
                       lua-mode
-                      markdown-mode
                       matlab-mode
                       ;; nxhtml
                       ob-async ;; https://github.com/astahlman/ob-async
@@ -656,6 +661,11 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
     (set-scroll-bar-mode 'right))
 #+end_src
 
+** color theme
+
+#+begin_src emacs-lisp
+  (load-theme 'modus-operandi-tinted)
+#+end_src
 
 * key bindings / functions
 
@@ -684,7 +694,8 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
   ;; apparently this gets lower precedence than global map here
   ;; (define-key my-keys-minor-mode-map [s-p] 'consult-find)
   ;; this works!
-  (global-set-key (kbd "s-p") 'consult-find)
+  (global-set-key (kbd "s-p") 'consult-buffer)
+  (global-set-key (kbd "s-P") 'consult-mode-command)
 
   (global-set-key "\C-x\C-b" 'ibuffer)
   (global-set-key (kbd "M-o") 'ace-window)
