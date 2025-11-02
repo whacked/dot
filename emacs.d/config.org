@@ -190,6 +190,22 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
     (completion-category-overrides '((file (styles partial-completion)))))
 #+end_src
 
+** eat
+
+#+begin_src emacs-lisp
+(straight-use-package
+ '(eat :type git
+       :host codeberg
+       :repo "akib/emacs-eat"
+       :files ("*.el" ("term" "term/*.el") "*.texi"
+               "*.ti" ("terminfo/e" "terminfo/e/*")
+               ("terminfo/65" "terminfo/65/*")
+               ("integration" "integration/*")
+               (:exclude ".dir-locals.el" "*-tests.el"))))
+#+end_src
+
+
+
 ** syntax
 
 #+begin_src emacs-lisp
@@ -199,6 +215,51 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
   :config
   (treesit-auto-add-to-auto-mode-alist 'all) ;; if a treesitter grammar is found for the language detected in the buffer, use the corresponding language-ts-mode
   (global-treesit-auto-mode))
+#+end_src
+
+*** markdown-mode
+
+#+begin_src emacs-lisp
+(use-package markdown-mode
+  :defer t ; Load the package only when you need it
+  :mode (("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode)) ; Auto-load for .md and .markdown files
+
+  :custom
+  (markdown-hide-markup nil) ; Hides the raw markup for things like **bold** and *italics*, showing just the formatted text.
+  (markdown-xml-tag-font-lock t) ; Improves font-locking for embedded HTML/XML.
+
+  :config
+  ;; Customizing Faces for better visual hierarchy
+
+  ;; Headings: Make them stand out more.
+  (custom-set-faces
+   ;; Level 1 Heading: Large and bold.
+   '(markdown-header-face-1 ((t (:inherit markdown-header-face :height 1.5 :weight bold :foreground "MidnightBlue"))))
+   ;; Level 2 Heading: Slightly smaller and bold.
+   '(markdown-header-face-2 ((t (:inherit markdown-header-face :height 1.3 :weight bold :foreground "DarkGreen"))))
+   ;; Level 3 Heading: Standard size, bold, and distinct color.
+   '(markdown-header-face-3 ((t (:inherit markdown-header-face :weight bold :foreground "Firebrick"))))
+
+   ;; Links: Make the link text more noticeable.
+   '(markdown-link-face ((t (:foreground "blue" :underline t))))
+
+   ;; Inline Code: Give it a different background to separate it from regular text.
+   '(markdown-inline-code-face ((t (:background "#EFEFEF" :foreground "#8B008B" :box (:line-width 1 :style released-button)))))
+
+   ;; Block Code (Fenced Code Blocks): Use a distinct background color.
+   '(markdown-code-face ((t (:background "#F5F5F5" :foreground "#333333"))))
+
+   ;; Blockquotes: Add a border or distinct color for quotes.
+   '(markdown-blockquote-face ((t (:foreground "DarkSlateGray" :slant italic :background "#F7F7F7"))))
+   )
+
+  ;; Enable pretty-code-blocks for better looking fenced code blocks.
+  (add-hook 'markdown-mode-hook
+            (lambda ()
+              (setq tab-width 2) ; Optional: Set a preferred tab width for markdown.
+              (markdown-pretty-code-blocks-mode))) ; This makes fenced code blocks look cleaner.
+  )
 #+end_src
 
 ** old collection
@@ -227,7 +288,6 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
    emojify
    ereader  ;; .epub reader (somewhat stale)
    esqlite
-   exec-path-from-shell  ;; PATH and exec-path sync
    eyebrowse
    fic-mode ;; to highlight TODO FIXME BUG etc
    find-file-in-project
@@ -306,13 +366,14 @@ ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
    dired+
    dumb-jump  ;; config-less M-. (xref-find-definitions)
 
+   exec-path-from-shell  ;; PATH and exec-path sync
+
    ;; show what keys are available for binding; cf describe-personal-keybindings() from use-package
    ;; previously used "unbound" package
    free-keys
    git-gutter
    git-timemachine
    magit
-   markdown-mode
    paredit
    polymode  ;; supersedes multi-web-mode
    restclient
@@ -2015,13 +2076,6 @@ https://emacs.stackexchange.com/a/35904
   (ad-activate 'org-babel-execute-src-block)
 #+end_src
 
-* save hooks
-
-  #+begin_src emacs-lisp
-    (add-hook 'before-save-hook 'delete-trailing-whitespace)
-  #+end_src
-
-
 * editing utils
 
 ** widget utils
@@ -2401,7 +2455,8 @@ http://inclojurewetrust.blogspot.com/2013/01/duplicating-s-expressions-on-line.h
   (eval-after-load "paredit"
     '(progn (define-key paredit-mode-map (kbd "C-S-d") 'paredit-duplicate-after-point)))
 #+end_src
-* eat
+
+
 
 #+begin_src emacs-lisp
 (straight-use-package
@@ -2432,18 +2487,23 @@ http://inclojurewetrust.blogspot.com/2013/01/duplicating-s-expressions-on-line.h
   ;; You can add any required configuration here, but often none is needed.
   (message "Loaded modern transient"))
 (straight-use-package 'transient)
+* claude code
 
-(use-package claude-code-ide
-  :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
-  ;; :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
-  :config
-  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
+#+begin_src emacs-lisp
+  (use-package claude-code-ide
+    :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
+    ;; :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
+    :config
+    ;; for mac compat
+    (setq claude-code-ide-terminal-backend 'eat)
+    (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
 
-;; WARNING BRITTLE
-(exec-path-from-shell-setenv
- "PATH"
- (substring (mapconcat (lambda (x) (concat ":" x))
-                       (list (file-name-directory "/nix/store/91y8h7rysgi5cl8hsj2bmjd00dq2l9pk-nodejs-22.14.0/bin/node")
-                             "/opt/npm/bin"
-                             (getenv "PATH"))) 1))
+  ;; WARNING BRITTLE
+  (require 'exec-path-from-shell)
+  (exec-path-from-shell-setenv
+   "PATH"
+   (substring (mapconcat (lambda (x) (concat ":" x))
+                         (list (file-name-directory "/nix/store/91y8h7rysgi5cl8hsj2bmjd00dq2l9pk-nodejs-22.14.0/bin/node")
+                               "/opt/npm/bin"
+                               (getenv "PATH"))) 1))
 #+end_src
