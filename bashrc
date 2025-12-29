@@ -134,5 +134,11 @@ while [ -e $HOME/dot/commonrc.$trycount ]; do
 done
 unset trycount
 
+# FIXME?
+# https://github.com/akinomyoga/ble.sh/issues/63
+export PATH=/bin:$PATH
+# https://github.com/atuinsh/atuin/issues/1798
+# source /nix/store/c4hsv4laf10d47n07ik03gfz6hma7anx-blesh-0.4.0-devel3/share/blesh/ble.sh
+source /opt/ble.sh/out/ble.sh
 eval "$(atuin init bash)"
 
