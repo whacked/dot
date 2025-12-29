@@ -97,7 +97,22 @@ stty stop undef # unmap ctrl-s for vim-ipython
 alias ssh-nosave='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -C -X'
 alias scp-nosave='scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -C'
 alias mosh-nosave='mosh --ssh=-"o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -C -X"'
-alias venv='source venv/bin/activate'
+venv() {
+  if command -v deactivate &> /dev/null; then
+    echo "- deactivated venv at $VIRTUAL_ENV"
+    deactivate
+  fi
+
+  if [ -f ".venv/bin/activate" ]; then
+    source ".venv/bin/activate"
+  elif [ -f "venv/bin/activate" ]; then
+    source "venv/bin/activate"
+  else
+    echo "Error: Virtual environment activation script not found in './.venv/bin/' or './venv/bin/'" >&2
+    return 1
+  fi
+  echo "-   activated venv at $VIRTUAL_ENV"
+}
 
 NIX_SH_PATH=$HOME/.nix-profile/etc/profile.d/nix.sh
 if [ -e $NIX_SH_PATH ]; then
