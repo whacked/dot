@@ -4,46 +4,8 @@
 
 # =:tangle yes= not required for this to load correctly from init.el
 
-* stuff to get familiarized with
-
-  - [[https://github.com/technomancy/find-file-in-project][find-file-in-project]]
-
-* core utils
-
-#+BEGIN_SRC emacs-lisp
-  (defun path-join (&rest path-seq)
-    (concat (mapconcat
-       'file-name-as-directory
-       (butlast path-seq) "")
-      (car (last path-seq))))
-
-  (defun now (&optional return-date-only)
-    (interactive "P")
-    (message (format-time-string (if return-date-only "%Y-%m-%d" "%Y-%m-%d %H:%M:%S%z"))))
-  (defun insert-timestamp (&optional return-date-only)
-    "Insert date at current cursor position in current active buffer"
-    (interactive "P") (insert (now return-date-only)))
-#+END_SRC
-
-* environment / global variables
-
-#+begin_src emacs-lisp
-  (when (not (getenv "CLOUDSYNC"))
-    (setenv "CLOUDSYNC"
-  	    (concat (file-name-as-directory (getenv "HOME"))
-  		    "cloudsync")))
-
-  (defvar CLOUDSYNC-NOTE-DIR
-    (concat (file-name-as-directory
-  	   (getenv "CLOUDSYNC")) "main/note/org"))
-
-  (setq EMACS.D-DIR (path-join "~" ".emacs.d"))
-
-  (let ((nix-bin (expand-file-name "~/.nix-profile/bin")))
-    (unless (string-match-p (regexp-quote nix-bin) (getenv "PATH"))
-      (setenv "PATH" (concat nix-bin ":" (getenv "PATH"))))
-    (add-to-list 'exec-path nix-bin))
-#+end_src
+;;; MIGRATED: core utils → my-core.el
+;;; MIGRATED: environment / global variables → my-core.el
 
 * global emacs settings
 
@@ -88,51 +50,8 @@
     (add-hook 'before-save-hook 'delete-trailing-whitespace)
   #+end_src
 
-* packages
-
-ref https://www.shaneikennedy.xyz/blog/configuring-emacs-from-scratch-in-2025
-
-** scaffolding
-
-#+begin_src emacs-lisp
-  (defvar bootstrap-version)
-  (let ((bootstrap-file
-	 (expand-file-name
-	  "straight/repos/straight.el/bootstrap.el"
-	  (or (bound-and-true-p straight-base-dir)
-	      user-emacs-directory)))
-	(bootstrap-version 7))
-    (unless (file-exists-p bootstrap-file)
-      ;; Confirmation Check
-      (when (y-or-n-p "straight.el bootstrap file not found. Download and install it now? ")
-	(with-current-buffer
-	    (url-retrieve-synchronously
-	     "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-	     'silent 'inhibit-cookies)
-	  (goto-char (point-max))
-	  (eval-print-last-sexp))))
-    (load bootstrap-file nil 'nomessage))
-
-  (setq package-enable-at-startup nil)
-  (straight-use-package 'use-package)
-
-  ;; Configure package archives
-  (setq package-archives
-	'(("melpa" . "https://melpa.org/packages/")
-	  ("gnu" . "https://elpa.gnu.org/packages/")
-	  ("nongnu" . "https://elpa.nongnu.org/packages/")))
-
-  (setq use-package-always-ensure t)
-  (setq straight-use-package-by-default t)
-
-  (defmacro local--load-packages (&rest package-list)
-    (cons
-     'progn
-     (mapcar
-      (lambda (package-name)
-	(list 'use-package package-name :ensure t :defer t))
-      package-list)))
-#+end_src
+;;; MIGRATED: packages/scaffolding (straight.el + use-package) → my-core.el
+;;; NOTE: local--load-packages macro dropped — replaced by direct use-package calls
 
 ** completions
 
