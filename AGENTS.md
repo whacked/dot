@@ -5,7 +5,7 @@
 Migrating from a monolithic `org-babel-load-file` literate config to a flat set of
 self-contained `.el` modules loaded from `init.el`.
 
-**Working branch:** `2025-10_update-emacs-config`
+**Working branch:** `2026-03_ai-assited-emacs-refactor`
 **Emacs versions:**
 - CLI (testing): GNU Emacs 30.2 via `~/.nix-profile/bin/emacs`
 - GUI (daily driver): Carbon Emacs at `/Applications/Emacs.app`
