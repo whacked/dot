@@ -19,61 +19,7 @@
 ;;; MIGRATED: packages/scaffolding (straight.el + use-package) → my-core.el
 ;;; NOTE: local--load-packages macro dropped — replaced by direct use-package calls
 
-** completions
-
-#+begin_src emacs-lisp
-  ;; Vertico for vertical completion for the emacs minibuffer.
-  (use-package vertico
-    :init
-    (vertico-mode))
-
-  ;; Emacs minibuffer configurations.
-  (use-package emacs
-    :custom
-    ;; Hide commands in M-x which do not work in the current mode.  Vertico
-    ;; commands are hidden in normal buffers. This setting is useful beyond
-    ;; Vertico.
-    (read-extended-command-predicate #'command-completion-default-include-p))
-
-  ;; A bunch of great search and navigation commands
-  ;; consult-line subsumes swiper
-  (use-package consult
-     :hook (completion-list-mode . consult-preview-at-point-mode)
-     :custom
-     (consult-preview-key nil)
-     (consult-narrow-key nil)
-     :config
-     (consult-customize consult-theme consult-line consult-line-at-point :preview-key '(:debounce 0.2 any))
-   )
-
-  ;; Annotations in the minibuffer, i.e a description of the function next to the name in M-x
-  (use-package marginalia
-    :init
-    (marginalia-mode))
-
-  ;; In buffer completions, think lsp completions
-  (use-package corfu
-    :custom
-    (corfu-auto t)
-    (corfu-cycle t) ;; Enable cycling for `corfu-next/previous'
-    :bind
-    (:map corfu-map
-	  ("TAB" . corfu-next)
-	  ("C-n" . corfu-next)
-	  ([tab] . corfu-next)
-	  ("C-p" . corfu-previous)
-	  ("S-TAB" . corfu-previous)
-	  ([backtab] . corfu-previous))
-    :init
-    (global-corfu-mode))
-
-  ;; Completion style and fuzzy matching
-  (use-package orderless
-    :custom
-    (completion-styles '(orderless basic))
-    (completion-category-defaults nil)
-    (completion-category-overrides '((file (styles partial-completion)))))
-#+end_src
+;;; MIGRATED: vertico, consult, marginalia, corfu, orderless → my-completion.el
 
 ** eat
 

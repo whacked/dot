@@ -16,7 +16,7 @@
 
 (require 'my-core)
 (require 'my-ui)
-;; (require 'my-completion)
+(require 'my-completion)
 ;; (require 'my-editing)
 ;; (require 'my-packages)
 ;; (require 'my-org)
