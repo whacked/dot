@@ -2,8 +2,9 @@
 
 ;;; Load path
 
-;; Include emacs.d root so (require 'my-*) resolves to ./my-*.el
-(add-to-list 'load-path (expand-file-name user-emacs-directory))
+;; Modules live in lisp/ — avoids the load-path=user-emacs-directory warning.
+;; M-. on any (require 'my-*) symbol below navigates to the module file.
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
 ;; Local minor modes live in emacs.d/mode/
 (add-to-list 'load-path (expand-file-name "mode" user-emacs-directory))

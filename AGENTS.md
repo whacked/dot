@@ -18,20 +18,23 @@ self-contained `.el` modules loaded from `init.el`.
 emacs.d/
   early-init.el        # Emacs-native: loaded before GUI/package.el init
   init.el              # Emacs-native: master loader, lists all requires
-  my-core.el           # core utils, env vars, exec-path
-  my-ui.el             # visual defaults, theme, custom faces
-  my-completion.el     # vertico, consult, marginalia, corfu, orderless
-  my-editing.el        # global editing settings, save hooks, keybindings
-  my-org.el            # org-mode config
-  my-packages.el       # remaining active packages
-  my-system.el         # OS/machine-specific config
+  lisp/                # our modules — added to load-path in init.el
+    my-core.el         # core utils, env vars, exec-path
+    my-ui.el           # visual defaults, theme, custom faces
+    my-completion.el   # vertico, consult, marginalia, corfu, orderless
+    my-editing.el      # global editing settings, save hooks, keybindings
+    my-org.el          # org-mode config
+    my-packages.el     # remaining active packages
+    my-system.el       # OS/machine-specific config
   mode/                # local minor modes (highlight-chat-mode, tsv-mode, etc.)
   custom.el            # Emacs-managed; loaded by init.el, not hand-edited
   config.org           # LEGACY — being emptied block by block, then deleted
   config.el            # LEGACY — tangled copy; no longer loaded after scaffold
 ```
 
-The `my-` prefix avoids load-path collisions with MELPA packages.
+Modules live in `lisp/` (not the emacs.d root) to avoid Emacs's warning about
+`user-emacs-directory` being on `load-path`. The `my-` prefix avoids collisions
+with MELPA packages.
 
 ---
 
