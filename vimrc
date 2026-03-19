@@ -53,6 +53,9 @@ Plug 'wincent/Command-T'
 Plug 'yegappan/mru'
 Plug 'ftorres16/spice.vim'
 Plug 'jvirtanen/vim-hcl'
+Plug 'nvim-lua/plenary.nvim'           " Utility library used by almost all Neovim plugins
+Plug 'nvim-telescope/telescope.nvim'   " The actual Telescope engine
+Plug 'LukasPietzschmann/telescope-tabs' " The tab-finding extension
 
 call plug#end()
 " </vim-plug>
@@ -93,7 +96,7 @@ let clj_want_gorilla = 1
 
 set statusline=%F%m%r%h%w\ %{&ff}\ (%Y)\ (%04l,%04v)\ [ASC=\%03.3b,\ HEX=\%02.2B]\ [%p%%\ of\ %L]
 set laststatus=2
-set pastetoggle=<F2>
+" set pastetoggle=<F2>
 set cursorline
 " set cwd to that of the current active buffer
 set autochdir
@@ -142,3 +145,17 @@ let NERDTreeQuitOnOpen=0
 
 inoremap {{ {{  }}<Esc>hhi
 
+
+" Wait until after plug#end() to run the Lua setup
+lua << EOF
+  -- Safely require telescope
+  local status_ok, telescope = pcall(require, "telescope")
+  if status_ok then
+    telescope.setup{}
+    require('telescope-tabs').setup{}
+    telescope.load_extension('telescope-tabs')
+  end
+EOF
+
+" The shortcut to launch it
+nnoremap <leader>t <cmd>Telescope telescope-tabs list_tabs<cr>
