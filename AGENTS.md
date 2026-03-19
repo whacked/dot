@@ -103,21 +103,41 @@ Order may shift based on dependencies discovered during migration.
 
 ### Syntax / byte-compile check (headless)
 ```bash
-emacs --batch -Q -f batch-byte-compile emacs.d/my-<topic>.el
+emacs --batch -Q -f batch-byte-compile emacs.d/lisp/my-<topic>.el
+# IMPORTANT: always clean up the .elc file afterwards — stale .elc files
+# are compiled without straight.el available, so use-package macro expansions
+# are wrong. require prefers .elc over .el, causing package loads to silently
+# fail at runtime. The root .gitignore has *.elc so they won't be committed,
+# but they must not be left on disk.
+rm -f emacs.d/lisp/my-<topic>.elc
 ```
 
-### Idempotency check (load twice, expect no errors)
+### Idempotency / functional check (full init, headless)
 ```bash
-emacs --batch -Q \
-  --eval "(add-to-list 'load-path \"$(pwd)/emacs.d\")" \
-  --load emacs.d/my-<topic>.el \
-  --load emacs.d/my-<topic>.el \
+emacs --batch \
+  --load emacs.d/early-init.el \
+  --load emacs.d/init.el \
+  --load emacs.d/init.el \
   --eval "(message \"idempotency ok\")"
 ```
 
-Note: modules using `straight.el` / `use-package` require the full init to be
-loaded first for real functional testing. Batch mode covers syntax and structure;
-GUI smoke test (`/Applications/Emacs.app`) covers behavior.
+Note: modules using `straight.el` / `use-package` cannot be meaningfully
+tested in `-Q` batch mode — packages are unavailable. Full-init batch catches
+load errors; GUI smoke test covers actual package behaviour.
+
+### Known gotcha: Emacs 30 + nix + use-package autoloads
+Emacs 30 (nix build) ships use-package as a built-in and registers autoloads
+pointing to absolute nix store paths. When any `(use-package ...)` form fires
+before use-package is fully loaded, the autoload triggers and loads the nix
+built-in — which has no `:straight` keyword integration.
+
+Fix (already in my-core.el): call `(require 'use-package)` explicitly after
+`(straight-use-package 'use-package)`. This loads straight's version first,
+provides `use-package-core`, and prevents the nix autoload from ever firing.
+
+Also: do NOT set `use-package-always-ensure t` alongside `straight-use-package-by-default t`.
+They conflict — always-ensure triggers package.el while straight-use-package-by-default
+triggers straight, and package.el wins.
 
 ### GUI smoke test
 Restart `/Applications/Emacs.app` and verify:

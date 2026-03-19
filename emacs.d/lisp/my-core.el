@@ -62,15 +62,21 @@ With prefix arg DATE-ONLY, insert date only (YYYY-MM-DD)."
 ;; Declare straight symbols to silence byte-compiler warnings when straight is
 ;; not yet loaded (e.g. during batch byte-compile checks).
 (defvar straight-use-package-by-default)
-(defvar use-package-always-ensure)
 (declare-function straight-use-package "straight")
 
 (straight-use-package 'use-package)
 
+;; Emacs 30 ships use-package as a built-in and registers autoloads
+;; pointing to absolute nix store paths. If any (use-package ...) form fires
+;; before use-package is fully loaded, that autoload triggers and loads the
+;; nix built-in — which has no :straight keyword and can't find packages.
+;; Explicitly requiring use-package here loads straight's version first,
+;; calls (provide 'use-package-core), and prevents the autoload from firing.
+(require 'use-package)
+
 ;; All use-package declarations use straight.el by default.
-;; :ensure t is implied; individual packages can override with :straight nil.
+;; Do NOT set use-package-always-ensure alongside this — they conflict.
 (setq straight-use-package-by-default t)
-(setq use-package-always-ensure t)
 
 (provide 'my-core)
 ;;; my-core.el ends here
