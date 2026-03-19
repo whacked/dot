@@ -15,7 +15,7 @@
 ;; (requires elisp-xref, available by default in Emacs 28+)
 
 (require 'my-core)
-;; (require 'my-ui)
+(require 'my-ui)
 ;; (require 'my-completion)
 ;; (require 'my-editing)
 ;; (require 'my-packages)

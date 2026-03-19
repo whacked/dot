@@ -7,48 +7,14 @@
 ;;; MIGRATED: core utils → my-core.el
 ;;; MIGRATED: environment / global variables → my-core.el
 
-* global emacs settings
-
-#+begin_src emacs-lisp
-  (set-default-coding-systems 'utf-8)
-  (set-language-environment "UTF-8")
-  (global-so-long-mode 1)
-
-  (setq backup-directory-alist '(("" . "~/dot/emacs.d/emacs-backup")))
-
-  ;; if using chemacs
-  ;; (when (and
-  ;;        (boundp 'chemacs-current-emacs-profile)
-  ;;        (string= "default"
-  ;;                 chemacs-current-emacs-profile))
-  ;;   (setq desktop-save-mode nil))
-
-  (desktop-change-dir "~/dot/emacs.d")
-  (setq desktop-save-mode t)
-#+end_src
-
-** recentf
-
-#+BEGIN_SRC emacs-lisp
-  (recentf-mode 1)
-  (setq recentf-max-menu-items 100)
-  (setq recentf-max-saved-items 200)
-#+END_SRC
-
-** UI defaults
-
-#+begin_src emacs-lisp
-  ;; this changes the org-mode styling
-  (setq custom-file (concat user-emacs-directory "custom.el"))
-  (when (file-exists-p custom-file)
-    (load custom-file))
-#+end_src
-
-** save hooks
-
-  #+begin_src emacs-lisp
-    (add-hook 'before-save-hook 'delete-trailing-whitespace)
-  #+end_src
+;;; MIGRATED: encoding (set-default-coding-systems, set-language-environment) → my-ui.el
+;;; MIGRATED: global-so-long-mode → my-ui.el
+;;; MIGRATED: backup-directory-alist → my-editing.el
+;;; MIGRATED: desktop-change-dir, desktop-save-mode → my-editing.el
+;;; MIGRATED: recentf-mode, recentf-max-* → my-editing.el
+;;; MIGRATED: before-save-hook (delete-trailing-whitespace) → my-editing.el
+;;; DROPPED:  custom-file loading → already in init.el
+;;; DROPPED:  chemacs comment block — chemacs no longer used
 
 ;;; MIGRATED: packages/scaffolding (straight.el + use-package) → my-core.el
 ;;; NOTE: local--load-packages macro dropped — replaced by direct use-package calls
@@ -612,40 +578,15 @@
 
 
 
-* theme /style
-
-** UI defaults
-
-#+begin_src emacs-lisp
-  (setq-default inhibit-splash-screen t
-  	      ibuffer-fontification-alist (quote ((10 buffer-read-only font-lock-constant-face) (15 (and buffer-file-name (string-match ibuffer-compressed-file-name-regexp buffer-file-name)) font-lock-doc-face) (20 (string-match "^*" (buffer-name)) font-lock-keyword-face) (25 (and (string-match "^ " (buffer-name)) (null buffer-file-name)) italic) (30 (memq major-mode ibuffer-help-buffer-modes) font-lock-comment-face) (35 (eq major-mode (quote dired-mode)) font-lock-function-name-face) (40 (string-match ".py" (buffer-name)) font-lock-type-face) (45 (string-match ".rb" (buffer-name)) font-lock-string-face) (50 (string-match ".org" (buffer-name)) font-lock-preprocessor-face)))
-  	      line-number-mode t
-  	      column-number-mode t
-  	      matlab-auto-fill nil
-  	      hscroll-step 1
-  	      ;; for smooth scrolling
-  	      scroll-step            1
-  	      scroll-conservatively  10000
-  	      echo-keystrokes 0.1 ;; = delay for minibuffer display after pressing function key default is 1
-  	      indent-tabs-mode nil
-  	      tab-width 2
-  	      truncate-lines t)
-  (transient-mark-mode 1)
-  (show-paren-mode 1)
-  (tool-bar-mode -1)
-  (menu-bar-mode -1)
-  (global-hl-line-mode 1)
-
-  (when
-      (functionp 'set-scroll-bar-mode)
-    (set-scroll-bar-mode 'right))
-#+end_src
-
-** color theme
-
-#+begin_src emacs-lisp
-  (load-theme 'modus-operandi-tinted)
-#+end_src
+;;; MIGRATED: inhibit-splash-screen, line/column-number-mode, scroll-step,
+;;;           scroll-conservatively, hscroll-step, echo-keystrokes,
+;;;           truncate-lines, transient-mark-mode, show-paren-mode,
+;;;           tool-bar-mode, menu-bar-mode, global-hl-line-mode → my-ui.el
+;;; MIGRATED: load-theme modus-operandi-tinted → my-ui.el
+;;; MIGRATED: indent-tabs-mode, tab-width → my-editing.el
+;;; MIGRATED: ibuffer-fontification-alist → my-packages.el
+;;; DROPPED:  matlab-auto-fill — matlab not in active use
+;;; MIGRATED: set-scroll-bar-mode 'right → my-ui.el (early-init.el updated to match)
 
 * key bindings / functions
 
@@ -1357,14 +1298,7 @@ https://emacs.stackexchange.com/a/35904
           deft-ignore-file-regexp "\\$.+") ;; for ignoring special tiddlers
   #+END_SRC
 
-* custom faces
-
-  #+BEGIN_SRC emacs-lisp
-    (custom-set-faces
-     '(table-cell ((t (:background "#DD8" :foreground "gray50" :inverse-video nil))))
-     '(table-cell-face ((((class color)) (:background "#AA3" :foreground "gray90")))))
-    ;; (org-babel-load-file (expand-file-name "init.org" user-emacs-directory))
-  #+END_SRC
+;;; DROPPED: custom faces (table-cell, table-cell-face) — duplicated in custom.el
 
 
 ** font
