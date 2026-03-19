@@ -17,6 +17,7 @@ vim/vim-addons
 vim/plugged
 vim/view
 
+emacs.d/eln-cache
 emacs.d/network-security.data
 
 # the tangled output
