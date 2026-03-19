@@ -22,5 +22,27 @@
         (45 (string-match ".rb" (buffer-name)) font-lock-string-face)
         (50 (string-match ".org" (buffer-name)) font-lock-preprocessor-face)))
 
+;;; ibuffer — behaviour and grouping
+;;
+;; ibuffer-fontification-alist is set above.
+
+(setq ibuffer-expert t)
+
+(add-hook 'ibuffer-mode-hook (lambda () (ibuffer-auto-mode 1)))
+
+;; Group buffers by VC root and sort alphabetically on entry.
+(add-hook 'ibuffer-hook
+          (lambda ()
+            (ibuffer-vc-set-filter-groups-by-vc-root)
+            (ibuffer-do-sort-by-alphabetic)))
+
+;; Open ibuffer with point on the most recently visited buffer.
+(advice-add 'ibuffer :around
+  (lambda (orig &rest args)
+    "Open ibuffer with cursor on the most recently visited buffer."
+    (let ((recent-buffer-name (buffer-name)))
+      (apply orig args)
+      (ibuffer-jump-to-buffer recent-buffer-name))))
+
 (provide 'my-packages)
 ;;; my-packages.el ends here

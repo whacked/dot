@@ -535,69 +535,13 @@
 ;;; MIGRATED: set-scroll-bar-mode 'right → my-ui.el (early-init.el updated to match)
 
 * key bindings / functions
-
-#+BEGIN_SRC emacs-lisp
-  ;;; Don't quit unless you mean it!
-  (defun maybe-save-buffers-kill-emacs (really)
-    "If REALLY is 'yes', call save-buffers-kill-emacs."
-    (interactive "sAre you sure about this? ")
-    (if (equal really "yes")
-	   (progn
-	     ;; (win-save-all-configurations)
-	     (save-buffers-kill-emacs))))
-  (global-set-key [(control x)(control c)] 'maybe-save-buffers-kill-emacs)
-  
-  (defalias 'visu 'visual-line-mode)
-
-  (defadvice balance-windows (around allow-interactive-prefix
-					(&optional selected-window-only))
-    "modify balance-windows so that if given C-u prefix, apply only to (selected-window)"
-    (interactive "P")
-    (when selected-window-only
-	 (ad-set-arg 0 (window-parent)))
-    ad-do-it)
-  (ad-activate 'balance-windows)
-
-  ;; apparently this gets lower precedence than global map here
-  ;; (define-key my-keys-minor-mode-map [s-p] 'consult-find)
-  ;; this works!
-  (global-set-key (kbd "s-p") 'consult-buffer)
-  (global-set-key (kbd "s-P") 'consult-mode-command)
-
-  (global-set-key "\C-x\C-b" 'ibuffer)
-  (global-set-key (kbd "M-o") 'ace-window)
-#+END_SRC
-
-** key mapping
-
-*** my-keys-minor-mode-map
-
-    #+BEGIN_SRC emacs-lisp
-      ;;; custom override keys
-      ;;; ref http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
-      (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
-      (define-minor-mode my-keys-minor-mode
-        "A minor mode so that my key settings override annoying major modes."
-        t " my-keys" 'my-keys-minor-mode-map)
-      (my-keys-minor-mode 1)
-
-      ;;(define-key my-keys-minor-mode-map [tab] 'yas/expand-from-trigger-key)
-
-      ;; (define-key my-keys-minor-mode-map [M-left] 'windmove-left)
-      (define-key my-keys-minor-mode-map [s-left] 'windmove-left)
-      (define-key my-keys-minor-mode-map [s-right] 'windmove-right)
-      (define-key my-keys-minor-mode-map [s-up] 'windmove-up)
-      (define-key my-keys-minor-mode-map [s-down] 'windmove-down)
-    #+END_SRC
-
-*** vim-like movement keys
-
-    #+BEGIN_SRC emacs-lisp
-      (global-set-key (kbd "C-` H") (lambda () (interactive) (move-to-window-line-top-bottom 0)))
-      (global-set-key (kbd "C-` M") (lambda () (interactive) (move-to-window-line-top-bottom)))
-      (global-set-key (kbd "C-` L") (lambda () (interactive) (move-to-window-line-top-bottom -1)))
-    #+END_SRC
-
+;;; MIGRATED: maybe-save-buffers-kill-emacs, C-x C-c binding → my-keybindings.el
+;;; MIGRATED: defalias visu → my-keybindings.el
+;;; MIGRATED: defadvice balance-windows (modernized advice-add) → my-keybindings.el
+;;; MIGRATED: s-p consult-buffer, s-P consult-mode-command → my-keybindings.el
+;;; MIGRATED: C-x C-b ibuffer, M-o ace-window → my-keybindings.el
+;;; MIGRATED: my-keys-minor-mode-map, my-keys-minor-mode, windmove s-arrow bindings → my-keybindings.el
+;;; MIGRATED: vim-like H/M/L cursor placement → my-keybindings.el
 * specific init
 
 ** os-specific
@@ -648,104 +592,22 @@
    #+END_SRC
 
 * usual-environment.el
-
 ** remainder
-
-#+BEGIN_SRC emacs-lisp
-  ;; kill process hack
-  ;; http://stackoverflow.com/questions/10627289/emacs-internal-process-killing-any-command
-  (define-key process-menu-mode-map (kbd "C-k") 'joaot/delete-process-at-point)
-
-  ;; prevent special buffers from messing with the current layout
-  ;; see: http://www.gnu.org/software/emacs/manual/html_node/emacs/Special-Buffer-Frames.html
-  (setq special-display-buffer-names
-        '("*grep*" "*tex-shell*" "*Help*" "*Packages*" "*Capture*"))
-  (setq special-display-function 'my-special-display-function)
-  (defun my-special-display-function (buf &optional args)
-    ;; (special-display-popup-frame buf)
-    (special-display-popup-frame buf `((height . 40)
-                                       ;; (left . ,(+ 40 (frame-parameter (selected-frame) 'left)))
-                                       ;; (top . ,(+ 20 (frame-parameter (selected-frame) 'top)))
-                                       )))
-  ;; new behavior in emacs 24?
-  ;; http://superuser.com/questions/397806/emacs-modify-quit-window-to-delete-buffer-not-just-bury-it
-  (defadvice quit-window (before quit-window-always-kill)
-    "When running `quit-window', always kill the buffer."
-    (ad-set-arg 0 t))
-  (ad-activate 'quit-window)
-
-  (require 'dabbrev)
-  (setq dabbrev-always-check-other-buffers t)
-  (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
-
-  ;;; see http://www.emacswiki.org/emacs/DeskTop
-  ;;; desktop-override-stale-locks.el begins here
-  (defun emacs-process-p (pid)
-    "If pid is the process ID of an emacs process, return t, else nil.
-  Also returns nil if pid is nil."
-    (when pid
-      (let* ((cmdline-file (concat "/proc/" (int-to-string pid) "/cmdline")))
-        (when (file-exists-p cmdline-file)
-          (with-temp-buffer
-            (insert-file-contents-literally cmdline-file)
-            (goto-char (point-min))
-            (search-forward "emacs" nil t)
-            pid)))))
-
-  (defadvice desktop-owner (after pry-from-cold-dead-hands activate)
-    "Don't allow dead emacsen to own the desktop file."
-    (when (not (emacs-process-p ad-return-value))
-      (setq ad-return-value nil)))
-  ;;; desktop-override-stale-locks.el ends here
-
-  (defun surround-region-with-tag (tag-name beg end)
-    (interactive "sTag name: \nr")
-    (save-excursion
-      (goto-char end)
-      (insert "</" tag-name ">")
-      (goto-char beg)
-      (insert "<" tag-name ">")))
-
-  (require 'ansi-color)
-  (require 'uniquify)
-  (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
-
-  (setq ibuffer-expert t)
-  (add-hook 'ibuffer-mode-hook '(lambda () (ibuffer-auto-mode 1)))
-  ;; (setq ibuffer-show-empty-filter-groups nil)
-  (add-hook 'ibuffer-hook
-            (lambda ()
-              (ibuffer-vc-set-filter-groups-by-vc-root)
-              (ibuffer-do-sort-by-alphabetic)))
-  ;; see http://www.emacswiki.org/emacs/IbufferMode#toc3
-  ;; Switching to ibuffer puts the cursor on the most recent buffer
-  (defadvice ibuffer (around ibuffer-point-to-most-recent) ()
-             "Open ibuffer with cursor pointed to most recent buffer name"
-             (let ((recent-buffer-name (buffer-name)))
-               ad-do-it
-               (ibuffer-jump-to-buffer recent-buffer-name)))
-  (ad-activate 'ibuffer)
-
-  (winner-mode 1)
-
-  (setq slime-multiprocessing t)
-  (setq slime-net-coding-system 'utf-8-unix)
-
-  ;; to clear shell in ESS mode
-  ;; http://stackoverflow.com/questions/3447531/emacs-ess-version-of-clear-console
-  (defun clear-shell ()
-    (interactive)
-    (let ((old-max comint-buffer-maximum-size))
-      (setq comint-buffer-maximum-size 0)
-      (comint-truncate-buffer)
-      (setq comint-buffer-maximum-size old-max)))
-  (put 'set-goal-column 'disabled nil)
-  (put 'narrow-to-region 'disabled nil)
-
-  ;; eliminate strange error with this for now
-  (defvar warning-suppress-types nil)
-#+END_SRC
-
+;;; DROPPED:  process-menu C-k joaot/delete-process-at-point — function never defined in this config
+;;; DROPPED:  special-display-buffer-names / special-display-function / my-special-display-function
+;;;           — API removed in Emacs 24.3; use display-buffer-alist if needed
+;;; MIGRATED: defadvice quit-window always-kill (modernized advice-add) → my-editing.el
+;;; MIGRATED: dabbrev config → my-editing.el
+;;; MIGRATED: emacs-process-p + defadvice desktop-owner (modernized) → my-editing.el
+;;; MIGRATED: surround-region-with-tag → my-editing.el
+;;; MIGRATED: ansi-color require → my-editing.el
+;;; MIGRATED: uniquify config → my-editing.el
+;;; MIGRATED: ibuffer-expert, ibuffer-mode-hook, ibuffer-hook, defadvice ibuffer (modernized) → my-packages.el
+;;; MIGRATED: winner-mode → my-editing.el
+;;; DROPPED:  slime config — not in active use
+;;; MIGRATED: clear-shell → my-editing.el
+;;; MIGRATED: set-goal-column / narrow-to-region disabled → my-editing.el
+;;; DROPPED:  (defvar warning-suppress-types nil) — band-aid suppression, no longer needed
 ** org mode
 
    if you are getting =Symbol's value as variable is void: org-babel-safe-header-args= errors
