@@ -19,17 +19,10 @@ With prefix arg DATE-ONLY, insert date only (YYYY-MM-DD)."
   (interactive "P")
   (insert (format-time-string (if date-only "%Y-%m-%d" "%Y-%m-%d %H:%M:%S%z"))))
 
-;;; Environment variables
-
-;; CLOUDSYNC: default to ~/cloudsync if not set in the environment.
-(unless (getenv "CLOUDSYNC")
-  (setenv "CLOUDSYNC" (expand-file-name "cloudsync" (getenv "HOME"))))
-
-(defvar my-cloudsync-note-dir
-  (expand-file-name "main/note/org" (getenv "CLOUDSYNC"))
-  "Root directory for org notes inside CLOUDSYNC.")
-
 ;;; exec-path: ensure nix profile binaries are reachable
+;;
+;; Done unconditionally and early so the nix toolchain is available to
+;; straight.el (git, curl) and to exec-path-from-shell's shell invocation.
 
 (let ((nix-bin (expand-file-name "~/.nix-profile/bin")))
   (unless (member nix-bin exec-path)
@@ -77,6 +70,36 @@ With prefix arg DATE-ONLY, insert date only (YYYY-MM-DD)."
 ;; All use-package declarations use straight.el by default.
 ;; Do NOT set use-package-always-ensure alongside this — they conflict.
 (setq straight-use-package-by-default t)
+
+;;; exec-path-from-shell — import shell env into GUI Emacs
+;;
+;; GUI Emacs on macOS starts with launchd's minimal environment and does not
+;; inherit shell exports.  exec-path-from-shell spawns an interactive shell
+;; once at startup and copies the listed variables (plus PATH/MANPATH by
+;; default) into Emacs.  Skip in terminal Emacs — env is already inherited.
+;;
+;; Runs after straight/use-package are ready, but before any code that reads
+;; the imported vars (CLOUDSYNC, TREESIT_GRAMMAR_DIR).
+
+(use-package exec-path-from-shell
+  :if (display-graphic-p)
+  :config
+  (dolist (var '("TREESIT_GRAMMAR_DIR" "CLOUDSYNC"))
+    (add-to-list 'exec-path-from-shell-variables var))
+  (exec-path-from-shell-initialize))
+
+;;; Environment variables
+;;
+;; CLOUDSYNC: fall back to ~/cloudsync when not set in the environment.
+;; In GUI Emacs exec-path-from-shell will have imported it above; this
+;; fallback covers terminal Emacs and any machine where the var isn't exported.
+
+(unless (getenv "CLOUDSYNC")
+  (setenv "CLOUDSYNC" (expand-file-name "cloudsync" (getenv "HOME"))))
+
+(defvar my-cloudsync-note-dir
+  (expand-file-name "main/note/org" (getenv "CLOUDSYNC"))
+  "Root directory for org notes inside CLOUDSYNC.")
 
 (provide 'my-core)
 ;;; my-core.el ends here

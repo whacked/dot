@@ -46,16 +46,30 @@
 
 ;;; Tree-sitter grammar path
 ;;
-;; Grammars live in /opt/tree-sitter/abi<N>/ where N is this build's
-;; tree-sitter library ABI version.  Two Emacs builds linked against
-;; different tree-sitter versions get separate subdirectories — no clobber.
+;; Base dir comes from $TREESIT_GRAMMAR_DIR (set in shell profile / nix env).
+;; Grammars live in <base>/abi<N>/ where N = (treesit-library-abi-version).
+;; Two Emacs builds linked against different tree-sitter ABIs each get their
+;; own subdirectory — no clobber.  The base dir must exist; Emacs creates
+;; only the abi-versioned subdirectory inside it.
 (when (fboundp 'treesit-library-abi-version)
-  (let ((grammar-dir (format "/opt/tree-sitter/abi%d"
-                             (treesit-library-abi-version))))
-    (make-directory grammar-dir t)
-    ;; setq, not add-to-list: treesit-install-language-grammar writes to
-    ;; (car treesit-extra-load-path), so it must be our versioned dir.
-    (setq treesit-extra-load-path (list grammar-dir))))
+  (let ((base (getenv "TREESIT_GRAMMAR_DIR")))
+    (cond
+     ((not base)
+      (display-warning 'treesit
+                       "TREESIT_GRAMMAR_DIR is not set — tree-sitter grammars disabled"
+                       :warning))
+     ((not (file-directory-p base))
+      (display-warning 'treesit
+                       (format "TREESIT_GRAMMAR_DIR=%s does not exist — tree-sitter grammars disabled" base)
+                       :warning))
+     (t
+      (let ((grammar-dir (expand-file-name
+                          (format "abi%d" (treesit-library-abi-version))
+                          base)))
+        (make-directory grammar-dir t)
+        ;; setq, not add-to-list: treesit-install-language-grammar writes to
+        ;; (car treesit-extra-load-path), so it must be our versioned dir.
+        (setq treesit-extra-load-path (list grammar-dir)))))))
 
 (use-package treesit-auto
   :custom
