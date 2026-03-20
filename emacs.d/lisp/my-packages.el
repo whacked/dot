@@ -69,13 +69,12 @@
         (make-directory grammar-dir t)
         ;; setq, not add-to-list: treesit-install-language-grammar writes to
         ;; (car treesit-extra-load-path), so it must be our versioned dir.
-        (setq treesit-extra-load-path (list grammar-dir)))))))
-
-(use-package treesit-auto
-  :custom
-  (treesit-auto-install 'prompt)
-  :config
-  (global-treesit-auto-mode))
+        (setq treesit-extra-load-path (list grammar-dir)))
+      (use-package treesit-auto
+        :custom
+        (treesit-auto-install 'prompt)
+        :config
+        (global-treesit-auto-mode))))))
 
 (provide 'my-packages)
 ;;; my-packages.el ends here

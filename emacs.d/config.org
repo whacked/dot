@@ -38,15 +38,7 @@
 
 
 ** syntax
-
-#+begin_src emacs-lisp
-(use-package treesit-auto
-  :custom
-  (treesit-auto-install 'prompt) ;; if a treesitter grammar can't be found for the language detected in the buffer, prompt me to install it
-  :config
-  (treesit-auto-add-to-auto-mode-alist 'all) ;; if a treesitter grammar is found for the language detected in the buffer, use the corresponding language-ts-mode
-  (global-treesit-auto-mode))
-#+end_src
+;;; MIGRATED: treesit-auto → my-packages.el (gated on TREESIT_GRAMMAR_DIR)
 
 *** markdown-mode
 
