@@ -177,6 +177,26 @@
 (use-package cider)
 (use-package hy-mode)
 
+(use-package clojure-utils
+  :ensure t
+  :straight (:host github :repo "plexus/emacs-clojure-utils")
+  :after clojure-mode)
+
+;;; thingatpt+ and thing-cmds — enhanced thing-at-point operations
+
+(use-package thingatpt+
+  :straight (:host github
+                   :repo "emacsmirror/thingatpt-plus"
+                   :files ("thingatpt+.el"))
+  :defer t)
+
+(use-package thing-cmds
+  :straight (:host github
+                   :repo "emacsmirror/thing-cmds"
+                   :files ("thing-cmds.el"))
+  :after thingatpt+
+  :defer t)
+
 ;; (use-package clj-refactor)
 ;; (use-package inf-clojure)
 ;; (use-package sibilant-mode) ; barely used

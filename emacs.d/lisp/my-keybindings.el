@@ -75,5 +75,9 @@
 (global-set-key (kbd "C-` L")
                 (lambda () (interactive) (move-to-window-line-top-bottom -1)))
 
+;;; Other key bindings
+
+(define-key global-map (kbd "<f12>") 'dumb-jump-go)
+
 (provide 'my-keybindings)
 ;;; my-keybindings.el ends here

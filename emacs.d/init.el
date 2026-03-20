@@ -15,13 +15,14 @@
 ;; (requires elisp-xref, available by default in Emacs 28+)
 
 (require 'my-core)
+(require 'my-system)
 (require 'my-ui)
 (require 'my-completion)
 (require 'my-editing)
 (require 'my-keybindings)
 (require 'my-packages)
 (require 'my-org)
-;; (require 'my-system)
+(require 'my-utils)
 
 ;;; Custom file
 

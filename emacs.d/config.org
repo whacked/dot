@@ -148,18 +148,7 @@
    undo-tree
    )
 
-  (use-package thingatpt+
-    :straight (:host github
-		     :repo "emacsmirror/thingatpt-plus"
-		     :files ("thingatpt+.el"))
-    :defer t)
-
-  (use-package thing-cmds
-    :straight (:host github
-		     :repo "emacsmirror/thing-cmds"
-		     :files ("thing-cmds.el"))
-    :after thingatpt+
-    :defer t)
+;;; MIGRATED: thingatpt+, thing-cmds use-packages → my-packages.el
 #+end_src
 
 ** eval-in-repl
@@ -264,10 +253,7 @@
     ;;   :straight (:host github :repo "whacked/ob-shstream")
     ;;   :after org)
 
-    (use-package clojure-utils
-      :ensure t
-      :straight (:host github :repo "plexus/emacs-clojure-utils")
-      :after clojure-mode)
+;;; MIGRATED: clojure-utils → my-packages.el
   #+END_SRC
 
 ** color themes
@@ -386,29 +372,10 @@
 ** os-specific
 
 *** gnu/linux
-
-    #+BEGIN_SRC emacs-lisp
-      (when (eq system-type 'gnu/linux)
-        ;; use x-clipboard
-        (setq x-select-enable-clipboard t)
-        (when (display-graphic-p)
-          (add-to-list 'default-frame-alist '(width . 100))
-          (add-to-list 'default-frame-alist '(height . 60))))
-    #+END_SRC
+;;; MIGRATED: os-specific gnu/linux (x-select-enable-clipboard, default-frame-alist) → my-system.el
 
 *** darwin
-
-    #+BEGIN_SRC emacs-lisp
-      (when (eq system-type 'darwin)
-        (when (featurep 'ns)
-          ;; turn apple key into Meta
-          ;; (setq ns-command-modifier 'meta)
-
-          ;; ;; for macports
-          ;; (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH")))
-          ;; (setq exec-path (append exec-path '("/opt/local/bin:/opt/local/sbin:")))
-          (message "mac config loaded")))
-    #+END_SRC
+;;; MIGRATED: os-specific darwin (featurep ns, message) → my-system.el
 
 ** system-name
 
@@ -448,16 +415,7 @@
 ;;; MIGRATED: set-goal-column / narrow-to-region disabled → my-editing.el
 ;;; DROPPED:  (defvar warning-suppress-types nil) — band-aid suppression, no longer needed
 ** org mode
-
-   if you are getting =Symbol's value as variable is void: org-babel-safe-header-args= errors
-   you can try =M-x org-reload= and re-init
-
- #+BEGIN_SRC emacs-lisp
-   (define-key global-map "\C-cl" 'org-store-link)
-   (define-key global-map "\C-ca" 'org-agenda)
-   (define-key my-keys-minor-mode-map (kbd "M-_") 'org-metaleft)
-   (define-key my-keys-minor-mode-map (kbd "M-+") 'org-metaright)
- #+END_SRC
+;;; MIGRATED: org keybindings (C-cl, C-ca, M-_, M-+, f9, display-time) → my-org.el
 
  #+BEGIN_SRC emacs-lisp
    ;; force org-babel src edit to use same window instead of splitting
@@ -535,154 +493,14 @@
  #+END_SRC
 
 *** fix "org-mouse-features"
-
-    #+begin_src emacs-lisp
-      (require 'org-mouse)
-    #+end_src
+;;; MIGRATED: (require 'org-mouse) → my-org.el
 
 *** org capture
+;;; MIGRATED: org-capture config (org-directory, org-capture-templates, C-c c) → my-org.el
 
-    see http://pages.sachachua.com/.emacs.d/Sacha.html#orgheadline56
-    http://doc.norang.ca/org-mode.html#Capture
-    http://orgmode.org/manual/Template-elements.html
-    http://orgmode.org/manual/Capture-templates.html#Capture-templates
-
-
-    #+BEGIN_SRC emacs-lisp
-      (add-hook 'org-remember-mode-hook '(lambda () (visual-line-mode t)))
-      (add-hook 'org-remember-before-finalize-hook 'set-calendar-appt)
-
-      ;;; attempt to use org-capture.
-      ;;; remember's work flow is actually more pleasant.
-      ;;; in single buffer visible phase, capture:
-      ;;; 1. creates split buffer, gets selection
-      ;;; 2. fills template in that buffer
-      ;;; 3. completes capture in that buffer
-      ;;; 4. restores original buffer
-      ;;; this is identical to remember
-      ;;; in split-buffer phase, capture:
-      ;;; 1. opens selection window in non-focused buffer (good)
-      ;;; 2. after get selection, fills template in focused buffer,
-      ;;; i.e. it switches away from the window where the selection took place (bad)
-      ;;; 3. when authoring buffer for capture is open, the previously
-      ;;; focused buffer is again put in the split where the template
-      ;;; selection screen came up (bad)
-      ;;; 4. when finished, layout is restored (expected)
-      ;;; the amount of attention shifting is pretty annoying
-      ;;;
-      ;;;;(define-key global-map "\M-\C-r" 'org-capture)
-      ;;;(setq org-capture-templates
-      ;;;      '(("t" "Todo" entry (file "~/note/org/todos.org" "Tasks")
-      ;;;         "* TODO %?\nAdded: %U" :empty-lines 1)
-      ;;;        ("c" "CNE-todo" entry ("~/note/cne/cne.org" "All Todo")
-      ;;;         "* TODO [#%^{IMPORTANCE|B}] [%^{URGENCY|5}] %?\nAdded: %U")
-      ;;;        ("n" "Nikki" entry (file+headline "~/note/org/nikki.org" "ALL")
-      ;;;         "* %U %?\n\n %i\n %a\n\n" :empty-lines 1)
-      ;;;        ("s" "State" entry (file "~/note/org/state.org")
-      ;;;         "* %U %? " :empty-lines 1)
-      ;;;        ("v" "Vocab" plain (file "~/note/org/vocab.org")
-      ;;;         "** %U %^{Word}\n%?\n# -*- xkm-export -*-\n" :empty-lines 1)
-      ;;;        ;; idea template used to be:
-      ;;;        ;; "* %^{Title}\n%?\n  %a"
-      ;;;        ;; but org-capture-fill-template calls (delete-other-windows)
-      ;;;        ;; and maximizes the template-filling buffer
-      ;;;        ;; which is pretty annoying. so simply stop using template prompts
-      ;;;        ("i" "Idea" entry (file "~/note/org/idea.org")
-      ;;;         "* %?\n  %a" :empty-lines 1)
-      ;;;        ("d" "Dump" entry (file+datetree "~/note/org/dump.org")
-      ;;;         "* %?\n%U\n" :empty-lines 1)))
-
-      ;; (require 'org-drill)
-
-      ;;; org-mode with remember
-      ;; (org-remember-insinuate)
-      (setq org-directory "~/note/org")
-      (setq org-default-notes-file (concat (file-name-as-directory org-directory) "index.org.gpg"))
-
-      ;;(define-key global-map "\C-cr" 'org-remember)
-      ;; (define-key global-map "\M-\C-r" 'org-remember)
-      (global-set-key (kbd "C-c c") 'org-capture)
-
-      ;; Capture templates for: TODO tasks, Notes, appointments, phone calls, meetings, and org-protocol
-      ;; (setq org-capture-templates
-      ;;       (quote (("t" "todo" entry (file "~/git/org/refile.org")
-      ;;                "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
-      ;;               ("r" "respond" entry (file "~/git/org/refile.org")
-      ;;                "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
-      ;;               ("n" "note" entry (file "~/git/org/refile.org")
-      ;;                "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
-      ;;               ("j" "Journal" entry (file+datetree "~/git/org/diary.org")
-      ;;                "* %?\n%U\n" :clock-in t :clock-resume t)
-      ;;               ("w" "org-protocol" entry (file "~/git/org/refile.org")
-      ;;                "* TODO Review %c\n%U\n" :immediate-finish t)
-      ;;               ("m" "Meeting" entry (file "~/git/org/refile.org")
-      ;;                "* MEETING with %? :MEETING:\n%U" :clock-in t :clock-resume t)
-      ;;               ("p" "Phone call" entry (file "~/git/org/refile.org")
-      ;;                "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
-      ;;               ("h" "Habit" entry (file "~/git/org/refile.org")
-      ;;                "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n"))))
-
-      ;; see http://orgmode.org/manual/Template-elements.html
-
-      (setq org-capture-templates
-      '(
-        ;; ("t" "Todo" entry
-        ;;  "~/note/org/todos.org"
-        ;;  "* TODO %?\nAdded: %U" "Main")
-        ;; ("c" "CNE" entry
-        ;;   "~/note/cne/cne.org"
-        ;;  "* TODO %?\nAdded: %U" "All Todo")
-        ;; ("n" "Nikki" entry
-        ;;   "~/note/org/nikki.org"
-        ;;  "* %U %?\n\n %i\n %a\n\n" "ALL")
-        ;; ;; ("State" ?s "* %U %? " "~/note/org/state.org")
-        ;; ("s" "Scholar" entry
-        ;;  "~/note/org/scholar.org"
-        ;;  "* %?\nadded: %U")
-        ;; ("v" "Vocab" entry
-        ;;   "~/note/org/vocab.org"
-        ;;  "* %U %^{Word}\n%?\n# -*- xkm-export -*-\n")
-        ;; ("i" "Idea" entry
-        ;;       "~/note/org/idea.org"
-        ;;      "* %^{Title}\n%?\n  %a\n  %U" "Main")
-        ;;     ;;("Music" ?m "- %? %U\n" "~/note/org/music.org" "good")
-        ;;     ("l" "learn" entry
-        ;;      "omi%?" "~/note/org/learn.org" "captured")
-        ;;     ("m" "mem" "** %U    :drill:\n
-        ;;     :PROPERTIES:
-        ;;     :DATE_ADDED: %U
-        ;;     :SOURCE_URL: %a
-        ;;     :END:
-        ;; \n%i%?" "~/note/org/learn.org" "captured")
-        ("d" "Dump" entry
-         (file+headline "~/note/org/dump.org" "test")
-         )
-        ))
-    #+END_SRC
 
 *** timestamps in org babel code blocks
-
-https://emacs.stackexchange.com/a/35904
-
-#+BEGIN_SRC emacs-lisp
-(defadvice org-babel-execute-src-block (after org-babel-record-execute-timestamp)
-  (let ((code-block-params (nth 2 (org-babel-get-src-block-info)))
-        (code-block-name (nth 4 (org-babel-get-src-block-info))))
-    (let ((timestamp (cdr (assoc :timestamp code-block-params)))
-          (result-params (assoc :result-params code-block-params)))
-      (if (and (equal timestamp "t") (> (length code-block-name) 0))
-          (save-excursion
-            (search-forward-regexp (concat "#\\+RESULTS\\(\\[.*\\]\\)?: "
-                                           code-block-name))
-            (beginning-of-line)
-            (search-forward "RESULTS")
-            (kill-line)
-            (insert (concat (format-time-string "[%F %r]: ") code-block-name)))
-        (if (equal timestamp "t")
-            (message (concat "Result timestamping requires a #+NAME: "
-                             "and a ':results output' argument.")))))))
-(ad-activate 'org-babel-execute-src-block)
-#+END_SRC
+;;; MIGRATED: org-babel-execute-src-block timestamp defadvice → my-org.el
 
 #+BEGIN_EXAMPLE
   ,#+NAME: test-no-timestamp
@@ -705,51 +523,7 @@ https://emacs.stackexchange.com/a/35904
 #+END_EXAMPLE
 
 ** org-mode conf
-
-   #+BEGIN_SRC emacs-lisp
-     (setq org-agenda-restore-windows-after-quit t
-           org-catch-invisible-edits "show"
-           org-agenda-window-setup (quote other-window)
-           org-drill-optimal-factor-matrix (quote ((2 (2.6 . 2.6) (2.7 . 2.691)) (1 (2.6 . 4.14) (2.36 . 3.86) (2.1799999999999997 . 3.72) (1.96 . 3.58) (1.7000000000000002 . 3.44) (2.5 . 4.0))))
-           org-file-apps (quote ((auto-mode . emacs) ("\\.mm\\'" . default) ("\\.x?html?\\'" . default) ("\\.xoj\\'" . "xournal %s") ("\\.pdf\\'" . "evince %s")))
-           org-modules (quote (org-bbdb org-bibtex org-gnus org-info
-                                        ;; deprecate, causes problems now
-                                        ;; org-jsinfo
-                                        org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m
-                                        ;; inclusion of this seems to cause problems with using
-                                        ;; load-theme-buffer-local (but! not color-theme-buffer-local)
-                                        ;; org-drill
-                                        org-docview))
-           org-src-fontify-natively t
-           org-startup-folded (quote showeverything)
-           org-ellipsis "⤵"
-           ;; FIXME this probably doesn't work as expected
-           org-startup-folded nil
-           org-export-coding-system 'utf-8)
-
-     ;; ref https://zzamboni.org/post/beautifying-org-mode-in-emacs/
-     (when window-system
-       (let* ((variable-tuple
-               (cond ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
-                     ((x-list-fonts "Inconsolata")     '(:font "Inconsolata"))
-                     (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
-              (base-font-color     (face-foreground 'default nil 'default))
-              (headline           `(:inherit default :inverse-video t :weight bold :foreground ,base-font-color)))
-
-         (custom-theme-set-faces
-          'user
-          `(org-level-1 ((t (,@headline ,@variable-tuple :height 2.2 :foreground "brown"   :background "white"))))
-          `(org-level-2 ((t (,@headline ,@variable-tuple :height 2.0 :foreground "red"     :background "white"))))
-          `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.8 :foreground "orange"  :background "black"))))
-          `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.6 :foreground "yellow3" :background "white"))))
-          `(org-level-5 ((t (,@headline ,@variable-tuple :height 1.4 :foreground "green4"  :background "white"))))
-          `(org-level-6 ((t (,@headline ,@variable-tuple :height 1.2 :foreground "blue"    :background "white"))))
-          `(org-level-7 ((t (,@headline ,@variable-tuple))))
-          `(org-level-8 ((t (,@headline ,@variable-tuple))))
-          `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))
-          '(table-cell ((t (:background "#DD8" :foreground "gray50" :inverse-video nil))))
-          '(table-cell-face ((((class color)) (:background "#AA3" :foreground "gray90")))))))
-   #+END_SRC
+;;; MIGRATED: org-mode conf setq block + org-level faces → my-org.el
 
 *** TODO FIXME pdf-tools interaction
 
@@ -949,501 +723,21 @@ https://emacs.stackexchange.com/a/35904
 
 
 ** font
-
-   #+BEGIN_SRC emacs-lisp
-     (defun font-exist-p (fontname)
-       "Test if this font is exist or not."
-       (if (or (not fontname) (string= fontname ""))
-           nil
-         (if (not (x-list-fonts fontname)) nil t)))
-
-     (when window-system
-       (let ((font-pair (cond ((font-exist-p "Consolas")
-                               '("Consolas" . 10))
-                              ((font-exist-p "Monaco")
-                               '("Monaco" . 11))
-                              ((font-exist-p "Droid Sans Mono")
-                               '("Droid Sans Mono" . 11))
-                              ((font-exist-p "Deja Vu Sans Mono")
-                               '("Deja Vu Sans Mono" . 9))
-                              ((font-exist-p "Inconsolata")
-                               '("Inconsolata" . 9))
-                              ((font-exist-p "Anonymous Pro")
-                               '("Anonymous Pro" . 8)))))
-         (when font-pair
-           (defvar emacs-english-font (car font-pair))
-           (let ((font-string (format "%s-%s" emacs-english-font (cdr font-pair))))
-             (set-frame-font font-string nil t))
-           (add-to-list
-            'default-frame-alist
-            `(font . ,(format "%s-%s" emacs-english-font (cdr font-pair)))))))
-   #+END_SRC
+;;; MIGRATED: font-exist-p + window-system font selection → my-ui.el
 
 * utility (from util.el)
-
-
-  #+BEGIN_SRC emacs-lisp
-    (defun sequential-insert-number ()
-      (interactive)
-      (let* ((beg (string-to-number (read-from-minibuffer "from? ")))
-            (end (string-to-number (read-from-minibuffer "to? ")))
-            (pref (read-from-minibuffer "prefix? "))
-            (post (read-from-minibuffer "postfix? "))
-
-            (cmp (if (< beg end)
-                     (defun cmp (x y) (<= beg end))
-                     (defun cmp (x y) (>= beg end))))
-            (next (if (< beg end)
-                     (defun next (x) (+ x 1))
-                     (defun next (x) (- x 1)))))
-
-        (while (cmp beg end)
-          (setq str_num (format "%s%d%s" pref beg post))
-          (insert str_num)
-          (let ((len (length str_num)))
-            (while (> len 0)
-              (backward-char)
-              (setq len (- len 1))
-              ))
-          (next-line)
-          (setq beg (next beg)))))
-
-
-    (defun strtr ()
-      (interactive)
-      (let* ((str-fr (read-from-minibuffer "from characters? "))
-             (str-to (read-from-minibuffer "to characters? "))
-
-             (len-str-fr (length str-fr))
-             (len-str-to (length str-to))
-
-             (chr-escape "$")
-             (chr-escape-escape (format "%s%s" chr-escape chr-escape))
-             )
-
-        (if (= len-str-fr len-str-to)
-            (progn
-              (message "replacing...")
-              ; first escape all control chars in the text
-              (beginning-of-buffer)
-              (replace-string chr-escape chr-escape-escape)
-
-              ; then escape all replace chars
-              (setq ls-str (list str-fr str-to))
-              (setq ls-source-buffer ())
-              (while ls-str
-                (let* ((str-cur (car ls-str))
-                       (idx 0)
-                       (end (length str-cur))
-                       (is-target (= (length ls-str) 1))
-                      )
-                  (while (< idx end)
-                    (beginning-of-buffer)
-                    (if is-target
-                        (progn
-                          (setq chr-source (car ls-source-buffer))
-                          (setq chr-target (substring str-cur idx (+ idx 1)))
-                          (setq ls-source-buffer (cdr ls-source-buffer))
-                          (replace-string chr-source chr-target)
-                          )
-                      (progn
-                        (setq chr-source (substring str-cur idx (+ idx 1)))
-                        (setq chr-source-escaped (format "%s%s" chr-escape chr-source))
-                        (setq ls-source-buffer (cons chr-source-escaped ls-source-buffer))
-                        (replace-string chr-source chr-source-escaped)
-                        )
-                      )
-                    (setq idx (+ idx 1))
-                  )
-
-                  (setq ls-str (cdr ls-str))
-                  (setq ls-source-buffer (reverse ls-source-buffer))
-                  )
-                )
-
-              ; then translate all escaped replace chars
-              (setq idx 0)
-              (beginning-of-buffer)
-
-              ; then de-escape the escape chars
-              (beginning-of-buffer)
-              (replace-string chr-escape-escape chr-escape)
-              (setq ls-source-buffer ())
-              )
-          (message "NOT EQUAL LENGTH! BYE!")
-          )
-        )
-      )
-
-    ;; probably obviated by align-regexp()
-    (defun align-lines-to-expr (pbeg pend)
-      "finds the first matching `expr` in the second to last lines in *region* and aligns them to the `expr` in the first line in the *region*"
-      (interactive (list (point) (mark)))
-      (unless (and pbeg pend)
-        (error "The mark is not set now, so there is no region"))
-      (save-excursion
-        (let ((idx-reference nil)
-              (expr (read-from-minibuffer "what character? "))
-              (nowbuf (buffer-name))
-              (beg (min pbeg pend))
-              (end (max pbeg pend)))
-          (goto-char beg)
-          (while (< (point) end)
-            (let* ((line-end (progn
-                               (move-end-of-line 1)
-                               (- (point) 1)))
-                   (line-beg (progn
-                               (move-beginning-of-line 1)
-                               (- (point) 1)))
-                   (string-to-match (substring (buffer-string) line-beg line-end))
-                   (idx-match (string-match expr string-to-match))
-                   )
-              (setq idx-reference (or idx-reference idx-match))
-              (unless (or (not idx-match)
-                          (<= idx-reference idx-match))
-                (move-to-column idx-match)
-                (let ((need-to-pad (- idx-reference idx-match)))
-                  (setq end (+ end need-to-pad))
-                  (insert (format (format "%%%ds" need-to-pad) ""))))
-              (next-line))))))
+;;; MIGRATED: sequential-insert-number, strtr, align-lines-to-expr, replace-html-chars-region,
+;;;           replace-entity-chars-region → my-utils.el
 
 
 
-    ;; http://xahlee.org/emacs/elisp_replace_html_entities_command.html
-    (defun replace-html-chars-region (start end)
-      "Replace some HTML entities in region …."
-      (interactive "r")
-      (save-restriction
-        (narrow-to-region start end)
-
-        (goto-char (point-min))
-        (while (search-forward "&lsquo;" nil t) (replace-match "‘" nil t))
-
-        (goto-char (point-min))
-        (while (search-forward "&rsquo;" nil t) (replace-match "’" nil t))
-
-        (goto-char (point-min))
-        (while (search-forward "&ldquo;" nil t) (replace-match "“" nil t))
-
-        (goto-char (point-min))
-        (while (search-forward "&rdquo;" nil t) (replace-match "”" nil t))
-
-        (goto-char (point-min))
-        (while (search-forward "&eacute;" nil t) (replace-match "é" nil t))
-        ;; more here
-        )
-      )
-
-    (defun replace-entity-chars-region (start end)
-      "Replace special chars with normal chars"
-      (interactive "r")
-      (save-restriction
-        (narrow-to-region start end)
-
-        (goto-char (point-min))
-        (while (search-forward "‘" nil t) (replace-match "'" nil t))
-
-        (goto-char (point-min))
-        (while (search-forward "’" nil t) (replace-match "'" nil t))
-
-        (goto-char (point-min))
-        (while (search-forward "“" nil t) (replace-match "\"" nil t))
-
-        (goto-char (point-min))
-        (while (search-forward "”" nil t) (replace-match "\"" nil t))
-
-        (goto-char (point-min))
-        (while (search-forward "−" nil t) (replace-match "-" nil t))
-
-        (goto-char (point-min))
-        (while (search-forward "–" nil t) (replace-match "-" nil t))
-
-        )
-      )
-  #+END_SRC
-
-  #+begin_src emacs-lisp
-    (defun remove-all-text-properties-in-buffer ()
-      ;; https://emacs.stackexchange.com/a/12527
-      (interactive)
-      (let ((inhibit-read-only t))
-        (set-text-properties (point-min) (point-max) nil)))
-
-    (defun copy-path-of-current-file-to-clipboard ()
-      (interactive)
-      (kill-new buffer-file-name))
-
-    (defun copy-path-of-current-directory-to-clipboard ()
-      (interactive)
-      (kill-new default-directory))
-  #+end_src
+;;; MIGRATED: remove-all-text-properties-in-buffer, copy-path-of-current-{file,directory}-to-clipboard → my-utils.el
 
 * org interaction + util (from util.el)
-
-  #+BEGIN_SRC emacs-lisp
-    ;; ref: http://emacsworld.blogspot.com/2011/05/automatic-screenshot-insertion-in-org.html
-    (defun org-screenshot ()
-      "Take a screenshot into a time stamped unique-named file in the same directory as the org-buffer and insert a link to this file."
-      (interactive)
-      (let* ((png-filepath (concat
-                            default-directory
-                            "img/screenshot/"
-                            (format-time-string "%Y-%m-%d_%H%M%S_")
-                            (buffer-name) ".png"))
-             (base-dir (file-name-directory png-filepath)))
-        (unless (file-exists-p base-dir)
-          (make-directory base-dir t))
-        ;; -s  select window
-        ;; -u  use the focused window
-        (call-process "scrot" nil nil nil "-u" png-filepath)
-        (insert (concat "[[" png-filepath "]]"))
-        ;;(org-display-inline-images)
-      ))
-
-
-    ;; see http://nullprogram.com/blog/2013/02/06/
-    ;; also see http://stackoverflow.com/questions/12915528/easier-outline-navigation-in-emacs
-    (defun org-navigate-mode--get-nav-buffer-name ()
-      (concat (buffer-name) "--<nav>"))
-    (define-minor-mode org-navigate-mode
-      "quick way to nagivate org files via indirect buffer"
-      :lighter "my-onav"
-      :keymap (let ((map (make-sparse-keymap)))
-                (define-key map (kbd "n") 'outline-next-visible-heading)
-                (define-key map (kbd "p") 'outline-previous-visible-heading)
-                (define-key map (kbd "j") 'outline-next-visible-heading)
-                (define-key map (kbd "k") 'outline-previous-visible-heading)
-                (define-key map (kbd "l") '(lambda ()
-                                             (interactive)
-                                             (let* ((nowbuf (current-buffer))
-                                                    ;; (headline-at-point (nth 4 (org-heading-components)))
-                                                    ;; (target-line-number (line-number-at-pos (org-find-exact-headline-in-buffer headline-at-point)))
-                                                    (target-line-number (line-number-at-pos))
-                                                    )
-                                               (switch-to-buffer-other-window navigation-buffer)
-                                               (goto-line target-line-number)
-                                               (recenter-top-bottom 1)
-                                               (switch-to-buffer-other-window nowbuf))))
-                (define-key map (kbd "RET") '(lambda ()
-                                               (interactive)
-                                               (let ((target-line-number (line-number-at-pos)))
-                                                 (switch-to-buffer-other-window navigation-buffer)
-                                                 (goto-line target-line-number)
-                                                 (recenter-top-bottom 1))))
-                map)
-      (set (make-local-variable 'base-buffer) (current-buffer))
-      (set (make-local-variable 'navigation-buffer-name) (org-navigate-mode--get-nav-buffer-name))
-      (if org-navigate-mode
-          (progn
-            (set (make-local-variable 'navigation-buffer)
-                 (make-indirect-buffer base-buffer navigation-buffer-name))
-            (split-window-horizontally)
-            (other-window 1)
-            (switch-to-buffer navigation-buffer)
-            (org-mode)
-            (outline-show-all)
-            (other-window -1)
-            (org-content 4)
-            (read-only-mode 1)
-            (message "hello navigate mode"))
-        (progn
-          (kill-buffer (get-buffer navigation-buffer-name))
-          (delete-window)
-          (outline-show-all)
-          (read-only-mode 0)
-          (message "bye navigate mode"))))
-
-    (defun sconvert--dxdoi-to-org (input-string)
-      "convert http://dx.doi.org/blah to org-style doi:blah"
-      (concat "doi:" (replace-regexp-in-string "http://dx.doi.org/" "" input-string)))
-
-    (defun org-resolve-citation (&optional input-query-string)
-      (interactive)
-      ;; (require 'json)
-      ;; (require 'request)
-
-      (let ((CROSSREF-URI "http://search.labs.crossref.org")
-            ;; http://stackoverflow.com/questions/27910/finding-a-doi-in-a-document-or-page
-            (re-doi     "\\b\\(10\\.[0-9]\\{3,\\}\\/[^[:space:]]+\\)\\b")
-            ;; see calibre-mode.el for re-citekey regexp logic
-            (re-citekey "\\b\\([^ :;,.]+?\\)\\(?:etal\\)?\\([[:digit:]]\\\{4\\\}\\)\\(.*?\\)\\b")
-            (default-query-string (sentence-at-point)))
-
-        (if (null input-query-string)
-            (setq input-query-string
-                  (cond (mark-active
-                         (buffer-substring (region-beginning) (region-end)))
-                        ((string-match re-doi default-query-string)
-                         (match-string 1 default-query-string))
-                        (t
-                         (read-string (format "search string: ") nil nil nil)))))
-        ;; (message (format "%s" input-query-string))
-
-        (quote
-         ;; Match many free-form citations to DOIs.
-         ;; Resolve citations to DOIs by POSTing a JSON list of free-form citations to this route.
-         (request
-          (concat CROSSREF-URI "/links")
-          :type "POST"
-          :parser 'buffer-string
-          :data (json-encode (list
-                              "M. Henrion, D. J. Mortlock, D. J. Hand, and A. Gandy, \"A Bayesian approach to star-galaxy classification,\" Monthly Notices of the Royal Astronomical Society, vol. 412, no. 4, pp. 2286-2302, Apr. 2011."
-                              "Renear 2012"
-                              ))
-          ;; Be sure to mark the request's content type as JSON by specifying a Content-Type header in the request:
-          ;; Content-Type: application/json
-          :headers '(("Content-Type" . "application/json"))
-          ;; Citations must contain at least three words, those with less will not match. Citations with a low match score will be returned without a potential match. Here's a sample response:
-          :success (function*
-                    (lambda (&key data &allow-other-keys)
-                      (insert (format "%s" data))))))
-
-
-        (destructuring-bind (key-to-retrieve postproc-fn query-string)
-            (cond ((string-match re-doi input-query-string)
-                   (list 'title ;; 'fullCitation
-                         (lambda (ttl) (concat "/" ttl "/"))
-                         (match-string 0 input-query-string)))
-                  ((string-match re-citekey input-query-string)
-                   (list 'doi
-                         'sconvert--dxdoi-to-org
-                         (mapconcat
-                          'identity
-                          (list
-                           (match-string 1 input-query-string)
-                           (match-string 2 input-query-string)
-                           (match-string 3 input-query-string))
-                          " ")))
-                  (t
-                   (list 'doi 'sconvert--dxdoi-to-org input-query-string)))
-
-          ;; need to re-bind into lexical scope
-          (lexical-let* ((k2r key-to-retrieve)
-                         (pfn postproc-fn)
-                         (postfunc (function*
-                                    (lambda (&key data &allow-other-keys)
-                                      ;; (message (format "%s" k2r))
-                                      (deactivate-mark)
-                                      (let ((res (elt data 0)))
-                                        (message (format "%s\n\n'%s' copied to clipboard"
-                                                         (cdr (assoc 'fullCitation res))
-                                                         ;; (cdr (assoc 'title res))
-                                                         ;; (cdr (assoc 'doi res))
-                                                         (kill-new (format "%s" (funcall pfn (cdr (assoc k2r res))))))))))))
-            (request
-             (concat CROSSREF-URI "/dois" "?"
-                     (request--urlencode-alist
-                      `(("q" . ,query-string) ("page" . "1") ("rows" . "1"))))
-             :parser 'json-read ;; 'buffer-string
-             :success postfunc)))))
-
-    (global-set-key "\C-cR" 'org-resolve-citation)
-
-    ;; see "../api.el" and "org-isbn.el"
-    (defun org-resolve-isbn (&optional input-query-string)
-      (interactive)
-      (let ((WORLDCAT-BASE-URL "http://www.worldcat.org/webservices/catalog/search/opensearch?"))
-        (if (null input-query-string)
-            (setq input-query-string
-                  (cond (mark-active
-                         (buffer-substring (region-beginning) (region-end)))
-                        (t
-                         (read-string (format "search string: ") nil nil nil)))))
-        (lexical-let* ((query-string input-query-string))
-          ;; (concat WORLDCAT-BASE-URL
-          ;;         (request--urlencode-alist
-          ;;          `(("q" . ,query-string) ("count" . "1") ("wskey" . ,WORLDCAT-API-KEY))))
-          (request
-           (concat WORLDCAT-BASE-URL
-                   (request--urlencode-alist
-                    `(("q" . ,query-string) ("count" . "1") ("wskey" . ,WORLDCAT-API-KEY))))
-           :type "GET"
-           :parser (lambda () (libxml-parse-xml-region (point) (point-max)))
-           :success (function*
-                     (lambda (&key data &allow-other-keys)
-                       (let ((get (lambda (node &rest names)
-                                    (if names
-                                        (apply get
-                                               (first (xml-get-children
-                                                       node (car names)))
-                                               (cdr names))
-                                      (first (xml-node-children node))))))
-                         (if (funcall get data 'entry 'identifier)
-                             (let ((res (format "isbn:%s /%s/\n"
-                                                (car (last (split-string (funcall get data 'entry 'identifier) ":")))
-                                                ;; (funcall get data 'entry 'author 'name)
-                                                (funcall get data 'entry 'title))))
-                               (message (kill-new res)))
-                           (message "no result")))))))))
-    (global-set-key "\C-cI" 'org-resolve-isbn)
-
-
-    ;; http://stackoverflow.com/questions/15328515/iso-transclusion-in-emacs-org-mode
-    ;; http://stackoverflow.com/a/15352203
-    (defun org-dblock-write:transclusion (params)
-      (progn
-        (with-temp-buffer
-          (insert-file-contents (plist-get params :filename))
-          (let ((range-start (or (plist-get params :min) (line-number-at-pos (point-min))))
-                (range-end (or (plist-get params :max) (line-number-at-pos (point-max)))))
-            (copy-region-as-kill (line-beginning-position range-start)
-                                 (line-end-position range-end))))
-        (yank)))
-
-
-    ;; http://stackoverflow.com/questions/10729639/organizing-notes-with-tags-in-org-mode
-    (defun org-tag-match-context (&optional todo-only match)
-      "Identical search to `org-match-sparse-tree', but shows the content of the matches."
-      (interactive "P")
-      (org-agenda-prepare-buffers (list (current-buffer)))
-      (org-overview)
-      (org-remove-occur-highlights)
-      (org-scan-tags '(progn (org-show-entry)
-                             (org-show-context))
-                     (cdr (org-make-tags-matcher match)) todo-only))
-
-
-    ;; ref http://stackoverflow.com/questions/6050033/elegant-way-to-count-items
-    ;; least dependency and easiest to get working version (Eli Barzilay)
-    (defun frequencies (list &optional test key)
-      (let* ((test (or test #'equal))
-             (h (make-hash-table :test test)))
-        (dolist (x list)
-          (let ((key (if key (funcall key x) x)))
-            (puthash key (1+ (gethash key h 0)) h)))
-        (let ((r nil))
-          (maphash #'(lambda (k v) (push (cons k v) r)) h)
-          (sort r #'(lambda (x y) (< (cdr x) (cdr y)))))))
-
-    ;; ref http://stackoverflow.com/questions/24330980/enumerate-all-tags-in-org-mode
-    (defun org-get-tag-histogram ()
-      (interactive)
-      (let ((all-tags '()))
-        (org-map-entries
-         (lambda ()
-           (let ((tag-string (car (last (org-heading-components)))))
-             (when tag-string
-               (setq all-tags
-                     (append all-tags (split-string tag-string ":" t)))))))
-        (let ((histogram (frequencies all-tags)))
-          (when (called-interactively-p 'any)
-            (message
-             (let ((longest-keylen (apply 'max
-                                          (mapcar (function (lambda (pair)
-                                                              (length (car pair)))) histogram))))
-               (mapconcat
-                (function (lambda (pair)
-                            (format "%s  %s"
-                                    (car pair)
-                                    (format
-                                     (format "%%%dd" (1+ (- longest-keylen (length (car pair)))))
-                                     (cdr pair))
-                                    )))
-                histogram
-                "\n"))))
-          histogram)))
-
-  #+END_SRC
+;;; MIGRATED: org-screenshot, org-navigate-mode, sconvert--dxdoi-to-org,
+;;;           org-resolve-citation (C-cR), org-resolve-isbn (C-cI),
+;;;           org-dblock-write:transclusion, org-tag-match-context,
+;;;           frequencies, org-get-tag-histogram → my-org.el
 
 * assorted fix
 
@@ -1457,34 +751,8 @@ https://emacs.stackexchange.com/a/35904
 
    see http://coldnew.github.io/blog/2013/11-16_d2f3a/ 解決 org-mode 表格內中英文對齊的問題
 
-   #+BEGIN_SRC emacs-lisp
-     (defvar emacs-cjk-font "Hiragino Sans GB W3"
-       "The font name for CJK.")
-
-     (defvar emacs-font-size-pair '(13 . 16)
-       "Default font size pair for (english . chinese)")
-
-     (defvar emacs-font-size-pair-list
-       '(( 5 .  6) (10 . 12)
-         (13 . 16) (15 . 18) (17 . 20)
-         (19 . 22) (20 . 24) (21 . 26)
-         (24 . 28) (26 . 32) (28 . 34)
-         (30 . 36) (34 . 40) (36 . 44))
-       "This list is used to store matching (englis . chinese) font-size.")
-   #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp
-     (defun set-font (english chinese size-pair)
-       "Setup emacs English and Chinese font on x window-system."
-
-       (if (font-exist-p english)
-           (set-frame-font (format "%s:pixelsize=%d" english (car size-pair)) t))
-
-       (if (font-exist-p chinese)
-           (dolist (charset '(kana han symbol cjk-misc bopomofo))
-             (set-fontset-font (frame-parameter nil 'font) charset
-                               (font-spec :family chinese :size (cdr size-pair))))))
-   #+END_SRC
+;;; MIGRATED: emacs-cjk-font, emacs-font-size-pair, emacs-font-size-pair-list vars → my-ui.el
+;;; MIGRATED: set-font function → my-ui.el
 
    #+BEGIN_SRC emacs-lisp
      ;; Setup font size based on emacs-font-size-pair
@@ -1508,10 +776,7 @@ https://emacs.stackexchange.com/a/35904
   #+end_src
 
 * other key bindings
-
-  #+begin_src emacs-lisp
-    (define-key global-map (kbd "<f12>") 'dumb-jump-go)
-  #+end_src
+;;; MIGRATED: <f12> dumb-jump-go → my-keybindings.el
 * mardown fence code eval via org-babel
 
   #+begin_src emacs-lisp
@@ -1522,238 +787,25 @@ https://emacs.stackexchange.com/a/35904
 * text format conversion
 
 
-#+begin_src emacs-lisp
-  (defun js->json ()
-    (interactive)
-    (shell-command-on-region (region-beginning)
-                             (region-end)
-                             "node -e 'console.log(JSON.stringify(eval(require(\"fs\").readFileSync(0, \"utf-8\"))))'"
-                             (current-buffer)
-                             t))
-#+end_src
+;;; MIGRATED: js->json → my-utils.el
 
 ** html to hiccup
 
-   #+begin_src emacs-lisp
-     (defun html->hiccup ()
-       (interactive)
-       (shell-command-on-region (region-beginning)
-                                (region-end)
-                                "bootleg -d -e '(html (slurp *in*) :data :hiccup-seq)'"
-                                (current-buffer)
-                                t))
-   #+end_src
+;;; MIGRATED: html->hiccup → my-utils.el
 
 * org-mode modifications
 
 ** add support for special links
 
-   #+begin_src emacs-lisp
-  (require 'ol-eww)  ;; [[eww:...]]
-   #+end_src
+;;; MIGRATED: (require 'ol-eww) → my-org.el
 
 ** add timestamps to source blocks
-
-   ref https://emacs.stackexchange.com/a/35904
-
-#+begin_src emacs-lisp
-  (defadvice org-babel-execute-src-block (after org-babel-record-execute-timestamp)
-    (let ((code-block-params (nth 2 (org-babel-get-src-block-info)))
-          (code-block-name (nth 4 (org-babel-get-src-block-info))))
-      (let ((timestamp (cdr (assoc :timestamp code-block-params)))
-            (result-params (assoc :result-params code-block-params)))
-        (if (and (equal timestamp "t") (> (length code-block-name) 0))
-            (save-excursion
-              (search-forward-regexp (concat "#\\+RESULTS\\(\\[.*\\]\\)?: "
-                                             code-block-name))
-              (beginning-of-line)
-              (search-forward "RESULTS")
-              (kill-line)
-              (insert (concat (format-time-string "[%F %r]: ") code-block-name)))
-          (if (equal timestamp "t")
-              (message (concat "Result timestamping requires a #+NAME: "
-                               "and a ':results output' argument.")))))))
-  (ad-activate 'org-babel-execute-src-block)
-#+end_src
-
+;;; DROPPED: duplicate of org-babel-execute-src-block timestamp advice — already migrated
+;;;           from "timestamps in org babel code blocks" section above → my-org.el
 * editing utils
 
 ** widget utils
-
-   #+begin_src emacs-lisp
-     ;; ref https://www.gnu.org/software/emacs/manual/html_node/elisp/Parsing-JSON.html
-     ;; ref https://www.mssl.ucl.ac.uk/swift/om/sw/help/man/widget.html
-     (require 'widget)
-
-     ;; (eval-when-compile
-     ;;   (require 'wid-edit))
-
-     (defvar record-editor--buffer)
-     (defun jsonl-record-editor (source-json callback)
-       ;; test value: "{\"Nul\": null, \"Int\": 9, \"Num\": 3.14, \"Str\": \"hello\\nlines\", \"Boo\": true, \"Arr\": [1, 2, \"d\"], \"Obj\": {\"f\": \"multi\\nline\\ntext\"}}"
-       (switch-to-buffer "*Record Editor*")
-       (kill-all-local-variables)
-       (make-local-variable 'record-editor--buffer)
-
-       (let ((inhibit-read-only t))
-         (erase-buffer))
-
-       ;; (widget-insert "Here is some documentation.\n")
-
-       (setq record-editor--buffer (json-read-from-string source-json))
-       (mapcar (lambda (pair)
-                 (lexical-let* ((key (car pair))
-                                (value (cdr pair))
-                                (emacs-value-type (type-of value))
-                                (json-value-type (cond ((eq emacs-value-type 'hash-table) 'object)
-                                                       ((eq emacs-value-type 'vector) 'array)
-                                                       ((eq emacs-value-type 'float) 'number)
-                                                       ((eq emacs-value-type 'integer) 'number)
-                                                       ((eq emacs-value-type 'symbol)
-                                                        (if (eq value nil) 'null
-                                                          'boolean))
-                                                       ((eq emacs-value-type 'string) 'string)))
-                                (decoder
-                                 (cond ((eq json-value-type 'number) 'string-to-number)
-                                       ((eq json-value-type 'string) 'identity)
-                                       ((eq json-value-type 'boolean)
-                                        (lambda (val)
-                                          (if (string= val "true") t :json-false)))
-                                       ((eq json-value-type 'null)
-                                        (lambda (val)
-                                          (if (string= val "null") nil val)))
-                                       (t (lambda (val)
-                                            ;; (message "decoding: <%s>%s: %s (%s)" json-value-type key val (type-of value))
-                                            (json-read-from-string val))))))
-
-                   (widget-insert (format "[%07s] %s: " json-value-type key))
-
-                   (if (and (eq json-value-type 'string)
-                            (s-contains? "\n" value))
-                       (insert "\n"))
-
-                   (cond ((eq json-value-type 'boolean)
-                          (let* ((serialized-boolean (if (eq value t)
-                                                         "true" "false"))
-                                 (other-boolean (if (eq value t)
-                                                    "false" "true")))
-                            (widget-insert "\n")
-                            (widget-create 'radio-button-choice
-                                           :indent 10
-                                           :value serialized-boolean
-                                           :notify (lambda (widget &rest ignore)
-                                                     (let ((new-value (widget-value widget)))
-                                                       (message "You selected %s /// %s" new-value (string= new-value "true"))
-                                                       (setcdr (assq key record-editor--buffer)
-                                                               (if (string= new-value "true")
-                                                                   t
-                                                                 :json-false))))
-                                           (list 'item serialized-boolean)
-                                           (list 'item other-boolean))))
-                         (t
-                          (widget-create 'editable-field
-                                         ;; :size 20
-                                         :value (cond ((eq json-value-type 'string)
-                                                       (s-replace "\\n" "\n" value))
-
-                                                      ((eq json-value-type 'null)
-                                                       "null")
-
-                                                      (t
-                                                       (json-encode value)))
-                                         :notify (lambda (widget &rest ignore)
-                                                   (let ((new-value (widget-value widget)))
-                                                     (condition-case nil
-                                                         (let* ((decoded-value (funcall decoder new-value)))
-                                                           (when nil
-                                                             (message "<%s>%s [%s]  --{%s}-->  %s" json-value-type key new-value decoder decoded-value)
-                                                             ;; consider this if you do on-the-fly sanitation
-                                                             ;; (widget-value-set widget (widget-value widget))
-
-                                                             (when (eq json-value-type 'string)
-                                                               (message "WE GOT STRING: ^%s$" new-value)
-                                                               (message "DECODED: ^%s$" decoded-value)))
-
-                                                           ;; (message "%s" (json-encode record-editor--buffer))
-                                                           (setcdr (assq key record-editor--buffer) decoded-value))
-                                                       (error nil)))))))))
-               record-editor--buffer)
-
-       (when nil
-
-         ;; don't see a way to do this easily with keyboard. must use mouse on the tag?
-         (widget-create 'menu-choice
-                        :tag "Choose"
-                        :value "This"
-                        :help-echo "Choose me, please!"
-                        :notify (lambda (widget &rest ignore)
-                                  (message "%s is a good choice!"
-                                           (widget-value widget)))
-                        '(item :tag "This option" :value "This")
-                        '(choice-item "That option")
-                        '(editable-field :menu-tag "No option" "Thus option"))
-
-         (widget-insert "\n\nSelect multiple:\n\n")
-         (widget-create 'checkbox t)
-         (widget-insert " This\n")
-         (widget-create 'checkbox nil)
-         (widget-insert " That\n")
-         (widget-create 'checkbox
-                        :notify (lambda (&rest ignore) (message "Tickle"))
-                        t)
-         (widget-insert " Thus\n\nSelect one:\n\n"))
-
-       (widget-insert "\n")
-       (lexical-let* ((source-json source-json)
-                      (callback callback)
-                      (on-submit (lambda (&rest ignore)
-                                   (interactive)
-                                   (let ((rendered-json (json-encode record-editor--buffer)))
-                                     (kill-buffer)
-                                     (funcall callback rendered-json)))))
-         (widget-create 'push-button
-                        :notify (lambda (&rest ignore)
-                                  (jsonl-record-editor source-json callback))
-                        "reset")
-
-         (widget-insert " or ")
-         (widget-insert "C-c C-c to ")
-         (widget-create 'push-button :notify on-submit "SUBMIT")
-         (widget-insert "\n")
-         (use-local-map (copy-keymap widget-keymap))
-         (local-set-key (kbd "C-c C-c") on-submit))
-       ;; this function is what sets up the widget component styling (grey background color)
-       ;; and :notify functions
-       (widget-setup)
-       (beginning-of-buffer))
-
-     (defun edit-jsonl-record ()
-       "Create the widgets from the Widget manual."
-       (interactive)
-       (save-excursion
-         (lexical-let* ((current-position (point))  ;; save-excursion not working as I thought it would
-                        (beg (progn
-                               (beginning-of-line)
-                               (point)))
-                        (end (progn
-                               (end-of-line)
-                               (point)))
-                        (source-json
-                         ;; (thing-at-point 'line t)
-                         (buffer-substring beg end))
-                        (maybe-json-data
-                         (condition-case err
-                             (json-read-from-string source-json)
-                           (error err
-                                  (message "failed to parse json: %s" err)
-                                  nil))))
-           (jsonl-record-editor
-            source-json
-            (lambda (rendered-json)
-              (kill-region beg end)
-              (insert rendered-json)
-              (goto-char current-position))))))
-   #+end_src
+;;; MIGRATED: jsonl-record-editor, edit-jsonl-record (widget-based JSON editor) → my-utils.el
 
 ** single-line utils
 
@@ -1818,15 +870,7 @@ https://emacs.stackexchange.com/a/35904
   #+end_src
 
 * emacs show emoji
-
-  ref https://ianyepan.github.io/posts/emacs-emojis/
-
-  #+begin_src emacs-lisp
-    ;; (dolist (x (font-family-list)) (insert (format "%s\n" x)))
-    (when (member "NotoEmoji Nerd Font Mono" (font-family-list))
-      (set-fontset-font
-        t 'symbol (font-spec :family "NotoEmoji Nerd Font Mono") nil 'prepend))
-  #+end_src
+;;; MIGRATED: NotoEmoji fontset setup → my-ui.el
 
 * fix ugly shell prompt from M-x shell due to dumb terminal not understanding ansi escape sequences
 
