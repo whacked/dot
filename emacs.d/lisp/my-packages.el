@@ -76,5 +76,112 @@
         :config
         (global-treesit-auto-mode))))))
 
+;;; eat — terminal emulator (used by claude-code-ide and general shell work)
+
+(use-package eat
+  :straight (:type git
+             :host codeberg
+             :repo "akib/emacs-eat"
+             :files ("*.el" ("term" "term/*.el") "*.texi"
+                     "*.ti" ("terminfo/e" "terminfo/e/*")
+                     ("terminfo/65" "terminfo/65/*")
+                     ("integration" "integration/*")
+                     (:exclude ".dir-locals.el" "*-tests.el"))))
+
+;;; markdown-mode
+
+(use-package markdown-mode
+  :defer t
+  :mode (("\\.md\\'"       . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :custom
+  (markdown-hide-markup nil)
+  (markdown-xml-tag-font-lock t)
+  :config
+  (custom-set-faces
+   '(markdown-header-face-1
+     ((t (:inherit markdown-header-face :height 1.5 :weight bold :foreground "MidnightBlue"))))
+   '(markdown-header-face-2
+     ((t (:inherit markdown-header-face :height 1.3 :weight bold :foreground "DarkGreen"))))
+   '(markdown-header-face-3
+     ((t (:inherit markdown-header-face :weight bold :foreground "Firebrick"))))
+   '(markdown-link-face
+     ((t (:foreground "blue" :underline t))))
+   '(markdown-inline-code-face
+     ((t (:background "#EFEFEF" :foreground "#8B008B"
+          :box (:line-width 1 :style released-button)))))
+   '(markdown-code-face
+     ((t (:background "#F5F5F5" :foreground "#333333"))))
+   '(markdown-blockquote-face
+     ((t (:foreground "DarkSlateGray" :slant italic :background "#F7F7F7")))))
+  (add-hook 'markdown-mode-hook (lambda () (setq tab-width 2))))
+
+;;; win-switch — repeated other-window via C-x o o o ...
+
+(use-package win-switch
+  :bind ("C-x o" . win-switch-dispatch)
+  :custom (win-switch-idle-time 0.3))
+
+;;; magit
+
+(use-package magit)
+
+;;; expand-region
+
+(use-package expand-region
+  :bind ("C-=" . er/expand-region))
+
+;;; paredit — structural editing for Lisp modes
+
+(use-package paredit
+  :hook ((emacs-lisp-mode       . enable-paredit-mode)
+         (lisp-mode             . enable-paredit-mode)
+         (lisp-interaction-mode . enable-paredit-mode)
+         (clojure-mode          . enable-paredit-mode)
+         (clojurescript-mode    . enable-paredit-mode))
+  :bind (:map paredit-mode-map
+              ("C-S-d" . paredit-duplicate-after-point))
+  :config
+  (defun paredit-duplicate-after-point ()
+    "Duplicate the sexp after point onto the next line."
+    (interactive)
+    (while (looking-at " ") (forward-char))
+    (set-mark-command nil)
+    (while (and (<= (point) (car (bounds-of-thing-at-point 'sexp)))
+                (not (= (point) (line-end-position))))
+      (forward-sexp)
+      (while (looking-at " ") (forward-char)))
+    (kill-ring-save (mark) (point))
+    (paredit-newline)
+    (set-mark-command nil)
+    (yank)
+    (exchange-point-and-mark)))
+
+;;; obsidian.el — Obsidian vault interop
+;; TODO: reevaluate whether necessary
+(use-package obsidian
+  :demand t
+  :custom
+  (obsidian-directory my-cloudsync-note-dir)
+  (obsidian-inbox-directory "pages")
+  :config
+  (global-obsidian-mode t)
+  :bind (:map obsidian-mode-map
+              ("C-c C-o" . obsidian-follow-link-at-point)
+              ("C-c C-b" . obsidian-backlink-jump)
+              ("C-c C-l" . obsidian-insert-wikilink)))
+
+;;; claude-code-ide
+;;
+;; Requires node on PATH.  exec-path-from-shell (in my-core.el) imports PATH
+;; from the shell — ensure node/npm are in your shell profile.
+;; eat (above) is the terminal backend.
+
+(use-package claude-code-ide
+  :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
+  :config
+  (setq claude-code-ide-terminal-backend 'eat)
+  (claude-code-ide-emacs-tools-setup))
+
 (provide 'my-packages)
 ;;; my-packages.el ends here

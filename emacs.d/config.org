@@ -22,6 +22,7 @@
 ;;; MIGRATED: vertico, consult, marginalia, corfu, orderless → my-completion.el
 
 ** eat
+;;; MIGRATED: eat straight recipe → my-packages.el
 
 #+begin_src emacs-lisp
 (straight-use-package
@@ -41,6 +42,7 @@
 ;;; MIGRATED: treesit-auto → my-packages.el (gated on TREESIT_GRAMMAR_DIR)
 
 *** markdown-mode
+;;; MIGRATED: markdown-mode → my-packages.el (dropped markdown-pretty-code-blocks-mode — not a real function)
 
 #+begin_src emacs-lisp
 (use-package markdown-mode
@@ -296,6 +298,7 @@
 
 
 ** org-logseq
+;;; MIGRATED: org-logseq + fd-query/open-link overrides → my-org.el
 
 #+begin_src emacs-lisp
   (straight-override-recipe (cons 'org '(:type built-in)))
@@ -360,6 +363,7 @@
 #+end_src
 
 ** win-switch
+;;; MIGRATED: win-switch → my-packages.el
 
    allows repeated =other-window= via =C-x o o o ...=
 
@@ -371,6 +375,7 @@
    #+END_SRC
 
 ** ijanet-mode
+;;; PENDING: ijanet-mode — evaluate whether Janet dev is still wanted
 
 #+begin_src emacs-lisp
   (straight-use-package
@@ -473,6 +478,9 @@
  #+END_SRC
 
 *** lispy-stuff.el (:lisp)
+;;; MIGRATED: expand-region C-= → my-packages.el
+;;; MIGRATED: paredit hooks (emacs-lisp/lisp/lisp-interaction/clojure/clojurescript) → my-packages.el
+;;; PENDING:  hy-mode/sibilant-mode paredit hooks — evaluate if needed
 
  #+BEGIN_SRC emacs-lisp
    (setq package-list
@@ -2057,6 +2065,7 @@ https://emacs.stackexchange.com/a/35904
 #+end_src
 
 * obsidian.el
+;;; MIGRATED: obsidian → my-packages.el (obsidian-directory replaces obsidian-specify-path)
 
 #+begin_src emacs-lisp
   (use-package obsidian
@@ -2078,6 +2087,7 @@ https://emacs.stackexchange.com/a/35904
 #+end_src
 
 * paredit duplicate expression
+;;; MIGRATED: paredit-duplicate-after-point + C-S-d binding → my-packages.el
 
 http://inclojurewetrust.blogspot.com/2013/01/duplicating-s-expressions-on-line.html
 
@@ -2141,6 +2151,8 @@ http://inclojurewetrust.blogspot.com/2013/01/duplicating-s-expressions-on-line.h
   (message "Loaded modern transient"))
 (straight-use-package 'transient)
 * claude code
+;;; MIGRATED: claude-code-ide → my-packages.el
+;;; DROPPED:  exec-path-from-shell-setenv nix store node hack — exec-path-from-shell now imports PATH from shell
 
 #+begin_src emacs-lisp
   (use-package claude-code-ide

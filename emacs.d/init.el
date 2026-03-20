@@ -20,7 +20,7 @@
 (require 'my-editing)
 (require 'my-keybindings)
 (require 'my-packages)
-;; (require 'my-org)
+(require 'my-org)
 ;; (require 'my-system)
 
 ;;; Custom file
