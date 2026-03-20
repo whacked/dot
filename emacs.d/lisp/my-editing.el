@@ -43,6 +43,7 @@
 
 ;;; dabbrev
 
+;; TODO: review what this does. i no longer know
 (require 'dabbrev)
 (setq dabbrev-always-check-other-buffers t
       dabbrev-abbrev-char-regexp "\\sw\\|\\s_")

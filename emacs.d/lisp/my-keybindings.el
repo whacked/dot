@@ -43,7 +43,7 @@
 ;;; my-keys-minor-mode — overrides that must beat major-mode maps
 ;;
 ;; A thin minor mode so our bindings win even when major modes rebind the
-;; same keys.  Ref: https://stackoverflow.com/q/683425
+;; same keys.  Ref: http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
 
 (defvar my-keys-minor-mode-map (make-keymap)
   "Keymap for `my-keys-minor-mode'.")

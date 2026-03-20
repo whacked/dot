@@ -91,27 +91,36 @@
 ;;; markdown-mode
 
 (use-package markdown-mode
-  :defer t
+  :defer t ; Load the package only when you need it
   :mode (("\\.md\\'"       . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode))
+         ("\\.markdown\\'" . markdown-mode)) ; Auto-load for .md and .markdown files
   :custom
-  (markdown-hide-markup nil)
-  (markdown-xml-tag-font-lock t)
+  (markdown-hide-markup nil) ; Hides the raw markup for things like **bold** and *italics*, showing just the formatted text.
+  (markdown-xml-tag-font-lock t) ; Improves font-locking for embedded HTML/XML.
   :config
+  ;; Customizing Faces for better visual hierarchy
+  ;; Headings: Make them stand out more.
   (custom-set-faces
+   ;; Level 1 Heading: Large and bold.
    '(markdown-header-face-1
      ((t (:inherit markdown-header-face :height 1.5 :weight bold :foreground "MidnightBlue"))))
+   ;; Level 2 Heading: Slightly smaller and bold.
    '(markdown-header-face-2
      ((t (:inherit markdown-header-face :height 1.3 :weight bold :foreground "DarkGreen"))))
+   ;; Level 3 Heading: Standard size, bold, and distinct color.
    '(markdown-header-face-3
      ((t (:inherit markdown-header-face :weight bold :foreground "Firebrick"))))
+   ;; Links: Make the link text more noticeable.
    '(markdown-link-face
      ((t (:foreground "blue" :underline t))))
+   ;; Inline Code: Give it a different background to separate it from regular text.
    '(markdown-inline-code-face
      ((t (:background "#EFEFEF" :foreground "#8B008B"
           :box (:line-width 1 :style released-button)))))
+   ;; Block Code (Fenced Code Blocks): Use a distinct background color.
    '(markdown-code-face
      ((t (:background "#F5F5F5" :foreground "#333333"))))
+   ;; Blockquotes: Add a border or distinct color for quotes.
    '(markdown-blockquote-face
      ((t (:foreground "DarkSlateGray" :slant italic :background "#F7F7F7")))))
   (add-hook 'markdown-mode-hook (lambda () (setq tab-width 2))))
@@ -132,11 +141,14 @@
   :bind ("C-=" . er/expand-region))
 
 ;;; paredit — structural editing for Lisp modes
+;; http://inclojurewetrust.blogspot.com/2013/01/duplicating-s-expressions-on-line.html
 
 (use-package paredit
   :hook ((emacs-lisp-mode       . enable-paredit-mode)
          (lisp-mode             . enable-paredit-mode)
          (lisp-interaction-mode . enable-paredit-mode)
+         (hy-mode               . enable-paredit-mode)
+         (cider-repl-mode       . enable-paredit-mode)
          (clojure-mode          . enable-paredit-mode)
          (clojurescript-mode    . enable-paredit-mode))
   :bind (:map paredit-mode-map
@@ -145,30 +157,46 @@
   (defun paredit-duplicate-after-point ()
     "Duplicate the sexp after point onto the next line."
     (interactive)
+    ;; skips to the next sexp
     (while (looking-at " ") (forward-char))
     (set-mark-command nil)
+    ;; while we find sexps we move forward on the line
     (while (and (<= (point) (car (bounds-of-thing-at-point 'sexp)))
                 (not (= (point) (line-end-position))))
       (forward-sexp)
       (while (looking-at " ") (forward-char)))
     (kill-ring-save (mark) (point))
+    ;; go to the next line and copy the sexprs we encountered
     (paredit-newline)
     (set-mark-command nil)
     (yank)
     (exchange-point-and-mark)))
+
+;;; Lisp / Clojure packages
+(use-package clojure-mode)
+(use-package cider)
+(use-package hy-mode)
+
+;; (use-package clj-refactor)
+;; (use-package inf-clojure)
+;; (use-package sibilant-mode) ; barely used
 
 ;;; obsidian.el — Obsidian vault interop
 ;; TODO: reevaluate whether necessary
 (use-package obsidian
   :demand t
   :custom
+  ;; This directory will be used for `obsidian-capture' if set.
   (obsidian-directory my-cloudsync-note-dir)
   (obsidian-inbox-directory "pages")
   :config
   (global-obsidian-mode t)
   :bind (:map obsidian-mode-map
+              ;; Replace C-c C-o with Obsidian.el's implementation. It's ok to use another key binding.
               ("C-c C-o" . obsidian-follow-link-at-point)
+              ;; Jump to backlinks
               ("C-c C-b" . obsidian-backlink-jump)
+              ;; If you prefer you can use `obsidian-insert-link'
               ("C-c C-l" . obsidian-insert-wikilink)))
 
 ;;; claude-code-ide
@@ -179,7 +207,9 @@
 
 (use-package claude-code-ide
   :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
+  ;; :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
   :config
+  ;; for mac compat
   (setq claude-code-ide-terminal-backend 'eat)
   (claude-code-ide-emacs-tools-setup))
 

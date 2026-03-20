@@ -20,72 +20,11 @@
 ;;; NOTE: local--load-packages macro dropped — replaced by direct use-package calls
 
 ;;; MIGRATED: vertico, consult, marginalia, corfu, orderless → my-completion.el
-
-** eat
 ;;; MIGRATED: eat straight recipe → my-packages.el
-
-#+begin_src emacs-lisp
-(straight-use-package
- '(eat :type git
-       :host codeberg
-       :repo "akib/emacs-eat"
-       :files ("*.el" ("term" "term/*.el") "*.texi"
-               "*.ti" ("terminfo/e" "terminfo/e/*")
-               ("terminfo/65" "terminfo/65/*")
-               ("integration" "integration/*")
-               (:exclude ".dir-locals.el" "*-tests.el"))))
-#+end_src
-
-
 
 ** syntax
 ;;; MIGRATED: treesit-auto → my-packages.el (gated on TREESIT_GRAMMAR_DIR)
-
-*** markdown-mode
 ;;; MIGRATED: markdown-mode → my-packages.el (dropped markdown-pretty-code-blocks-mode — not a real function)
-
-#+begin_src emacs-lisp
-(use-package markdown-mode
-  :defer t ; Load the package only when you need it
-  :mode (("\\.md\\'" . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode)) ; Auto-load for .md and .markdown files
-
-  :custom
-  (markdown-hide-markup nil) ; Hides the raw markup for things like **bold** and *italics*, showing just the formatted text.
-  (markdown-xml-tag-font-lock t) ; Improves font-locking for embedded HTML/XML.
-
-  :config
-  ;; Customizing Faces for better visual hierarchy
-
-  ;; Headings: Make them stand out more.
-  (custom-set-faces
-   ;; Level 1 Heading: Large and bold.
-   '(markdown-header-face-1 ((t (:inherit markdown-header-face :height 1.5 :weight bold :foreground "MidnightBlue"))))
-   ;; Level 2 Heading: Slightly smaller and bold.
-   '(markdown-header-face-2 ((t (:inherit markdown-header-face :height 1.3 :weight bold :foreground "DarkGreen"))))
-   ;; Level 3 Heading: Standard size, bold, and distinct color.
-   '(markdown-header-face-3 ((t (:inherit markdown-header-face :weight bold :foreground "Firebrick"))))
-
-   ;; Links: Make the link text more noticeable.
-   '(markdown-link-face ((t (:foreground "blue" :underline t))))
-
-   ;; Inline Code: Give it a different background to separate it from regular text.
-   '(markdown-inline-code-face ((t (:background "#EFEFEF" :foreground "#8B008B" :box (:line-width 1 :style released-button)))))
-
-   ;; Block Code (Fenced Code Blocks): Use a distinct background color.
-   '(markdown-code-face ((t (:background "#F5F5F5" :foreground "#333333"))))
-
-   ;; Blockquotes: Add a border or distinct color for quotes.
-   '(markdown-blockquote-face ((t (:foreground "DarkSlateGray" :slant italic :background "#F7F7F7"))))
-   )
-
-  ;; Enable pretty-code-blocks for better looking fenced code blocks.
-  (add-hook 'markdown-mode-hook
-            (lambda ()
-              (setq tab-width 2) ; Optional: Set a preferred tab width for markdown.
-              (markdown-pretty-code-blocks-mode))) ; This makes fenced code blocks look cleaner.
-  )
-#+end_src
 
 ** old collection
 
@@ -296,84 +235,6 @@
     #+END_SRC
 
 
-
-** org-logseq
-;;; MIGRATED: org-logseq + fd-query/open-link overrides → my-org.el
-
-#+begin_src emacs-lisp
-  (straight-override-recipe (cons 'org '(:type built-in)))
-  ;; (straight-override-recipe
-  ;;    '(org :type git :host github :repo "emacsmirror/org" :no-build t))
-  (use-package org)
-  (use-package org-logseq
-    :after org
-    :straight (:type git :host github :repo "llcc/org-logseq")
-    :custom (org-logseq-dir (concat (file-name-as-directory (getenv "CLOUDSYNC")) "main/note/org")))
-
-  (defun my/org-logseq-auto-enable ()
-    "Enable `org-logseq-mode' if the current Org file is located within
-     the directory specified by `org-logseq-dir'."
-    (interactive)
-    (let ((file-name (buffer-file-name)))
-      (when (and file-name ; Ensure a file is being visited
-		 (boundp 'org-logseq-dir) ; Ensure the variable is defined
-		 org-logseq-dir ; Ensure the variable is non-nil
-		 (file-in-directory-p file-name org-logseq-dir))
-	;; If all checks pass, enable the mode
-	(org-logseq-mode 1))))
-
-  ;; Add the function to the org-mode hook, so it runs every time an
-  ;; Org file is opened or org-mode is entered.
-  (add-hook 'org-mode-hook 'my/org-logseq-auto-enable)
-
-  (defun org-logseq-fd-query (page-or-id)
-    "Return fd result for searching <file name> in `org-logseq-dir'."
-    (let ((type (car page-or-id))
-	    (query (cdr page-or-id)))
-	(format (pcase type
-		  ;; note that it wants the line number
-		  ('page "fd \"%s\" %s | sed 's/$/:1/'" ))
-		query (shell-quote-argument org-logseq-dir))))
-
-  ;; OVERRIDE
-  ;; because ~/.emacs.d/elpa/org-logseq-20210410.2236/org-logseq.el:org-logseq-grep-query()
-  ;;         only searches for the #+TITLE or #+ALIAS fields, and not file names
-  (defun org-logseq-open-link ()
-    "Open link at point. Supports url, id and page.
-  or Block Ref or Embed overlays."
-    (interactive)
-    (when-let* ((t-l (or (org-logseq-get-block-ref-or-embed-link)
-			   (org-logseq-get-link)
-			   (org-logseq-get-block-id))))
-	(let ((type (car t-l))
-	      (link (cdr t-l)))
-	  (pcase type
-	    ('url (browse-url link))
-	    ('draw (org-logseq-open-excalidraw link))
-	    (_ (let ((result (shell-command-to-string
-			      (org-logseq-fd-query t-l))))
-		 (when (string-prefix-p "grep" result)
-		   (error "grep searching error"))
-		 (if (string= result "")
-		     (org-logseq-new-page link)
-		   (let* ((f-n (split-string result ":" nil))
-			  (fname (car f-n))
-			  (lineno (string-to-number (cadr f-n))))
-		     (org-open-file fname t lineno)))))))))
-#+end_src
-
-** win-switch
-;;; MIGRATED: win-switch → my-packages.el
-
-   allows repeated =other-window= via =C-x o o o ...=
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package win-switch
-       :ensure t
-       :bind ("C-x o" . win-switch-dispatch)
-       :config (setq win-switch-idle-time 0.3))
-   #+END_SRC
-
 ** ijanet-mode
 ;;; PENDING: ijanet-mode — evaluate whether Janet dev is still wanted
 
@@ -479,35 +340,13 @@
 
 *** lispy-stuff.el (:lisp)
 ;;; MIGRATED: expand-region C-= → my-packages.el
-;;; MIGRATED: paredit hooks (emacs-lisp/lisp/lisp-interaction/clojure/clojurescript) → my-packages.el
-;;; PENDING:  hy-mode/sibilant-mode paredit hooks — evaluate if needed
-
- #+BEGIN_SRC emacs-lisp
-   (setq package-list
-         (delete-dups
-          (append package-list
-                  '(cider
-                    clojure-mode
-                    clj-refactor
-                    expand-region
-                    hy-mode
-                    popup
-                    queue
-                    sibilant-mode
-                    inf-clojure
-                    seq))))
-
-   (global-set-key (kbd "C-=") 'er/expand-region)
-   (autoload 'paredit-mode "paredit" "Minor mode for pseudo-structurally editing Lisp code." t)
-   (add-hook 'cider-repl-mode-hook        #'enable-paredit-mode)
-   (add-hook 'emacs-lisp-mode-hook        #'enable-paredit-mode)
-   (add-hook 'lisp-mode-hook              #'enable-paredit-mode)
-   (add-hook 'lisp-interaction-mode-hook  #'enable-paredit-mode)
-   (add-hook 'hy-mode-hook                #'enable-paredit-mode)
-   (add-hook 'sibilant-mode-hook          #'enable-paredit-mode)
-   (add-hook 'clojure-mode-hook           #'enable-paredit-mode)
-   (add-hook 'clojurescript-mode-hook     #'enable-paredit-mode)
- #+END_SRC
+;;; MIGRATED: paredit autoload + hooks (cider-repl, emacs-lisp, lisp, lisp-interaction, hy, clojure, clojurescript) → my-packages.el
+;;; MIGRATED: clojure-mode, cider, clj-refactor, inf-clojure → my-packages.el (commented out, not in active use)
+;;; MIGRATED: hy-mode → my-packages.el (active)
+;;; MIGRATED: sibilant-mode → my-packages.el (commented out, barely used)
+;;; DROPPED:  popup — transitive dep, not a standalone install
+;;; DROPPED:  queue — transitive dep, not a standalone install
+;;; DROPPED:  seq — built-in Emacs library
 
 *** only run on main machine (:unportable)
 
@@ -2064,111 +1903,6 @@ https://emacs.stackexchange.com/a/35904
                 $same-as-previous-line)))))
 #+end_src
 
-* obsidian.el
-;;; MIGRATED: obsidian → my-packages.el (obsidian-directory replaces obsidian-specify-path)
-
-#+begin_src emacs-lisp
-  (use-package obsidian
-    :ensure t
-    :demand t
-    :config
-    (obsidian-specify-path cloudsync-note-dir)
-    (global-obsidian-mode t)
-    :custom
-    ;; This directory will be used for `obsidian-capture' if set.
-    (obsidian-inbox-directory "pages")
-    :bind (:map obsidian-mode-map
-    ;; Replace C-c C-o with Obsidian.el's implementation. It's ok to use another key binding.
-    ("C-c C-o" . obsidian-follow-link-at-point)
-    ;; Jump to backlinks
-    ("C-c C-b" . obsidian-backlink-jump)
-    ;; If you prefer you can use `obsidian-insert-link'
-    ("C-c C-l" . obsidian-insert-wikilink)))
-#+end_src
-
-* paredit duplicate expression
-;;; MIGRATED: paredit-duplicate-after-point + C-S-d binding → my-packages.el
-
-http://inclojurewetrust.blogspot.com/2013/01/duplicating-s-expressions-on-line.html
-
-#+begin_src emacs-lisp
-  (defun paredit-duplicate-after-point
-    ()
-    "Duplicates the content of the line that is after the point."
-    (interactive)
-    ;; skips to the next sexp
-    (while (looking-at " ")
-      (forward-char))
-    (set-mark-command nil)
-    ;; while we find sexps we move forward on the line
-    (while (and (<= (point) (car (bounds-of-thing-at-point 'sexp)))
-                (not (= (point) (line-end-position))))
-      (forward-sexp)
-      (while (looking-at " ")
-        (forward-char)))
-    (kill-ring-save (mark) (point))
-    ;; go to the next line and copy the sexprs we encountered
-    (paredit-newline)
-    (set-mark-command nil)
-    (yank)
-    (exchange-point-and-mark))
-#+end_src
-
-#+begin_src emacs-lisp
-  (eval-after-load "paredit"
-    '(progn (define-key paredit-mode-map (kbd "C-S-d") 'paredit-duplicate-after-point)))
-#+end_src
-
-
-
-#+begin_src emacs-lisp
-(straight-use-package
- '(eat :type git
-       :host codeberg
-       :repo "akib/emacs-eat"
-       :files ("*.el" ("term" "term/*.el") "*.texi"
-               "*.ti" ("terminfo/e" "terminfo/e/*")
-               ("terminfo/65" "terminfo/65/*")
-               ("integration" "integration/*")
-               (:exclude ".dir-locals.el" "*-tests.el"))))
-#+end_src
-
-
-* claude code
-
-#+begin_src emacs-lisp
-(straight-use-package
- '(cond-let :repo "emacsmirror/cond-let" :host github :branch "master"))
-
-;; you MAY need this. transient is built in but not new enough
-;; for claude-code-ide. i had to
-;; (unload-feature 'transient t)
-;; and load this stuff again
-(use-package transient
-  :straight t
-  :config
-  ;; You can add any required configuration here, but often none is needed.
-  (message "Loaded modern transient"))
-(straight-use-package 'transient)
-* claude code
 ;;; MIGRATED: claude-code-ide → my-packages.el
 ;;; DROPPED:  exec-path-from-shell-setenv nix store node hack — exec-path-from-shell now imports PATH from shell
 
-#+begin_src emacs-lisp
-  (use-package claude-code-ide
-    :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
-    ;; :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
-    :config
-    ;; for mac compat
-    (setq claude-code-ide-terminal-backend 'eat)
-    (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
-
-  ;; WARNING BRITTLE
-  (require 'exec-path-from-shell)
-  (exec-path-from-shell-setenv
-   "PATH"
-   (substring (mapconcat (lambda (x) (concat ":" x))
-                         (list (file-name-directory "/nix/store/91y8h7rysgi5cl8hsj2bmjd00dq2l9pk-nodejs-22.14.0/bin/node")
-                               "/opt/npm/bin"
-                               (getenv "PATH"))) 1))
-#+end_src

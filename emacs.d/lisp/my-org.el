@@ -25,12 +25,15 @@
   "Enable `org-logseq-mode' when the buffer is inside `org-logseq-dir'."
   (interactive)
   (let ((file-name (buffer-file-name)))
-    (when (and file-name
-               (boundp 'org-logseq-dir)
-               org-logseq-dir
+    (when (and file-name ; Ensure a file is being visited
+               (boundp 'org-logseq-dir) ; Ensure the variable is defined
+               org-logseq-dir ; Ensure the variable is non-nil
                (file-in-directory-p file-name org-logseq-dir))
+	  ;; If all checks pass, enable the mode
       (org-logseq-mode 1))))
 
+;; Add the function to the org-mode hook, so it runs every time an
+;; Org file is opened or org-mode is entered.
 (add-hook 'org-mode-hook #'my/org-logseq-auto-enable)
 
 ;; Override org-logseq-fd-query to search by filename in addition to
@@ -40,11 +43,13 @@
   (let ((type  (car page-or-id))
         (query (cdr page-or-id)))
     (format (pcase type
+		      ;; note that it wants the line number
               ('page "fd \"%s\" %s | sed 's/$/:1/'"))
             query (shell-quote-argument org-logseq-dir))))
 
 (defun org-logseq-open-link ()
-  "Open link at point.  Supports url, id and page."
+  "Open link at point. Supports url, id and page.
+  or Block Ref or Embed overlays."
   (interactive)
   (when-let* ((t-l (or (org-logseq-get-block-ref-or-embed-link)
                        (org-logseq-get-link)
