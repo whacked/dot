@@ -44,5 +44,24 @@
       (apply orig args)
       (ibuffer-jump-to-buffer recent-buffer-name))))
 
+;;; Tree-sitter grammar path
+;;
+;; Grammars live in /opt/tree-sitter/abi<N>/ where N is this build's
+;; tree-sitter library ABI version.  Two Emacs builds linked against
+;; different tree-sitter versions get separate subdirectories — no clobber.
+(when (fboundp 'treesit-library-abi-version)
+  (let ((grammar-dir (format "/opt/tree-sitter/abi%d"
+                             (treesit-library-abi-version))))
+    (make-directory grammar-dir t)
+    ;; setq, not add-to-list: treesit-install-language-grammar writes to
+    ;; (car treesit-extra-load-path), so it must be our versioned dir.
+    (setq treesit-extra-load-path (list grammar-dir))))
+
+(use-package treesit-auto
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (global-treesit-auto-mode))
+
 (provide 'my-packages)
 ;;; my-packages.el ends here

@@ -19,7 +19,7 @@
 (require 'my-completion)
 (require 'my-editing)
 (require 'my-keybindings)
-;; (require 'my-packages)
+(require 'my-packages)
 ;; (require 'my-org)
 ;; (require 'my-system)
 
