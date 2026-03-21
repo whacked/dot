@@ -81,7 +81,6 @@
    obsidian  ;; interop with obsidian
    occur-x  ;; addition candidate: [k] to push a regex into an occur buffer; occur-x-undo-filter to clear
    org-download
-   org-noter
    org-ql
    org-sidebar
    origami  ;; code folding
@@ -220,14 +219,8 @@
     ;; (use-package floaty-edit-mode
     ;;   :quelpa (floaty-edit-mode :repo "whacked/floaty-edit-mode" :fetcher github))
 
-    ;; (use-package ob-shstream
-    ;;   :ensure t
-    ;;   ;; Specify the Git source for straight.el
-    ;;   :straight (:host github :repo "whacked/ob-shstream")
-    ;;   :after org)
-
-;;; MIGRATED: clojure-utils → my-packages.el
   #+END_SRC
+;;; MIGRATED: clojure-utils → my-packages.el
 
 ** conditional package loaders
 
@@ -373,26 +366,7 @@
       (ditaa . t)
       (go . t)
       (sqlite . t)
-      (shstream . t)
       ))
-
-   (when (locate-library "python-mode")
-     (require 'python-mode)
-     ;; don't make python-mode launch a shell everytime a .py file is
-     ;; loaded
-     (setq py-start-run-py-shell nil)
-     ;; (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-     ;; (add-to-list 'interpreter-mode-alist '("python" . python-mode))
-     ;; (when (executable-find "ipython")
-     ;;   (require 'ipython)
-     ;;   (setq org-babel-python-mode 'python-mode))
-     )
-
-   ;; (setq-default py-split-windows-on-execute-function 'split-window-horizontally)
-   ;; (setq-default py-keep-windows-configuration t)
-
-   ;; FIXME
-   ;; (setq org-ditaa-jar-path "~/dot/emacs.d/bundle/org-mode/contrib/scripts/ditaa.jar")
 
    (defun ansi-unansify (beg end)
      "to help fix ansi- control sequences in babel-sh output"
@@ -401,21 +375,6 @@
        (error "The mark is not set now, so there is no region"))
      (insert (ansi-color-filter-apply (filter-buffer-substring beg end t))))
 
-   ;;Match org file: links
-   ;; old, for iimage-minor-mode
-   ;; (add-to-list 'iimage-mode-image-regex-alist
-   ;;              (cons (concat "file:\\(~?[]\\[\\(\\),~+./_0-9a-zA-Z -]+\\.\\(GIF\\|JP\\(?:E?G\\)\\|P\\(?:BM\\|GM\\|N[GM]\\|PM\\)\\|SVG\\|TIFF?\\|X\\(?:[BP]M\\)\\|gif\\|jp\\(?:e?g\\)\\|p\\(?:bm\\|gm\\|n[gm]\\|pm\\)\\|svg\\|tiff?\\|x\\(?:[bp]m\\)\\)\\)")  1))
-   (define-key global-map (kbd "<f9>") 'org-agenda)
-
-   ;; thanks to http://kliketa.wordpress.com/2010/08/04/gtklook-browse-documentation-for-gtk-glib-and-gnome-inside-emacs/
-   ;NEW;(require 'gtk-look)
-   ;; (setq browse-url-browser-function 'browse-url-generic
-   ;;       browse-url-generic-program "chromium-browser")
-   ;;(setq browse-url-browser-function
-   ;; '(("file:.*/usr/share/doc/.*gtk.*-doc/.*" . w3m-browse-url)
-   ;;   ("." . browse-url-firefox)))
-
-   (display-time)
  #+END_SRC
 
 ;;; MIGRATED: (require 'org-mouse) → my-org.el
