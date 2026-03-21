@@ -77,12 +77,6 @@
 ;;;           superseded by eval-in-repl; ansi-term itself superseded by eat/vterm
 
 ** package-common.el
-
-  #+BEGIN_SRC emacs-lisp
-    ;; (use-package floaty-edit-mode
-    ;;   :quelpa (floaty-edit-mode :repo "whacked/floaty-edit-mode" :fetcher github))
-
-  #+END_SRC
 ;;; MIGRATED: clojure-utils → my-packages.el
 
 ** conditional package loaders
