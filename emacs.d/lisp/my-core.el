@@ -71,6 +71,15 @@ With prefix arg DATE-ONLY, insert date only (YYYY-MM-DD)."
 ;; Do NOT set use-package-always-ensure alongside this — they conflict.
 (setq straight-use-package-by-default t)
 
+;;; org — load straight's org before any package can trigger the built-in
+;;
+;; Several packages (htmlize, org-ql, jupyter, org-download, etc.) depend on
+;; org and will pull in Emacs's built-in org if straight hasn't loaded its
+;; version yet, causing the "Org version mismatch" warning on every startup.
+;; Explicitly bootstrapping org here, immediately after straight/use-package
+;; are ready, prevents that race.
+(straight-use-package 'org)
+
 ;;; exec-path-from-shell — import shell env into GUI Emacs
 ;;
 ;; GUI Emacs on macOS starts with launchd's minimal environment and does not
