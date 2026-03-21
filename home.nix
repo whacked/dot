@@ -45,6 +45,7 @@ in {
     myConfig.includeUnfreePackages
     else [])
   ++ [
+    pkgs.sarasa-gothic  # Sarasa Mono J: monospace with built-in 2:1 CJK/ASCII ratio
     (pkgs.writeShellScriptBin "midnight-commander" "${pkgs.mc}/bin/mc $*")
     (pkgs.writeShellScriptBin "minioc" "${pkgs.minio-client}/bin/mc $*")
   ]

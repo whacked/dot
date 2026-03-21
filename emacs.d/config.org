@@ -228,20 +228,28 @@
 
 ** org mode CJK table alignment
 
-TODO
-
-      this is STILL an issue
-
 https://emacs.stackexchange.com/questions/48586/align-columns-in-org-mode-with-korean-letters
 
-| English word      | Korean word | Memorized? |
-|-------------------+-------------+------------|
-| friend            | 친구        | yes        |
-| to eat            | 먹다        | yes        |
-| this row          | is just     | English    |
-| to bring with you | 가지고 가다 | no         |
+Alignment test: every cell in the ←4→ column must be exactly 4 display
+units wide, every cell in ←8→ must be 8.  If fonts are correct all the
+| separators will be perfectly vertical.
 
-   see http://coldnew.github.io/blog/2013/11-16_d2f3a/ 解決 org-mode 表格內中英文對齊的問題
+#+CAPTION: CJK alignment test (E=English C=Chinese J=Japanese K=Korean)
+| Combo   | ←4→ | ←8→    |
+|---------+-------+----------|
+| E       | ABCD  | ABCDEFGH |
+| C       | 中文  | 一二三四 |
+| J       | あい  | あいうえ |
+| K       | 가나  | 가나다라 |
+|---------+-------+----------|
+| E+C     | AB中  | ABCD中文 |
+| E+J     | ABあ  | ABCDあい |
+| E+K     | AB가  | ABCD가나 |
+| C+J     | 中あ  | 中文あい |
+| C+K     | 中가  | 中文가나 |
+| J+K     | あ가  | あい가나 |
+|---------+-------+----------|
+| E+C+J+K | —    | AB中あ가 |
 
 ;;; MIGRATED: emacs-cjk-font, emacs-font-size-pair, emacs-font-size-pair-list vars → my-ui.el
 ;;; MIGRATED: set-font function → my-ui.el
@@ -269,4 +277,3 @@ https://emacs.stackexchange.com/questions/48586/align-columns-in-org-mode-with-k
 ;;; MIGRATED: my-highlight-duplicate-lines-in-region, my-highlight-repeated-lines → my-utils.el
 ;;; MIGRATED: claude-code-ide → my-packages.el
 ;;; DROPPED:  exec-path-from-shell-setenv nix store node hack — exec-path-from-shell now imports PATH from shell
-
