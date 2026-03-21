@@ -393,6 +393,33 @@
          (insert rendered-json)
          (goto-char current-position))))))
 
+;;; single-lineify — collapse region to one line and back
+;; ref https://stackoverflow.com/a/14202425
+
+(defun single-lineify ()
+  (interactive)
+  (save-excursion
+    (let* ((beg (region-beginning))
+           (end (region-end))
+           (resulting-text
+            (thread-last (buffer-substring-no-properties beg end)
+              (s-trim)
+              (s-replace "\n" "\\n"))))
+      (kill-region beg end)
+      (insert resulting-text))))
+
+(defun de-single-lineify ()
+  (interactive)
+  (save-excursion
+    (let* ((beg (region-beginning))
+           (end (region-end))
+           (resulting-text
+            (thread-last
+                (buffer-substring-no-properties beg end)
+              (s-replace "\\n" "\n"))))
+      (kill-region beg end)
+      (insert resulting-text))))
+
 ;;; Highlight duplicate / repeated lines (requires ov package)
 ;; ref https://emacs.stackexchange.com/a/13122
 
