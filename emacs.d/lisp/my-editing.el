@@ -75,6 +75,7 @@
 ;;; ansi-color and uniquify (built-in)
 
 (require 'ansi-color)
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 

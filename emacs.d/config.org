@@ -89,48 +89,31 @@
 
 *** coding.el (:code)
 
- #+BEGIN_SRC emacs-lisp
-   (when t ;; (memq :code package-group-list)
-     (setq package-list
-           (delete-dups
-            (append package-list
-                    '(f
-                      ess
-                      gnuplot-mode
-                      graphviz-dot-mode
-                      haskell-mode
-                      haxe-mode
-                      js2-mode
-                      json-rpc ;; https://github.com/skeeto/elisp-json-rpc
-                      lua-mode
-                      matlab-mode
-                      ;; nxhtml
-                      ob-async ;; https://github.com/astahlman/ob-async
-                      ob-go ;; https://github.com/pope/ob-go
-                      ob-ipython ;; https://github.com/gregsexton/ob-ipython/
-                      python-mode
-                      pyvenv
-                      rainbow-mode
-                      rspec-mode
-                      ruby-mode
-                      yaml-mode
-                      zencoding-mode
-                      inf-ruby
-                      ))))
-     (setq my-packages
-           (delete-dups
-            (append my-packages
-                    '(
-                      ;; nxhtml
-                      )))))
-   (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-   (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-
-   (eval-after-load 'haxe-mode
-     '(define-key haxe-mode-map (kbd "C-c C-c")
-        (lambda () (interactive) (compile "make"))))
-   (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
- #+END_SRC
+;;; MIGRATED: ess → my-packages.el
+;;; MIGRATED: graphviz-dot-mode → my-packages.el
+;;; MIGRATED: haskell-mode (+ doc/indentation hooks) → my-packages.el
+;;; MIGRATED: haxe-mode (+ C-c C-c compile binding) → my-packages.el
+;;; MIGRATED: lua-mode → my-packages.el
+;;; MIGRATED: matlab-mode → my-packages.el (octave-mode built-in; matlab-mode commented as alt)
+;;; MIGRATED: ob-async → my-packages.el
+;;; MIGRATED: pyvenv → my-packages.el
+;;; MIGRATED: rainbow-mode → my-packages.el
+;;; MIGRATED: shell-mode ansi-color-for-comint-mode-on hook → my-editing.el
+;;; MIGRATED: pdf-tools → my-packages.el (commented; needs nix epdfinfo setup)
+;;; DROPPED:  f — transitive dep, not standalone
+;;; DROPPED:  gnuplot-mode — not in active use
+;;; DROPPED:  haxe-mode js2-mode — upgraded: js-ts-mode is built-in (Emacs 29+)
+;;; DROPPED:  json-rpc — transitive dep
+;;; DROPPED:  ob-go — not in active use
+;;; DROPPED:  ob-ipython — superseded by jupyter (already migrated)
+;;; DROPPED:  python-mode — superseded by built-in python.el
+;;; DROPPED:  rspec-mode — not in active use
+;;; DROPPED:  ruby-mode — built-in
+;;; DROPPED:  yaml-mode — already in my-packages.el (old collection)
+;;; DROPPED:  zencoding-mode — dead; superseded by emmet-mode
+;;; DROPPED:  inf-ruby — not in active use
+;;; DROPPED:  epc — nothing in active config references it
+;;; DROPPED:  org-pdfview — superseded by pdf-tools built-in viewer
 
 ;;; MIGRATED: expand-region C-= → my-packages.el
 ;;; MIGRATED: paredit autoload + hooks (cider-repl, emacs-lisp, lisp, lisp-interaction, hy, clojure, clojurescript) → my-packages.el
@@ -143,15 +126,9 @@
 
 *** only run on main machine (:unportable)
 
- #+BEGIN_SRC emacs-lisp
-   (when (memq :unportable package-group-list)
-     (local--load-packages
-      pdf-tools
-      ;; org-pdfview
-      epc ;; https://github.com/kiwanami/emacs-epc
-      ))
-
- #+END_SRC
+;;; MIGRATED: pdf-tools → my-packages.el (commented; needs nix epdfinfo setup)
+;;; DROPPED:  epc — nothing in active config references it
+;;; DROPPED:  org-pdfview — superseded by pdf-tools built-in viewer
 
 
 
@@ -267,80 +244,11 @@
 ** org-mode conf
 ;;; MIGRATED: org-mode conf setq block + org-level faces → my-org.el
 
-*** TODO FIXME pdf-tools interaction
+*** pdf-tools interaction
 
-    http://matt.hackinghistory.ca/2015/11/11/note-taking-with-pdf-tools/
-
-    #+BEGIN_SRC emacs-lisp
-      (when (and (memq :pdf-tools package-group-list)
-                 (require 'pdf-tools nil :noerror))
-        (pdf-tools-install)
-
-        ;; this is stolen from https://github.com/pinguim06/pdf-tools/commit/22629c746878f4e554d4e530306f3433d594a654
-        (defun pdf-annot-edges-to-region (edges)
-          "Attempt to get 4-entry region \(LEFT TOP RIGHT BOTTOM\) from several edges.
-        We need this to import annotations and to get marked-up text, because annotations
-        are referenced by its edges, but functions for these tasks need region."
-
-          (let ((left0 (nth 0 (car edges)))
-                (top0 (nth 1 (car edges)))
-                (bottom0 (nth 3 (car edges)))
-                (top1 (nth 1 (car (last edges))))
-                (right1 (nth 2 (car (last edges))))
-                (bottom1 (nth 3 (car (last edges))))
-                (n (safe-length edges)))
-            ;; we try to guess the line height to move
-            ;; the region away from the boundary and
-            ;; avoid double lines
-            (list left0
-                  (+ top0 (/ (- bottom0 top0) 2))
-                  right1
-                  (- bottom1 (/ (- bottom1 top1) 2 )))))
-
-
-        (defun pdf-annot-markups-as-org-text (pdfpath &optional title level)
-          "Acquire highligh annotations as text, and return as org-heading"
-
-          (interactive "fPath to PDF: ")
-          (let* ((outputstring "") ;; the text to be returned
-                 (title (or title (replace-regexp-in-string "-" " " (file-name-base pdfpath ))))
-                 (level (or level (1+ (org-current-level)))) ;; I guess if we're not in an org-buffer this will fail
-                 (levelstring (make-string level ?*)) ;; set headline to proper level
-                 (annots (sort (pdf-info-getannots nil pdfpath)  ;; get and sort all annots
-                               'pdf-annot-compare-annotations))
-                 )
-            ;; create the header
-            (setq outputstring (concat levelstring " Quotes From " title "\n\n")) ;; create heading
-
-            ;; extract text
-            (mapc
-             (lambda (annot) ;; traverse all annotations
-               (if (eq 'highlight (assoc-default 'type annot))
-                   (let* ((page (assoc-default 'page annot))
-                          ;; use pdf-annot-edges-to-region to get correct boundaries of highlight
-                          (real-edges (pdf-annot-edges-to-region
-                                       (pdf-annot-get annot 'markup-edges)))
-                          (text (or (assoc-default 'subject annot) (assoc-default 'content annot)
-                                    (replace-regexp-in-string "\n" " " (pdf-info-gettext page real-edges nil pdfpath)
-                                                              ) ))
-
-                          (height (nth 1 real-edges)) ;; distance down the page
-                          ;; use pdfview link directly to page number
-                          (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page)
-                                            "++" (number-to-string height) "][" title "]]" ))
-                          )
-                     (setq outputstring (concat outputstring text " ("
-                                                linktext ", " (number-to-string page) ")\n\n"))
-                     )))
-             annots)
-            outputstring ;; return the header
-            )
-          )
-
-        (eval-after-load 'pdf-view
-          '(define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation)))
-
-    #+END_SRC
+;;; MIGRATED: pdf-tools-install, pdf-annot-edges-to-region,
+;;;           pdf-annot-markups-as-org-text, h keybinding → my-packages.el
+;;;           (all commented pending nix epdfinfo setup)
 
 ;;; DROPPED: custom faces (table-cell, table-cell-face) — duplicated in custom.el
 

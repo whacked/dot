@@ -529,5 +529,119 @@ Prints key bindings as a reminder during transition from undo-tree."
   (setq claude-code-ide-terminal-backend 'eat)
   (claude-code-ide-emacs-tools-setup))
 
+;;; ─── Language / syntax modes ─────────────────────────────────────────────────
+
+;;; ess — Emacs Speaks Statistics (R, Julia, SAS, etc.)
+(use-package ess
+  :defer t)
+
+;;; graphviz-dot-mode — .dot / .gv file syntax and preview
+(use-package graphviz-dot-mode
+  :defer t)
+
+;;; haskell-mode — Haskell editing and documentation
+(use-package haskell-mode
+  :defer t
+  :hook ((haskell-mode . turn-on-haskell-doc-mode)
+         (haskell-mode . turn-on-haskell-indentation)))
+
+;;; haxe-mode — Haxe language support
+(use-package haxe-mode
+  :defer t
+  :bind (:map haxe-mode-map ("C-c C-c" . (lambda () (interactive) (compile "make")))))
+
+;;; lua-mode — Lua editing support
+(use-package lua-mode
+  :defer t)
+
+;;; octave / MATLAB — .m file editing
+;;
+;; Emacs ships octave-mode for .m files.  This auto-mode entry activates it.
+;; If you use MATLAB (not Octave), comment this out and use matlab-mode instead:
+;;   (use-package matlab-mode :defer t)
+(add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
+
+;;; pyvenv — Python virtualenv activation inside Emacs
+;;
+;; M-x pyvenv-activate: point Emacs at a virtualenv directory.
+;; M-x pyvenv-workon: activate a virtualenvwrapper env by name.
+;; Ensures python-mode, LSP, jupyter etc. use the right interpreter.
+(use-package pyvenv
+  :defer t)
+
+;;; rainbow-mode — colourize CSS colour strings in-buffer (#rrggbb, rgba(), etc.)
+(use-package rainbow-mode
+  :defer t)
+
+;;; ─── Org-babel extensions ────────────────────────────────────────────────────
+
+;;; ob-async — run org-babel blocks asynchronously  (:async t header arg)
+;;
+;; Prevents Emacs from freezing while a slow code block (shell, Python, etc.)
+;; executes.  Add :async t to any #+begin_src block to use it.
+(use-package ob-async
+  :defer t)
+
+;;; ─── PDF ─────────────────────────────────────────────────────────────────────
+
+;;; pdf-tools — rich in-buffer PDF viewer (commented: needs epdfinfo binary)
+;;
+;; On macOS + nix the cleanest install is to let nix own the binary:
+;;   1. Add pkgs.emacsPackages.pdf-tools to home.packages in home.nix.
+;;   2. Find the elisp in the nix profile:
+;;        ls ~/.nix-profile/share/emacs/site-lisp/
+;;   3. Add that path to load-path and use :straight nil below.
+;;
+;; (use-package pdf-tools
+;;   :straight nil
+;;   :bind (:map pdf-view-mode-map ("h" . pdf-annot-add-highlight-markup-annotation))
+;;   :config
+;;   (pdf-tools-install :no-query)
+;;
+;;   ;; Fix: correct edge→region conversion for multi-line annotation highlights.
+;;   ;; (from https://github.com/pinguim06/pdf-tools/commit/22629c7)
+;;   (defun pdf-annot-edges-to-region (edges)
+;;     "Get 4-entry region (LEFT TOP RIGHT BOTTOM) from annotation edge list."
+;;     (let ((left0   (nth 0 (car edges)))
+;;           (top0    (nth 1 (car edges)))
+;;           (bottom0 (nth 3 (car edges)))
+;;           (top1    (nth 1 (car (last edges))))
+;;           (right1  (nth 2 (car (last edges))))
+;;           (bottom1 (nth 3 (car (last edges)))))
+;;       (list left0
+;;             (+ top0    (/ (- bottom0 top0)    2))
+;;             right1
+;;             (- bottom1 (/ (- bottom1 top1) 2)))))
+;;
+;;   ;; Extract highlight annotations from a PDF as an org heading.
+;;   ;; Usage: M-x pdf-annot-markups-as-org-text, then paste the result.
+;;   (defun pdf-annot-markups-as-org-text (pdfpath &optional title level)
+;;     "Return highlight annotations from PDFPATH as an org heading string."
+;;     (interactive "fPath to PDF: ")
+;;     (let* ((title      (or title (replace-regexp-in-string "-" " " (file-name-base pdfpath))))
+;;            (level      (or level (1+ (org-current-level))))
+;;            (levelstr   (make-string level ?*))
+;;            (annots     (sort (pdf-info-getannots nil pdfpath)
+;;                              #'pdf-annot-compare-annotations))
+;;            (output     (concat levelstr " Quotes From " title "\n\n")))
+;;       (mapc
+;;        (lambda (annot)
+;;          (when (eq 'highlight (assoc-default 'type annot))
+;;            (let* ((page       (assoc-default 'page annot))
+;;                   (real-edges (pdf-annot-edges-to-region
+;;                                (pdf-annot-get annot 'markup-edges)))
+;;                   (text       (or (assoc-default 'subject annot)
+;;                                   (assoc-default 'content annot)
+;;                                   (replace-regexp-in-string
+;;                                    "\n" " "
+;;                                    (pdf-info-gettext page real-edges nil pdfpath))))
+;;                   (height     (nth 1 real-edges))
+;;                   (linktext   (concat "[[pdfview:" pdfpath "::" (number-to-string page)
+;;                                       "++" (number-to-string height) "][" title "]]")))
+;;              (setq output (concat output text " (" linktext ", "
+;;                                   (number-to-string page) ")\n\n")))))
+;;        annots)
+;;       output)))
+
 (provide 'my-packages)
 ;;; my-packages.el ends here
