@@ -76,6 +76,27 @@
         :config
         (global-treesit-auto-mode))))))
 
+;;; eval-in-repl — send current line/region to a running REPL
+;;
+;; Handles two shell use cases:
+;;   1. sh-mode file with an active *shell* buffer — C-<return> sends current line
+;;   2. org src block opened with C-' — same binding works in the edit buffer
+;;
+;; The target shell is M-x shell (comint), not vterm/eat.
+;; eir-eval-in-shell2 is a variant that toggles the jump-after-eval behaviour.
+
+(use-package eval-in-repl
+  :config
+  (require 'eval-in-repl-shell)
+  (defun eir-eval-in-shell2 ()
+    "Send current line/region to shell, with opposite jump-after-eval behaviour."
+    (interactive)
+    (let ((eir-jump-after-eval (not eir-jump-after-eval)))
+      (eir-eval-in-shell)))
+  (add-hook 'sh-mode-hook
+            (lambda ()
+              (local-set-key (kbd "C-<return>") #'eir-eval-in-shell))))
+
 ;;; eat — terminal emulator (used by claude-code-ide and general shell work)
 
 (use-package eat
