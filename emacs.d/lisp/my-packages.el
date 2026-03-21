@@ -248,7 +248,17 @@
                   (funcall orig file)
                 empty))
           empty))))
-  (global-obsidian-mode t)
+  ;; Defer vault scan to idle time.  obsidian-rescan-cache reads every .md
+  ;; file synchronously and the cache is in-memory only (always empty on
+  ;; startup), so without deferral it blocks init on every launch.
+  ;; Call M-x my-obsidian-activate manually if you need obsidian before
+  ;; the timer fires.
+  (defun my-obsidian-activate ()
+    "Activate obsidian and scan vault.
+Called automatically after 10 min idle; invoke manually via M-x if needed sooner."
+    (interactive)
+    (global-obsidian-mode t))
+  (run-with-idle-timer 600 nil #'my-obsidian-activate)
   :bind (:map obsidian-mode-map
               ;; Replace C-c C-o with Obsidian.el's implementation. It's ok to use another key binding.
               ("C-c C-o" . obsidian-follow-link-at-point)
