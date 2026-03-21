@@ -99,6 +99,27 @@
 ;; use (push '("Sarasa Mono J" . ,(/ 16.0 13.0)) face-font-rescale-alist).
 ;; ref: https://lists.gnu.org/archive/html/emacs-orgmode/2023-03/msg00415.html
 
+;;; # CJK alignment test (E=English C=Chinese J=Japanese K=Korean)
+;;; # Alignment test: every cell in the ←4→ column must be exactly 4 display
+;;; # units wide, every cell in ←8→ must be 8.  If fonts are correct all the
+;;; # | separators will be perfectly vertical.
+;;; # org-mode test table
+;;  | Combo   | ←4→ | ←8→    |
+;;  |---------+-------+----------|
+;;  | E       | ABCD  | ABCDEFGH |
+;;  | C       | 中文  | 一二三四 |
+;;  | J       | あい  | あいうえ |
+;;  | K       | 가나  | 가나다라 |
+;;  |---------+-------+----------|
+;;  | E+C     | AB中  | ABCD中文 |
+;;  | E+J     | ABあ  | ABCDあい |
+;;  | E+K     | AB가  | ABCD가나 |
+;;  | C+J     | 中あ  | 中文あい |
+;;  | C+K     | 中가  | 中文가나 |
+;;  | J+K     | あ가  | あい가나 |
+;;  |---------+-------+----------|
+;;  | E+C+J+K | —    | AB中あ가 |
+
 (defun my-cjk-setup ()
   "Configure CJK fonts for org-mode table alignment.
 Each CJK glyph must render at exactly 2× the ASCII glyph width.
