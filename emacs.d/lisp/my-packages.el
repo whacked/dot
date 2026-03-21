@@ -141,16 +141,20 @@
 
 (use-package magit)
 
-;;; git-gutter — diff indicators in the fringe
+;;; diff-hl — diff indicators in the fringe (replaces git-gutter)
+;;
+;; diff-hl uses Emacs's built-in VC framework so it works with any VCS,
+;; not just git.  Colours ported from the old git-gutter config:
+;; modified=purple, added=green, deleted=red.  git-gutter used
+;; :foreground for added/deleted; diff-hl uses :background — spirit
+;; is the same.
 
-(use-package git-gutter
+(use-package diff-hl
   :config
-  (global-git-gutter-mode t)
-  (set-face-background 'git-gutter:modified "purple")
-  (set-face-foreground 'git-gutter:added "green")
-  (set-face-foreground 'git-gutter:deleted "red")
-  (set-face-background 'git-gutter:unchanged "gray")
-  (setq git-gutter:unchanged-sign " "))
+  (set-face-background 'diff-hl-change "purple")
+  (set-face-background 'diff-hl-insert "green")
+  (set-face-background 'diff-hl-delete "red")
+  (global-diff-hl-mode))
 
 ;;; ov — overlay library (used by my-highlight-duplicate-lines-in-region etc.)
 
@@ -334,6 +338,161 @@ Prints key bindings as a reminder during transition from undo-tree."
     (message "VUNDO  navigate: C-f/C-b  change branch: C-n/C-p  quit: q  (was undo-tree-visualize)")
     (vundo))
   :bind ("C-x u" . my-vundo))
+
+;;; Old collection packages ─────────────────────────────────────────────────
+
+;;; calfw / calfw-org — calendar grid view (low priority; commented out)
+;; (use-package calfw)
+;; (use-package calfw-org)
+
+;;; dash — list manipulation library (dep; no user config needed)
+(use-package dash)
+
+;;; deadgrep — ripgrep results buffer (distinct UX from consult-ripgrep)
+(use-package deadgrep
+  :defer t)
+
+;;; duplicate-thing — duplicate line or region in-place
+(use-package duplicate-thing)
+
+;;; editorconfig — apply .editorconfig indent/format settings per project
+(use-package editorconfig
+  :config (editorconfig-mode 1))
+
+;;; embark + embark-consult — contextual actions on candidates / things at point
+(use-package embark
+  :bind (("C-." . embark-act)
+         ("C-;" . embark-dwim)))
+
+(use-package embark-consult
+  :after (embark consult)
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
+
+;;; gptel — LLM client (OpenAI, Anthropic, Ollama, …)
+(use-package gptel
+  :defer t)
+
+;;; hl-todo — highlight TODO/FIXME/BUG/HACK in comments (replaces fic-mode)
+(use-package hl-todo
+  :config (global-hl-todo-mode))
+
+;;; html-to-hiccup — convert HTML to Hiccup syntax (Clojure/ClojureScript)
+(use-package html-to-hiccup
+  :defer t)
+
+;;; htmlize — buffer→HTML conversion; required for org HTML export syntax highlighting
+(use-package htmlize
+  :defer t)
+
+;;; ibuffer-vc — group ibuffer list by VC repository (hooks set above in ibuffer section)
+(use-package ibuffer-vc)
+
+;;; iedit — simultaneously edit multiple occurrences of symbol/region
+(use-package iedit
+  :defer t)
+
+;;; jsonnet-mode
+(use-package jsonnet-mode
+  :defer t)
+
+;;; jsonl — JSON Lines format support (pairs with custom jsonl-record-editor in my-utils.el)
+(use-package jsonl
+  :defer t)
+
+;;; jupyter — org-babel + Jupyter kernel integration
+(use-package jupyter
+  :defer t)
+
+;;; keycast — display current command and keybinding in mode line (screencasts)
+(use-package keycast
+  :defer t)
+
+;;; logview — log file (log4j, syslog, …) colorization and filtering
+(use-package logview
+  :defer t)
+
+;;; mermaid-mode (commented out — uncomment if actively using Mermaid diagrams)
+;; (use-package mermaid-mode :defer t)
+
+;;; multiple-cursors — edit multiple points simultaneously
+(use-package multiple-cursors
+  :bind (("C-S-c C-S-c" . mc/edit-lines)
+         ("C->"         . mc/mark-next-like-this)
+         ("C-<"         . mc/mark-previous-like-this)
+         ("C-c C-<"     . mc/mark-all-like-this)))
+
+;;; nix-mode — edit Nix expressions
+(use-package nix-mode
+  :mode "\\.nix\\'")
+
+;;; nov.el — epub reader (replaces ereader, which is stale)
+(use-package nov
+  :mode ("\\.epub\\'" . nov-mode))
+
+;;; org-download — drag/drop or yank images directly into org buffers
+(use-package org-download
+  :defer t)
+
+;;; org-ql — query language for org headings; org-sidebar is its UI companion
+(use-package org-ql
+  :defer t)
+
+(use-package org-sidebar
+  :defer t)
+
+;;; projectile — project management (alternative to built-in project.el)
+;; project.el + consult is the long-term migration path, but projectile
+;; retains more commands.  Bound under C-c p.
+(use-package projectile
+  :config (projectile-mode +1)
+  :bind-keymap ("C-c p" . projectile-command-map))
+
+;;; request — HTTP client library
+(use-package request
+  :defer t)
+
+;;; simple-httpd + skewer-mode — JS live REPL (commented out; low active use)
+;; (use-package simple-httpd :defer t)
+;; (use-package skewer-mode  :defer t)
+
+;;; slime — Common Lisp development environment
+(use-package slime
+  :defer t)
+
+;;; solarized-theme
+(use-package solarized-theme
+  :defer t)
+
+;;; string-inflection — cycle snake_case → UPCASE → CamelCase → camelCase → kebab-case
+(use-package string-inflection
+  :defer t)
+
+;;; terraform-mode — HCL/Terraform editing
+(use-package terraform-mode
+  :defer t)
+
+;;; vterm — full terminal emulator (libvterm-backed)
+;;
+;; On macOS with Emacs.app from nixpkgs: straight.el will try to compile
+;; vterm-module.so via cmake at install time, but it cannot find the
+;; libvterm that Emacs was built against, causing the build to fail.
+;;
+;; Clean fix with home.nix: install vterm via the nix emacs overlay so
+;; the module is pre-built in the nix store, then change :straight to nil:
+;;   (use-package vterm :straight nil :defer t)
+;; and add the package to your home.nix emacs package list instead.
+(use-package vterm
+  :defer t)
+
+;;; websocket — WebSocket library (dep of jupyter, lsp-mode, etc.)
+(use-package websocket
+  :defer t)
+
+;;; yasnippet — template / snippet expansion system
+(use-package yasnippet
+  :config (yas-global-mode 1))
+
+;;; ─────────────────────────────────────────────────────────────────────────
 
 ;;; claude-code-ide
 ;;

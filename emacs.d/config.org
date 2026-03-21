@@ -27,83 +27,27 @@
 ;;; MIGRATED: markdown-mode → my-packages.el (dropped markdown-pretty-code-blocks-mode — not a real function)
 
 ** old collection
-
-#+BEGIN_SRC emacs-lisp
-  (quote local--load-packages
-
-   calfw
-   calfw-org
-   color-theme
-   cond-let
-   counsel  ;; counsel-buffer-or-recentf etc
-
-   dash
-   deadgrep
-   diff-hl
-   dirtree
-   duplicate-thing  ;; provides duplicate-thing (e.g. duplicate a line)
-   editorconfig
-   elfeed
-   embark
-   embark-consult
-   emojify
-   ereader  ;; .epub reader (somewhat stale)
-   esqlite
-   eyebrowse
-   fic-mode ;; to highlight TODO FIXME BUG etc
-   find-file-in-project
-   git-gutter-fringe
-   gptel  ;; ChatGPT in emacs
-   guide-key
-
-   html-to-hiccup
-   htmlize ;; htmlize is needed for syntax highlighting in org-mode html output
-   hydra
-   ibuffer-vc
-   iedit
-
-   json-mode
-   jsonnet-mode
-   jsonl
-   jupyter
-   keycast
-   logview  ;; log parsing and analysis
-   lsp-mode
-   lsp-ui
-
-   mermaid-mode
-   multiple-cursors
-   muse
-   mustache
-   navi-mode
-   nix-mode
-
-   obsidian  ;; interop with obsidian
-   occur-x  ;; addition candidate: [k] to push a regex into an occur buffer; occur-x-undo-filter to clear
-   org-download
-   org-ql
-   org-sidebar
-   origami  ;; code folding
-
-   powerline
-   project-explorer
-   projectile
-   request
-   simple-httpd
-   skewer-mode ;; js live repl https://github.com/skeeto/skewer-mode
-   slime
-   solarized-theme
-   spinner ;; spinner for ongoing operation
-   sqlite
-   sr-speedbar ;; file list view in buffer
-   string-inflection ;; underscore -> UPCASE -> CapitalCase -> camelCase -> kebab-case
-   terraform-mode
-   typescript-mode
-   vterm
-   websocket
-   yasnippet
-   )
-#+END_SRC
+;;; MIGRATED: dash, deadgrep, diff-hl (replaces git-gutter+git-gutter-fringe),
+;;;           duplicate-thing, editorconfig, embark, embark-consult, gptel,
+;;;           hl-todo (replaces fic-mode), html-to-hiccup, htmlize, ibuffer-vc,
+;;;           iedit, jsonnet-mode, jsonl, jupyter, keycast, logview,
+;;;           multiple-cursors, nix-mode, nov (replaces ereader),
+;;;           org-download, org-ql, org-sidebar, projectile, request,
+;;;           slime, solarized-theme, string-inflection, terraform-mode,
+;;;           vterm, websocket, yasnippet → my-packages.el
+;;; COMMENTED: calfw, calfw-org, mermaid-mode, simple-httpd, skewer-mode → my-packages.el (disabled)
+;;; DROPPED: color-theme (built-in load-theme), cond-let (transitive dep),
+;;;          counsel (have vertico/consult), dirtree (have treemacs),
+;;;          elfeed, emojify, esqlite (Emacs 29 built-in sqlite),
+;;;          eyebrowse (tab-bar-mode built-in), find-file-in-project (consult-fd),
+;;;          guide-key (which-key built into Emacs 30), hydra (no required deps),
+;;;          json-mode (json-ts-mode built-in), lsp-mode, lsp-ui,
+;;;          mustache, muse (superseded by org), navi-mode (consult-outline),
+;;;          occur-x, origami (hs-minor-mode built-in), powerline,
+;;;          project-explorer (have treemacs), spinner (dep of dropped lsp-mode),
+;;;          sqlite (Emacs 29 built-in), sr-speedbar (have treemacs),
+;;;          typescript-mode (typescript-ts-mode built-in)
+;;; ALREADY:  obsidian → my-packages.el
 
 ** default collection
 ;;; MIGRATED: ace-window → my-packages.el (coexists with win-switch, bound to M-o)
