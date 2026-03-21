@@ -210,6 +210,29 @@
   (obsidian-directory my-cloudsync-note-dir)
   (obsidian-inbox-directory "pages")
   :config
+  ;; Skip metadata extraction for files with no front matter, or whose
+  ;; front matter exceeds 50 lines.  Files without a leading "---" block
+  ;; rarely carry useful obsidian metadata, and the body-tag regex can
+  ;; catastrophically backtrack on unusual content in large files.
+  (advice-add 'obsidian-file-metadata :around
+    (lambda (orig &optional file)
+      (let* ((m (make-hash-table :test 'equal))
+             (empty (progn (puthash 'tags nil m)
+                           (puthash 'aliases nil m)
+                           (puthash 'links nil m)
+                           m))
+             (target (or file (buffer-file-name)))
+             (head (when (and target (file-exists-p target))
+                     (with-temp-buffer
+                       (insert-file-contents target nil 0 4096)
+                       (buffer-string)))))
+        (if (and head (s-starts-with-p "---" head))
+            (let* ((split (s-split-up-to "---" head 2))
+                   (fm (and (= (length split) 3) (nth 1 split))))
+              (if (and fm (< (length (s-split "\n" fm)) 50))
+                  (funcall orig file)
+                empty))
+          empty))))
   (global-obsidian-mode t)
   :bind (:map obsidian-mode-map
               ;; Replace C-c C-o with Obsidian.el's implementation. It's ok to use another key binding.
