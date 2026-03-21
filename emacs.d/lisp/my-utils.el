@@ -393,5 +393,73 @@
          (insert rendered-json)
          (goto-char current-position))))))
 
+;;; Highlight duplicate / repeated lines (requires ov package)
+;; ref https://emacs.stackexchange.com/a/13122
+
+(defun my-highlight-duplicate-lines-in-region (&optional show-all)
+  ;; ref https://emacs.stackexchange.com/a/13122
+  "optional = show all, otherwise don't highlight first occurences"
+  (interactive "P")
+  (when mark-active
+    (let* (($beg (region-beginning))
+           ($end (region-end))
+           ($st (buffer-substring-no-properties
+                 $beg $end))
+           ($lines)
+           $first-occurrence-with-dup
+           $dup)
+      (deactivate-mark t)
+      (save-excursion
+        (goto-char $beg)
+        (while (< (point) $end)
+          (let* (($b (point))
+                 ($e (point-at-eol))
+                 ($c (buffer-substring-no-properties $b $e))
+                 ($a (assoc $c $lines)))
+            (when (not (eq $b $e))
+              (if $a
+                  (progn
+                    (setq $dup (cons $b $dup))
+                    (if show-all
+                        (setq $dup (cons (cdr $a) $dup))
+                      (setq $first-occurrence-with-dup
+                             (cons (cdr $a) $first-occurrence-with-dup))))
+                (setq $lines
+                      (cons (cons $c $b) $lines)))))
+          (forward-line 1))
+        (mapc (lambda ($p)
+                (ov-set (ov-line $p) 'face '(:foreground "red")))
+              (sort (delete-dups $dup) '<))
+        (mapc (lambda ($p)
+                (ov-set (ov-line $p) 'face '(:foreground "green")))
+              $first-occurrence-with-dup)))))
+
+(defun my-highlight-repeated-lines (&optional show-all)
+  (interactive "P")
+  "highlight lines if they are identical to the line above it"
+  (when mark-active
+    (let* (($beg (region-beginning))
+           ($end (region-end))
+           ($st (buffer-substring-no-properties
+                 $beg $end))
+           previous-line
+           $same-as-previous-line)
+      (deactivate-mark t)
+      (save-excursion
+        (goto-char $beg)
+        (while (< (point) $end)
+          (let* (($b (point))
+                 ($e (point-at-eol))
+                 ($c (buffer-substring-no-properties $b $e)))
+            (when (and (not (eq $b $e))
+                       (string= $c previous-line))
+              (progn
+                (setq $same-as-previous-line (cons $b $same-as-previous-line))))
+            (setq previous-line $c))
+          (forward-line 1))
+        (mapc (lambda ($p)
+                (ov-set (ov-line $p) 'face '(:foreground "red")))
+              $same-as-previous-line)))))
+
 (provide 'my-utils)
 ;;; my-utils.el ends here

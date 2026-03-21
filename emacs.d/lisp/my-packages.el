@@ -135,6 +135,10 @@
 
 (use-package magit)
 
+;;; ov — overlay library (used by my-highlight-duplicate-lines-in-region etc.)
+
+(use-package ov)
+
 ;;; expand-region
 
 (use-package expand-region
