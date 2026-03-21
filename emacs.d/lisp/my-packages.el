@@ -135,6 +135,17 @@
 
 (use-package magit)
 
+;;; git-gutter — diff indicators in the fringe
+
+(use-package git-gutter
+  :config
+  (global-git-gutter-mode t)
+  (set-face-background 'git-gutter:modified "purple")
+  (set-face-foreground 'git-gutter:added "green")
+  (set-face-foreground 'git-gutter:deleted "red")
+  (set-face-background 'git-gutter:unchanged "gray")
+  (setq git-gutter:unchanged-sign " "))
+
 ;;; ov — overlay library (used by my-highlight-duplicate-lines-in-region etc.)
 
 (use-package ov)

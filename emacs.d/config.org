@@ -561,28 +561,15 @@ https://emacs.stackexchange.com/questions/48586/align-columns-in-org-mode-with-k
 
 ;;; MIGRATED: emacs-cjk-font, emacs-font-size-pair, emacs-font-size-pair-list vars → my-ui.el
 ;;; MIGRATED: set-font function → my-ui.el
-* colorizations
-
-  #+begin_src emacs-lisp
-    ;; see https://github.com/emacsorphanage/git-gutter
-    (set-face-background 'git-gutter:modified "purple") ;; background color
-    (set-face-foreground 'git-gutter:added "green")
-    (set-face-foreground 'git-gutter:deleted "red")
-    (set-face-background 'git-gutter:unchanged "gray")
-    (setq git-gutter:unchanged-sign " ")
-  #+end_src
-
-* other key bindings
+;;; MIGRATED: git-gutter face config → my-packages.el (with use-package git-gutter)
 ;;; MIGRATED: <f12> dumb-jump-go → my-keybindings.el
-* mardown fence code eval via org-babel
+
+* markdown fence code eval via org-babel
 
   #+begin_src emacs-lisp
     (load-file (concat (file-name-as-directory (getenv "CLOUDSYNC")) "main/dev/elisp/emacs-markdown-babel/emacs-markdown-babel.el"))
     (eval-after-load 'markdown '(define-key markdown-mode-map [(f5)] 'markdown-eval-current-code-block))
   #+end_src
-
-* text format conversion
-
 
 ;;; MIGRATED: js->json → my-utils.el
 ;;; MIGRATED: html->hiccup → my-utils.el
