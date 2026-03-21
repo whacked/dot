@@ -125,6 +125,12 @@
      ((t (:foreground "DarkSlateGray" :slant italic :background "#F7F7F7")))))
   (add-hook 'markdown-mode-hook (lambda () (setq tab-width 2))))
 
+;;; ace-window — switch window by visual label
+;; Coexists with win-switch (C-x o); use M-o for ace-window.
+
+(use-package ace-window
+  :bind ("M-o" . ace-window))
+
 ;;; win-switch — repeated other-window via C-x o o o ...
 
 (use-package win-switch
@@ -266,6 +272,68 @@ Called automatically after 10 min idle; invoke manually via M-x if needed sooner
               ("C-c C-b" . obsidian-backlink-jump)
               ;; If you prefer you can use `obsidian-insert-link'
               ("C-c C-l" . obsidian-insert-wikilink)))
+
+;;; csv-mode
+
+(use-package csv-mode
+  :defer t)
+
+;;; dirvish — modern dired replacement (supersedes dired+)
+
+(use-package dirvish
+  :config (dirvish-override-dired-mode))
+
+;;; dumb-jump — zero-config xref backend (grep-based M-. fallback)
+
+(use-package dumb-jump
+  :config (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+
+;;; git-timemachine — walk file git history interactively
+;; Note: upstream moved to https://codeberg.org/pidu/git-timemachine
+
+(use-package git-timemachine
+  :straight (:host codeberg :repo "pidu/git-timemachine")
+  :defer t)
+
+;;; polymode — multiple major modes in one buffer
+
+(use-package polymode
+  :defer t)
+
+;;; transpose-frame — flip/rotate window layout
+
+(use-package transpose-frame)
+
+;;; treemacs — file tree sidebar
+
+(use-package treemacs
+  :defer t)
+
+;;; try — install and try packages without keeping them
+
+(use-package try
+  :defer t)
+
+;;; vundo — visual undo tree (replaces undo-tree)
+;;
+;; undo-tree had persistent data-loss/corruption bugs and is effectively
+;; unmaintained.  vundo is the community-endorsed replacement: it wraps
+;; Emacs' native undo machinery (non-invasive, no data-loss risk) and
+;; displays the tree horizontally.
+;;
+;; my-vundo is a transition helper: call it where you used to call
+;; undo-tree-visualize.  It prints a loud reminder of vundo's key bindings
+;; so you can build new muscle memory, then opens the vundo buffer.
+
+(use-package vundo
+  :config
+  (defun my-vundo ()
+    "Open vundo (replaces undo-tree-visualize).
+Prints key bindings as a reminder during transition from undo-tree."
+    (interactive)
+    (message "VUNDO  navigate: C-f/C-b  change branch: C-n/C-p  quit: q  (was undo-tree-visualize)")
+    (vundo))
+  :bind ("C-x u" . my-vundo))
 
 ;;; claude-code-ide
 ;;

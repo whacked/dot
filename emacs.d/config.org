@@ -106,40 +106,26 @@
 #+END_SRC
 
 ** default collection
-
-#+begin_src emacs-lisp
-  (local--load-packages
-   ace-window  ;; switch to window by numbered target labels
-   async ;; https://github.com/jwiegley/emacs-async
-
-   csv-mode
-
-   ;; if the dired view is messed up, investigate:
-   ;; show details by default; "(" to toggle
-   ;; (setq diredp-hide-details-initially-flag nil)
-   dired+
-   dumb-jump  ;; config-less M-. (xref-find-definitions)
-
-   exec-path-from-shell  ;; PATH and exec-path sync
-
-   ;; show what keys are available for binding; cf describe-personal-keybindings() from use-package
-   ;; previously used "unbound" package
-   free-keys
-   git-gutter
-   git-timemachine
-   magit
-   paredit
-   polymode  ;; supersedes multi-web-mode
-   restclient
-   s
-   transpose-frame
-   treemacs
-   try  ;; try packages without installing
-   undo-tree
-   )
-
-;;; MIGRATED: thingatpt+, thing-cmds use-packages → my-packages.el
-#+end_src
+;;; MIGRATED: ace-window → my-packages.el (coexists with win-switch, bound to M-o)
+;;; MIGRATED: csv-mode → my-packages.el
+;;; MIGRATED: dumb-jump → my-packages.el (xref backend)
+;;; MIGRATED: git-timemachine → my-packages.el (Codeberg upstream)
+;;; MIGRATED: polymode → my-packages.el
+;;; MIGRATED: transpose-frame → my-packages.el
+;;; MIGRATED: treemacs → my-packages.el
+;;; MIGRATED: try → my-packages.el
+;;; MIGRATED: vundo → my-packages.el (replaces undo-tree; see my-vundo wrapper)
+;;; MIGRATED: dirvish → my-packages.el (replaces dired+)
+;;; DROPPED:  dired+ — superseded by dirvish
+;;; DROPPED:  free-keys — abandoned ~2015; which-key built into Emacs 30
+;;; DROPPED:  undo-tree — data-loss bugs; replaced by vundo
+;;; DROPPED:  async, s — transitive deps, no user config needed
+;;; ALREADY:  exec-path-from-shell → my-core.el
+;;; ALREADY:  git-gutter → my-packages.el
+;;; ALREADY:  magit → my-packages.el
+;;; ALREADY:  paredit → my-packages.el
+;;; ALREADY:  restclient → my-packages.el
+;;; ALREADY:  thingatpt+, thing-cmds → my-packages.el
 
 ** eval-in-repl
 
