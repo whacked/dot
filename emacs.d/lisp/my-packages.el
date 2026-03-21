@@ -530,6 +530,40 @@ Prints key bindings as a reminder during transition from undo-tree."
   (setq claude-code-ide-terminal-backend 'eat)
   (claude-code-ide-emacs-tools-setup))
 
+;;; emacs-markdown-babel — evaluate fenced code blocks in Markdown via org-babel
+;;
+;; Provides markdown-eval-current-code-block (f5 in markdown-mode).
+;; Previously loaded via load-file from CLOUDSYNC; now sourced from GitHub.
+(use-package emacs-markdown-babel
+  :straight (:host github :repo "whacked/emacs-markdown-babel")
+  :after markdown-mode
+  :bind (:map markdown-mode-map ([f5] . markdown-eval-current-code-block)))
+
+;;; mustache — Mustache template rendering (dep of zotero-query via yesql)
+(use-package mustache
+  :defer t)
+
+;;; esqlite — SQLite interface (dep of zotero-query)
+(use-package esqlite
+  :defer t)
+
+;;; hydra — transient keybinding menus (dep of zotero-query)
+(use-package hydra
+  :defer t)
+
+;;; zotero-query — open Zotero items by key from Emacs
+;;
+;; Provides zotero-query, used by zotero-open-at-point in my-utils.el.
+(use-package zotero-query
+  :straight (:host github :repo "whacked/zotero-query.el"
+             :files ("*.el" "external" "resources"))
+  :init
+  ;; zotero-query calls `first` which was removed from dash 2.18+.
+  ;; Shim it via cl-lib without loading the deprecated cl package.
+  (unless (fboundp 'first)
+    (defalias 'first #'cl-first))
+  :commands (zotero-query))
+
 ;;; ─── Language / syntax modes ─────────────────────────────────────────────────
 
 ;;; ess — Emacs Speaks Statistics (R, Julia, SAS, etc.)

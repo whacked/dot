@@ -498,5 +498,25 @@ Useful for cleaning up org-babel shell output that contains colour codes."
     (error "The mark is not set now, so there is no region"))
   (insert (ansi-color-filter-apply (filter-buffer-substring beg end t))))
 
+;;; zotero-open-at-point — open a Zotero item from a [zotero:...] link at point
+;;
+;; Recognises [zotero:KEY] (bare) and [...](zotero:KEY) (markdown) link forms.
+;; Requires zotero-query.el (github:whacked/zotero-query.el).
+
+(defun zotero-open-at-point ()
+  "Open a Zotero item linked at point.
+Recognises [zotero:KEY] and [...](zotero:KEY) link forms."
+  (interactive)
+  (let ((key (or
+              ;; bare [zotero:KEY] form
+              (and (thing-at-point-looking-at "\\[\\(zotero:[^]]+\\)\\]")
+                   (match-string-no-properties 1))
+              ;; markdown [...](zotero:KEY) form
+              (and (thing-at-point-looking-at "\\[[^]]*\\](\\(zotero:[^)]+\\))")
+                   (match-string-no-properties 1)))))
+    (if key
+        (zotero-query (substring key 7))
+      (message "no zotero link found at point"))))
+
 (provide 'my-utils)
 ;;; my-utils.el ends here
