@@ -64,3 +64,5 @@ lein/self-installs/*.jar
 emacs.d/emojis
 # straight package manager
 emacs.d/straight
+
+emacs.d/local.el

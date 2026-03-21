@@ -1,8 +1,7 @@
-;;; my-system.el --- OS-specific and per-machine initialization -*- lexical-binding: t -*-
+;;; my-system.el --- OS-specific initialization -*- lexical-binding: t -*-
 ;;
-;; Covers OS-conditional settings.  Per-machine org files (system-name/,
-;; user-login-name/) are pending adaptation from the old path-join /
-;; EMACS.D-DIR infrastructure to expand-file-name + user-emacs-directory.
+;; Covers OS-conditional settings.  Machine-specific overrides live in
+;; local.el (gitignored), loaded at the end of init.el.
 
 ;;; OS-specific
 

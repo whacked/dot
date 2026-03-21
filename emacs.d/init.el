@@ -24,6 +24,12 @@
 (require 'my-org)
 (require 'my-utils)
 
+;;; Local overrides (machine-specific, gitignored)
+
+(let ((local (expand-file-name "local.el" user-emacs-directory)))
+  (when (file-exists-p local)
+    (load local)))
+
 ;;; Custom file
 
 ;; custom.el is managed by Emacs; load it last so it can override

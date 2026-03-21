@@ -242,27 +242,6 @@
 ;;; MIGRATED: clojure-utils → my-packages.el
   #+END_SRC
 
-** color themes
-
-   #+BEGIN_SRC emacs-lisp
-     (setq package-list
-           (delete-dups
-            (append package-list
-                    '(color-theme-buffer-local
-                      load-theme-buffer-local
-                      ;; color themes, see https://emacsthemes.com/charts/all-time.html
-                      alect-themes
-                      ample-theme
-                      cyberpunk-theme
-                      leuven-theme
-                      material-theme
-                      monokai-theme
-                      solarized-theme
-                      ujelly-theme
-                      zenburn-theme
-                      ))))
-   #+END_SRC
-
 ** conditional package loaders
 
 *** coding.el (:code)
@@ -310,7 +289,6 @@
    (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
  #+END_SRC
 
-*** lispy-stuff.el (:lisp)
 ;;; MIGRATED: expand-region C-= → my-packages.el
 ;;; MIGRATED: paredit autoload + hooks (cider-repl, emacs-lisp, lisp, lisp-interaction, hy, clojure, clojurescript) → my-packages.el
 ;;; MIGRATED: clojure-mode, cider, clj-refactor, inf-clojure → my-packages.el (commented out, not in active use)
@@ -353,35 +331,12 @@
 ;;; MIGRATED: C-x C-b ibuffer, M-o ace-window → my-keybindings.el
 ;;; MIGRATED: my-keys-minor-mode-map, my-keys-minor-mode, windmove s-arrow bindings → my-keybindings.el
 ;;; MIGRATED: vim-like H/M/L cursor placement → my-keybindings.el
-* specific init
-
-** os-specific
-
-*** gnu/linux
 ;;; MIGRATED: os-specific gnu/linux (x-select-enable-clipboard, default-frame-alist) → my-system.el
-
-*** darwin
 ;;; MIGRATED: os-specific darwin (featurep ns, message) → my-system.el
 
 ** system-name
-
-   #+BEGIN_SRC emacs-lisp
-     (let ((system-name-org
-            (path-join EMACS.D-DIR "system-name"
-                       (concat system-name ".org"))))
-       (when (file-exists-p system-name-org)
-         (org-babel-load-file system-name-org)))
-   #+END_SRC
-
-** user-login-name
-
-   #+BEGIN_SRC emacs-lisp
-     (let ((user-login-name-org
-            (path-join EMACS.D-DIR "user-login-name"
-                       (concat user-login-name ".org"))))
-       (when (file-exists-p user-login-name-org)
-         (org-babel-load-file user-login-name-org)))
-   #+END_SRC
+;;; MIGRATED: per-machine loader → local.el pattern (init.el loads emacs.d/local.el if present, gitignored)
+;;; DROPPED:  user-login-name loader — no live files remaining
 
 * usual-environment.el
 ** remainder
@@ -458,8 +413,6 @@
      (unless (and beg end)
        (error "The mark is not set now, so there is no region"))
      (insert (ansi-color-filter-apply (filter-buffer-substring beg end t))))
-
-   (setq org-log-done t)
 
    ;;Match org file: links
    ;; old, for iimage-minor-mode
@@ -750,11 +703,6 @@
     (setq git-gutter:unchanged-sign " ")
   #+end_src
 
-* org-logseq
-
-  #+begin_src emacs-lisp
-  #+end_src
-
 * other key bindings
 ;;; MIGRATED: <f12> dumb-jump-go → my-keybindings.el
 * mardown fence code eval via org-babel
@@ -768,29 +716,14 @@
 
 
 ;;; MIGRATED: js->json → my-utils.el
-
-** html to hiccup
-
 ;;; MIGRATED: html->hiccup → my-utils.el
-
-* org-mode modifications
-
-** add support for special links
-
 ;;; MIGRATED: (require 'ol-eww) → my-org.el
-
-** add timestamps to source blocks
 ;;; DROPPED: duplicate of org-babel-execute-src-block timestamp advice — already migrated
 ;;;           from "timestamps in org babel code blocks" section above → my-org.el
-* editing utils
-
-** widget utils
 ;;; MIGRATED: jsonl-record-editor, edit-jsonl-record (widget-based JSON editor) → my-utils.el
-
-** single-line utils
 ;;; MIGRATED: single-lineify, de-single-lineify → my-utils.el
 
-* get the best enclosed string
+** add support for special links
 
   #+begin_src emacs-lisp :eval never
     (defun zotero-open-at-point ()
