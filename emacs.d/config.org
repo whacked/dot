@@ -39,7 +39,6 @@
 
    dash
    deadgrep
-   deft
    diff-hl
    dirtree
    duplicate-thing  ;; provides duplicate-thing (e.g. duplicate a line)
@@ -520,19 +519,6 @@
           '(define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation)))
 
     #+END_SRC
-
-* deft
-
-  #+BEGIN_SRC emacs-lisp
-    ;; in case useful: http://jblevins.org/projects/deft/
-    ;; Deft is an Emacs mode for quickly browsing, filtering, and editing directories of plain text notes, inspired by Notational Velocity.
-    (setq deft-extensions '("org" "tid")
-          deft-directory CLOUDSYNC-NOTE-DIR
-          deft-text-mode 'org-mode
-          deft-recursive t
-          deft-use-filename-as-title t
-          deft-ignore-file-regexp "\\$.+") ;; for ignoring special tiddlers
-  #+END_SRC
 
 ;;; DROPPED: custom faces (table-cell, table-cell-face) — duplicated in custom.el
 
