@@ -178,44 +178,9 @@
 ** org mode
 ;;; MIGRATED: org keybindings (C-cl, C-ca, M-_, M-+, f9, display-time) → my-org.el
 
- #+BEGIN_SRC emacs-lisp
-   ;; force org-babel src edit to use same window instead of splitting
-   (setq org-src-window-setup 'current-window)
-   (require 'jupyter)
-   (org-babel-do-load-languages
-    'org-babel-load-languages
-    '((R . t)
-      (python . t)
-      (ledger . t)
-      (jupyter . t)  ;; emacs-jupyter
-      (C . t)
-      (lua . t)
-      (gnuplot . t)
-      (emacs-lisp . t)
-      (ruby . t)
-      (shell . t)
-      (clojure . t)
-      (lisp . t)
-      (haskell . t)
-      (dot . t)
-      (perl . t)
-      ;; (matlab . t)
-      (octave . t)
-      (org . t)
-      (latex . t)
-      (ditaa . t)
-      (go . t)
-      (sqlite . t)
-      ))
-
-   (defun ansi-unansify (beg end)
-     "to help fix ansi- control sequences in babel-sh output"
-     (interactive (list (point) (mark)))
-     (unless (and beg end)
-       (error "The mark is not set now, so there is no region"))
-     (insert (ansi-color-filter-apply (filter-buffer-substring beg end t))))
-
- #+END_SRC
+;;; MIGRATED: org-src-window-setup 'current-window → my-org.el (setq block)
+;;; MIGRATED: org-babel-do-load-languages → my-org.el (gnuplot + go removed)
+;;; MIGRATED: ansi-unansify → my-utils.el
 
 ;;; MIGRATED: (require 'org-mouse) → my-org.el
 ;;; MIGRATED: org-capture config (org-directory, org-capture-templates, C-c c) → my-org.el

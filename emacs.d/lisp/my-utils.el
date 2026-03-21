@@ -488,5 +488,15 @@
                 (ov-set (ov-line $p) 'face '(:foreground "red")))
               $same-as-previous-line)))))
 
+;;; ansi-unansify — strip ANSI escape sequences from a region
+
+(defun ansi-unansify (beg end)
+  "Strip ANSI control sequences from region BEG to END, replacing it with clean text.
+Useful for cleaning up org-babel shell output that contains colour codes."
+  (interactive (list (point) (mark)))
+  (unless (and beg end)
+    (error "The mark is not set now, so there is no region"))
+  (insert (ansi-color-filter-apply (filter-buffer-substring beg end t))))
+
 (provide 'my-utils)
 ;;; my-utils.el ends here

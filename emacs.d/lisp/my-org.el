@@ -248,11 +248,40 @@
                                    ;; org-drill
                                    org-docview))
       org-src-fontify-natively t
+      org-src-window-setup 'current-window
       org-startup-folded (quote showeverything)
       org-ellipsis "⤵"
       ;; FIXME this probably doesn't work as expected
       org-startup-folded nil
       org-export-coding-system 'utf-8)
+
+;;; org-babel language support
+
+;; jupyter must be loaded before org-babel-do-load-languages so that
+;; ob-jupyter registers itself and the (jupyter . t) entry works.
+(require 'jupyter)
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((R          . t)
+   (python     . t)
+   (ledger     . t)
+   (jupyter    . t)
+   (C          . t)
+   (lua        . t)
+   (emacs-lisp . t)
+   (ruby       . t)
+   (shell      . t)
+   (clojure    . t)
+   (lisp       . t)
+   (haskell    . t)
+   (dot        . t)
+   (perl       . t)
+   ;; (matlab  . t)  ; uncomment if using MATLAB instead of Octave
+   (octave     . t)
+   (org        . t)
+   (latex      . t)
+   (ditaa      . t)
+   (sqlite     . t)))
 
 ;; ref https://zzamboni.org/post/beautifying-org-mode-in-emacs/
 (when window-system
