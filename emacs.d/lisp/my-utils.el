@@ -3,10 +3,7 @@
 ;; Misc interactive commands collected from util.el and config.org inline
 ;; sections.  Larger subsystems (org, completion) have dedicated modules.
 ;;
-;; Note: several functions here use old cl macros (lexical-let*, function*)
-;; that have byte-compiler issues in lexical-binding mode but work at runtime.
-
-(require 'cl)
+(require 'cl-lib)
 
 ;;; Text manipulation utilities
 
@@ -244,7 +241,7 @@
 
   (setq record-editor--buffer (json-read-from-string source-json))
   (mapcar (lambda (pair)
-            (lexical-let* ((key (car pair))
+            (let* ((key (car pair))
                            (value (cdr pair))
                            (emacs-value-type (type-of value))
                            (json-value-type (cond ((eq emacs-value-type 'hash-table) 'object)
@@ -346,7 +343,7 @@
     (widget-insert " Thus\n\nSelect one:\n\n"))
 
   (widget-insert "\n")
-  (lexical-let* ((source-json source-json)
+  (let* ((source-json source-json)
                  (callback callback)
                  (on-submit (lambda (&rest ignore)
                               (interactive)
@@ -373,7 +370,7 @@
   "Create the widgets from the Widget manual."
   (interactive)
   (save-excursion
-    (lexical-let* ((current-position (point))  ;; save-excursion not working as I thought it would
+    (let* ((current-position (point))  ;; save-excursion not working as I thought it would
                    (beg (progn
                           (beginning-of-line)
                           (point)))

@@ -3,11 +3,7 @@
 ;; Covers: org bootstrap, org-logseq, org keybindings, org-capture,
 ;; org-conf, org faces, and org utility functions.
 ;;
-;; Note: org-resolve-citation and org-resolve-isbn use old cl macros
-;; (lexical-let*, function*, destructuring-bind) that have byte-compiler
-;; issues in lexical-binding mode but work at runtime.
-
-(require 'cl)
+(require 'cl-lib)
 
 ;;; Org bootstrap
 ;;
@@ -404,12 +400,12 @@
       ;; Content-Type: application/json
       :headers '(("Content-Type" . "application/json"))
       ;; Citations must contain at least three words, those with less will not match. Citations with a low match score will be returned without a potential match. Here's a sample response:
-      :success (function*
+      :success (cl-function
                 (lambda (&key data &allow-other-keys)
                   (insert (format "%s" data))))))
 
 
-    (destructuring-bind (key-to-retrieve postproc-fn query-string)
+    (cl-destructuring-bind (key-to-retrieve postproc-fn query-string)
         (cond ((string-match re-doi input-query-string)
                (list 'title ;; 'fullCitation
                      (lambda (ttl) (concat "/" ttl "/"))
@@ -428,9 +424,9 @@
                (list 'doi 'sconvert--dxdoi-to-org input-query-string)))
 
       ;; need to re-bind into lexical scope
-      (lexical-let* ((k2r key-to-retrieve)
+      (let* ((k2r key-to-retrieve)
                      (pfn postproc-fn)
-                     (postfunc (function*
+                     (postfunc (cl-function
                                 (lambda (&key data &allow-other-keys)
                                   ;; (message (format "%s" k2r))
                                   (deactivate-mark)
@@ -459,7 +455,7 @@
                      (buffer-substring (region-beginning) (region-end)))
                     (t
                      (read-string (format "search string: ") nil nil nil)))))
-    (lexical-let* ((query-string input-query-string))
+    (let* ((query-string input-query-string))
       ;; (concat WORLDCAT-BASE-URL
       ;;         (request--urlencode-alist
       ;;          `(("q" . ,query-string) ("count" . "1") ("wskey" . ,WORLDCAT-API-KEY))))
@@ -469,7 +465,7 @@
                 `(("q" . ,query-string) ("count" . "1") ("wskey" . ,WORLDCAT-API-KEY))))
        :type "GET"
        :parser (lambda () (libxml-parse-xml-region (point) (point-max)))
-       :success (function*
+       :success (cl-function
                  (lambda (&key data &allow-other-keys)
                    (let ((get (lambda (node &rest names)
                                 (if names
