@@ -472,8 +472,9 @@ Prints key bindings as a reminder during transition from undo-tree."
 (use-package request
   :defer t)
 
-;;; simple-httpd + skewer-mode — JS live REPL (commented out; low active use)
-;; (use-package simple-httpd :defer t)
+;; required by jupyter-widget-client
+(use-package simple-httpd :defer t)
+;; skewer-mode — JS live REPL (commented out; low active use)
 ;; (use-package skewer-mode  :defer t)
 
 ;;; slime — Common Lisp development environment

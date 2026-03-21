@@ -257,15 +257,11 @@
 
 ;;; org-babel language support
 
-;; jupyter must be loaded before org-babel-do-load-languages so that
-;; ob-jupyter registers itself and the (jupyter . t) entry works.
-(require 'jupyter)
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((R          . t)
    (python     . t)
-   (ledger     . t)
-   (jupyter    . t)
+   ;; (ledger  . t)  ; needs ledger-mode package (not installed)
    (C          . t)
    (lua        . t)
    (emacs-lisp . t)
@@ -282,6 +278,15 @@
    (latex      . t)
    (ditaa      . t)
    (sqlite     . t)))
+
+;; Register ob-jupyter lazily — jupyter has heavy deps (zmq, websocket,
+;; jupyter-server) that fail if kernel infrastructure isn't ready at startup.
+;; Once jupyter loads (e.g. when you first use M-x jupyter-run-repl), its
+;; babel backend is appended to the active languages list.
+(with-eval-after-load 'jupyter
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   (append org-babel-load-languages '((jupyter . t)))))
 
 ;; ref https://zzamboni.org/post/beautifying-org-mode-in-emacs/
 (when window-system
