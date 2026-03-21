@@ -542,24 +542,25 @@
 
 * assorted fix
 
-** freeze on yank
-
-   http://ergoemacs.org/misc/emacs_bug_cant_paste_2015.html
-
-   =(setq x-selection-timeout 300)=
-
 ** org mode CJK table alignment
+
+TODO
+
+      this is STILL an issue
+
+https://emacs.stackexchange.com/questions/48586/align-columns-in-org-mode-with-korean-letters
+
+| English word      | Korean word | Memorized? |
+|-------------------+-------------+------------|
+| friend            | 친구        | yes        |
+| to eat            | 먹다        | yes        |
+| this row          | is just     | English    |
+| to bring with you | 가지고 가다 | no         |
 
    see http://coldnew.github.io/blog/2013/11-16_d2f3a/ 解決 org-mode 表格內中英文對齊的問題
 
 ;;; MIGRATED: emacs-cjk-font, emacs-font-size-pair, emacs-font-size-pair-list vars → my-ui.el
 ;;; MIGRATED: set-font function → my-ui.el
-
-   #+BEGIN_SRC emacs-lisp
-     ;; Setup font size based on emacs-font-size-pair
-     ;; (set-font emacs-english-font emacs-cjk-font emacs-font-size-pair)
-   #+END_SRC
-
 * colorizations
 
   #+begin_src emacs-lisp
