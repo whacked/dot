@@ -212,24 +212,50 @@
 
 ;;; Timestamps in org babel code blocks
 ;; https://emacs.stackexchange.com/a/35904
+;;
+;; Custom :timestamp header arg.  Usage:
+;;
+;;   #+NAME: my-block
+;;   #+BEGIN_SRC shell :results output :timestamp t :cache yes
+;;   date
+;;   #+END_SRC
+;;
+;;   #+RESULTS[2020-07-12 08:25:45 PM]: my-block
+;;   : Sun 12 Jul 2020 08:25:51 PM PDT
+;;
+;; After execution, replaces the standard content-hash in #+RESULTS[hash]:
+;; with a human-readable timestamp.  Requires both :timestamp t and #+NAME:.
+;;
+;; Note: this intentionally disables :cache — once the hash is replaced by a
+;; timestamp, the cache check always mismatches and the block always re-runs.
+;; Blocks without :timestamp t are unaffected.
+;;
+;; Implementation note: uses :around advice (not :after) so block info is
+;; captured before org-babel moves point to insert results.
 
-(defadvice org-babel-execute-src-block (after org-babel-record-execute-timestamp)
-  (let ((code-block-params (nth 2 (org-babel-get-src-block-info)))
-        (code-block-name (nth 4 (org-babel-get-src-block-info))))
-    (let ((timestamp (cdr (assoc :timestamp code-block-params)))
-          (result-params (assoc :result-params code-block-params)))
-      (if (and (equal timestamp "t") (> (length code-block-name) 0))
-          (save-excursion
-            (search-forward-regexp (concat "#\\+RESULTS\\(\\[.*\\]\\)?: "
-                                           code-block-name))
+(defun my-org-babel-timestamp-around (orig-fun &rest args)
+  "Around advice: replace #+RESULTS[hash] with a timestamp when :timestamp t.
+Block info is captured before execution (while point is still at the src block)
+so it remains available after org-babel moves point to insert results."
+  (let* ((info   (or (cadr args) (org-babel-get-src-block-info)))
+         (params (nth 2 info))
+         (name   (nth 4 info))
+         (timestamp (cdr (assoc :timestamp params))))
+    (apply orig-fun args)
+    (if (and (equal timestamp "t") (> (length (or name "")) 0))
+        (save-excursion
+          (goto-char (point-min))
+          (when (re-search-forward
+                 (concat "#\\+RESULTS\\(\\[.*\\]\\)?: " (regexp-quote name))
+                 nil t)
             (beginning-of-line)
             (search-forward "RESULTS")
             (kill-line)
-            (insert (concat (format-time-string "[%F %r]: ") code-block-name)))
-        (if (equal timestamp "t")
-            (message (concat "Result timestamping requires a #+NAME: "
-                             "and a ':results output' argument.")))))))
-(ad-activate 'org-babel-execute-src-block)
+            (insert (format-time-string (concat "[%F %r]: " name)))))
+      (when (equal timestamp "t")
+        (message "org-babel :timestamp t requires a #+NAME:")))))
+
+(advice-add 'org-babel-execute-src-block :around #'my-org-babel-timestamp-around)
 
 ;;; org-mode conf
 ;; ref https://zzamboni.org/post/beautifying-org-mode-in-emacs/

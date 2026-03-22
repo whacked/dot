@@ -175,26 +175,6 @@
 ;;; MIGRATED: org-capture config (org-directory, org-capture-templates, C-c c) → my-org.el
 ;;; MIGRATED: org-babel-execute-src-block timestamp defadvice → my-org.el
 
-#+BEGIN_EXAMPLE
-  ,#+NAME: test-no-timestamp
-  ,#+BEGIN_SRC sh :results output :cache yes
-  echo "This ones doesn't have the right args for timestamping $(date)"
-  ,#+END_SRC
-
-  ,#+RESULTS[fb30d36ed14e5d85deb704ca333e08b83897bfe4]: test-no-timestamp
-  : This ones doesn't have the right args for timestamping Sun 12 Jul 2020 08:25:51 PM PDT
-
-  note that the :cache parameter gets overridden
-
-  ,#+NAME: test-timestamp
-  ,#+BEGIN_SRC shell :results output :timestamp t :cache yes
-  echo "This one should have a timestamp. Run me again, I update."
-  ,#+END_SRC
-
-  ,#+RESULTS[2020-07-12 08:25:45 PM]: test-timestamp
-  : This one should have a timestamp. Run me again, I update.
-#+END_EXAMPLE
-
 ** org-mode conf
 ;;; MIGRATED: org-mode conf setq block + org-level faces → my-org.el
 
