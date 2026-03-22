@@ -248,9 +248,17 @@
 ;; (use-package sibilant-mode) ; barely used
 
 ;;; obsidian.el — Obsidian vault interop
-;; TODO: reevaluate whether necessary
 (use-package obsidian
-  :demand t
+  ;; :demand t removed — use :commands so neither the package code nor the vault
+  ;; scan block startup.  The package loads on first command invocation or when
+  ;; the idle timer fires (whichever comes first).
+  ;; :demand t
+  :commands (my-obsidian-activate
+             obsidian-follow-link-at-point
+             obsidian-backlink-jump
+             obsidian-capture
+             obsidian-insert-wikilink
+             obsidian-jump)
   :custom
   ;; This directory will be used for `obsidian-capture' if set.
   (obsidian-directory my-cloudsync-note-dir)
