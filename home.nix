@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 let
   /**
@@ -10,7 +10,7 @@ let
     else ./user-config.nix)
   );
 
-  myConfig = (import ~/setup/nix/config.nix) { inherit pkgs; };
+  myConfig = (import ~/setup/nix/config.nix) { inherit pkgs inputs; };
   userHomeDirectory = if builtins.hasAttr "homeDirectory" userConfig
     then userConfig.homeDirectory
     else "/home/${userConfig.username}";
