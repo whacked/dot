@@ -16,4 +16,9 @@
     userName = "git-user-name";
     userEmail = "gituser@users.noreply.example.com";
   };
+
+  tags = [
+    # list of strings to select what set of packages to load;
+    # refer to tagMap in ~/setup/nix/config.nix
+  ];
 }
