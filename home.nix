@@ -38,7 +38,11 @@ in {
   home.stateVersion = "24.05";
 
   home.packages = [
+    # note: we are NOT doing the programs.zsh as suggested elsewhere
+    # in order to use makeSymlink to symlink dotfiles from ~/dot into
+    # the home-manager generated store, so that we can quickly edit
     pkgs.zsh
+    pkgs.oh-my-zsh
   ]
   ++ myConfig.includeDefaultPackages
   ++ (if (userConfig.includeUnfree or false) then
@@ -51,16 +55,7 @@ in {
   ]
   ;
 
-  programs.zsh = {
-    enable = true;
-    # this is overridden by .zshrc symlink
-    # plugins = [ ];
-    oh-my-zsh = {
-      enable = true;
-    };
-  };
-
-  programs.rofi = {
+  programs.rofi = lib.mkIf pkgs.stdenv.isLinux {
     enable = true;
     package = pkgs.rofi;
     plugins = [ pkgs.rofi-calc ];
@@ -78,13 +73,17 @@ in {
   home.username = userConfig.username;
   home.homeDirectory = userHomeDirectory;
   home.sessionVariables = {
-    ZSH_PLUGINS_SOURCES = lib.concatStringsSep " " [
-      (pkgs.callPackage (import (/. + builtins.toPath "${userHomeDirectory}/setup/nix/pkgs/shells/zsh-histdb/default.nix")) {})
+    # oh-my-zsh: zshrc does `: ${ZSH:=~/.oh-my-zsh}` so pre-setting ZSH here
+    # points it at the nix store without changing the zshrc.
+    ZSH = "${pkgs.oh-my-zsh}/share/oh-my-zsh";
 
-      # "${pkgs.zsh-autocomplete}/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh"
+    # zsh plugins sourced by zshrc's ZSH_PLUGINS_SOURCES loop.
+    # zsh-autocomplete omitted (conflicts with fzf/atuin completion).
+    ZSH_PLUGINS_SOURCES = lib.concatStringsSep " " [
+      "${pkgs.zsh-histdb}/share/zsh-histdb/sqlite-history.zsh"
       "${pkgs.zsh-you-should-use}/share/zsh/plugins/you-should-use/you-should-use.plugin.zsh"
       "${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
-      "${pkgs.zsh-fast-syntax-highlighting}/share/zsh/site-functions/fast-syntax-highlighting.plugin.zsh"
+      "${pkgs.zsh-fast-syntax-highlighting}/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
     ];
   } // (
     lib.optionalAttrs pkgs.stdenv.isLinux
@@ -138,6 +137,7 @@ in {
     ".Rprofile".source = makeSymlink "Rprofile";
     ".vim".source = makeSymlink "vim";
     ".vimrc".source = makeSymlink "vimrc";
+    ".zshenv".source = makeSymlink "zshenv";
     ".zshrc".source = makeSymlink "zshrc";
 
     # haven't used these in a long time
