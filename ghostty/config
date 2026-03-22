@@ -11,6 +11,8 @@ quick-terminal-animation-duration = 0.1
 # disable most ligatures
 font-feature = -calt
 
+font-family = Hack Nerd Font Mono
+
 # make ctrl-[ behave like esc
 keybind = ctrl+[=text:\x1b
 
