@@ -16,9 +16,9 @@ let
     else "/home/${userConfig.username}";
 
   makeSubstitutedFile = { srcName, substitutions }:
-    pkgs.substituteAll ({
-      src = /. + builtins.toPath "${userHomeDirectory}/dot/${srcName}";
-    } // substitutions);
+    pkgs.replaceVars
+      (/. + builtins.toPath "${userHomeDirectory}/dot/${srcName}")
+      substitutions;
 
   makeSymlink = srcName:
     config.lib.file.mkOutOfStoreSymlink (/. + builtins.toPath "${userHomeDirectory}/dot/${srcName}");
@@ -66,7 +66,7 @@ in {
     plugins = [ pkgs.rofi-calc ];
   };
 
-  i18n.inputMethod = {
+  i18n.inputMethod = lib.mkIf pkgs.stdenv.isLinux {
     enabled = "fcitx5";
     fcitx5.addons = with pkgs; [
       fcitx5-chewing
@@ -115,7 +115,6 @@ in {
   home.file = {
 
     ".bashrc".source = makeSymlink "bashrc";
-    ".config/fcitx5".source = makeSymlink "fcitx5";
     ".config/kitty/kitty.conf".source = makeSubstitutedFile {
       srcName = "kitty.conf";
       substitutions = {
@@ -148,6 +147,7 @@ in {
   } // (
     lib.optionalAttrs pkgs.stdenv.isLinux
     {
+      ".config/fcitx5".source = makeSymlink "fcitx5";
       ".icons/default".source = "${pkgs.vanilla-dmz}/share/icons/Vanilla-DMZ";
       ".config/i3/config".source = makeSymlink "i3/config";
     }
