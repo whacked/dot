@@ -3,17 +3,18 @@ if [ ! -e $STATIC_MOUNT_POINT ]; then
     mkdir -p $STATIC_MOUNT_POINT
 fi
 
-BLOCK_DEVICE=/dev/mmcblk0p1
+# BLOCK_DEVICE=/dev/mmcblk0p1  # xps-7390 microsd reader
+BLOCK_DEVICE=/dev/sdb1
 if ! $(sudo cryptsetup isLuks $BLOCK_DEVICE 2>/dev/null); then
     echo "ERROR: sdcard is not a luks volume"
     exit
 fi
 
-if [ $(lsblk /dev/mmcblk0 | grep crypt | wc -l) -gt 0 ]; then
+if [ $(lsblk ${BLOCK_DEVICE%1} | grep crypt | wc -l) -gt 0 ]; then
     echo "luks appears to be already opened"
 else
     echo "opening luks volume..."
-    sudo cryptsetup open /dev/mmcblk0p1 sdcard-cryptlvm
+    sudo cryptsetup open $BLOCK_DEVICE sdcard-cryptlvm
 fi
 
 if [ $(mount | grep $STATIC_MOUNT_POINT | wc -l) -gt 0 ]; then
