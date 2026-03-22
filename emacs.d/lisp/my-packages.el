@@ -306,7 +306,9 @@ Called automatically after 10 min idle; invoke manually via M-x if needed sooner
 ;;; dirvish — modern dired replacement (supersedes dired+)
 
 (use-package dirvish
-  :config (dirvish-override-dired-mode))
+  :config
+  (dirvish-override-dired-mode)
+  (setq dirvish-attributes '(vc-state subtree-state all-the-icons collapse file-size)))
 
 ;;; dumb-jump — zero-config xref backend (grep-based M-. fallback)
 
@@ -677,6 +679,18 @@ Prints key bindings as a reminder during transition from undo-tree."
 ;;                                   (number-to-string page) ")\n\n")))))
 ;;        annots)
 ;;       output)))
+
+;;; xterm-mouse — enable mouse in terminal Emacs
+
+(unless (display-graphic-p)
+  (xterm-mouse-mode 1))
+
+;;; agent-shell — AI shell with system package manager integration
+
+(use-package agent-shell
+  :ensure-system-package
+  ((claude       . "brew install claude-code")
+   (claude-agent-acp . "npm install -g @zed-industries/claude-agent-acp")))
 
 (provide 'my-packages)
 ;;; my-packages.el ends here

@@ -518,5 +518,84 @@ Recognises [zotero:KEY] and [...](zotero:KEY) link forms."
         (zotero-query (substring key 7))
       (message "no zotero link found at point"))))
 
+;;; log-delta-prefix — show Δt between consecutive log lines as overlays
+;;
+;; Usage: M-x log-delta-prefix-mode in any log buffer with ISO-8601 timestamps.
+;; Shows elapsed seconds since previous timestamped line as a prefix overlay.
+;; M-x log-delta-prefix-refresh to recompute after pasting new content.
+
+(defcustom log-delta-prefix-timestamp-regexp
+  ;; matches: 2025-10-02 05:37:07.522
+  "\\([0-9]\\{4\\}-[0-9][0-9]-[0-9][0-9]\\) \\([0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\)\\(?:\\.\\([0-9][0-9][0-9]\\)\\)?"
+  "Regexp capturing date, time, and optional milliseconds."
+  :type 'regexp
+  :group 'tools)
+
+(defface log-delta-prefix-face
+  '((t :inherit shadow :weight bold))
+  "Face for Δt prefix."
+  :group 'tools)
+
+(defvar-local log-delta-prefix--overlays nil)
+
+(defun log-delta-prefix--parse-epoch ()
+  "Return epoch seconds (float) for timestamp at point, or nil."
+  (when (re-search-forward log-delta-prefix-timestamp-regexp (line-end-position) t)
+    (let* ((date (match-string 1))
+           (time (match-string 2))
+           (ms   (or (match-string 3) "000"))
+           (pt   (parse-time-string (concat date " " time)))
+           (sec  (float-time (apply #'encode-time
+                                    (list (nth 0 pt) (nth 1 pt) (nth 2 pt)
+                                          (nth 3 pt) (nth 4 pt) (nth 5 pt) nil)))))
+      (+ sec (/ (string-to-number ms) 1000.0)))))
+
+(defun log-delta-prefix--clear ()
+  (mapc #'delete-overlay log-delta-prefix--overlays)
+  (setq log-delta-prefix--overlays nil))
+
+(defun log-delta-prefix-refresh ()
+  "Recompute Δt overlays for the whole buffer."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (log-delta-prefix--clear)
+      (goto-char (point-min))
+      (let ((prev-epoch nil))
+        (while (< (point) (point-max))
+          (let ((bol (line-beginning-position))
+                (epoch nil))
+            (save-excursion
+              (goto-char bol)
+              (setq epoch (log-delta-prefix--parse-epoch)))
+            (when epoch
+              (let* ((delta (if prev-epoch (- epoch prev-epoch) 0.0))
+                     (ov (make-overlay bol bol)))
+                (overlay-put ov 'before-string
+                             (propertize (format "%8.3f  " delta) 'face 'log-delta-prefix-face))
+                (push ov log-delta-prefix--overlays))
+              (setq prev-epoch epoch)))
+          (forward-line 1))))))
+
+(defun log-delta-prefix--after-change (_beg _end _len)
+  (when log-delta-prefix-mode
+    (run-with-idle-timer 0.2 nil (lambda (buf)
+                                   (when (buffer-live-p buf)
+                                     (with-current-buffer buf
+                                       (when log-delta-prefix-mode
+                                         (log-delta-prefix-refresh)))))
+                         (current-buffer))))
+
+(define-minor-mode log-delta-prefix-mode
+  "Show Δt (seconds) before each timestamped log line using overlays."
+  :lighter " Δt"
+  (if log-delta-prefix-mode
+      (progn
+        (add-hook 'after-change-functions #'log-delta-prefix--after-change nil t)
+        (log-delta-prefix-refresh))
+    (remove-hook 'after-change-functions #'log-delta-prefix--after-change t)
+    (log-delta-prefix--clear)))
+
 (provide 'my-utils)
 ;;; my-utils.el ends here
