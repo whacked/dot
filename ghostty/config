@@ -1,0 +1,22 @@
+theme = Solarized Dark Higher Contrast
+
+background-opacity = 0.9
+cursor-opacity = 0.8
+macos-option-as-alt = true
+
+# quake terminal
+keybind = global:option+`=toggle_quick_terminal
+quick-terminal-animation-duration = 0.1
+
+# disable most ligatures
+font-feature = -calt
+
+# make ctrl-[ behave like esc
+keybind = ctrl+[=text:\x1b
+
+cursor-style = block
+adjust-cursor-thickness = 2
+keybind = shift+enter=text:\n
+
+# ~100mb per terminal
+scrollback-limit = 100000000

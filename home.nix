@@ -114,6 +114,7 @@ in {
   home.file = {
 
     ".bashrc".source = makeSymlink "bashrc";
+    ".config/ghostty/config".source = makeSymlink "ghostty/config";
     ".config/kitty/kitty.conf".source = makeSubstitutedFile {
       srcName = "kitty.conf";
       substitutions = {
