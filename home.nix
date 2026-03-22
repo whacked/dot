@@ -62,7 +62,8 @@ in {
   };
 
   i18n.inputMethod = lib.mkIf pkgs.stdenv.isLinux {
-    enabled = "fcitx5";
+    type = "fcitx5";
+    enable = true;
     fcitx5.addons = with pkgs; [
       fcitx5-chewing
       fcitx5-mozc
