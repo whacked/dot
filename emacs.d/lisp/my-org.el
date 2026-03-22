@@ -350,6 +350,20 @@ so it remains available after org-babel moves point to insert results."
 
 (require 'ol-eww)  ;; [[eww:...]]
 
+;; [[isbn:0262011530]] — search DuckDuckGo for Amazon listing
+(defun org-isbn-open (isbn _)
+  (browse-url (concat "https://duckduckgo.com/?q=%5C"
+                      "amazon+isbn+"
+                      isbn)))
+(org-link-set-parameters "isbn" :follow #'org-isbn-open)
+
+;; [[pmid:12345678]] — open PubMed entry
+(defun org-pmid-open (pmid _)
+  (browse-url (concat "https://www.ncbi.nlm.nih.gov/pubmed/" pmid)))
+(org-link-set-parameters "pmid" :follow #'org-pmid-open)
+;; Note: oclc link type from org-hyperlink-citation.el was dropped —
+;; the xISBN/xOCLN WorldCat web service was discontinued in 2018.
+
 ;;; org screenshot
 ;; ref: http://emacsworld.blogspot.com/2011/05/automatic-screenshot-insertion-in-org.html
 
