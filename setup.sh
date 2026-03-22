@@ -22,96 +22,46 @@ if type nix-channel &> /dev/null; then
     echo "prepare home-manager by running 'home-manager switch'"
 fi
 
-# DOTFILES --------------------------------------------------------------
-for DOTFILENAME in emacs.d emacs.d/gnus.el gitconfig vimrc vim tmux.conf bashrc Rprofile zshrc zsh boot.profile lein subversion; do
-    echo [[ processing ]] $DOTFILENAME...
+# Dotfile symlinking is handled by home-manager (home.nix).
 
-    case $DOTFILENAME in
-        *gnus.el)
-            DOTTARGET=~/.gnus.el
-            ;;
-
-        *)
-            DOTTARGET=~/.$DOTFILENAME
-            ;;
-    esac
-
-    if [ -e $DOTTARGET ] && [ ! -h $DOTTARGET ]; then
-        BAK=~/$DOTFILENAME.`date +%F`
-        echo -e "moving: .$DOTFILENAME\\t->\\t$BAK"
-        mv $DOTTARGET $BAK
-    fi
-
-    if [ ! -e $DOTTARGET ]; then
-        DOTSOURCE=~/dot/$DOTFILENAME
-        echo symlinking $DOTSOURCE to $DOTTARGET...
-        if [ ! -e $DOTSOURCE ]; then
-            echo "WARN: $DOTSOURCE does not exist; assuming it should be a directory"
-            mkdir $DOTSOURCE
-        fi
-        ln -sf $DOTSOURCE $DOTTARGET
-    fi
-done
-
-# ZSH -------------------------------------------------------------------
-if [ `command -v zsh | wc -l` -ge 1 ]; then
-    echo "setting up ZSH..."
-
-    if [ "x$USERCACHE" != "x" ] && [ -e $USERCACHE ]; then
-        echo installing zsh-histdb into user cache...
-        _zsh_histdb_source_path=$(nix-instantiate --eval -E 'with import <nixpkgs> {}; (callPackage (import ~/setup/nix/pkgs/shells/zsh-histdb/default.nix) {}).outPath' | tr -d '"')
-        if [ "x$_zsh_histdb_source_path" != "x" ]; then
-            echo found zsh-histdb in $_zsh_histdb_source_path
-            ZSH_PLUGINS_DIR=$USERCACHE/zsh-plugins
-            mkdir -p $ZSH_PLUGINS_DIR
-            ln -sf $_zsh_histdb_source_path $ZSH_PLUGINS_DIR/zsh-histdb
-        else
-            echo "could not find location of zsh-histdb"
-        fi
-    else
-        echo 'no usercache available'
-    fi
-else
-    echo ... zsh not installed
-fi
-
-# submodule command sample
-# git submodule add http://github.com/scrooloose/nerdtree.git .vim/bundle/nerdtree
-echo "syncing git submodules..."
-pushd $_SCRIPT_DIRECTORY >/dev/null
-    git submodule init && git submodule update
-popd >/dev/null
 
 # ZOTERO ----------------------------------------------------------------
-# start zotero once to generate the profile directory
-ZOTEROHOME=$HOME/.zotero/zotero
-ZOTEROINI=$ZOTEROHOME/profiles.ini
-ZOTERO_DATA_DIR=$CLOUDSYNC/main/appdata/Zotero
+if [[ "$OSTYPE" == "linux"* ]] && type zotero &> /dev/null; then
+    # start zotero once to generate the profile directory
+    ZOTEROHOME=$HOME/.zotero/zotero
+    ZOTEROINI=$ZOTEROHOME/profiles.ini
+    ZOTERO_DATA_DIR=$CLOUDSYNC/main/appdata/Zotero
 
-# modify user.js in the profile directory to override
-# the dataDir setting to a custom storage directory.
-# Zotero will read the setting from user.js and write
-# it back into prefs.js
-ZOTERO_FAILED_TESTS=()
-if [ ! -e $ZOTEROINI ]; then
-    ZOTERO_FAILED_TESTS+=(ini-not-exist)
-else
-    ZOTERO_PROFILE0=$(crudini --get $ZOTEROHOME/profiles.ini Profile0 Path)
-    if [ "x$ZOTERO_PROFILE0" != "x" ]; then
-        ZOTERO_PROFILEDIR=$(crudini --get $ZOTEROHOME/profiles.ini Profile0 path)
+    # modify user.js in the profile directory to override
+    # the dataDir setting to a custom storage directory.
+    # Zotero will read the setting from user.js and write
+    # it back into prefs.js
+    ZOTERO_FAILED_TESTS=()
+    if [ ! -e $ZOTEROINI ]; then
+        ZOTERO_FAILED_TESTS+=(ini-not-exist)
+    else
+        ZOTERO_PROFILE0=$(crudini --get $ZOTEROHOME/profiles.ini Profile0 Path)
+        if [ "x$ZOTERO_PROFILE0" != "x" ]; then
+            ZOTERO_PROFILEDIR=$(crudini --get $ZOTEROHOME/profiles.ini Profile0 path)
+        fi
     fi
-fi
-[ "x$ZOTERO_PROFILEDIR" == "x" ] && ZOTERO_FAILED_TESTS+=(no-profile-dir)
-[ ! -e $ZOTEROHOME/$ZOTERO_PROFILEDIR ] && ZOTERO_FAILED_TESTS+=(profile-dir-not-exist)
-[ ! -e $ZOTERO_DATA_DIR ] && ZOTERO_FAILED_TESTS+=(data-dir-not-exist)
-if [ ${#ZOTERO_FAILED_TESTS[@]} -gt 0 ]; then
-    echo "- ZOTERO failed tests: ${ZOTERO_FAILED_TESTS[@]}"
-else
-    echo "UPDATING Zotero profile settings at $ZOTEROHOME/$ZOTERO_PROFILEDIR/user.js"
-    echo 'user_pref("extensions.zotero.dataDir", "'$ZOTERO_DATA_DIR'");' | tee $ZOTEROHOME/$ZOTERO_PROFILEDIR/user.js
-# GNUS ------------------------------------------------------------------
-GNUS_DATA_DIR=$CLOUDSYNC/main/appdata/Gnus
-if [ ! -e $GNUS_DATA_DIR ]; then
-    echo "creating Gnus directories at $GNUS_DATA_DIR"
-    mkdir -p $GNUS_DATA_DIR/{News,Mail}
+    [ "x$ZOTERO_PROFILEDIR" == "x" ] && ZOTERO_FAILED_TESTS+=(no-profile-dir)
+    [ ! -e $ZOTEROHOME/$ZOTERO_PROFILEDIR ] && ZOTERO_FAILED_TESTS+=(profile-dir-not-exist)
+    [ ! -e $ZOTERO_DATA_DIR ] && ZOTERO_FAILED_TESTS+=(data-dir-not-exist)
+    if [ ${#ZOTERO_FAILED_TESTS[@]} -gt 0 ]; then
+        echo "- ZOTERO failed tests: ${ZOTERO_FAILED_TESTS[@]}"
+    else
+        echo "UPDATING Zotero profile settings at $ZOTEROHOME/$ZOTERO_PROFILEDIR/user.js"
+        echo 'user_pref("extensions.zotero.dataDir", "'$ZOTERO_DATA_DIR'");' | tee $ZOTEROHOME/$ZOTERO_PROFILEDIR/user.js
+    fi
+fi  # /ZOTERO
+
+if false; then
+    # note if you need the gnus.el symlinked, modify home.nix
+    # GNUS ------------------------------------------------------------------
+    GNUS_DATA_DIR=$CLOUDSYNC/main/appdata/Gnus
+    if [ ! -e $GNUS_DATA_DIR ]; then
+        echo "creating Gnus directories at $GNUS_DATA_DIR"
+        mkdir -p $GNUS_DATA_DIR/{News,Mail}
+    fi
 fi
