@@ -264,7 +264,12 @@ so it remains available after org-babel moves point to insert results."
       org-catch-invisible-edits "show"
       org-agenda-window-setup (quote other-window)
       org-drill-optimal-factor-matrix (quote ((2 (2.6 . 2.6) (2.7 . 2.691)) (1 (2.6 . 4.14) (2.36 . 3.86) (2.1799999999999997 . 3.72) (1.96 . 3.58) (1.7000000000000002 . 3.44) (2.5 . 4.0))))
-      org-file-apps (quote ((auto-mode . emacs) ("\\.mm\\'" . default) ("\\.x?html?\\'" . default) ("\\.xoj\\'" . "xournal %s") ("\\.pdf\\'" . "evince %s")))
+      org-file-apps (quote ((auto-mode . emacs)
+                            ("\\.mm\\'" . default)
+                            ("\\.x?html?\\'" . default)
+                            ("\\.xoj\\'" . "xournal %s")
+                            ("\\.pdf\\'" . "open %s")
+                            ))
       org-modules (quote (org-bbdb org-bibtex org-gnus org-info
                                    ;; deprecate, causes problems now
                                    ;; org-jsinfo
