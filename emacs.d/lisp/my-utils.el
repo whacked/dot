@@ -393,7 +393,7 @@
          (insert rendered-json)
          (goto-char current-position))))))
 
-;;; single-lineify — collapse region to one line and back
+;;; single-lineify -- collapse region to one line and back
 ;; ref https://stackoverflow.com/a/14202425
 
 (defun single-lineify ()
@@ -488,7 +488,7 @@
                 (ov-set (ov-line $p) 'face '(:foreground "red")))
               $same-as-previous-line)))))
 
-;;; ansi-unansify — strip ANSI escape sequences from a region
+;;; ansi-unansify -- strip ANSI escape sequences from a region
 
 (defun ansi-unansify (beg end)
   "Strip ANSI control sequences from region BEG to END, replacing it with clean text.
@@ -498,7 +498,7 @@ Useful for cleaning up org-babel shell output that contains colour codes."
     (error "The mark is not set now, so there is no region"))
   (insert (ansi-color-filter-apply (filter-buffer-substring beg end t))))
 
-;;; zotero-open-at-point — open a Zotero item from a [zotero:...] link at point
+;;; zotero-open-at-point -- open a Zotero item from a [zotero:...] link at point
 ;;
 ;; Recognises [zotero:KEY] (bare) and [...](zotero:KEY) (markdown) link forms.
 ;; Requires zotero-query.el (github:whacked/zotero-query.el).
@@ -518,7 +518,7 @@ Recognises [zotero:KEY] and [...](zotero:KEY) link forms."
         (zotero-query (substring key 7))
       (message "no zotero link found at point"))))
 
-;;; log-delta-prefix — show Δt between consecutive log lines as overlays
+;;; log-delta-prefix -- show Δt between consecutive log lines as overlays
 ;;
 ;; Usage: M-x log-delta-prefix-mode in any log buffer with ISO-8601 timestamps.
 ;; Shows elapsed seconds since previous timestamped line as a prefix overlay.

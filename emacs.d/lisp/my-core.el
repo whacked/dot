@@ -62,16 +62,16 @@ With prefix arg DATE-ONLY, insert date only (YYYY-MM-DD)."
 ;; Emacs 30 ships use-package as a built-in and registers autoloads
 ;; pointing to absolute nix store paths. If any (use-package ...) form fires
 ;; before use-package is fully loaded, that autoload triggers and loads the
-;; nix built-in — which has no :straight keyword and can't find packages.
+;; nix built-in -- which has no :straight keyword and can't find packages.
 ;; Explicitly requiring use-package here loads straight's version first,
 ;; calls (provide 'use-package-core), and prevents the autoload from firing.
 (require 'use-package)
 
 ;; All use-package declarations use straight.el by default.
-;; Do NOT set use-package-always-ensure alongside this — they conflict.
+;; Do NOT set use-package-always-ensure alongside this -- they conflict.
 (setq straight-use-package-by-default t)
 
-;;; org — load straight's org before any package can trigger the built-in
+;;; org -- load straight's org before any package can trigger the built-in
 ;;
 ;; Several packages (htmlize, org-ql, jupyter, org-download, etc.) depend on
 ;; org and will pull in Emacs's built-in org if straight hasn't loaded its
@@ -80,12 +80,12 @@ With prefix arg DATE-ONLY, insert date only (YYYY-MM-DD)."
 ;; are ready, prevents that race.
 (straight-use-package 'org)
 
-;;; exec-path-from-shell — import shell env into GUI Emacs
+;;; exec-path-from-shell -- import shell env into GUI Emacs
 ;;
 ;; GUI Emacs on macOS starts with launchd's minimal environment and does not
 ;; inherit shell exports.  exec-path-from-shell spawns an interactive shell
 ;; once at startup and copies the listed variables (plus PATH/MANPATH by
-;; default) into Emacs.  Skip in terminal Emacs — env is already inherited.
+;; default) into Emacs.  Skip in terminal Emacs -- env is already inherited.
 ;;
 ;; Runs after straight/use-package are ready, but before any code that reads
 ;; the imported vars (CLOUDSYNC, TREESIT_GRAMMAR_DIR).

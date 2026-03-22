@@ -30,17 +30,17 @@
 
 ;;; Global key overrides
 
-;; s-p / s-P — consult navigation (supersede macOS "print" shortcut)
+;; s-p / s-P -- consult navigation (supersede macOS "print" shortcut)
 (global-set-key (kbd "s-p") #'consult-buffer)
 (global-set-key (kbd "s-P") #'consult-mode-command)
 
-;; C-x C-b — ibuffer (replaces list-buffers)
+;; C-x C-b -- ibuffer (replaces list-buffers)
 (global-set-key (kbd "C-x C-b") #'ibuffer)
 
-;; M-o — ace-window (quick window switching)
+;; M-o -- ace-window (quick window switching)
 (global-set-key (kbd "M-o") #'ace-window)
 
-;;; my-keys-minor-mode — overrides that must beat major-mode maps
+;;; my-keys-minor-mode -- overrides that must beat major-mode maps
 ;;
 ;; A thin minor mode so our bindings win even when major modes rebind the
 ;; same keys.  Ref: http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs

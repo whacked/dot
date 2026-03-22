@@ -2,7 +2,7 @@
 
 ;;; Load path
 
-;; Modules live in lisp/ — avoids the load-path=user-emacs-directory warning.
+;; Modules live in lisp/ -- avoids the load-path=user-emacs-directory warning.
 ;; M-. on any (require 'my-*) symbol below navigates to the module file.
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 

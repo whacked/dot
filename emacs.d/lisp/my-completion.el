@@ -3,7 +3,7 @@
 ;; Stack: vertico (minibuffer UI) + consult (search/navigation commands)
 ;;        + marginalia (annotations) + corfu (in-buffer) + orderless (matching)
 
-;;; Vertico — vertical minibuffer completion UI
+;;; Vertico -- vertical minibuffer completion UI
 
 (use-package vertico
   :init
@@ -17,7 +17,7 @@
   ;; Vertico.
   (read-extended-command-predicate #'command-completion-default-include-p))
 
-;;; Consult — search and navigation commands
+;;; Consult -- search and navigation commands
 
 ;; consult-line subsumes swiper; consult-ripgrep subsumes counsel-rg.
 (use-package consult
@@ -30,12 +30,12 @@
    consult-theme consult-line consult-line-at-point
    :preview-key '(:debounce 0.2 any)))
 
-;;; Marginalia — annotations in the minibuffer (e.g. docstrings next to M-x)
+;;; Marginalia -- annotations in the minibuffer (e.g. docstrings next to M-x)
 (use-package marginalia
   :init
   (marginalia-mode))
 
-;;; Corfu — in-buffer completion popup (replaces company-mode)
+;;; Corfu -- in-buffer completion popup (replaces company-mode)
 (use-package corfu
   :custom
   (corfu-auto t)
@@ -50,7 +50,7 @@
   :init
   (global-corfu-mode))
 
-;;; Orderless — fuzzy/space-separated completion style
+;;; Orderless -- fuzzy/space-separated completion style
 (use-package orderless
   :custom
   (completion-styles '(orderless basic))

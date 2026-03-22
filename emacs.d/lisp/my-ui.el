@@ -85,10 +85,10 @@
         (set-frame-font font-string nil t)
         (add-to-list 'default-frame-alist (cons 'font font-string))))))
 
-;;; CJK font — org-mode table alignment
+;;; CJK font -- org-mode table alignment
 ;;
 ;; When Sarasa Mono J is the primary font (see above), its ASCII and CJK glyphs
-;; have a built-in 2:1 width ratio — no fontset overlay or rescaling needed.
+;; have a built-in 2:1 width ratio -- no fontset overlay or rescaling needed.
 ;; my-cjk-setup is skipped in that case.
 ;;
 ;; When falling back to a plain ASCII font (Consolas, Monaco, etc.), separate
@@ -118,7 +118,7 @@
 ;;  | C+K     | 中가  | 中文가나 |
 ;;  | J+K     | あ가  | あい가나 |
 ;;  |---------+-------+----------|
-;;  | E+C+J+K | —    | AB中あ가 |
+;;  | E+C+J+K | --    | AB中あ가 |
 
 (defun my-cjk-setup ()
   "Configure CJK fonts for org-mode table alignment.
@@ -166,7 +166,7 @@ Call M-x my-cjk-setup-report to see which fonts were actually selected."
              (or (plist-get result :han)    "NOT FOUND")
              (or (plist-get result :hangul) "NOT FOUND"))))
 
-;; Skip CJK overlay when Sarasa Mono is primary — it handles CJK natively.
+;; Skip CJK overlay when Sarasa Mono is primary -- it handles CJK natively.
 (unless (and (boundp 'emacs-english-font)
              (string-match-p "Sarasa" emacs-english-font))
   (my-cjk-setup))

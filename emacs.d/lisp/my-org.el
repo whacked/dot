@@ -13,7 +13,7 @@
 (straight-override-recipe (cons 'org '(:type built-in)))
 (use-package org)
 
-;;; org-logseq — Logseq interop for org files
+;;; org-logseq -- Logseq interop for org files
 ;; TODO: review, not using
 (use-package org-logseq
   :after org
@@ -226,7 +226,7 @@
 ;; After execution, replaces the standard content-hash in #+RESULTS[hash]:
 ;; with a human-readable timestamp.  Requires both :timestamp t and #+NAME:.
 ;;
-;; Note: this intentionally disables :cache — once the hash is replaced by a
+;; Note: this intentionally disables :cache -- once the hash is replaced by a
 ;; timestamp, the cache check always mismatches and the block always re-runs.
 ;; Blocks without :timestamp t are unaffected.
 ;;
@@ -310,7 +310,7 @@ so it remains available after org-babel moves point to insert results."
    (ditaa      . t)
    (sqlite     . t)))
 
-;; Register ob-jupyter lazily — jupyter has heavy deps (zmq, websocket,
+;; Register ob-jupyter lazily -- jupyter has heavy deps (zmq, websocket,
 ;; jupyter-server) that fail if kernel infrastructure isn't ready at startup.
 ;; Once jupyter loads (e.g. when you first use M-x jupyter-run-repl), its
 ;; babel backend is appended to the active languages list.

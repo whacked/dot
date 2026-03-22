@@ -34,7 +34,7 @@
 
 (winner-mode 1)
 
-;;; quit-window — always kill the buffer, not just bury it
+;;; quit-window -- always kill the buffer, not just bury it
 
 (advice-add 'quit-window :filter-args
   (lambda (args)
@@ -53,7 +53,7 @@
 ;; Emacs writes a desktop lock file containing its PID.  On Linux, if the
 ;; previous Emacs crashed, the PID may be reused by a non-Emacs process,
 ;; which would prevent desktop restore.  `emacs-process-p' checks /proc/
-;; (Linux-only; harmless on Darwin — /proc/ won't exist, returns nil, so
+;; (Linux-only; harmless on Darwin -- /proc/ won't exist, returns nil, so
 ;; the lock is always considered stale and desktop restore proceeds).
 
 (defun emacs-process-p (pid)

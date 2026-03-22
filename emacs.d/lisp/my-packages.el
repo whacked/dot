@@ -22,7 +22,7 @@
         (45 (string-match ".rb" (buffer-name)) font-lock-string-face)
         (50 (string-match ".org" (buffer-name)) font-lock-preprocessor-face)))
 
-;;; ibuffer — behaviour and grouping
+;;; ibuffer -- behaviour and grouping
 ;;
 ;; ibuffer-fontification-alist is set above.
 
@@ -49,18 +49,18 @@
 ;; Base dir comes from $TREESIT_GRAMMAR_DIR (set in shell profile / nix env).
 ;; Grammars live in <base>/abi<N>/ where N = (treesit-library-abi-version).
 ;; Two Emacs builds linked against different tree-sitter ABIs each get their
-;; own subdirectory — no clobber.  The base dir must exist; Emacs creates
+;; own subdirectory -- no clobber.  The base dir must exist; Emacs creates
 ;; only the abi-versioned subdirectory inside it.
 (when (fboundp 'treesit-library-abi-version)
   (let ((base (getenv "TREESIT_GRAMMAR_DIR")))
     (cond
      ((not base)
       (display-warning 'treesit
-                       "TREESIT_GRAMMAR_DIR is not set — tree-sitter grammars disabled"
+                       "TREESIT_GRAMMAR_DIR is not set -- tree-sitter grammars disabled"
                        :warning))
      ((not (file-directory-p base))
       (display-warning 'treesit
-                       (format "TREESIT_GRAMMAR_DIR=%s does not exist — tree-sitter grammars disabled" base)
+                       (format "TREESIT_GRAMMAR_DIR=%s does not exist -- tree-sitter grammars disabled" base)
                        :warning))
      (t
       (let ((grammar-dir (expand-file-name
@@ -76,11 +76,11 @@
         :config
         (global-treesit-auto-mode))))))
 
-;;; eval-in-repl — send current line/region to a running REPL
+;;; eval-in-repl -- send current line/region to a running REPL
 ;;
 ;; Handles two shell use cases:
-;;   1. sh-mode file with an active *shell* buffer — C-<return> sends current line
-;;   2. org src block opened with C-' — same binding works in the edit buffer
+;;   1. sh-mode file with an active *shell* buffer -- C-<return> sends current line
+;;   2. org src block opened with C-' -- same binding works in the edit buffer
 ;;
 ;; The target shell is M-x shell (comint), not vterm/eat.
 ;; eir-eval-in-shell2 is a variant that toggles the jump-after-eval behaviour.
@@ -97,7 +97,7 @@
             (lambda ()
               (local-set-key (kbd "C-<return>") #'eir-eval-in-shell))))
 
-;;; eat — terminal emulator (used by claude-code-ide and general shell work)
+;;; eat -- terminal emulator (used by claude-code-ide and general shell work)
 
 (use-package eat
   :straight (:type git
@@ -146,13 +146,13 @@
      ((t (:foreground "DarkSlateGray" :slant italic :background "#F7F7F7")))))
   (add-hook 'markdown-mode-hook (lambda () (setq tab-width 2))))
 
-;;; ace-window — switch window by visual label
+;;; ace-window -- switch window by visual label
 ;; Coexists with win-switch (C-x o); use M-o for ace-window.
 
 (use-package ace-window
   :bind ("M-o" . ace-window))
 
-;;; win-switch — repeated other-window via C-x o o o ...
+;;; win-switch -- repeated other-window via C-x o o o ...
 
 (use-package win-switch
   :bind ("C-x o" . win-switch-dispatch)
@@ -162,12 +162,12 @@
 
 (use-package magit)
 
-;;; diff-hl — diff indicators in the fringe (replaces git-gutter)
+;;; diff-hl -- diff indicators in the fringe (replaces git-gutter)
 ;;
 ;; diff-hl uses Emacs's built-in VC framework so it works with any VCS,
 ;; not just git.  Colours ported from the old git-gutter config:
 ;; modified=purple, added=green, deleted=red.  git-gutter used
-;; :foreground for added/deleted; diff-hl uses :background — spirit
+;; :foreground for added/deleted; diff-hl uses :background -- spirit
 ;; is the same.
 
 (use-package diff-hl
@@ -177,7 +177,7 @@
   (set-face-background 'diff-hl-delete "red")
   (global-diff-hl-mode))
 
-;;; ov — overlay library (used by my-highlight-duplicate-lines-in-region etc.)
+;;; ov -- overlay library (used by my-highlight-duplicate-lines-in-region etc.)
 
 (use-package ov)
 
@@ -186,7 +186,7 @@
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
 
-;;; paredit — structural editing for Lisp modes
+;;; paredit -- structural editing for Lisp modes
 ;; http://inclojurewetrust.blogspot.com/2013/01/duplicating-s-expressions-on-line.html
 
 (use-package paredit
@@ -228,7 +228,7 @@
   :straight (:host github :repo "plexus/emacs-clojure-utils")
   :after clojure-mode)
 
-;;; thingatpt+ and thing-cmds — enhanced thing-at-point operations
+;;; thingatpt+ and thing-cmds -- enhanced thing-at-point operations
 
 (use-package thingatpt+
   :straight (:host github
@@ -247,9 +247,9 @@
 ;; (use-package inf-clojure)
 ;; (use-package sibilant-mode) ; barely used
 
-;;; obsidian.el — Obsidian vault interop
+;;; obsidian.el -- Obsidian vault interop
 (use-package obsidian
-  ;; :demand t removed — use :commands so neither the package code nor the vault
+  ;; :demand t removed -- use :commands so neither the package code nor the vault
   ;; scan block startup.  The package loads on first command invocation or when
   ;; the idle timer fires (whichever comes first).
   ;; :demand t
@@ -311,45 +311,45 @@ Called automatically after 10 min idle; invoke manually via M-x if needed sooner
 (use-package csv-mode
   :defer t)
 
-;;; dirvish — modern dired replacement (supersedes dired+)
+;;; dirvish -- modern dired replacement (supersedes dired+)
 
 (use-package dirvish
   :config
   (dirvish-override-dired-mode)
   (setq dirvish-attributes '(vc-state subtree-state all-the-icons collapse file-size)))
 
-;;; dumb-jump — zero-config xref backend (grep-based M-. fallback)
+;;; dumb-jump -- zero-config xref backend (grep-based M-. fallback)
 
 (use-package dumb-jump
   :config (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
-;;; git-timemachine — walk file git history interactively
+;;; git-timemachine -- walk file git history interactively
 ;; Note: upstream moved to https://codeberg.org/pidu/git-timemachine
 
 (use-package git-timemachine
   :straight (:host codeberg :repo "pidu/git-timemachine")
   :defer t)
 
-;;; polymode — multiple major modes in one buffer
+;;; polymode -- multiple major modes in one buffer
 
 (use-package polymode
   :defer t)
 
-;;; transpose-frame — flip/rotate window layout
+;;; transpose-frame -- flip/rotate window layout
 
 (use-package transpose-frame)
 
-;;; treemacs — file tree sidebar
+;;; treemacs -- file tree sidebar
 
 (use-package treemacs
   :defer t)
 
-;;; try — install and try packages without keeping them
+;;; try -- install and try packages without keeping them
 
 (use-package try
   :defer t)
 
-;;; vundo — visual undo tree (replaces undo-tree)
+;;; vundo -- visual undo tree (replaces undo-tree)
 ;;
 ;; undo-tree had persistent data-loss/corruption bugs and is effectively
 ;; unmaintained.  vundo is the community-endorsed replacement: it wraps
@@ -372,25 +372,25 @@ Prints key bindings as a reminder during transition from undo-tree."
 
 ;;; Old collection packages ─────────────────────────────────────────────────
 
-;;; calfw / calfw-org — calendar grid view (low priority; commented out)
+;;; calfw / calfw-org -- calendar grid view (low priority; commented out)
 ;; (use-package calfw)
 ;; (use-package calfw-org)
 
-;;; dash — list manipulation library (dep; no user config needed)
+;;; dash -- list manipulation library (dep; no user config needed)
 (use-package dash)
 
-;;; deadgrep — ripgrep results buffer (distinct UX from consult-ripgrep)
+;;; deadgrep -- ripgrep results buffer (distinct UX from consult-ripgrep)
 (use-package deadgrep
   :defer t)
 
-;;; duplicate-thing — duplicate line or region in-place
+;;; duplicate-thing -- duplicate line or region in-place
 (use-package duplicate-thing)
 
-;;; editorconfig — apply .editorconfig indent/format settings per project
+;;; editorconfig -- apply .editorconfig indent/format settings per project
 (use-package editorconfig
   :config (editorconfig-mode 1))
 
-;;; embark + embark-consult — contextual actions on candidates / things at point
+;;; embark + embark-consult -- contextual actions on candidates / things at point
 (use-package embark
   :bind (("C-." . embark-act)
          ("C-;" . embark-dwim)))
@@ -399,26 +399,26 @@ Prints key bindings as a reminder during transition from undo-tree."
   :after (embark consult)
   :hook (embark-collect-mode . consult-preview-at-point-mode))
 
-;;; gptel — LLM client (OpenAI, Anthropic, Ollama, …)
+;;; gptel -- LLM client (OpenAI, Anthropic, Ollama, …)
 (use-package gptel
   :defer t)
 
-;;; hl-todo — highlight TODO/FIXME/BUG/HACK in comments (replaces fic-mode)
+;;; hl-todo -- highlight TODO/FIXME/BUG/HACK in comments (replaces fic-mode)
 (use-package hl-todo
   :config (global-hl-todo-mode))
 
-;;; html-to-hiccup — convert HTML to Hiccup syntax (Clojure/ClojureScript)
+;;; html-to-hiccup -- convert HTML to Hiccup syntax (Clojure/ClojureScript)
 (use-package html-to-hiccup
   :defer t)
 
-;;; htmlize — buffer→HTML conversion; required for org HTML export syntax highlighting
+;;; htmlize -- buffer→HTML conversion; required for org HTML export syntax highlighting
 (use-package htmlize
   :defer t)
 
-;;; ibuffer-vc — group ibuffer list by VC repository (hooks set above in ibuffer section)
+;;; ibuffer-vc -- group ibuffer list by VC repository (hooks set above in ibuffer section)
 (use-package ibuffer-vc)
 
-;;; iedit — simultaneously edit multiple occurrences of symbol/region
+;;; iedit -- simultaneously edit multiple occurrences of symbol/region
 (use-package iedit
   :defer t)
 
@@ -426,68 +426,68 @@ Prints key bindings as a reminder during transition from undo-tree."
 (use-package jsonnet-mode
   :defer t)
 
-;;; jsonl — JSON Lines format support (pairs with custom jsonl-record-editor in my-utils.el)
+;;; jsonl -- JSON Lines format support (pairs with custom jsonl-record-editor in my-utils.el)
 (use-package jsonl
   :defer t)
 
-;;; jupyter — org-babel + Jupyter kernel integration
+;;; jupyter -- org-babel + Jupyter kernel integration
 (use-package jupyter
   :defer t)
 
-;;; keycast — display current command and keybinding in mode line (screencasts)
+;;; keycast -- display current command and keybinding in mode line (screencasts)
 (use-package keycast
   :defer t)
 
-;;; logview — log file (log4j, syslog, …) colorization and filtering
+;;; logview -- log file (log4j, syslog, …) colorization and filtering
 (use-package logview
   :defer t)
 
-;;; mermaid-mode (commented out — uncomment if actively using Mermaid diagrams)
+;;; mermaid-mode (commented out -- uncomment if actively using Mermaid diagrams)
 ;; (use-package mermaid-mode :defer t)
 
-;;; multiple-cursors — edit multiple points simultaneously
+;;; multiple-cursors -- edit multiple points simultaneously
 (use-package multiple-cursors
   :bind (("C-S-c C-S-c" . mc/edit-lines)
          ("C->"         . mc/mark-next-like-this)
          ("C-<"         . mc/mark-previous-like-this)
          ("C-c C-<"     . mc/mark-all-like-this)))
 
-;;; nix-mode — edit Nix expressions
+;;; nix-mode -- edit Nix expressions
 (use-package nix-mode
   :mode "\\.nix\\'")
 
-;;; nov.el — epub reader (replaces ereader, which is stale)
+;;; nov.el -- epub reader (replaces ereader, which is stale)
 (use-package nov
   :mode ("\\.epub\\'" . nov-mode))
 
-;;; org-download — drag/drop or yank images directly into org buffers
+;;; org-download -- drag/drop or yank images directly into org buffers
 (use-package org-download
   :defer t)
 
-;;; org-ql — query language for org headings; org-sidebar is its UI companion
+;;; org-ql -- query language for org headings; org-sidebar is its UI companion
 (use-package org-ql
   :defer t)
 
 (use-package org-sidebar
   :defer t)
 
-;;; projectile — project management (alternative to built-in project.el)
+;;; projectile -- project management (alternative to built-in project.el)
 ;; project.el + consult is the long-term migration path, but projectile
 ;; retains more commands.  Bound under C-c p.
 (use-package projectile
   :config (projectile-mode +1)
   :bind-keymap ("C-c p" . projectile-command-map))
 
-;;; request — HTTP client library
+;;; request -- HTTP client library
 (use-package request
   :defer t)
 
 ;; required by jupyter-widget-client
 (use-package simple-httpd :defer t)
-;; skewer-mode — JS live REPL (commented out; low active use)
+;; skewer-mode -- JS live REPL (commented out; low active use)
 ;; (use-package skewer-mode  :defer t)
 
-;;; slime — Common Lisp development environment
+;;; slime -- Common Lisp development environment
 (use-package slime
   :defer t)
 
@@ -495,15 +495,15 @@ Prints key bindings as a reminder during transition from undo-tree."
 (use-package solarized-theme
   :defer t)
 
-;;; string-inflection — cycle snake_case → UPCASE → CamelCase → camelCase → kebab-case
+;;; string-inflection -- cycle snake_case → UPCASE → CamelCase → camelCase → kebab-case
 (use-package string-inflection
   :defer t)
 
-;;; terraform-mode — HCL/Terraform editing
+;;; terraform-mode -- HCL/Terraform editing
 (use-package terraform-mode
   :defer t)
 
-;;; vterm — full terminal emulator (libvterm-backed)
+;;; vterm -- full terminal emulator (libvterm-backed)
 ;;
 ;; On macOS with Emacs.app from nixpkgs: straight.el will try to compile
 ;; vterm-module.so via cmake at install time, but it cannot find the
@@ -516,11 +516,11 @@ Prints key bindings as a reminder during transition from undo-tree."
 (use-package vterm
   :defer t)
 
-;;; websocket — WebSocket library (dep of jupyter, lsp-mode, etc.)
+;;; websocket -- WebSocket library (dep of jupyter, lsp-mode, etc.)
 (use-package websocket
   :defer t)
 
-;;; yasnippet — template / snippet expansion system
+;;; yasnippet -- template / snippet expansion system
 (use-package yasnippet
   :config (yas-global-mode 1))
 
@@ -529,7 +529,7 @@ Prints key bindings as a reminder during transition from undo-tree."
 ;;; claude-code-ide
 ;;
 ;; Requires node on PATH.  exec-path-from-shell (in my-core.el) imports PATH
-;; from the shell — ensure node/npm are in your shell profile.
+;; from the shell -- ensure node/npm are in your shell profile.
 ;; eat (above) is the terminal backend.
 
 (use-package claude-code-ide
@@ -540,7 +540,7 @@ Prints key bindings as a reminder during transition from undo-tree."
   (setq claude-code-ide-terminal-backend 'eat)
   (claude-code-ide-emacs-tools-setup))
 
-;;; emacs-markdown-babel — evaluate fenced code blocks in Markdown via org-babel
+;;; emacs-markdown-babel -- evaluate fenced code blocks in Markdown via org-babel
 ;;
 ;; Provides markdown-eval-current-code-block (f5 in markdown-mode).
 ;; Previously loaded via load-file from CLOUDSYNC; now sourced from GitHub.
@@ -549,19 +549,19 @@ Prints key bindings as a reminder during transition from undo-tree."
   :after markdown-mode
   :bind (:map markdown-mode-map ([f5] . markdown-eval-current-code-block)))
 
-;;; mustache — Mustache template rendering (dep of zotero-query via yesql)
+;;; mustache -- Mustache template rendering (dep of zotero-query via yesql)
 (use-package mustache
   :defer t)
 
-;;; esqlite — SQLite interface (dep of zotero-query)
+;;; esqlite -- SQLite interface (dep of zotero-query)
 (use-package esqlite
   :defer t)
 
-;;; hydra — transient keybinding menus (dep of zotero-query)
+;;; hydra -- transient keybinding menus (dep of zotero-query)
 (use-package hydra
   :defer t)
 
-;;; zotero-query — open Zotero items by key from Emacs
+;;; zotero-query -- open Zotero items by key from Emacs
 ;;
 ;; Provides zotero-query, used by zotero-open-at-point in my-utils.el.
 (use-package zotero-query
@@ -576,37 +576,37 @@ Prints key bindings as a reminder during transition from undo-tree."
 
 ;;; ─── Language / syntax modes ─────────────────────────────────────────────────
 
-;;; ess — Emacs Speaks Statistics (R, Julia, SAS, etc.)
+;;; ess -- Emacs Speaks Statistics (R, Julia, SAS, etc.)
 (use-package ess
   :defer t)
 
-;;; graphviz-dot-mode — .dot / .gv file syntax and preview
+;;; graphviz-dot-mode -- .dot / .gv file syntax and preview
 (use-package graphviz-dot-mode
   :defer t)
 
-;;; haskell-mode — Haskell editing and documentation
+;;; haskell-mode -- Haskell editing and documentation
 (use-package haskell-mode
   :defer t
   :hook ((haskell-mode . turn-on-haskell-doc-mode)
          (haskell-mode . turn-on-haskell-indentation)))
 
-;;; haxe-mode — Haxe language support
+;;; haxe-mode -- Haxe language support
 (use-package haxe-mode
   :defer t
   :bind (:map haxe-mode-map ("C-c C-c" . (lambda () (interactive) (compile "make")))))
 
-;;; lua-mode — Lua editing support
+;;; lua-mode -- Lua editing support
 (use-package lua-mode
   :defer t)
 
-;;; octave / MATLAB — .m file editing
+;;; octave / MATLAB -- .m file editing
 ;;
 ;; Emacs ships octave-mode for .m files.  This auto-mode entry activates it.
 ;; If you use MATLAB (not Octave), comment this out and use matlab-mode instead:
 ;;   (use-package matlab-mode :defer t)
 (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
 
-;;; pyvenv — Python virtualenv activation inside Emacs
+;;; pyvenv -- Python virtualenv activation inside Emacs
 ;;
 ;; M-x pyvenv-activate: point Emacs at a virtualenv directory.
 ;; M-x pyvenv-workon: activate a virtualenvwrapper env by name.
@@ -614,13 +614,13 @@ Prints key bindings as a reminder during transition from undo-tree."
 (use-package pyvenv
   :defer t)
 
-;;; rainbow-mode — colourize CSS colour strings in-buffer (#rrggbb, rgba(), etc.)
+;;; rainbow-mode -- colourize CSS colour strings in-buffer (#rrggbb, rgba(), etc.)
 (use-package rainbow-mode
   :defer t)
 
 ;;; ─── Org-babel extensions ────────────────────────────────────────────────────
 
-;;; ob-async — run org-babel blocks asynchronously  (:async t header arg)
+;;; ob-async -- run org-babel blocks asynchronously  (:async t header arg)
 ;;
 ;; Prevents Emacs from freezing while a slow code block (shell, Python, etc.)
 ;; executes.  Add :async t to any #+begin_src block to use it.
@@ -629,7 +629,7 @@ Prints key bindings as a reminder during transition from undo-tree."
 
 ;;; ─── PDF ─────────────────────────────────────────────────────────────────────
 
-;;; pdf-tools — rich in-buffer PDF viewer (commented: needs epdfinfo binary)
+;;; pdf-tools -- rich in-buffer PDF viewer (commented: needs epdfinfo binary)
 ;;
 ;; On macOS + nix the cleanest install is to let nix own the binary:
 ;;   1. Add pkgs.emacsPackages.pdf-tools to home.packages in home.nix.
@@ -688,12 +688,12 @@ Prints key bindings as a reminder during transition from undo-tree."
 ;;        annots)
 ;;       output)))
 
-;;; xterm-mouse — enable mouse in terminal Emacs
+;;; xterm-mouse -- enable mouse in terminal Emacs
 
 (unless (display-graphic-p)
   (xterm-mouse-mode 1))
 
-;;; agent-shell — AI shell with system package manager integration
+;;; agent-shell -- AI shell with system package manager integration
 
 (use-package agent-shell
   :ensure-system-package
