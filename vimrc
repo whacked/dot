@@ -147,6 +147,7 @@ inoremap {{ {{  }}<Esc>hhi
 
 
 " Wait until after plug#end() to run the Lua setup
+if has('nvim')
 lua << EOF
   -- Safely require telescope
   local status_ok, telescope = pcall(require, "telescope")
@@ -156,6 +157,7 @@ lua << EOF
     telescope.load_extension('telescope-tabs')
   end
 EOF
+endif
 
 " The shortcut to launch it
 nnoremap <leader>t <cmd>Telescope telescope-tabs list_tabs<cr>
