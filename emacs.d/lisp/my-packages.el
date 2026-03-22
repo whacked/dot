@@ -313,6 +313,12 @@ Called automatically after 10 min idle; invoke manually via M-x if needed sooner
 
 ;;; dirvish -- modern dired replacement (supersedes dired+)
 
+(setq dired-listing-switches "--time-style=full -alGgh1v")
+
+(use-package all-the-icons  ;; used by dired/dirvish
+  :ensure t
+  :if (display-graphic-p))
+
 (use-package dirvish
   :config
   (dirvish-override-dired-mode)
