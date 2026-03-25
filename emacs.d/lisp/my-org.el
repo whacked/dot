@@ -12,6 +12,7 @@
 
 (straight-override-recipe (cons 'org '(:type built-in)))
 (use-package org)
+(require 'org-tempo)  ; provides org-tempo-setup (used in org-mode-hook via custom.el)
 
 ;;; org-logseq -- Logseq interop for org files
 ;; TODO: review, not using

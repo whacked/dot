@@ -109,6 +109,9 @@
                      ("integration" "integration/*")
                      (:exclude ".dir-locals.el" "*-tests.el"))))
 
+;;; edit-indirect -- edit regions in separate buffer (used by markdown-mode for C-' on fenced blocks)
+(use-package edit-indirect)
+
 ;;; markdown-mode
 
 (use-package markdown-mode
