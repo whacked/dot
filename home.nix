@@ -137,6 +137,7 @@ in {
     };
     ".lein".source = makeSymlink "lein";
     ".Rprofile".source = makeSymlink "Rprofile";
+    ".ssh/rc".source = makeSymlink "sshrc";
     ".vim".source = makeSymlink "vim";
     ".vimrc".source = makeSymlink "vimrc";
     ".zshenv".source = makeSymlink "zshenv";
