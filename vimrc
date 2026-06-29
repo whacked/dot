@@ -56,6 +56,8 @@ Plug 'jvirtanen/vim-hcl'
 Plug 'nvim-lua/plenary.nvim'           " Utility library used by almost all Neovim plugins
 Plug 'nvim-telescope/telescope.nvim'   " The actual Telescope engine
 Plug 'LukasPietzschmann/telescope-tabs' " The tab-finding extension
+Plug 'godlygeek/tabular'
+Plug 'preservim/vim-markdown'
 
 call plug#end()
 " </vim-plug>
