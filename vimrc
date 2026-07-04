@@ -113,6 +113,23 @@ autocmd BufWritePost,FileWritePost    *.xoj  call gzip#write("gzip -S .xoj")
 autocmd FileAppendPre         *.xoj  call gzip#appre("gzip -S .xoj -dn")
 autocmd FileAppendPost      *.xoj  call gzip#write("gzip -S .xoj")
 
+" Edit *.zst (zstandard) files transparently, the same way the bundled gzip
+" plugin handles *.gz. Vim 9.1 already lists *.zst there, so load that plugin
+" now (it self-guards against reloading) and only add our own handlers when it
+" doesn't cover *.zst -- otherwise the file would be decompressed, and
+" re-compressed on write, twice.
+runtime plugin/gzip.vim
+if !exists("#gzip#BufReadPost#*.zst")
+  augroup zstd
+    autocmd!
+    autocmd BufReadPre,FileReadPre     *.zst setlocal bin
+    autocmd BufReadPost,FileReadPost   *.zst call gzip#read("zstd -d --rm")
+    autocmd BufWritePost,FileWritePost *.zst call gzip#write("zstd --rm")
+    autocmd FileAppendPre              *.zst call gzip#appre("zstd -d --rm")
+    autocmd FileAppendPost             *.zst call gzip#write("zstd --rm")
+  augroup END
+endif
+
 
 set background=dark
 let g:solarized_termtrans=1
