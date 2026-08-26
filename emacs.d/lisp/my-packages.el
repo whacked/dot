@@ -702,6 +702,25 @@ Prints key bindings as a reminder during transition from undo-tree."
 (unless (display-graphic-p)
   (xterm-mouse-mode 1))
 
+;;; browser-gt -- bidirectional browser ↔ Emacs communication
+;;
+;; Requires the browser-gt browser extension loaded in Chrome or Firefox.
+;; Chrome: chrome://extensions → Load unpacked → straight/repos/browser-gt/extension/build/chrome/
+;; Firefox: about:debugging → Load Temporary Add-on → straight/repos/browser-gt/extension/build/firefox/manifest.json
+
+(use-package browser-gt
+  :straight (:host github :repo "dmgerman/browser-gt")
+  :after websocket
+  :commands (browser-gt-start
+             browser-gt-tab-jump
+             browser-gt-tab-manager)
+  :config
+  (require 'browser-gt-www)
+  (require 'browser-gt-youtube)
+  (require 'browser-gt-babel)
+  (require 'browser-gt-tab-manager)
+  (require 'browser-gt-url-handler))
+
 ;;; agent-shell -- AI shell with system package manager integration
 
 (use-package agent-shell
