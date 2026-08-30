@@ -112,6 +112,9 @@
 ;;; edit-indirect -- edit regions in separate buffer (used by markdown-mode for C-' on fenced blocks)
 (use-package edit-indirect)
 
+;;; smalltalk-mode
+(use-package smalltalk-mode)
+
 ;;; markdown-mode
 
 (use-package markdown-mode
@@ -149,6 +152,23 @@
      ((t (:foreground "DarkSlateGray" :slant italic :background "#F7F7F7")))))
   (add-hook 'markdown-mode-hook (lambda () (setq tab-width 2))))
 
+(defun my-markdown-follow-wiki-link (&rest _)
+  "Follow [[WikiLink]] or [[WikiLink.md]] at point. Returns t if handled."
+  (when (thing-at-point-looking-at
+         "\\[\\[\\([^]|]+?\\)\\(?:|[^]]*\\)?\\]\\]")
+    (let* ((target (match-string-no-properties 1))
+           (base   (if (string-suffix-p ".md" target) target
+                     (concat target ".md")))
+           (dir    (file-name-directory
+                    (or buffer-file-name default-directory)))
+           (path   (expand-file-name base dir)))
+      (when (file-exists-p path)
+        (find-file path)
+        t))))
+
+(advice-add 'markdown-follow-thing-at-point :before-until
+            #'my-markdown-follow-wiki-link)
+
 ;;; ace-window -- switch window by visual label
 ;; Coexists with win-switch (C-x o); use M-o for ace-window.
 
@@ -163,7 +183,9 @@
 
 ;;; magit
 
-(use-package magit)
+(use-package magit
+  :ensure t
+  :after cond-let)
 
 ;;; diff-hl -- diff indicators in the fringe (replaces git-gutter)
 ;;
@@ -327,6 +349,33 @@ Called automatically after 10 min idle; invoke manually via M-x if needed sooner
   (dirvish-override-dired-mode)
   (setq dirvish-attributes '(vc-state subtree-state all-the-icons collapse file-size)))
 
+(use-package dired-preview
+  :ensure t
+  :after dired
+  :bind
+  (:map dired-mode-map
+        ;; Toggle only in the current Dired buffer.
+        ("C-c p" . dired-preview-mode))
+  :custom
+  ;; Near-immediate preview without updating on every intermediate event.
+  (dired-preview-delay 0.1)
+
+  ;; Do not load unexpectedly huge files.
+  (dired-preview-max-size (* 10 1024 1024))
+
+  ;; Retain only the current temporary preview buffer.
+  (dired-preview-kill-buffers-method '(buffer-number . 1))
+
+  :config
+  (defun my-dired-preview-on-right ()
+    "Display Dired previews in the right half of the frame."
+    '((display-buffer-in-side-window)
+      (side . right)
+      (window-width . 0.5)))
+
+  (setq dired-preview-display-action-alist
+        #'my-dired-preview-on-right))
+
 ;;; dumb-jump -- zero-config xref backend (grep-based M-. fallback)
 
 (use-package dumb-jump
@@ -342,6 +391,11 @@ Called automatically after 10 min idle; invoke manually via M-x if needed sooner
 ;;; polymode -- multiple major modes in one buffer
 
 (use-package polymode
+  :defer t)
+
+;;; restclient
+
+(use-package restclient
   :defer t)
 
 ;;; transpose-frame -- flip/rotate window layout
@@ -627,6 +681,10 @@ Prints key bindings as a reminder during transition from undo-tree."
 (use-package rainbow-mode
   :defer t)
 
+(use-package spice-mode
+  :straight (:host github :repo "emacsmirror/spice-mode"
+             :files ("spice-mode.el")))
+
 ;;; ─── Org-babel extensions ────────────────────────────────────────────────────
 
 ;;; ob-async -- run org-babel blocks asynchronously  (:async t header arg)
@@ -727,6 +785,11 @@ Prints key bindings as a reminder during transition from undo-tree."
   :ensure-system-package
   ((claude       . "brew install claude-code")
    (claude-agent-acp . "npm install -g @zed-industries/claude-agent-acp")))
+
+;; need to add the claude-agent-acp path, otherwise you get
+;; agent-shell--start: Executable "claude-agent-acp" not found.  Do you need (add-to-list 'exec-path "another/path/to/consider/")?  See https://github.com/zed-industries/claude-agent-acp for installation.
+;; (add-to-list 'exec-path "/opt/npm/bin/")  ;; this contains claude-agent-acp, which is a symlink to
+;; "/opt/npm/lib/node_modules/@zed-industries/claude-agent-acp/dist/index.js"
 
 (provide 'my-packages)
 ;;; my-packages.el ends here
