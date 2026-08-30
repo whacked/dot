@@ -98,6 +98,45 @@
     (comint-truncate-buffer)
     (setq comint-buffer-maximum-size old-max)))
 
+;;; Unicode box-drawing table → plain org/markdown table
+
+(defun utf-box-table->plain (beg end)
+  "Convert a Unicode box-drawing table to a plain pipe table in region BEG to END.
+Removes horizontal divider lines and replaces box-drawing vertical bars with
+plain ASCII pipes, then realigns as an org table."
+  (interactive
+   (if (use-region-p)
+       (list (region-beginning) (region-end))
+     (list (point-min) (point-max))))
+  (save-excursion
+    (save-restriction
+      (narrow-to-region beg end)
+      ;; Remove horizontal divider lines (lines containing only box-drawing
+      ;; horizontal/corner/junction characters and whitespace).
+      (goto-char (point-min))
+      (while (re-search-forward
+              "^[[:space:]]*[┌┬┐├┼┤└┴┘─]+[─┌┬┐├┼┤└┴┘[:space:]]*\n?" nil t)
+        (replace-match ""))
+      ;; Replace box-drawing vertical bars with plain ASCII pipes.
+      (goto-char (point-min))
+      (while (re-search-forward "[│]" nil t)
+        (replace-match "|"))
+      ;; Realign as org table if org-table is available.
+      (when (fboundp 'org-table-align)
+        (goto-char (point-min))
+        (while (re-search-forward "^[[:space:]]*|" nil t)
+          (org-table-align)
+          ;; Jump past the table that was just aligned.
+          (re-search-forward "^[^|]" nil 'move))))))
+
+;;; remove text properties / decorations
+(defun strip-text-properties (start end)
+  "Remove all text properties (colors, faces, prefixes) from the region."
+  (interactive "r")
+  (let ((inhibit-read-only t))
+    (set-text-properties start end nil)))
+
+
 ;;; Enable commands disabled by default
 
 (put 'set-goal-column  'disabled nil)
