@@ -74,7 +74,7 @@
         :custom
         (treesit-auto-install 'prompt)
         :config
-        (global-treesit-auto-mode))))))
+        (treesit-auto-add-to-auto-mode-alist))))))
 
 ;;; eval-in-repl -- send current line/region to a running REPL
 ;;
